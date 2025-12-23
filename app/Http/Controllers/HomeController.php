@@ -548,58 +548,121 @@ public function search_vendor(Request $request)
 }
 
    
+public function store(Request $request)
+{
+    $request->validate([
+        'title'           => 'required|string|max:255',
+        'work_type_id'    => 'required|integer',
+        'project_type_id' => 'required|integer',
+        'state'           => 'nullable|string',
+        'region'          => 'nullable|string',
+        'city'            => 'nullable|string',
+        'budget'          => 'required|integer',
+        'contact_name'    => 'required|string|max:255',
+        'mobile'          => 'required|string|max:20',
+        'email'           => 'required|email',
+        'description'     => 'required|string',
+    ]);
 
-    public function store(Request $request)
-    {
-        // VALIDATION
-        $request->validate([
-            'title'            => 'required|string',
-            'work_type_id'     => 'required|integer',
-            'project_type_id'  => 'required|integer',
-            'state'            => 'required',
-            'region'           => 'required',
-            'city'             => 'required',
-            'budget'           => 'required',
-            'contact_name'     => 'required|string',
-            'mobile'           => 'required',
-            'email'            => 'required|email',
-            'description'      => 'required|string',
-        ]);
+    $uploadedFiles = [];
 
-        /* ================= FILE UPLOAD ================= */
-        $uploadedFiles = [];
-
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('uploads/posts'), $filename);
-                $uploadedFiles[] = $filename;
-            }
+    if ($request->hasFile('files')) {
+        foreach ($request->file('files') as $file) {
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move(public_path('uploads/posts'), $filename);
+            $uploadedFiles[] = $filename;
         }
-
-        /* ================= INSERT INTO DB ================= */
-        DB::table('posts')->insert([
-            'user_id'          => session('user_id'),
-            'title'            => $request->title,
-            'work_type_id'     => $request->work_type_id,
-            'project_type_id'  => $request->project_type_id,
-            'state'            => $request->state,
-            'region'           => $request->region,
-            'city'             => $request->city,
-            'budget_id'        => $request->budget,
-            'contact_name'     => $request->contact_name,
-            'mobile'           => $request->mobile,
-            'email'            => $request->email,
-            'description'      => $request->description,
-            'files'            => json_encode($uploadedFiles),
-            'created_at'       => now(),
-            'updated_at'       => now(),
-        ]);
-
-        return redirect()
-            ->route('myposts')
-            ->with('success', 'Project Posted Successfully!');
     }
+
+    DB::table('posts')->insert([
+        'user_id'         => session('user_id'),
+        'title'           => $request->title,
+        'work_type_id'    => $request->work_type_id,
+        'project_type_id' => $request->project_type_id,
+        'state'           => $request->state,
+        'region'          => $request->region,
+        'city'            => $request->city,
+        'budget_id'       => $request->budget,
+        'contact_name'    => $request->contact_name,
+        'mobile'          => $request->mobile,
+        'email'           => $request->email,
+        'description'     => $request->description,
+        'files'           => json_encode($uploadedFiles),
+        'created_at'      => now(),
+        'updated_at'      => now(),
+    ]);
+
+    return redirect()
+        ->route('myposts')
+        ->with('success', 'Project Posted Successfully!');
+}
+
+    // public function store(Request $request)
+    // {
+    //     // dd($request);
+    //     // VALIDATION
+    //     // $request->validate([
+    //     //     'title'            => 'required|string',
+    //     //     'work_type_id'     => 'required|integer',
+    //     //     'project_type_id'  => 'required|integer',
+    //     //     'state'            => 'required',
+    //     //     'region'           => 'required',
+    //     //     'city'             => 'required',
+    //     //     'budget'           => 'required',
+    //     //     'contact_name'     => 'required|string',
+    //     //     'mobile'           => 'required',
+    //     //     'email'            => 'required|email',
+    //     //     'description'      => 'required|string',
+    //     // ]);
+    //     $request->validate([
+    //         'title'           => 'required|string|max:255',
+    //         'work_type_id'    => 'required|integer',
+    //         'project_type_id' => 'required|integer',
+    //         'state'           => 'nullable|string',
+    //         'region'          => 'nullable|string',
+    //         'city'            => 'nullable|string',
+    //         'budget'          => 'required|integer',
+    //         'contact_name'    => 'required|string|max:255',
+    //         'mobile'          => 'required|string|max:20',
+    //         'email'           => 'required|email',
+    //         'description'     => 'required|string',
+    //     ]);
+
+
+    //     /* ================= FILE UPLOAD ================= */
+    //     $uploadedFiles = [];
+
+    //     if ($request->hasFile('files')) {
+    //         foreach ($request->file('files') as $file) {
+    //             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+    //             $file->move(public_path('uploads/posts'), $filename);
+    //             $uploadedFiles[] = $filename;
+    //         }
+    //     }
+
+    //     /* ================= INSERT INTO DB ================= */
+    //     DB::table('posts')->insert([
+    //         'user_id'          => session('user_id'),
+    //         'title'            => $request->title,
+    //         'work_type_id'     => $request->work_type_id,
+    //         'project_type_id'  => $request->project_type_id,
+    //         'state'            => $request->state,
+    //         'region'           => $request->region,
+    //         'city'             => $request->city,
+    //         'budget_id'        => $request->budget,
+    //         'contact_name'     => $request->contact_name,
+    //         'mobile'           => $request->mobile,
+    //         'email'            => $request->email,
+    //         'description'      => $request->description,
+    //         'files'            => json_encode($uploadedFiles),
+    //         'created_at'       => now(),
+    //         'updated_at'       => now(),
+    //     ]);
+
+    //     return redirect()
+    //         ->route('myposts')
+    //         ->with('success', 'Project Posted Successfully!');
+    // }
 
     public function leadmarketplace(){
         return view('web.lead_marketplace');

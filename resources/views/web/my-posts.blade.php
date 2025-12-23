@@ -221,7 +221,7 @@
                             <td>{{ $posts->firstItem() + $key }}</td>
                             <td><strong>{{ $post->title }}</strong></td>
                             <td><span class="type-pill">{{ $post->projecttype_name }}</span></td>
-                            <td>{{ $post->city_name }}, {{ $post->region_name }}, {{ $post->state_name }}</td>
+                            <td>city_name, region_name , state_name </td>
                             <td>{{ $post->budget_range }}</td>
                             <td>{{ $post->contact_name }}<br><small>{{ $post->mobile }}</small></td>
                             <td class="posted-date">{{ date('d M Y', strtotime($post->created_at)) }}</td>
