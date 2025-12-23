@@ -368,16 +368,16 @@ public function search_vendor(Request $request)
             ->table('posts')
             ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
+            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
+            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
+            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
             ->select(
                 'projecttype.projecttype_name',
                 'posts.*',
-                'budget_range.budget_range as budget_range_name',
-                'states.name as state_name',
-                'regions.name as regionsname',
-                'cities.name as citiesname'
+                'budget_range.budget_range as budget_range_name'
+                // 'states.name as state_name',
+                // 'regions.name as regionsname',
+                // 'cities.name as citiesname'
             )
             ->orderBy('posts.id', 'desc')
             ->get();
