@@ -821,8 +821,8 @@
                                         <i class="bi bi-geo-alt-fill text-primary"></i>
                                     </div>
                                     <span>
-                                        {{ $project->citiesname }},
-                                        {{ $project->state_name }}
+                                        
+                                       
                                     </span>
                                 </div>
                             </div>
