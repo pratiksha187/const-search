@@ -179,9 +179,7 @@ body{ background:var(--bg); }
         <div class="search-wrapper">
             <select name="state">
                 <option value="">Select State</option>
-                @foreach($states as $state)
-                <option value="{{ $state->id }}">{{ $state->name }}</option>
-                @endforeach
+               
             </select>
 
             <button class="search-btn">Search</button>

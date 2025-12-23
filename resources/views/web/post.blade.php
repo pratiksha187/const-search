@@ -214,9 +214,7 @@ textarea.form-control-lg {
                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
                     <select class="form-select form-select-lg" id="stateDropdown" name="state">
                         <option value="">Select State</option>
-                        @foreach($states as $state)
-                            <option value="{{ $state->id }}">{{ $state->name }}</option>
-                        @endforeach
+                      
                     </select>
                 </div>
             </div>

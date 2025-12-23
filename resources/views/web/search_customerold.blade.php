@@ -261,11 +261,7 @@ body{ background:linear-gradient(180deg,#f8fafc,#eef2f7); }
         <div class="search-bar">
             <select name="state">
                 <option value="">Select State</option>
-                @foreach($states as $st)
-                    <option value="{{ $st->id }}" {{ ($filters['state'] ?? '') == $st->id ? 'selected':'' }}>
-                        {{ $st->name }}
-                    </option>
-                @endforeach
+               
             </select>
 
             <button class="search-btn">Search</button>
