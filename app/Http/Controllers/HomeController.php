@@ -24,20 +24,20 @@ class HomeController extends Controller
         $posts = DB::table('posts')
             ->leftJoin('projecttype', 'posts.project_type_id', '=', 'projecttype.id')
             ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
-            ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
+            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
+            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
+            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
 
             // OPTIONAL: vendor responses table
             // ->leftJoin('vendor_responses', 'posts.id', '=', 'vendor_responses.post_id')
 
             ->select(
                 'posts.*',
-                'states.name as state_name',
-                'regions.name as region_name',
-                'cities.name as city_name',
+                // 'states.name as state_name',
+                // 'regions.name as region_name',
+                // 'cities.name as city_name',
                 'projecttype.projecttype_name',
-                'budget_range.budget_range',
+                'budget_range.budget_range'
                 // DB::raw('COUNT(vendor_responses.id) as response_count')
             )
 
@@ -464,16 +464,16 @@ public function search_vendor(Request $request)
             ->table('posts')
             ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
+            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
+            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
+            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
             ->select(
                 'projecttype.projecttype_name',
                 'posts.*',
-                'budget_range.budget_range as budget_range_name',
-                'states.name as state_name',
-                'regions.name as regionsname',
-                'cities.name as citiesname'
+                'budget_range.budget_range as budget_range_name'
+                // 'states.name as state_name',
+                // 'regions.name as regionsname',
+                // 'cities.name as citiesname'
             );
 
         // 🔍 Apply Filters When Searching
@@ -678,16 +678,16 @@ public function search_vendor(Request $request)
             ->table('posts')
             ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
+            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
+            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
+            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
             ->select(
                 'posts.*',
                 'projecttype.projecttype_name as type',
-                'budget_range.budget_range as budget',
-                'states.name as state',
-                'regions.name as region',
-                'cities.name as city'
+                'budget_range.budget_range as budget'
+                // 'states.name as state',
+                // 'regions.name as region',
+                // 'cities.name as city'
             )
             ->where('posts.id', $id)
             ->first();
