@@ -220,7 +220,7 @@
 </div>
 
 <div class="profile-dropdown" id="profileDropdown">
-    <a href="/profile" class="d-block p-3">My Profile</a>
+    <a href="{{route('cutomerprofile')}}" class="d-block p-3">My Profile</a>
     <a href="/logout" class="d-block p-3 text-danger">Logout</a>
 </div>
 

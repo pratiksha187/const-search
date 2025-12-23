@@ -19,6 +19,8 @@ Route::get('/search-vendor', [HomeController::class, 'search_vendor'])->name('se
 // GET Route: To display the search form
 Route::get('/search-customer', [HomeController::class, 'search_customer'])->name('search_customer');
 
+Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name('cutomerprofile');
+Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
 // POST Route: To handle form submissions and filters
 Route::post('/search-customer', [HomeController::class, 'search_customer_post'])->name('search_customer_post');
 

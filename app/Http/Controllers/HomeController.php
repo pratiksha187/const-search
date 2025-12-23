@@ -160,6 +160,69 @@ class HomeController extends Controller
     //         'filters'     => $filters
     //     ]);
     // }
+
+
+    public function cutomerprofile()
+    {
+        $user_id = Session::get('user_id');
+
+        
+
+        $user = DB::table('users')->where('id', $user_id)->first();
+
+        return view('web.cutomerprofile', compact('user'));
+    }
+    
+    // public function cutomerupdate(Request $request)
+    // {
+    //     $user_id = Session::get('user_id');
+    //     $user = DB::table('users')->first();
+
+    //     $request->validate([
+    //         'name'     => 'required|string|max:255',
+    //         'email'    => 'required|email',
+    //         'mobile'   => 'nullable|string|max:15',
+    //         'password' => 'nullable|confirmed|min:6',
+    //     ]);
+
+    //     $user->name   = $request->name;
+    //     $user->email  = $request->email;
+    //     $user->mobile = $request->mobile;
+
+    //     if ($request->password) {
+    //         $user->password = Hash::make($request->password);
+    //     }
+
+    //     $user->save();
+
+    //     return back()->with('success', 'Profile updated successfully.');
+    // }
+public function cutomerupdate(Request $request)
+{
+    $user_id = Session::get('user_id');
+
+    $request->validate([
+        'name'     => 'required|string|max:255',
+        'email'    => 'required|email',
+        'mobile'   => 'nullable|string|max:15',
+        'password' => 'nullable|confirmed|min:6',
+    ]);
+
+    $data = [
+        'name'   => $request->name,
+        'email'  => $request->email,
+        'mobile' => $request->mobile,
+    ];
+
+    if ($request->password) {
+        $data['password'] = Hash::make($request->password);
+    }
+
+    DB::table('users')->where('id', $user_id)->update($data);
+
+    return back()->with('success', 'Profile updated successfully');
+}
+
 public function search_vendor(Request $request)
 {
     $user_id = Session::get('user_id');

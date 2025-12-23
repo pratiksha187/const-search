@@ -10,77 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class LoginRegController extends Controller
 {
+
     public function login_register(){
         return view('web.login_register');
     }
 
-     // ============================= REGISTER =============================
-  
-    // public function register(Request $request)
-    // {
-    //     $request->validate([
-    //         'role'     => ['required'],
-    //         'name'     => ['required'],
-    //         'mobile'   => ['required'],
-    //         'email'    => ['required'],
-    //         'password' => ['required', 'min:4']
-    //     ]);
-    //     // dd($request);
-    //     /* ---------------- VENDOR DUPLICATE CHECK (ONLY vendor_reg) ---------------- */
-    //     if ($request->role === 'vendor') {
-
-    //         $vendorExists = DB::table('vendor_reg')
-    //             ->where('mobile', $request->mobile)
-    //             ->orWhere('email', $request->email)
-    //             ->exists();
-
-    //         if ($vendorExists) {
-    //             return response()->json([
-    //                 'status'  => false,
-    //                 'message' => 'Vendor already registered with this mobile or email'
-    //             ]);
-    //         }
-    //     }
-
-    //     /* ---------------- USER CREATE (NO DUPLICATE CHECK HERE) ---------------- */
-    //     $user = User::create([
-    //         'role'     => $request->role,
-    //         'name'     => $request->name,
-    //         'mobile'   => $request->mobile,
-    //         'email'    => $request->email,
-    //         'password' => Hash::make($request->password)
-    //     ]);
-
-    //     /* ---------------- VENDOR EXTRA LOGIC ---------------- */
-    //     if ($request->role === 'vendor') {
-
-    //         DB::table('vendor_reg')->insert([
-    //             'user_id'       => $user->id,
-    //             'name'          => $request->name,
-    //             'mobile'        => $request->mobile,
-    //             'email'         => $request->email,
-    //             'business_name' => $request->business_name ?? null,
-    //             'gst_number'    => $request->gst_number ?? null,
-    //             'status'        => 'pending',
-    //             'password' => Hash::make($request->password),
-    //             'created_at'    => now(),
-    //             'updated_at'    => now()
-    //         ]);
-    //     }
-
-    //     /* ---------------- SESSION ---------------- */
-    //     Session::put('user_id', $user->id);
-    //     Session::put('user_name', $user->name);
-    //     Session::put('user_role', $user->role);
-
-    //     return response()->json([
-    //         'status'   => true,
-    //         'message'  => 'Registration successful',
-    //         'redirect' => route('dashboard')
-    //     ]);
-    // }
-
-    
+     // ============================= REGISTER ============================
    
     public function register(Request $request)
     {
@@ -182,7 +117,7 @@ class LoginRegController extends Controller
                 'name' => $request->name,
                 'mobile'         => $request->mobile,
                 'email'          => $request->email,
-                // 'status'         => 'pending',
+                'role'         => 'pending',
                 'password'       => Hash::make($request->password),
                 'created_at'     => now(),
                 'updated_at'     => now()
@@ -358,7 +293,8 @@ class LoginRegController extends Controller
         return view('web.supplierdashboard'); 
     }
     
-    
+
+  
     // ============================= LOGOUT =============================
     public function logout()
     {
