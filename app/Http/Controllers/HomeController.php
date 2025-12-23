@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function homepage(){
         
-         $vendors = DB::table('	vendor_reg')->count();
+         $vendors = DB::table('vendor_reg')->count();
         //  $cities =DB::connection('mysql2')->table('cities')->count();
          $posts= DB::table('posts')->count();
         //  dd( $vendors);
