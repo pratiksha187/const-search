@@ -44,9 +44,9 @@ class HomeController extends Controller
             ->where('posts.user_id', $user_id)
             ->groupBy(
                 'posts.id',
-                'states.name',
-                'regions.name',
-                'cities.name',
+                // 'states.name',
+                // 'regions.name',
+                // 'cities.name',
                 'projecttype.projecttype_name',
                 'budget_range.budget_range'
             )
