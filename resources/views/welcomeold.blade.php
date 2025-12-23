@@ -723,7 +723,7 @@ Toast.fire({
 
                 <div class="trusted-strip d-flex gap-2 mt-4 flex-wrap">
                     <span class="trusted-pill"><i class="bi bi-building"></i> <strong>{{$vendors}}+ Vendors</strong></span>
-                    <span class="trusted-pill"><i class="bi bi-geo-alt"></i> <strong>{{$cities}}+ Cities</strong></span>
+                    <span class="trusted-pill"><i class="bi bi-geo-alt"></i> <strong> Cities</strong></span>
                     <span class="trusted-pill"><i class="bi bi-clipboard-check"></i> <strong>{{$posts}}+ Projects</strong></span>
                 </div>
 
