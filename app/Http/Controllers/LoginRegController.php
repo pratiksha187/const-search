@@ -124,22 +124,28 @@ class LoginRegController extends Controller
             }
         }
 
-        /* ================= USER CREATE ================= */
 
-        $user = User::create([
-            'role'     => $request->role,
-            'name'     => $request->name,
-            'mobile'   => $request->mobile,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
+         if ($request->role === 'customer') {
+            $exists = DB::table('users')
+                ->where('mobile', $request->mobile)
+                ->orWhere('email', $request->email)
+                ->exists();
+
+            if ($exists) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'customer already registered with this mobile or email'
+                ]);
+            }
+        }
+
 
         /* ================= ROLE BASE INSERT + SESSION ================= */
 
         if ($request->role === 'vendor') {
 
             $vendorId = DB::table('vendor_reg')->insertGetId([
-                'user_id'       => $user->id,
+                // 'user_id'       => $user->id,
                 'name'          => $request->name,
                 'mobile'        => $request->mobile,
                 'email'         => $request->email,
@@ -157,7 +163,7 @@ class LoginRegController extends Controller
         elseif ($request->role === 'supplier') {
 
             $supplierId = DB::table('supplier_reg')->insertGetId([
-                'user_id'         => $user->id,
+                // 'user_id'         => $user->id,
                 'contact_person' => $request->name,
                 'mobile'         => $request->mobile,
                 'email'          => $request->email,
@@ -170,23 +176,27 @@ class LoginRegController extends Controller
             Session::put('supplier_id', $supplierId);
         }
 
-        else {
+        elseif($request->role === 'customer') {
+             $customerId = DB::table('users')->insertGetId([
+                // 'user_id'         => $user->id,
+                'name' => $request->name,
+                'mobile'         => $request->mobile,
+                'email'          => $request->email,
+                // 'status'         => 'pending',
+                'password'       => Hash::make($request->password),
+                'created_at'     => now(),
+                'updated_at'     => now()
+            ]);
+
             // customer
-            Session::put('customer_id', $user->id);
+           Session::put('customer_id', $customerId);
+
         }
-
-        /* ================= COMMON SESSION ================= */
-
-        Session::put('user_id', $user->id);
-        Session::put('user_name', $user->name);
-        Session::put('user_role', $user->role);
-
-        /* ================= ROLE BASE REDIRECT ================= */
 
         $redirectUrl = match ($request->role) {
             'vendor'   => route('vendordashboard'),
             'supplier' => route('supplierdashboard'),
-            default    => route('dashboard'),
+            'customer'    => route('dashboard'),
         };
 
         return response()->json([
