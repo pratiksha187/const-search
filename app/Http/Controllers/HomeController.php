@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Session;
 class HomeController extends Controller
 {
     public function homepage(){
-         $vendors = DB::connection('mysql2')->table('service_provider')->count();
-         $cities =DB::connection('mysql2')->table('cities')->count();
+        
+         $vendors = DB::table('	vendor_reg')->count();
+        //  $cities =DB::connection('mysql2')->table('cities')->count();
          $posts= DB::table('posts')->count();
         //  dd( $vendors);
-        return view('welcome',compact('vendors','cities','posts'));
+        return view('welcome',compact('vendors','posts'));
     }
 
     public function index()
@@ -59,8 +60,8 @@ class HomeController extends Controller
         $work_types = DB::table('work_types')->get();
         $projecttype = DB::table('projecttype')->get();
         $budget_range = DB::table('budget_range')->get();
-        $states = DB::connection('mysql2')->table('states')->get();
-        return view('web.post',compact('projecttype','budget_range','states','work_types'));
+        // $states = DB::connection('mysql2')->table('states')->get();
+        return view('web.post',compact('projecttype','budget_range','work_types'));
     }
 
     public function getProjectTypes($workTypeId)
@@ -196,7 +197,7 @@ public function search_vendor(Request $request)
         =============================== */
         $projecttype = DB::table('projecttype')->get();
         $work_types  = DB::table('work_types')->get();
-        $states      = DB::connection('mysql2')->table('states')->get();
+        // $states      = DB::connection('mysql2')->table('states')->get();
         $budgets     = DB::table('budget_range')->get();
 
         /* ===============================
@@ -291,7 +292,7 @@ public function search_vendor(Request $request)
         return view('web.search_vendor', compact(
             'vendor_reg',
             'work_types',
-            'states',
+            // 'states',
             'projecttype',
             'budgets',
             'filters'
@@ -360,7 +361,7 @@ public function search_vendor(Request $request)
         $work_subtypes = DB::table('work_subtypes')
                         ->get()
                         ->groupBy('work_type_id');
-        $states = DB::connection('mysql2')->table('states')->get();
+        // $states = DB::connection('mysql2')->table('states')->get();
 
         // 📌 Load ALL projects when page loads or after clear
         $projects = DB::connection('mysql')
@@ -382,7 +383,7 @@ public function search_vendor(Request $request)
             ->get();
 
         return view('web.search_customer', [
-            'states' => $states,
+            // 'states' => $states,
             'work_types' => $work_types,
             'projects' => $projects, // Show all projects
             'filters' => []         // Reset filters
@@ -393,7 +394,7 @@ public function search_vendor(Request $request)
     {
         // Dropdown Data
         $work_types = DB::connection('mysql')->table('projecttype')->get();
-        $states = DB::connection('mysql2')->table('states')->get();
+        // $states = DB::connection('mysql2')->table('states')->get();
 
         // Base Query
         $query = DB::connection('mysql')
@@ -433,7 +434,7 @@ public function search_vendor(Request $request)
         $projects = $query->get();
 
         return view('web.search_customer', [
-            'states' => $states,
+            // 'states' => $states,
             'work_types' => $work_types,
             'projects' => $projects,
             'filters' => $request->all()  // Keep selected values
