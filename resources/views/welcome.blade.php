@@ -96,7 +96,7 @@ body {
 /* Lead form */
 .lead-card { background: #0f172a; color: #e5e7eb; border-radius: 24px; padding: 30px; }
 .lead-input {
-    background: #1e293b;
+    background: #e6ebf4;
     border: 1px solid #334155;
     padding: 10px 16px;
     border-radius: 999px;
@@ -270,7 +270,12 @@ body {
     text-align:center;
     animation: floatUpDown 4.5s ease-in-out infinite;
 }
-.hero-img{ width: 92%; max-width: 440px; }
+/* .hero-img{ width: 92%; max-width: 440px; } */
+.hero-img{
+    width:100%;
+    max-width:440px;
+    filter:drop-shadow(0 40px 60px rgba(0,0,0,.15));
+}
 @keyframes floatUpDown {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-12px); }
@@ -288,22 +293,8 @@ body {
     z-index: 6;
 }
 
-/* glass + premium depth */
-.overlap-card{
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(14px);
-    border-radius: 22px;
-    padding: 20px 22px;
-    width: 280px;
-    display:flex;
-    align-items:center;
-    gap: 14px;
-    border: 1px solid rgba(255,255,255,0.65);
-    box-shadow:
-        0 30px 60px rgba(15,23,42,0.18),
-        0 10px 20px rgba(15,23,42,0.08);
-    transition: all .35s ease;
-}
+
+
 .overlap-card:hover{
     transform: translateY(-6px);
     box-shadow:
@@ -341,17 +332,63 @@ body {
     line-height: 1.35;
 }
 
+.icon-purple{
+    background: #eef2ff;
+    color: #6366f1;
+}
+
+.vendor-row{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: nowrap; /* 🔥 one line */
+}
+
+.category-box{
+    min-width: 180px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 30px 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,.05);
+}
+@media(max-width: 992px){
+    .vendor-row{
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+}
+
 /* subtle floating motion */
 @keyframes floatSoft {
     0% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
     100% { transform: translateY(0); }
 }
-/* .hero-overlap-cards .overlap-card:nth-child(1){ animation: floatSoft 6.5s ease-in-out infinite; }
-.hero-overlap-cards .overlap-card:nth-child(2){ animation: floatSoft 6.5s ease-in-out infinite; animation-delay: 1s; }
-.hero-overlap-cards .overlap-card:nth-child(3){ animation: floatSoft 6.5s ease-in-out infinite; animation-delay: 2s; } */
+.overlap-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(14px);
+    border-radius: 22px;
+    height: 180px;
+    padding: 20px 22px;
+    width: 280px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 30px 60px rgba(15, 23, 42, 0.18), 0 10px 20px rgba(15, 23, 42, 0.08);
+    transition: all .35s ease;
+}
 
-/* spacing for next section after hero overlap */
+.category-img {
+    width: 150px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 12px;
+}
+
+
 
 .section-after-hero {
     padding-top: 29px;
@@ -379,6 +416,9 @@ body {
    
     .section-after-hero{ padding-top: 70px; }
 }
+
+
+
 </style>
 
 @if(session('success'))
@@ -432,22 +472,17 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             <!-- RIGHT SIDE -->
             <div class="col-lg-5 d-flex justify-content-center">
                 <div class="hero-illustration">
-                    <img src="{{ asset('images/vcr.png') }}" alt="Project Planet" class="hero-img">
+                    <img src="{{ asset('images/vc.png') }}" alt="Project Planet" class="hero-img">
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- ✅ OVERLAP CARDS (HALF IN / HALF OUT) -->
+  
     <div class="hero-overlap-cards">
-        <!-- <div class="overlap-card">
-            <div class="card-icon icon-blue"><i class="bi bi-shield-check"></i></div>
-            <div>
-                <h6>Find Vendors</h6>
-                <p>Find vendors near your site</p>
-            </div>
-        </div> -->
+
+        <!-- FIND VENDORS -->
         <a href="{{ route('search_vendor') }}" class="text-decoration-none">
             <div class="overlap-card">
                 <div class="card-icon icon-blue">
@@ -455,32 +490,65 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                 </div>
                 <div>
                     <h6 class="text-dark mb-1">Find Vendors</h6>
-                    <p class="mb-0 text-muted">Find vendors near your site</p>
+                    <p class="mb-1 text-muted">Find vendors near your site</p>
+                    <small class="text-success fw-semibold">
+                        ✔ Verified • Rated • Trusted
+                    </small>
                 </div>
             </div>
         </a>
 
+        <!-- FIND SUPPLIERS -->
         <a href="{{ route('login_register') }}" class="text-decoration-none">
-
             <div class="overlap-card">
-                <div class="card-icon icon-orange"><i class="bi bi-geo-alt"></i></div>
+                <div class="card-icon icon-orange">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
                 <div>
-                    <h6>Find Suppliers</h6>
-                    <p>Find Suppliers near your site</p>
+                    <h6 class="text-dark mb-1">Find Suppliers</h6>
+                    <p class="mb-1 text-muted">Find suppliers near your site</p>
+                    <small class="text-warning fw-semibold">
+                        ✔ Best Price • Fast Delivery
+                    </small>
                 </div>
             </div>
         </a>
-        <a href="{{ route('search_customer') }}" class="text-decoration-none">
 
-        <div class="overlap-card">
-            <div class="card-icon icon-green"><i class="bi bi-graph-up"></i></div>
-            <div>
-                <h6>Find Customer</h6>
-                <p>Find Customer near your site</p>
+        <!-- FIND CUSTOMER -->
+        <a href="{{ route('search_customer') }}" class="text-decoration-none">
+            <div class="overlap-card">
+                <div class="card-icon icon-green">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <div>
+                    <h6 class="text-dark mb-1">Find Customer</h6>
+                    <p class="mb-1 text-muted">Find customers near your site</p>
+                    <small class="text-primary fw-semibold">
+                        ✔ Genuine Leads • No Middlemen
+                    </small>
+                </div>
             </div>
-        </div>
         </a>
+
+        <!-- BUSINESS ERP -->
+        <a href="" class="text-decoration-none">
+            <div class="overlap-card">
+                <div class="card-icon icon-purple">
+                    <i class="bi bi-kanban"></i>
+                </div>
+                <div>
+                    <h6 class="text-dark mb-1">Business ERP</h6>
+                    <p class="mb-1 text-muted">Manage projects, billing & teams</p>
+                    <small class="text-secondary fw-semibold">
+                        ✔ All-in-One • Smart Control
+                    </small>
+                </div>
+            </div>
+        </a>
+
     </div>
+
+
 </section>
 
 <!-- add spacing because cards overlap -->
@@ -491,104 +559,125 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
     <div class="container">
 
         <h2 class="section-title text-center mb-2">Popular Vendor Categories</h2>
-        <p class="text-center text-muted mb-5">Find trusted professionals for your construction needs</p>
+        <p class="text-center text-muted mb-5">
+            Find trusted professionals for your construction needs
+        </p>
 
-        <div class="row g-4 justify-content-center text-center">
-            <div class="col-lg-2 col-md-3 col-6">
-                <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-building"></i></div>
-                    <p class="category-title">Building Contractor</p>
-                </div>
+        <div class="vendor-row">
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-building"></i></div>
+                <p class="category-title">Building Contractor</p>
             </div>
 
-            <div class="col-lg-2 col-md-3 col-6">
-                <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-palette"></i></div>
-                    <p class="category-title">Interior Designer</p>
-                </div>
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-house-heart"></i></div>
+                <p class="category-title">Residential Interiors</p>
             </div>
 
-            <div class="col-lg-2 col-md-3 col-6">
-                <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-rulers"></i></div>
-                    <p class="category-title">Architect</p>
-                </div>
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-rulers"></i></div>
+                <p class="category-title">Residential Architect</p>
             </div>
 
-            <div class="col-lg-2 col-md-3 col-6">
-                <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-tools"></i></div>
-                    <p class="category-title">Plumber</p>
-                </div>
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-building-gear"></i></div>
+                <p class="category-title">Industrial Contractor</p>
             </div>
 
-            <div class="col-lg-2 col-md-3 col-6">
-                <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-lightning-charge"></i></div>
-                    <p class="category-title">Electrician</p>
-                </div>
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-gem"></i></div>
+                <p class="category-title">Luxury Interiors</p>
             </div>
 
-            <div class="col-lg-2 col-md-3 col-6">
-                <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-grid-3x3-gap"></i></div>
-                    <p class="category-title">Carpenter</p>
-                </div>
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-people"></i></div>
+                <p class="category-title">Labour Contractor</p>
             </div>
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-buildings"></i></div>
+                <p class="category-title">Commercial Architect</p>
+            </div>
+
         </div>
 
     </div>
 </section>
+
+
 
 <!-- ================= MATERIALS ================= -->
 <section class="section-wrapper py-5" style="background:#f8f9fc;">
     <div class="container">
 
         <h2 class="section-title text-center mb-2">Construction Materials</h2>
-        <p class="text-center text-muted mb-5">Order quality materials delivered to your doorstep</p>
+        <p class="text-center text-muted mb-5">
+            Order quality materials delivered to your doorstep
+        </p>
 
         <div class="row g-4 justify-content-center text-center">
+
+            <!-- Cement -->
             <div class="col-lg-2 col-md-3 col-6">
                 <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-buildings"></i></div>
+                    <img src="{{ asset('images/cement.png') }}"
+                         class="category-img"
+                         alt="Cement">
                     <p class="category-title">Cement</p>
                 </div>
             </div>
 
+            <!-- Sand -->
             <div class="col-lg-2 col-md-3 col-6">
                 <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-cloud"></i></div>
+                    <img src="{{ asset('images/sand.jpg') }}"
+                         class="category-img"
+                         alt="Sand">
                     <p class="category-title">Sand</p>
                 </div>
             </div>
 
+            <!-- Steel -->
             <div class="col-lg-2 col-md-3 col-6">
                 <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-hammer"></i></div>
+                    <img src="{{ asset('images/steel.jpg') }}"
+                         class="category-img"
+                         alt="Steel">
                     <p class="category-title">Steel</p>
                 </div>
             </div>
 
+            <!-- Bricks -->
             <div class="col-lg-2 col-md-3 col-6">
                 <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-grid-3x3-gap"></i></div>
+                    <img src="{{ asset('images/bricks.png') }}"
+                         class="category-img"
+                         alt="Bricks">
                     <p class="category-title">Bricks</p>
                 </div>
             </div>
 
+            <!-- Tiles -->
             <div class="col-lg-2 col-md-3 col-6">
                 <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-border-all"></i></div>
+                    <img src="{{ asset('images/tiles.jpg') }}"
+                         class="category-img"
+                         alt="Tiles">
                     <p class="category-title">Tiles</p>
                 </div>
             </div>
 
+            <!-- Electricals -->
             <div class="col-lg-2 col-md-3 col-6">
                 <div class="category-box">
-                    <div class="category-icon"><i class="bi bi-lightning-charge"></i></div>
+                    <img src="{{ asset('images/electricals.jpg') }}"
+                         class="category-img"
+                         alt="Electricals">
                     <p class="category-title">Electricals</p>
                 </div>
             </div>
+
         </div>
 
     </div>
