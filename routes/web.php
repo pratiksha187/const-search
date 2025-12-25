@@ -117,7 +117,11 @@ Route::post('/project-interest-check',
     [HomeController::class, 'projectInterestCheck']
 )->name('project.interest.check');
 
+Route::get('/my-posts/{id}', [HomeController::class, 'postsshow'])->name('posts.view');
 
+Route::put('/posts/{id}', [HomeController::class, 'updateposts'])->name('posts.update');
+
+Route::get('/delete-post/{id}', [HomeController::class, 'destroy'])->name('posts.delete');
 
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

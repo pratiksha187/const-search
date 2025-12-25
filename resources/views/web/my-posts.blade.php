@@ -1,275 +1,203 @@
 @extends('layouts.custapp')
 
-@section('title', 'My Posts')
+@section('title', 'My Project Posts')
 
 @section('content')
 
-<style>
-:root {
-    --navy: #1c2c3e;
-    --orange: #f25c05;
-    --border: #e5e7eb;
-}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
-/* PAGE WRAP */
-.page-wrap {
-    background: linear-gradient(180deg, #f6f8fc, #ffffff);
-    padding: 30px 0 80px;
-}
-
-
-
-/* HEADER */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.page-title {
-    font-size: 34px;
-    font-weight: 800;
-    color: var(--navy);
-}
-
-.page-subtitle {
-    font-size: 14px;
-    color: #6b7280;
-}
-
-/* ACTION BAR */
-.action-bar {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.search-input {
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    padding: 10px 14px;
-    font-size: 14px;
-    width: 240px;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: var(--orange);
-    box-shadow: 0 0 0 3px rgba(242,92,5,0.15);
-}
-
-/* ADD BUTTON */
-.btn-add {
-    background: linear-gradient(135deg, #ff9a3c, #f25c05);
-    color: #fff;
-    font-weight: 700;
-    padding: 10px 18px;
-    border-radius: 14px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 10px 25px rgba(242,92,5,0.35);
-}
-
-.btn-add:hover {
-    color: #fff;
-    transform: translateY(-1px);
-}
-
-/* COUNT BADGE */
-.count-badge {
-    background: #eef2ff;
-    color: var(--navy);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: 999px;
-    display: inline-block;
-    margin-bottom: 12px;
-}
-
-/* CARD */
-.posts-card {
-    background: #ffffff;
-    border-radius: 22px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-    border: 1px solid var(--border);
-    padding: 24px;
-}
-
-/* TABLE */
-.stylish-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 10px;
-}
-
-.stylish-table thead th {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #6b7280;
-    padding: 10px;
-}
-
-.stylish-table tbody tr {
-    background: #f9fafb;
-    box-shadow: 0 6px 16px rgba(15,23,42,0.08);
-    transition: 0.25s;
-}
-
-.stylish-table tbody tr:hover {
-    background: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 14px 30px rgba(15,23,42,0.12);
-}
-
-.stylish-table td {
-    padding: 14px 12px;
-    font-size: 14px;
-}
-
-/* TYPE BADGE */
-.type-pill {
-    background: #e0ecff;
-    color: #1d4ed8;
-    padding: 4px 10px;
-    font-size: 12px;
-    border-radius: 999px;
-    font-weight: 600;
-}
-
-/* ACTIONS */
-.action-btn {
-    border: none;
-    background: #f1f5f9;
-    padding: 6px 10px;
-    border-radius: 10px;
-    font-size: 13px;
-}
-
-.action-btn:hover {
-    background: var(--orange);
-    color: #fff;
-}
-
-.posted-date {
-    font-size: 13px;
-    color: #6b7280;
-}
-
-.page-container {
-    max-width: 1576px;
-    margin: auto;
-}
-</style>
-
-<div class="page-wrap">
-<div class="page-container">   <!-- ✅ SINGLE PARENT DIV -->
+<div class="container-fluid py-4">
 
     <!-- HEADER -->
-    <div class="page-header">
-        <div>
-            <div class="page-title">My Project Posts</div>
-            <div class="page-subtitle">
-                Track, manage and edit your construction requirements
+    <div class="card mb-4">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h3 class="fw-bold">My Project Posts</h3>
+                <small>Total Posts: {{ $posts->count() }}</small>
             </div>
-        </div>
-
-        <div class="action-bar">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search posts...">
-            <a href="{{ route('post') }}" class="btn-add">
-                <i class="bi bi-plus-circle"></i> Add Post
-            </a>
+            <button class="btn btn-warning text-white" onclick="openAddModal()">
+                <i class="bi bi-plus-circle"></i> Add Project
+            </button>
         </div>
     </div>
 
-    @if($posts->count() == 0)
-        <div class="alert alert-info">
-            No posts found. <a href="{{ route('post') }}">Create your first project</a>
+    <!-- TABLE -->
+    <div class="card">
+        <div class="card-body">
+            <table id="postsTable" class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Project</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Budget</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($posts as $i => $post)
+                    <tr>
+                        <td>{{ $i+1 }}</td>
+                        <td>{{ $post->title }}</td>
+                        <td>{{ $post->work_type_name }}</td>
+                        <td>{{ $post->city }}, {{ $post->state }}</td>
+                        <td>{{ $post->budget_range }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-info"
+                                onclick='openViewModal(@json($post))'>View</button>
+
+                            <button class="btn btn-sm btn-primary"
+                                onclick='openEditModal(@json($post))'>Edit</button>
+
+                            <!-- <button class="btn btn-sm btn-danger"
+                                onclick="deletePost({{ $post->id }})">Delete</button> -->
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
         </div>
-    @else
-
-        <span class="count-badge">
-            Total Posts: {{ $posts->total() }}
-        </span>
-
-        <div class="posts-card">
-
-            <div class="table-responsive">
-                <table class="stylish-table" id="postsTable">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Project</th>
-                            <th>Type</th>
-                            <th>Location</th>
-                            <th>Budget</th>
-                            <th>Contact</th>
-                            <th>Posted</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach($posts as $key => $post)
-                        <tr>
-                            <td>{{ $posts->firstItem() + $key }}</td>
-                            <td><strong>{{ $post->title }}</strong></td>
-                            <td><span class="type-pill">{{ $post->projecttype_name }}</span></td>
-                            <td>city_name, region_name , state_name </td>
-                            <td>{{ $post->budget_range }}</td>
-                            <td>{{ $post->contact_name }}<br><small>{{ $post->mobile }}</small></td>
-                            <td class="posted-date">{{ date('d M Y', strtotime($post->created_at)) }}</td>
-                            <td>
-                                <button class="action-btn"><i class="bi bi-eye"></i></button>
-                                <button class="action-btn"><i class="bi bi-pencil"></i></button>
-                                <button onclick="deletePost({{ $post->id }})" class="action-btn">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-4">
-                {{ $posts->links('pagination::bootstrap-5') }}
-            </div>
-
-        </div>
-    @endif
-
-</div>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- ================= MODAL ================= -->
+<div class="modal fade" id="postModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <form id="postForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" id="methodField">
+                <div class="modal-header">
+                    <h5 id="modalTitle">Add Project</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label>Project Title</label>
+                            <input type="text" name="title" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Vendor Type</label>
+                            <select name="work_type_id" class="form-select">
+                                @foreach($work_types as $w)
+                                    <option value="{{ $w->id }}">{{ $w->work_type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Project Type</label>
+                            <select name="project_type_id" class="form-select"></select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>State</label>
+                            <input type="text" name="state" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Region</label>
+                            <input type="text" name="region" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>City</label>
+                            <input type="text" name="city" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Budget</label>
+                            <input type="text" name="budget" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Contact Name</label>
+                            <input type="text" name="contact_name" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Mobile</label>
+                            <input type="text" name="mobile" class="form-control">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control">
+                        </div>
+
+                        <div class="col-md-12">
+                            <label>Description</label>
+                            <textarea name="description" class="form-control"></textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="submitBtn" class="btn btn-warning text-white">Submit</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
 <script>
-document.getElementById("searchInput").addEventListener("keyup", function () {
-    let value = this.value.toLowerCase();
-    document.querySelectorAll("#postsTable tbody tr").forEach(row => {
-        row.style.display = row.textContent.toLowerCase().includes(value) ? "" : "none";
-    });
-});
+const modal = new bootstrap.Modal(document.getElementById('postModal'));
 
-function deletePost(id) {
-    Swal.fire({
-        title: 'Delete this post?',
-        text: 'This action cannot be undone',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#f25c05',
-        confirmButtonText: 'Yes, Delete'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = `/delete-post/${id}`;
-        }
+function openAddModal() {
+    resetForm();
+    $('#modalTitle').text('Add Project');
+    $('#postForm').attr('action', '{{ route("save.post") }}');
+    $('#methodField').html('');
+    enableForm(true);
+    modal.show();
+}
+
+function openViewModal(post) {
+    fillForm(post);
+    enableForm(false);
+    $('#submitBtn').hide();
+    modal.show();
+}
+
+function openEditModal(post) {
+    fillForm(post);
+    enableForm(true);
+    $('#modalTitle').text('Edit Project');
+    $('#submitBtn').show().text('Update');
+    $('#postForm').attr('action', `/posts/${post.id}`);
+    $('#methodField').html('<input type="hidden" name="_method" value="PUT">');
+    modal.show();
+}
+
+function fillForm(post) {
+    Object.keys(post).forEach(k => {
+        $(`[name="${k}"]`).val(post[k]);
     });
+}
+
+function enableForm(enable) {
+    $('#postForm input, #postForm select, #postForm textarea')
+        .prop('disabled', !enable);
+}
+
+function resetForm() {
+    $('#postForm')[0].reset();
 }
 </script>
 

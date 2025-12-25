@@ -131,22 +131,88 @@
             justify-content: center;
         }
 
-        .profile-dropdown {
+       .profile-dropdown {
             position: absolute;
-            right: 32px;
-            top: 88px;
-            width: 240px;
-            background: #fff;
+            top: 65px;
+            right: 20px;
+            width: 220px;
+            background: #ffffff;
             border-radius: 14px;
-            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+            overflow: hidden;
             display: none;
-            z-index: 300;
+            z-index: 9999;
+            animation: fadeSlide 0.25s ease;
         }
-
         .dashboard-content {
             margin-top: 120px;
             padding: 30px;
         }
+
+        /* Animation */
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-dropdown {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 240px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 10px 0;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    display: none;
+    z-index: 9999;
+}
+
+.profile-dropdown .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #0f172a;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.profile-dropdown .dropdown-item:hover {
+    background: #f8fafc;
+}
+
+.profile-dropdown .icon {
+    width: 34px;
+    height: 34px;
+    background: #f1f5f9;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-dropdown .icon svg {
+    width: 18px;
+    height: 18px;
+    color: #1c2c3e;
+}
+
+.profile-dropdown .logout .icon {
+    background: #fff1f2;
+}
+
+.profile-dropdown .logout svg {
+    color: #dc2626;
+}
+
     </style>
 </head>
 
@@ -155,13 +221,13 @@
 <div class="main-header">
 
     <!-- LOGO -->
-    <a href="{{ route('homepage') }}">
+    <a href="{{route('dashboard')}}">
         <img src="{{ asset('images/logobg.png') }}" alt="ConstructKaro">
     </a>
 
     <!-- MENU -->
     <div class="top-menu">
-        <a href="/dashboard">Dashboard</a>
+        <a href="{{route('dashboard')}}">Dashboard</a>
         <a href="{{ route('myposts') }}">My Posts</a>
         <a href="{{ route('post') }}">Add Post</a>
         <a href="{{ route('search_vendor') }}">Search Vendors</a>
@@ -219,10 +285,24 @@
     </div>
 </div>
 
+
 <div class="profile-dropdown" id="profileDropdown">
-    <a href="{{route('cutomerprofile')}}" class="d-block p-3">My Profile</a>
-    <a href="/logout" class="d-block p-3 text-danger">Logout</a>
+    <a href="{{ route('cutomerprofile') }}" class="dropdown-item">
+        <span class="icon">
+            <i data-lucide="user"></i>
+        </span>
+        <span>Profile</span>
+    </a>
+
+    <a href="/logout" class="dropdown-item logout">
+        <span class="icon">
+            <i data-lucide="log-out"></i>
+        </span>
+        <span>Logout</span>
+    </a>
 </div>
+
+
 
 <div class="dashboard-content">
     @yield('content')
@@ -246,6 +326,26 @@ document.addEventListener('click', function(){
     document.getElementById('notificationDropdown').style.display = 'none';
 });
 </script>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    lucide.createIcons();
+</script>
+<script>
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+}
+
+// click outside close
+document.addEventListener('click', function (e) {
+    const dropdown = document.getElementById('profileDropdown');
+    if (!e.target.closest('.profile-area')) {
+        dropdown.style.display = 'none';
+    }
+});
+</script>
+
 
 </body>
 </html>

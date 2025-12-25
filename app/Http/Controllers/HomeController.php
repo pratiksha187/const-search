@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
@@ -20,40 +22,32 @@ class HomeController extends Controller
     public function index()
     {
         $user_id = session('user_id');
-
+        $work_types = DB::table('work_types')->get();
+        $projecttype = DB::table('projecttype')->get();
         $posts = DB::table('posts')
             ->leftJoin('projecttype', 'posts.project_type_id', '=', 'projecttype.id')
             ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
-            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
-
-            // OPTIONAL: vendor responses table
-            // ->leftJoin('vendor_responses', 'posts.id', '=', 'vendor_responses.post_id')
-
+            ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
+            ->leftJoin('work_subtypes', 'posts.project_type_id', '=', 'work_subtypes.id')
+           
             ->select(
                 'posts.*',
-                // 'states.name as state_name',
-                // 'regions.name as region_name',
-                // 'cities.name as city_name',
+                'work_types.work_type as work_type_name',
                 'projecttype.projecttype_name',
-                'budget_range.budget_range'
-                // DB::raw('COUNT(vendor_responses.id) as response_count')
+                'budget_range.budget_range as budget_range'
+               
             )
 
             ->where('posts.user_id', $user_id)
             ->groupBy(
                 'posts.id',
-                // 'states.name',
-                // 'regions.name',
-                // 'cities.name',
                 'projecttype.projecttype_name',
                 'budget_range.budget_range'
             )
             ->orderBy('posts.id', 'DESC')
             ->paginate(10);   // ✅ Pagination
 
-        return view('web.my-posts', compact('posts'));
+        return view('web.my-posts', compact('posts','work_types'));
     }
 
     public function post(){
@@ -92,76 +86,7 @@ class HomeController extends Controller
         return response()->json($cities);
     }
   
-    // public function search_vendor(Request $request)
-    // {
-    //     // Logged-in customer (if needed later)
-    //     $user_id = Session::get('user_id');
-
-    //     /* ===============================
-    //     MASTER DATA (FOR FILTERS)
-    //     =============================== */
-    //     $projecttype = DB::table('projecttype')->get();
-    //     $work_types  = DB::table('work_types')->get();
-
-    //     $states      = DB::connection('mysql2')->table('states')->get();
-    //     $budgets     = DB::table('budget_range')->get();
-
-    //     /* ===============================
-    //     VENDOR LIST (ALWAYS COLLECTION)
-    //     =============================== */
-    //     $vendor_reg = DB::table('vendor_reg')
-    //         ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type')
-    //         ->select(
-    //             'vendor_reg.*',
-    //             'work_types.work_type as work_type'
-    //         )
-    //         ->get();
-
-    //     /* ===============================
-    //     HANDLE WORK SUBTYPE (JSON SAFE)
-    //     =============================== */
-    //     foreach ($vendor_reg as $vendor) {
-
-    //         // Safe JSON decode (prevents null error)
-    //         $subtypeIds = json_decode($vendor->work_subtype ?? '[]', true);
-
-    //         if (is_array($subtypeIds) && count($subtypeIds) > 0) {
-    //             $vendor->work_subtype_names = DB::table('work_subtypes')
-    //                 ->whereIn('id', $subtypeIds)
-    //                 ->pluck('work_subtype')
-    //                 ->implode(', ');
-    //         } else {
-    //             $vendor->work_subtype_names = '';
-    //         }
-    //     }
-
-    //     /* ===============================
-    //     DEFAULT FILTER VALUES
-    //     =============================== */
-    //     $filters = [
-    //         'state'    => '',
-    //         'region'   => '',
-    //         'city'     => '',
-    //         'type'     => '',
-    //         'category' => [],
-    //         'budget'   => [],
-    //         'rating'   => [],
-    //     ];
-
-    //     /* ===============================
-    //     RETURN VIEW (SAFE)
-    //     =============================== */
-    //     return view('web.search_vendor', [
-    //         'vendor_reg'  => $vendor_reg,   
-    //         'work_types'  => $work_types,
-    //         'states'      => $states,
-    //         'projecttype' => $projecttype,
-    //         'budgets'     => $budgets,
-    //         'filters'     => $filters
-    //     ]);
-    // }
-
-
+  
     public function cutomerprofile()
     {
         $user_id = Session::get('user_id');
@@ -173,86 +98,64 @@ class HomeController extends Controller
         return view('web.cutomerprofile', compact('user'));
     }
     
-    // public function cutomerupdate(Request $request)
-    // {
-    //     $user_id = Session::get('user_id');
-    //     $user = DB::table('users')->first();
+   
+    public function cutomerupdate(Request $request)
+    {
+        $user_id = Session::get('user_id');
 
-    //     $request->validate([
-    //         'name'     => 'required|string|max:255',
-    //         'email'    => 'required|email',
-    //         'mobile'   => 'nullable|string|max:15',
-    //         'password' => 'nullable|confirmed|min:6',
-    //     ]);
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email',
+            'mobile'   => 'nullable|string|max:15',
+            'password' => 'nullable|confirmed|min:6',
+        ]);
 
-    //     $user->name   = $request->name;
-    //     $user->email  = $request->email;
-    //     $user->mobile = $request->mobile;
+        $data = [
+            'name'   => $request->name,
+            'email'  => $request->email,
+            'mobile' => $request->mobile,
+        ];
 
-    //     if ($request->password) {
-    //         $user->password = Hash::make($request->password);
-    //     }
+        if ($request->password) {
+            $data['password'] = Hash::make($request->password);
+        }
 
-    //     $user->save();
+        DB::table('users')->where('id', $user_id)->update($data);
 
-    //     return back()->with('success', 'Profile updated successfully.');
-    // }
-public function cutomerupdate(Request $request)
-{
-    $user_id = Session::get('user_id');
-
-    $request->validate([
-        'name'     => 'required|string|max:255',
-        'email'    => 'required|email',
-        'mobile'   => 'nullable|string|max:15',
-        'password' => 'nullable|confirmed|min:6',
-    ]);
-
-    $data = [
-        'name'   => $request->name,
-        'email'  => $request->email,
-        'mobile' => $request->mobile,
-    ];
-
-    if ($request->password) {
-        $data['password'] = Hash::make($request->password);
+        return back()->with('success', 'Profile updated successfully');
     }
 
-    DB::table('users')->where('id', $user_id)->update($data);
+    public function search_vendor(Request $request)
+    {
+        $user_id = Session::get('user_id');
 
-    return back()->with('success', 'Profile updated successfully');
-}
+        $work_types = DB::table('work_types')->get();
 
-public function search_vendor(Request $request)
-{
-    $user_id = Session::get('user_id');
+        // 🔹 ADD THIS
+        $work_subtypes = DB::table('work_subtypes')
+            ->get()
+            ->groupBy('work_type_id');
 
-    $work_types = DB::table('work_types')->get();
+        $vendor_reg = DB::table('vendor_reg')
+            ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type')
+            ->select('vendor_reg.*', 'work_types.work_type as work_type')
+            ->get();
 
-    // 🔹 ADD THIS
-    $work_subtypes = DB::table('work_subtypes')
-        ->get()
-        ->groupBy('work_type_id');
+        foreach ($vendor_reg as $vendor) {
+            $subtypeIds = json_decode($vendor->work_subtype ?? '[]', true);
 
-    $vendor_reg = DB::table('vendor_reg')
-        ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type')
-        ->select('vendor_reg.*', 'work_types.work_type as work_type')
-        ->get();
+            $vendor->work_subtype_names = is_array($subtypeIds)
+                ? DB::table('work_subtypes')->whereIn('id', $subtypeIds)->pluck('work_subtype')->implode(', ')
+                : '';
+        }
 
-    foreach ($vendor_reg as $vendor) {
-        $subtypeIds = json_decode($vendor->work_subtype ?? '[]', true);
-
-        $vendor->work_subtype_names = is_array($subtypeIds)
-            ? DB::table('work_subtypes')->whereIn('id', $subtypeIds)->pluck('work_subtype')->implode(', ')
-            : '';
+        return view('web.search_vendor', compact(
+            'vendor_reg',
+            'work_types',
+            'work_subtypes'
+        ));
     }
 
-    return view('web.search_vendor', compact(
-        'vendor_reg',
-        'work_types',
-        'work_subtypes'
-    ));
-}
     public function search_vendor_post(Request $request)
     {
         /* ===============================
@@ -364,10 +267,12 @@ public function search_vendor(Request $request)
 
     public function vendorinterestcheck(Request $request)
     {
-        $customerId = Session::get('user_id');
-        $vendorId   = $request->vendor_id;
-
-        if (!$customerId || !$vendorId) {
+      
+        $cust_id   = $request->cust_id;
+        
+        $vendor_id = Session::get('vendor_id');
+        // dd($vendor_id);
+        if (!$vendor_id) {
             return response()->json([
                 'error' => 'Unauthorized'
             ], 401);
@@ -375,16 +280,12 @@ public function search_vendor(Request $request)
 
         // Count used leads BEFORE insert
         $usedLeads = DB::table('vendor_interests')
-            ->where('customer_id', $customerId)
+            ->where('vendor_id', $vendor_id)
+            ->where('customer_id', $cust_id)
+
             ->count();
-        // dd($usedLeads);
-        /*
-        |--------------------------------------------------------------------------
-        | CORRECT RULE
-        |--------------------------------------------------------------------------
-        | First 5 clicks → free
-        | 6th click (usedLeads >= 5) → payment required
-        */
+       
+       
         if ($usedLeads >= 5) {
             return response()->json([
                 'payment_required' => true,
@@ -394,14 +295,14 @@ public function search_vendor(Request $request)
 
         // Prevent duplicate vendor interest
         $already = DB::table('vendor_interests')
-            ->where('customer_id', $customerId)
-            ->where('vendor_id', $vendorId)
+            ->where('customer_id', $cust_id)
+            ->where('vendor_id', $vendor_id)
             ->exists();
 
         if (!$already) {
             DB::table('vendor_interests')->insert([
-                'customer_id' => $customerId,
-                'vendor_id'   => $vendorId,
+                'customer_id' => $cust_id,
+                'vendor_id'   => $vendor_id,
                 'created_at'  => now()
             ]);
         }
@@ -415,255 +316,181 @@ public function search_vendor(Request $request)
         ]);
     }
 
-
-
     public function search_customer(Request $request)
     {
-        // Dropdown Data
+        $vendor_id = Session::get('vendor_id');
+        // dd($vendor_id);
         $work_types = DB::table('work_types')->get();
         $work_subtypes = DB::table('work_subtypes')
                         ->get()
                         ->groupBy('work_type_id');
-        // $states = DB::connection('mysql2')->table('states')->get();
-
-        // 📌 Load ALL projects when page loads or after clear
+        
         $projects = DB::connection('mysql')
             ->table('posts')
             ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
             ->select(
                 'projecttype.projecttype_name',
                 'posts.*',
                 'budget_range.budget_range as budget_range_name'
-                // 'states.name as state_name',
-                // 'regions.name as regionsname',
-                // 'cities.name as citiesname'
+               
             )
             ->orderBy('posts.id', 'desc')
             ->get();
 
         return view('web.search_customer', [
-            // 'states' => $states,
             'work_types' => $work_types,
-            'projects' => $projects, // Show all projects
-            'filters' => []         // Reset filters
+            'projects' => $projects, 
+            'vendor_id' => $vendor_id,
+            'filters' => []        
         ]);
     }
 
-    public function search_customer_post(Request $request)
-    {
-        // Dropdown Data
-        $work_types = DB::connection('mysql')->table('projecttype')->get();
-        // $states = DB::connection('mysql2')->table('states')->get();
-
-        // Base Query
-        $query = DB::connection('mysql')
-            ->table('posts')
-            ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
-            ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
-            ->select(
-                'projecttype.projecttype_name',
-                'posts.*',
-                'budget_range.budget_range as budget_range_name'
-                // 'states.name as state_name',
-                // 'regions.name as regionsname',
-                // 'cities.name as citiesname'
-            );
-
-        // 🔍 Apply Filters When Searching
-        if ($request->state) {
-            $query->where('posts.state', $request->state);
-        }
-
-        if ($request->region) {
-            $query->where('posts.region', $request->region);
-        }
-
-        if ($request->city) {
-            $query->where('posts.city', $request->city);
-        }
-
-        if ($request->category) {
-            $query->whereIn('posts.project_type_id', $request->category);
-        }
-
-        // Execute query and get projects
-        $projects = $query->get();
-
-        return view('web.search_customer', [
-            // 'states' => $states,
-            'work_types' => $work_types,
-            'projects' => $projects,
-            'filters' => $request->all()  // Keep selected values
-        ]);
-    }
-
-    public function projectInterestCheck(Request $request)
-{
-    $vendorId  = session('vendor_id');
-   
-    $projectId = $request->project_id;
-
-    if (!$vendorId || !$projectId) {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
-
-    // Total interests used
-    $used = DB::table('customer_notifications')
-        ->where('vendor_id', $vendorId)
-        ->count();
-    //  dd($used);
-    // If limit exceeded → payment required
-    if ($used >= 5) {
-        return response()->json([
-            'payment_required' => true
-        ]);
-    }
-
-    // Prevent duplicate interest
-    $already = DB::table('customer_notifications')
-        ->where('vendor_id', $vendorId)
-        ->where('customer_id', $projectId)
-        ->exists();
-
-    if (!$already) {
-        DB::table('customer_notifications')->insert([
-            'vendor_id'  => $vendorId,
-            'customer_id' => $projectId,
-            'created_at' => now()
-        ]);
-    }
-
-    return response()->json([
-        'success' => true,
-        'payment_required' => false,
-        'remaining' => 5 - ($used + 1)
-    ]);
-}
-
-   
-public function store(Request $request)
-{
-    $request->validate([
-        'title'           => 'required|string|max:255',
-        'work_type_id'    => 'required|integer',
-        'project_type_id' => 'required|integer',
-        'state'           => 'nullable|string',
-        'region'          => 'nullable|string',
-        'city'            => 'nullable|string',
-        'budget'          => 'required|integer',
-        'contact_name'    => 'required|string|max:255',
-        'mobile'          => 'required|string|max:20',
-        'email'           => 'required|email',
-        'description'     => 'required|string',
-    ]);
-
-    $uploadedFiles = [];
-
-    if ($request->hasFile('files')) {
-        foreach ($request->file('files') as $file) {
-            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/posts'), $filename);
-            $uploadedFiles[] = $filename;
-        }
-    }
-
-    DB::table('posts')->insert([
-        'user_id'         => session('user_id'),
-        'title'           => $request->title,
-        'work_type_id'    => $request->work_type_id,
-        'project_type_id' => $request->project_type_id,
-        'state'           => $request->state,
-        'region'          => $request->region,
-        'city'            => $request->city,
-        'budget_id'       => $request->budget,
-        'contact_name'    => $request->contact_name,
-        'mobile'          => $request->mobile,
-        'email'           => $request->email,
-        'description'     => $request->description,
-        'files'           => json_encode($uploadedFiles),
-        'created_at'      => now(),
-        'updated_at'      => now(),
-    ]);
-
-    return redirect()
-        ->route('myposts')
-        ->with('success', 'Project Posted Successfully!');
-}
-
-    // public function store(Request $request)
+    // public function search_customer_post(Request $request)
     // {
-    //     // dd($request);
-    //     // VALIDATION
-    //     // $request->validate([
-    //     //     'title'            => 'required|string',
-    //     //     'work_type_id'     => 'required|integer',
-    //     //     'project_type_id'  => 'required|integer',
-    //     //     'state'            => 'required',
-    //     //     'region'           => 'required',
-    //     //     'city'             => 'required',
-    //     //     'budget'           => 'required',
-    //     //     'contact_name'     => 'required|string',
-    //     //     'mobile'           => 'required',
-    //     //     'email'            => 'required|email',
-    //     //     'description'      => 'required|string',
-    //     // ]);
-    //     $request->validate([
-    //         'title'           => 'required|string|max:255',
-    //         'work_type_id'    => 'required|integer',
-    //         'project_type_id' => 'required|integer',
-    //         'state'           => 'nullable|string',
-    //         'region'          => 'nullable|string',
-    //         'city'            => 'nullable|string',
-    //         'budget'          => 'required|integer',
-    //         'contact_name'    => 'required|string|max:255',
-    //         'mobile'          => 'required|string|max:20',
-    //         'email'           => 'required|email',
-    //         'description'     => 'required|string',
-    //     ]);
+    //     // Dropdown Data
+    //     $work_types = DB::connection('mysql')->table('projecttype')->get();
+    //     // $states = DB::connection('mysql2')->table('states')->get();
 
+    //     // Base Query
+    //     $query = DB::connection('mysql')
+    //         ->table('posts')
+    //         ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
+    //         ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+    //         // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
+    //         // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
+    //         // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
+    //         ->select(
+    //             'projecttype.projecttype_name',
+    //             'posts.*',
+    //             'budget_range.budget_range as budget_range_name'
+    //             // 'states.name as state_name',
+    //             // 'regions.name as regionsname',
+    //             // 'cities.name as citiesname'
+    //         );
 
-    //     /* ================= FILE UPLOAD ================= */
-    //     $uploadedFiles = [];
-
-    //     if ($request->hasFile('files')) {
-    //         foreach ($request->file('files') as $file) {
-    //             $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-    //             $file->move(public_path('uploads/posts'), $filename);
-    //             $uploadedFiles[] = $filename;
-    //         }
+    //     // 🔍 Apply Filters When Searching
+    //     if ($request->state) {
+    //         $query->where('posts.state', $request->state);
     //     }
 
-    //     /* ================= INSERT INTO DB ================= */
-    //     DB::table('posts')->insert([
-    //         'user_id'          => session('user_id'),
-    //         'title'            => $request->title,
-    //         'work_type_id'     => $request->work_type_id,
-    //         'project_type_id'  => $request->project_type_id,
-    //         'state'            => $request->state,
-    //         'region'           => $request->region,
-    //         'city'             => $request->city,
-    //         'budget_id'        => $request->budget,
-    //         'contact_name'     => $request->contact_name,
-    //         'mobile'           => $request->mobile,
-    //         'email'            => $request->email,
-    //         'description'      => $request->description,
-    //         'files'            => json_encode($uploadedFiles),
-    //         'created_at'       => now(),
-    //         'updated_at'       => now(),
-    //     ]);
+    //     if ($request->region) {
+    //         $query->where('posts.region', $request->region);
+    //     }
 
-    //     return redirect()
-    //         ->route('myposts')
-    //         ->with('success', 'Project Posted Successfully!');
+    //     if ($request->city) {
+    //         $query->where('posts.city', $request->city);
+    //     }
+
+    //     if ($request->category) {
+    //         $query->whereIn('posts.project_type_id', $request->category);
+    //     }
+
+    //     // Execute query and get projects
+    //     $projects = $query->get();
+
+    //     return view('web.search_customer', [
+    //         // 'states' => $states,
+    //         'work_types' => $work_types,
+    //         'projects' => $projects,
+    //         'filters' => $request->all()  // Keep selected values
+    //     ]);
     // }
 
+    public function projectInterestCheck(Request $request)
+    {
+        $vendorId  = session('vendor_id');
+    
+        $projectId = $request->project_id;
+
+        if (!$vendorId || !$projectId) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Total interests used
+        $used = DB::table('customer_notifications')
+            ->where('vendor_id', $vendorId)
+            ->count();
+        //  dd($used);
+        // If limit exceeded → payment required
+        if ($used >= 5) {
+            return response()->json([
+                'payment_required' => true
+            ]);
+        }
+
+        // Prevent duplicate interest
+        $already = DB::table('customer_notifications')
+            ->where('vendor_id', $vendorId)
+            ->where('customer_id', $projectId)
+            ->exists();
+
+        if (!$already) {
+            DB::table('customer_notifications')->insert([
+                'vendor_id'  => $vendorId,
+                'customer_id' => $projectId,
+                'created_at' => now()
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'payment_required' => false,
+            'remaining' => 5 - ($used + 1)
+        ]);
+    }
+
+   
+    public function store(Request $request)
+    {
+        $request->validate([
+            'title'           => 'required|string|max:255',
+            'work_type_id'    => 'required|integer',
+            'project_type_id' => 'required|integer',
+            'state'           => 'nullable|string',
+            'region'          => 'nullable|string',
+            'city'            => 'nullable|string',
+            'budget'          => 'required|integer',
+            'contact_name'    => 'required|string|max:255',
+            'mobile'          => 'required|string|max:20',
+            'email'           => 'required|email',
+            'description'     => 'required|string',
+        ]);
+
+        $uploadedFiles = [];
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                $file->move(public_path('uploads/posts'), $filename);
+                $uploadedFiles[] = $filename;
+            }
+        }
+
+        DB::table('posts')->insert([
+            'user_id'         => session('user_id'),
+            'title'           => $request->title,
+            'work_type_id'    => $request->work_type_id,
+            'project_type_id' => $request->project_type_id,
+            'state'           => $request->state,
+            'region'          => $request->region,
+            'city'            => $request->city,
+            'budget_id'       => $request->budget,
+            'contact_name'    => $request->contact_name,
+            'mobile'          => $request->mobile,
+            'email'           => $request->email,
+            'description'     => $request->description,
+            'files'           => json_encode($uploadedFiles),
+            'created_at'      => now(),
+            'updated_at'      => now(),
+        ]);
+
+        return redirect()
+            ->route('myposts')
+            ->with('success', 'Project Posted Successfully!');
+    }
+
+   
     public function leadmarketplace(){
         return view('web.lead_marketplace');
     }
@@ -772,6 +599,7 @@ public function store(Request $request)
 
     public function storeleadform(Request $request)
     {
+
         // Save into Existing DB Table (modify table name as per your DB)
         DB::table('lead_form_inquiries')->insert([
             'name' => $request->name,
@@ -788,5 +616,55 @@ public function store(Request $request)
     public function vendor_reg_form(){
         return view('web.vendor_reg_form');
     }
+
+
+     public function updateposts(Request $request, $id)
+{
+    $vendor_id = Session::get('user_id'); // your logged-in user id
+
+    $request->validate([
+        'title'       => 'required|string|max:255',
+        'budget'      => 'nullable|string|max:255',
+        'description' => 'nullable|string',
+    ]);
+
+    // ✅ update only the user's own post
+    $updated = DB::table('posts')
+        ->where('id', $id)               // ✅ post id
+        ->where('user_id', $vendor_id)   // ✅ owner check
+        ->update([
+            'title'        => $request->title,
+           
+            'description'  => $request->description,
+            'updated_at'   => now(),
+        ]);
+
+    if (!$updated) {
+        return redirect()->back()->with('error', 'Post not found or you are not allowed to update it.');
+    }
+
+    return redirect()->back()->with('success', 'Post updated successfully');
+}
+
+    /* =========================
+       DELETE POST
+    ========================== */
+   public function destroy($id)
+    {
+    $vendor_id = Session::get('user_id');
+
+    $deleted = DB::connection('mysql')
+        ->table('posts')
+        ->where('id', $id)              // ✅ post id
+        ->where('user_id', $vendor_id)  // ✅ owner check
+        ->delete();
+
+    if (!$deleted) {
+        return redirect()->back()->with('error', 'Post not found or you are not allowed to delete it.');
+    }
+
+    return redirect()->back()->with('success', 'Post deleted successfully');
+    }
+
 
 }
