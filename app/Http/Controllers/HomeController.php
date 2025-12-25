@@ -319,7 +319,7 @@ class HomeController extends Controller
     public function search_customer(Request $request)
     {
         $vendor_id = Session::get('vendor_id');
-        // dd($vendor_id);
+      
         $work_types = DB::table('work_types')->get();
         $work_subtypes = DB::table('work_subtypes')
                         ->get()
@@ -327,17 +327,21 @@ class HomeController extends Controller
         
         $projects = DB::connection('mysql')
             ->table('posts')
-            ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
+            ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_type_id')
+
+            
             ->select(
-                'projecttype.projecttype_name',
+                'work_types.*',
+                'work_subtypes.*',
                 'posts.*',
                 'budget_range.budget_range as budget_range_name'
                
             )
             ->orderBy('posts.id', 'desc')
             ->get();
-
+            //   dd($projects);
         return view('web.search_customer', [
             'work_types' => $work_types,
             'projects' => $projects, 

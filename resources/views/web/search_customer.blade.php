@@ -391,13 +391,11 @@ body{
 
                @foreach($projects as $project)
 
-                    <!-- <div class="vendor-card"
-                        data-category="{{ $project->projecttype_name }}"
-                        data-state="{{ $project->state_name ?? '' }}"> -->
+                   
                         <div class="vendor-card"
-    data-work-type="{{ $project->project_type_id }}"
-    data-title="{{ strtolower($project->title) }}"
-    data-state="{{ strtolower($project->state ?? '') }}">
+                            data-work-type="{{ $project->work_subtype_id }}"
+                            data-title="{{ strtolower($project->title) }}"
+                            data-state="{{ strtolower($project->state ?? '') }}">
 
 
                         <span class="premium-badge">
@@ -427,7 +425,7 @@ body{
                                 <!-- CATEGORY + TITLE -->
                                 <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                                     <span class="category-badge">
-                                        {{ $project->projecttype_name }}
+                                      {{ $project->work_type }} -  {{ $project->work_subtype }}
                                     </span>
 
                                     <span class="text-muted">•</span>
@@ -501,7 +499,7 @@ body{
                                                 {{ $project->id }},
                                                 '{{ addslashes($project->contact_name) }}',
                                                 '{{ addslashes($project->title) }}',
-                                                '{{ addslashes($project->projecttype_name) }}'
+                                                '{{ addslashes($project->work_subtype) }}'
                                             )">
                                             ❤️ I'm Interested
                                         </button>
@@ -790,9 +788,7 @@ function applyFilters() {
         .classList.toggle('d-none', visible !== 0);
 }
 
-/* ===============================
-CATEGORY TOGGLE + COUNT
-=============================== */
+
 function updateCategoryCount() {
     document.getElementById('categoryCount').innerText =
         document.querySelectorAll('.category-check:checked').length;
