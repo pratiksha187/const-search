@@ -19,6 +19,7 @@ class LoginRegController extends Controller
    
     public function register(Request $request)
     {
+        // dd($request);
         /* ================= VALIDATION ================= */
 
         $request->validate([
@@ -112,6 +113,7 @@ class LoginRegController extends Controller
         }
 
         elseif($request->role === 'customer') {
+           
              $customerId = DB::table('users')->insertGetId([
                 // 'user_id'         => $user->id,
                 'name' => $request->name,
@@ -123,6 +125,7 @@ class LoginRegController extends Controller
                 'updated_at'     => now()
             ]);
 
+            //  dd($customerId);
             // customer
            Session::put('customer_id', $customerId);
 
@@ -167,7 +170,7 @@ class LoginRegController extends Controller
             }
 
             // Session
-            Session::put('user_id', $user->id);
+            Session::put('customer_id', $user->id);
             Session::put('user_name', $user->name);
             Session::put('user_role', 'customer');
 
@@ -252,11 +255,12 @@ class LoginRegController extends Controller
     // ============================= customer DASHBOARD =============================
     public function dashboard()
     {
-        if (!Session::has('user_id')) {
+        // dd('test');
+        if (!Session::has('customer_id')) {
             return redirect('/'); 
         }
-    $user_id = Session::get('user_id');
- 
+        $customer_id = Session::get('customer_id');
+        //  dd($customer_id);
         return view('web.customerdashboard'); 
     }
 

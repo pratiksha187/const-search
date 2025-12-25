@@ -46,8 +46,7 @@
                         <td>{{ $post->city }}, {{ $post->state }}</td>
                         <td>{{ $post->budget_range }}</td>
                         <td>
-                            <button class="btn btn-sm btn-info"
-                                onclick='openViewModal(@json($post))'>View</button>
+                           
 
                             <button class="btn btn-sm btn-primary"
                                 onclick='openEditModal(@json($post))'>Edit</button>
@@ -96,7 +95,7 @@
 
                         <div class="col-md-4">
                             <label>Project Type</label>
-                            <select name="project_type_id" class="form-select"></select>
+                            <select name="work_subtype_id" class="form-select"></select>
                         </div>
 
                         <div class="col-md-4">
@@ -165,13 +164,6 @@ function openAddModal() {
     $('#postForm').attr('action', '{{ route("save.post") }}');
     $('#methodField').html('');
     enableForm(true);
-    modal.show();
-}
-
-function openViewModal(post) {
-    fillForm(post);
-    enableForm(false);
-    $('#submitBtn').hide();
     modal.show();
 }
 

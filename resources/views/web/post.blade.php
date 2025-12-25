@@ -200,7 +200,7 @@ textarea.form-control-lg {
                 <label class="form-label-custom">Project Type</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
-                    <select class="form-select form-select-lg" id="project_type" name="project_type_id">
+                    <select class="form-select form-select-lg" id="work_subtype" name="work_subtype_id">
                         <option value="">Select Project Type</option>
                     </select>
                 </div>
@@ -328,33 +328,26 @@ $(document).ready(function () {
     });
 
 
-
 $('#work_type').on('change', function () {
     let workTypeId = $(this).val();
-    let projectTypeSelect = $('#project_type');
+    let select = $('#work_subtype');
 
-    projectTypeSelect.html('<option>Loading...</option>');
+    select.html('<option value="">Loading...</option>');
 
     if (workTypeId) {
-        $.ajax({
-            url: '/get-project-types/' + workTypeId,
-            type: 'GET',
-            success: function (data) {
-                projectTypeSelect.html('<option value="">Select Project Type</option>');
-                data.forEach(item => {
-                    projectTypeSelect.append(
-                        `<option value="${item.id}">${item.work_subtype}</option>`
-                    );
-                });
-            },
-            error: function () {
-                projectTypeSelect.html('<option>Error loading project types</option>');
-            }
+        $.get('/get-project-types/' + workTypeId, function (data) {
+            select.html('<option value="">Select Project Type</option>');
+            data.forEach(item => {
+                select.append(
+                    `<option value="${item.id}">${item.work_subtype}</option>`
+                );
+            });
         });
     } else {
-        projectTypeSelect.html('<option value="">Select Project Type</option>');
+        select.html('<option value="">Select Project Type</option>');
     }
 });
+
     // Reset form
     $('#resetBtn').on('click', function () {
         $('#work_type').val(null).trigger('change');

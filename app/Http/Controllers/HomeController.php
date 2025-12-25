@@ -23,17 +23,17 @@ class HomeController extends Controller
     {
         $user_id = session('user_id');
         $work_types = DB::table('work_types')->get();
-        $projecttype = DB::table('projecttype')->get();
+        $work_subtypes = DB::table('work_subtypes')->get();
         $posts = DB::table('posts')
-            ->leftJoin('projecttype', 'posts.project_type_id', '=', 'projecttype.id')
+            // ->leftJoin('projecttype', 'posts.project_type_id', '=', 'projecttype.id')
             ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
             ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
-            ->leftJoin('work_subtypes', 'posts.project_type_id', '=', 'work_subtypes.id')
+            ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
            
             ->select(
                 'posts.*',
                 'work_types.work_type as work_type_name',
-                'projecttype.projecttype_name',
+                'work_subtypes.work_subtype',
                 'budget_range.budget_range as budget_range'
                
             )
@@ -41,21 +41,21 @@ class HomeController extends Controller
             ->where('posts.user_id', $user_id)
             ->groupBy(
                 'posts.id',
-                'projecttype.projecttype_name',
+                'work_subtypes.work_subtype',
                 'budget_range.budget_range'
             )
             ->orderBy('posts.id', 'DESC')
             ->paginate(10);   // ✅ Pagination
-
+        // dd($posts);
         return view('web.my-posts', compact('posts','work_types'));
     }
 
     public function post(){
         $work_types = DB::table('work_types')->get();
-        $projecttype = DB::table('projecttype')->get();
+        $work_subtypes = DB::table('work_subtypes')->get();
         $budget_range = DB::table('budget_range')->get();
         // $states = DB::connection('mysql2')->table('states')->get();
-        return view('web.post',compact('projecttype','budget_range','work_types'));
+        return view('web.post',compact('work_subtypes','budget_range','work_types'));
     }
 
     public function getProjectTypes($workTypeId)
@@ -89,11 +89,11 @@ class HomeController extends Controller
   
     public function cutomerprofile()
     {
-        $user_id = Session::get('user_id');
+        $customer_id = Session::get('customer_id');
 
         
 
-        $user = DB::table('users')->where('id', $user_id)->first();
+        $user = DB::table('users')->where('id', $customer_id)->first();
 
         return view('web.cutomerprofile', compact('user'));
     }
@@ -127,143 +127,71 @@ class HomeController extends Controller
 
     public function search_vendor(Request $request)
     {
-        $user_id = Session::get('user_id');
-
+        $customer_id = Session::get('customer_id');
+// dd($customer_id);
         $work_types = DB::table('work_types')->get();
 
         // 🔹 ADD THIS
         $work_subtypes = DB::table('work_subtypes')
-            ->get()
-            ->groupBy('work_type_id');
+                        ->get()
+                        ->groupBy('work_type_id');
 
         $vendor_reg = DB::table('vendor_reg')
-            ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type')
-            ->select('vendor_reg.*', 'work_types.work_type as work_type')
+            ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type_id')
+             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
+            
+            ->select(
+                'work_types.*',
+                'work_subtypes.*',
+                'vendor_reg.*'       
+            )
+             ->orderBy('vendor_reg.id', 'desc')
             ->get();
 
-        foreach ($vendor_reg as $vendor) {
-            $subtypeIds = json_decode($vendor->work_subtype ?? '[]', true);
 
-            $vendor->work_subtype_names = is_array($subtypeIds)
-                ? DB::table('work_subtypes')->whereIn('id', $subtypeIds)->pluck('work_subtype')->implode(', ')
-                : '';
-        }
-
-        return view('web.search_vendor', compact(
-            'vendor_reg',
-            'work_types',
-            'work_subtypes'
-        ));
+        return view('web.search_vendor', [
+            'work_types' => $work_types,
+            'vendor_reg' => $vendor_reg, 
+            'customer_id' => $customer_id,
+            'filters' => []   
+    ]);
     }
 
-    public function search_vendor_post(Request $request)
+    
+    public function search_customer(Request $request)
     {
-        /* ===============================
-        MASTER DATA
-        =============================== */
-        $projecttype = DB::table('projecttype')->get();
-        $work_types  = DB::table('work_types')->get();
-        // $states      = DB::connection('mysql2')->table('states')->get();
-        $budgets     = DB::table('budget_range')->get();
+        $vendor_id = Session::get('vendor_id');
+      
+        $work_types = DB::table('work_types')->get();
+        $work_subtypes = DB::table('work_subtypes')
+                        ->get()
+                        ->groupBy('work_type_id');
+        
+        $projects = DB::connection('mysql')
+            ->table('posts')
+            ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
+            ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
 
-        /* ===============================
-        FILTER VALUES (FOR REFILL)
-        =============================== */
-        $filters = [
-            'state'    => $request->state ?? '',
-            'region'   => $request->region ?? '',
-            'city'     => $request->city ?? '',
-            'type'     => $request->type ?? '',
-            'category' => $request->category ?? [],
-            'budget'   => $request->budget ?? [],
-            'rating'   => $request->rating ?? [],
-        ];
-
-        /* ===============================
-        BASE QUERY (vendor_reg)
-        =============================== */
-        $query = DB::table('vendor_reg')
-            ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type')
+            
             ->select(
-                'vendor_reg.*',
-                'work_types.work_type as work_type'
-            );
-
-        /* ===============================
-        APPLY FILTERS
-        =============================== */
-
-        if (!empty($filters['type'])) {
-            $query->where('vendor_reg.work_type', $filters['type']);
-        }
-
-        if (!empty($filters['category'])) {
-            $query->whereIn('vendor_reg.work_type', $filters['category']);
-        }
-
-        if (!empty($filters['state'])) {
-            $query->where('vendor_reg.state', $filters['state']);
-        }
-
-        if (!empty($filters['region'])) {
-            $query->where('vendor_reg.region', $filters['region']);
-        }
-
-        if (!empty($filters['city'])) {
-            $query->where('vendor_reg.city', $filters['city']);
-        }
-
-        // Budget filter (example: min_budget / max_budget columns)
-        if (!empty($filters['budget'])) {
-            $query->where(function ($q) use ($filters) {
-                foreach ($filters['budget'] as $range) {
-                    [$min, $max] = explode('-', $range);
-                    $q->orWhereBetween('vendor_reg.min_project_price', [$min, $max]);
-                }
-            });
-        }
-
-        /* ===============================
-        EXECUTE QUERY
-        =============================== */
-        $vendor_reg = $query->distinct()->get();
-
-        /* ===============================
-        WORK SUBTYPE (JSON SAFE)
-        =============================== */
-        foreach ($vendor_reg as $vendor) {
-
-            $subtypeIds = json_decode($vendor->work_subtype ?? '[]', true);
-
-            if (is_array($subtypeIds) && count($subtypeIds) > 0) {
-                $vendor->work_subtype_names = DB::table('work_subtypes')
-                    ->whereIn('id', $subtypeIds)
-                    ->pluck('work_subtype')
-                    ->implode(', ');
-            } else {
-                $vendor->work_subtype_names = '';
-            }
-        }
-
-        /* ===============================
-        AJAX RESPONSE (OPTIONAL)
-        =============================== */
-        if ($request->ajax()) {
-            return view('web.partials.vendor_cards', compact('vendor_reg'))->render();
-        }
-
-        /* ===============================
-        RETURN VIEW (IMPORTANT)
-        =============================== */
-        return view('web.search_vendor', compact(
-            'vendor_reg',
-            'work_types',
-            // 'states',
-            'projecttype',
-            'budgets',
-            'filters'
-        ));
+                'work_types.*',
+                'work_subtypes.*',
+                'posts.*',
+                'budget_range.budget_range as budget_range_name'
+               
+            )
+            ->orderBy('posts.id', 'desc')
+            ->get();
+           
+        return view('web.search_customer', [
+            'work_types' => $work_types,
+            'projects' => $projects, 
+            'vendor_id' => $vendor_id,
+            'filters' => []        
+        ]);
     }
+
 
     public function vendorinterestcheck(Request $request)
     {
@@ -315,92 +243,59 @@ class HomeController extends Controller
             'remaining' => max(0, $remaining)
         ]);
     }
+   
 
-    public function search_customer(Request $request)
+     public function customerinterestcheck(Request $request)
     {
-        $vendor_id = Session::get('vendor_id');
-      
-        $work_types = DB::table('work_types')->get();
-        $work_subtypes = DB::table('work_subtypes')
-                        ->get()
-                        ->groupBy('work_type_id');
-        
-        $projects = DB::connection('mysql')
-            ->table('posts')
-            ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
-            ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_type_id')
+     
+        $vend_id   = $request->vend_id;
+        //    dd($vend_id);
+       $customer_id = Session::get('customer_id');
+        // dd($customer_id);
+        if (!$customer_id) {
+            return response()->json([
+                'error' => 'Unauthorized'
+            ], 401);
+        }
 
-            
-            ->select(
-                'work_types.*',
-                'work_subtypes.*',
-                'posts.*',
-                'budget_range.budget_range as budget_range_name'
-               
-            )
-            ->orderBy('posts.id', 'desc')
-            ->get();
-            //   dd($projects);
-        return view('web.search_customer', [
-            'work_types' => $work_types,
-            'projects' => $projects, 
-            'vendor_id' => $vendor_id,
-            'filters' => []        
+        // Count used leads BEFORE insert
+        $venderLeads = DB::table('customer_interests')
+            ->where('vendor_id', $vend_id)
+            ->where('customer_id', $customer_id)
+
+            ->count();
+     
+       
+        if ($venderLeads >= 5) {
+            return response()->json([
+                'payment_required' => true,
+                'remaining' => 0
+            ]);
+        }
+
+        // Prevent duplicate vendor interest
+        $already = DB::table('customer_interests')
+            ->where('customer_id', $customer_id)
+            ->where('vendor_id', $vend_id)
+            ->exists();
+//   dd($already);
+        if (!$already) {
+            DB::table('customer_interests')->insert([
+                'customer_id' => $customer_id,
+                'vendor_id'   => $vend_id,
+                'created_at'  => now()
+            ]);
+        }
+
+        $remaining = 5 - ($venderLeads + 1);
+
+        return response()->json([
+            'success' => true,
+            'payment_required' => false,
+            'remaining' => max(0, $remaining)
         ]);
     }
-
-    // public function search_customer_post(Request $request)
-    // {
-    //     // Dropdown Data
-    //     $work_types = DB::connection('mysql')->table('projecttype')->get();
-    //     // $states = DB::connection('mysql2')->table('states')->get();
-
-    //     // Base Query
-    //     $query = DB::connection('mysql')
-    //         ->table('posts')
-    //         ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
-    //         ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-    //         // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-    //         // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-    //         // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
-    //         ->select(
-    //             'projecttype.projecttype_name',
-    //             'posts.*',
-    //             'budget_range.budget_range as budget_range_name'
-    //             // 'states.name as state_name',
-    //             // 'regions.name as regionsname',
-    //             // 'cities.name as citiesname'
-    //         );
-
-    //     // 🔍 Apply Filters When Searching
-    //     if ($request->state) {
-    //         $query->where('posts.state', $request->state);
-    //     }
-
-    //     if ($request->region) {
-    //         $query->where('posts.region', $request->region);
-    //     }
-
-    //     if ($request->city) {
-    //         $query->where('posts.city', $request->city);
-    //     }
-
-    //     if ($request->category) {
-    //         $query->whereIn('posts.project_type_id', $request->category);
-    //     }
-
-    //     // Execute query and get projects
-    //     $projects = $query->get();
-
-    //     return view('web.search_customer', [
-    //         // 'states' => $states,
-    //         'work_types' => $work_types,
-    //         'projects' => $projects,
-    //         'filters' => $request->all()  // Keep selected values
-    //     ]);
-    // }
-
+   
     public function projectInterestCheck(Request $request)
     {
         $vendorId  = session('vendor_id');
@@ -447,10 +342,11 @@ class HomeController extends Controller
    
     public function store(Request $request)
     {
+        // dd($request);
         $request->validate([
             'title'           => 'required|string|max:255',
             'work_type_id'    => 'required|integer',
-            'project_type_id' => 'required|integer',
+            'work_subtype_id' => 'required|integer',
             'state'           => 'nullable|string',
             'region'          => 'nullable|string',
             'city'            => 'nullable|string',
@@ -475,7 +371,7 @@ class HomeController extends Controller
             'user_id'         => session('user_id'),
             'title'           => $request->title,
             'work_type_id'    => $request->work_type_id,
-            'project_type_id' => $request->project_type_id,
+            'work_subtype_id' => $request->work_subtype_id,
             'state'           => $request->state,
             'region'          => $request->region,
             'city'            => $request->city,

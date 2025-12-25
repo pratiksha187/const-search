@@ -24,8 +24,6 @@ Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])-
 // POST Route: To handle form submissions and filters
 Route::post('/search-customer', [HomeController::class, 'search_customer_post'])->name('search_customer_post');
 
-// Form submit (POST)
-Route::post('/search-vendor', [HomeController::class, 'search_vendor_post'])->name('search_vendor_post');
 
 Route::get('/get-regions/{state_id}', [HomeController::class, 'getRegions']);
 Route::get('/get-cities/{region_id}', [HomeController::class, 'getCities']);
@@ -112,6 +110,12 @@ Route::post('/supplier-enquiry', [SuppliersController::class, 'supplierenquiryst
 
 Route::post('/vendor-interest-check', [HomeController::class, 'vendorinterestcheck'])
     ->name('vendor.interest.check');
+
+Route::post('/customer-interest-check', [HomeController::class, 'customerinterestcheck'])
+    ->name('customer.interest.check');
+
+
+    
 
 Route::post('/project-interest-check', 
     [HomeController::class, 'projectInterestCheck']
