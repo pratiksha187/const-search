@@ -16,13 +16,14 @@ class VenderController extends Controller
         $experience_years =DB::table('experience_years')->get(); 
         $team_size =DB::table('team_size')->get(); 
         $workTypes = DB::table('work_types')->get();
+        // dd($workTypes);
         $vendor_id = Session::get('vendor_id');
         // dd($vendor_id);
         $vendor = DB::table('vendor_reg')
             ->where('id', $vendor_id)
             ->first();
         // dd($vendor);
-        return view('web.venderprofile', compact('vendor','workTypes','entity_type','account_type','experience_years','team_size','workTypes'));
+        return view('web.venderprofile', compact('vendor','workTypes','entity_type','account_type','experience_years','team_size'));
     }
 
 

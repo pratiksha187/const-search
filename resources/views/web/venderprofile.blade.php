@@ -408,21 +408,21 @@
                   </small>
               </div>
 
-              <div class="mb-4">
-                  <label class="form-label fw-semibold">
-                      Find Your Construction Vendor <span class="text-danger">*</span>
-                  </label>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        Find Your Construction Vendor <span class="text-danger">*</span>
+                    </label>
 
-                  {{-- ✅ preselect work_type --}}
-                  <select id="work_type" name="work_type" class="form-select select2">
-                      <option value="">Select Construction Type</option>
-                      @foreach($workTypes as $type)
-                          <option value="{{ $type->id }}" {{ (string)$vendor->work_type === (string)$type->id ? 'selected' : '' }}>
-                              {{ $type->work_type }}
-                          </option>
-                      @endforeach
-                  </select>
-              </div>
+                    {{-- ✅ preselect work_type --}}
+                    <select id="work_type" name="work_type" class="form-select select2">
+                        <option value="">Select Construction Type</option>
+                        @foreach($workTypes as $type)
+                            <option value="{{ $type->id }}" {{ (string)$vendor->work_type_id === (string)$type->id ? 'selected' : '' }}>
+                                {{ $type->work_type }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
               <hr class="my-4">
 
