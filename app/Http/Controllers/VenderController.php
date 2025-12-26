@@ -46,9 +46,11 @@ class VenderController extends Controller
 // }
   public function getSubtypes($workTypeId)
     {
+       
         $subtypes = DB::table('work_subtypes')
                     ->where('work_type_id', $workTypeId)
                     ->get();
+                    //  dd($subtypes);
         return response()->json($subtypes);
     }
 

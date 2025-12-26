@@ -276,9 +276,9 @@
   // ✅ if you store selected subtypes somewhere (example: JSON or comma)
   // Adjust this according to your DB structure:
   $savedSubtypes = [];
-  if(!empty($vendor->work_subtype)){
-      $decodedSub = json_decode($vendor->work_subtype, true);
-      $savedSubtypes = is_array($decodedSub) ? $decodedSub : (is_string($vendor->work_subtype) ? explode(',', $vendor->work_subtype) : []);
+  if(!empty($vendor->work_subtype_id)){
+      $decodedSub = json_decode($vendor->work_subtype_id, true);
+      $savedSubtypes = is_array($decodedSub) ? $decodedSub : (is_string($vendor->work_subtype_id) ? explode(',', $vendor->work_subtype_id) : []);
   }
 @endphp
 
@@ -1120,7 +1120,7 @@
                                    <div class="col-md-6 col-12">
                                        <label class="project-type-card w-100">
                                            <input type="checkbox"
-                                                  name="work_subtype[]"
+                                                  name="work_subtype_id[]"
                                                   value="${subtype.id}"
                                                   class="form-check-input me-2"
                                                   ${checked}>
