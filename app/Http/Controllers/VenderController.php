@@ -72,6 +72,7 @@ class VenderController extends Controller
 //     }
 public function updateProfile(Request $request)
 {
+    // dd($request);
     $vendor_id = session('vendor_id');
 
     if (!$vendor_id) {

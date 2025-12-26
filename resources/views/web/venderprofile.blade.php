@@ -414,7 +414,7 @@
                     </label>
 
                     {{-- ✅ preselect work_type --}}
-                    <select id="work_type" name="work_type" class="form-select select2">
+                    <select id="work_type" name="work_type_id" class="form-select select2">
                         <option value="">Select Construction Type</option>
                         @foreach($workTypes as $type)
                             <option value="{{ $type->id }}" {{ (string)$vendor->work_type_id === (string)$type->id ? 'selected' : '' }}>
