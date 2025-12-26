@@ -21,7 +21,7 @@ class HomeController extends Controller
 
     public function index()
     {
-        $user_id = session('user_id');
+        $customer_id = Session::get('customer_id');
         $work_types = DB::table('work_types')->get();
         $work_subtypes = DB::table('work_subtypes')->get();
         $posts = DB::table('posts')
@@ -38,7 +38,7 @@ class HomeController extends Controller
                
             )
 
-            ->where('posts.user_id', $user_id)
+            ->where('posts.user_id', $customer_id)
             ->groupBy(
                 'posts.id',
                 'work_subtypes.work_subtype',
@@ -91,7 +91,7 @@ class HomeController extends Controller
     {
         $customer_id = Session::get('customer_id');
 
-        
+      
 
         $user = DB::table('users')->where('id', $customer_id)->first();
 
@@ -101,7 +101,7 @@ class HomeController extends Controller
    
     public function cutomerupdate(Request $request)
     {
-        $user_id = Session::get('user_id');
+        $customer_id = Session::get('customer_id');
 
         $request->validate([
             'name'     => 'required|string|max:255',
@@ -120,7 +120,7 @@ class HomeController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        DB::table('users')->where('id', $user_id)->update($data);
+        DB::table('users')->where('id', $customer_id)->update($data);
 
         return back()->with('success', 'Profile updated successfully');
     }
@@ -128,7 +128,7 @@ class HomeController extends Controller
     public function search_vendor(Request $request)
     {
         $customer_id = Session::get('customer_id');
-// dd($customer_id);
+        // dd($customer_id);
         $work_types = DB::table('work_types')->get();
 
         // 🔹 ADD THIS
@@ -342,7 +342,8 @@ class HomeController extends Controller
    
     public function store(Request $request)
     {
-        // dd($request);
+        $customer_id = Session::get('customer_id');
+        // dd($customer_id);
         $request->validate([
             'title'           => 'required|string|max:255',
             'work_type_id'    => 'required|integer',
@@ -368,7 +369,7 @@ class HomeController extends Controller
         }
 
         DB::table('posts')->insert([
-            'user_id'         => session('user_id'),
+            'user_id'         => $customer_id,
             'title'           => $request->title,
             'work_type_id'    => $request->work_type_id,
             'work_subtype_id' => $request->work_subtype_id,
@@ -518,33 +519,41 @@ class HomeController extends Controller
     }
 
 
-     public function updateposts(Request $request, $id)
-{
-    $vendor_id = Session::get('user_id'); // your logged-in user id
-
-    $request->validate([
-        'title'       => 'required|string|max:255',
-        'budget'      => 'nullable|string|max:255',
-        'description' => 'nullable|string',
-    ]);
-
-    // ✅ update only the user's own post
-    $updated = DB::table('posts')
-        ->where('id', $id)               // ✅ post id
-        ->where('user_id', $vendor_id)   // ✅ owner check
-        ->update([
-            'title'        => $request->title,
-           
-            'description'  => $request->description,
-            'updated_at'   => now(),
+    public function updateposts(Request $request, $id)
+    {
+        // dd($request);
+        // $vendor_id = Session::get('user_id'); // your logged-in user id
+        $customer_id = Session::get('customer_id');
+        $request->validate([
+            'title'       => 'required',
+            'budget'      => 'nullable',
+            'description' => 'nullable',
         ]);
 
-    if (!$updated) {
-        return redirect()->back()->with('error', 'Post not found or you are not allowed to update it.');
-    }
+        // ✅ update only the user's own post
+        $updated = DB::table('posts')
+            ->where('id', $id)               // ✅ post id
+            ->where('user_id', $customer_id)   // ✅ owner check
+            ->update([
+                'title'        => $request->title,
+                'work_type_id' =>$request->work_type_id,
+                'state'=> $request->state,
+                'region'=>$request->region,
+                'city' => $request->city,
+                'budget_id' =>$request->budget,
+                'contact_name' => $request->contact_name,
+                'mobile' => $request->mobile,
 
-    return redirect()->back()->with('success', 'Post updated successfully');
-}
+                'description'  => $request->description,
+                'updated_at'   => now(),
+            ]);
+
+        if (!$updated) {
+            return redirect()->back()->with('error', 'Post not found or you are not allowed to update it.');
+        }
+
+        return redirect()->back()->with('success', 'Post updated successfully');
+    }
 
     /* =========================
        DELETE POST

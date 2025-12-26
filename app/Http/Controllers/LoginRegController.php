@@ -260,8 +260,15 @@ class LoginRegController extends Controller
             return redirect('/'); 
         }
         $customer_id = Session::get('customer_id');
-        //  dd($customer_id);
-        return view('web.customerdashboard'); 
+        //  dd( $customer_id);
+        $post_data = DB::table('posts')->where('user_id',$customer_id)->get();
+        $count_post_data = count($post_data);
+
+        $vendor_data = DB::table('vendor_reg')->get();
+        $count_vendor_data = count($vendor_data);
+        
+        //  dd($post_data);
+        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data')); 
     }
 
     // ============================= Vender DASHBOARD =============================

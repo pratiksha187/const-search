@@ -179,7 +179,7 @@ body {
                 <div class="kpi-card">
                     <div class="kpi-icon"><i class="bi bi-folder"></i></div>
                     <div>
-                        <p class="kpi-value">{{ $total_projects ?? 3 }}</p>
+                        <p class="kpi-value">{{ $count_post_data }}</p>
                         <p class="kpi-label">Projects</p>
                     </div>
                 </div>
@@ -189,7 +189,7 @@ body {
                 <div class="kpi-card">
                     <div class="kpi-icon"><i class="bi bi-people"></i></div>
                     <div>
-                        <p class="kpi-value">{{ $vendors_connected ?? 12 }}</p>
+                        <p class="kpi-value">{{ $count_vendor_data  }}</p>
                         <p class="kpi-label">Connected Vendors</p>
                     </div>
                 </div>

@@ -17,9 +17,13 @@
                 <h3 class="fw-bold">My Project Posts</h3>
                 <small>Total Posts: {{ $posts->count() }}</small>
             </div>
-            <button class="btn btn-warning text-white" onclick="openAddModal()">
+            <!-- <button class="btn btn-warning text-white" onclick="openAddModal()">
                 <i class="bi bi-plus-circle"></i> Add Project
-            </button>
+            </button> -->
+            <a href="{{ route('post') }}" class="btn btn-warning text-white">
+                <i class="bi bi-plus-circle"></i> Add Project
+            </a>
+
         </div>
     </div>
 
@@ -51,8 +55,6 @@
                             <button class="btn btn-sm btn-primary"
                                 onclick='openEditModal(@json($post))'>Edit</button>
 
-                            <!-- <button class="btn btn-sm btn-danger"
-                                onclick="deletePost({{ $post->id }})">Delete</button> -->
                         </td>
                     </tr>
                 @endforeach
