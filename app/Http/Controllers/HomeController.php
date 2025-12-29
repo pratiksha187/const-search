@@ -142,12 +142,15 @@ class HomeController extends Controller
         $vendor_reg = DB::table('vendor_reg')
             ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type_id')
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
-            // ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
+            ->leftJoin('region', 'region.id', '=', 'vendor_reg.region')
+            ->leftJoin('state', 'state.id', '=', 'vendor_reg.state')
+            ->leftJoin('city', 'city.id', '=', 'vendor_reg.state')
             
             ->select(
                 'work_types.*',
                 'work_subtypes.*',
-                'vendor_reg.*'       
+                'vendor_reg.*' ,
+                'region.name as regionname','state.name as statename','city.name as cityname'      
             )
              ->orderBy('vendor_reg.id', 'desc')
             ->get();
@@ -178,13 +181,17 @@ class HomeController extends Controller
             ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-
+            ->leftJoin('region', 'region.id', '=', 'posts.region')
+            ->leftJoin('state', 'state.id', '=', 'posts.state')
+            ->leftJoin('city', 'city.id', '=', 'posts.state')
             
             ->select(
                 'work_types.*',
                 'work_subtypes.*',
                 'posts.*',
-                'budget_range.budget_range as budget_range_name'
+                'budget_range.budget_range as budget_range_name',
+                'region.name as regionname','state.name as statename','city.name as cityname'      
+
                
             )
             ->orderBy('posts.id', 'desc')

@@ -526,6 +526,7 @@
                     <div class="col-auto">
                         <div class="vendor-avatar">
                             {{ strtoupper(substr($vendor->business_name,0,1)) }}
+
                         </div>
                     </div>
 
@@ -539,7 +540,15 @@
                         <span class="category-badge">
                             {{ $vendor->work_type }} - {{ $vendor->work_subtype }}
                         </span>
-
+                        <!-- 📍 ADDRESS (NOT BLURRED) -->
+                        <div class="mt-2 text-muted small d-flex align-items-center gap-2">
+                            <i class="bi bi-geo-alt-fill text-primary"></i>
+                            <span>
+                                {{ $vendor->cityname ?? '' }},
+                                {{ $vendor->regionname ?? '' }},
+                                {{ $vendor->statename ?? '' }}
+                            </span>
+                        </div>
                         <div class="row mt-3 align-items-center">
                             <div class="col-md-6">
                                 <div class="contact-info-section">

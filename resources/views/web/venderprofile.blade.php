@@ -478,19 +478,31 @@
 
                       <div class="row mb-3">
                           <div class="col-md-6">
-                              <label for="state" class="form-label">Operating In*</label>
-                              <select name="state" id="state" class="form-control">
-                                  <option value="">-- Select State --</option>
-                                  {{-- if you load via JS, keep as is --}}
-                              </select>
+                              <label for="state" class="form-label">State</label>
+                                <select id="stateSelect" class="form-select form-select-custom">
+    <option value="">Select State</option>
+    @foreach($states as $state)
+        <option value="{{ $state->id }}"
+            {{ isset($vendor->state) && $vendor->state == $state->id ? 'selected' : '' }}>
+            {{ $state->name }}
+        </option>
+    @endforeach
+</select>
+
+
                           </div>
 
                           <div class="col-md-6">
-                              <label for="region" class="form-label">Covering Key Region *</label>
-                              <select name="region[]" id="region" class="form-control" multiple>
-                                  <option value="">-- Select Region --</option>
-                                  {{-- options loaded via JS, but selected set in JS below --}}
-                              </select>
+                              <label for="region" class="form-label">Region</label>
+                               <select id="regionSelect"  class="form-select form-select-custom" disabled>
+                            <option value="">Select Region</option>
+                        </select>
+                          </div>
+                          <div class="col-md-6">
+                              <label for="region" class="form-label">City</label>
+                                <select id="citySelect" class="form-select form-select-custom" disabled>
+                            <option value="">Select City</option>
+                        </select>
                           </div>
 
                           <div class="col-md-6">
@@ -773,6 +785,17 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- <script>
+    const EXISTING_STATE  = "{{ $vendor->state ?? '' }}";
+    const EXISTING_REGION = "{{ $vendor->region ?? '' }}";
+    const EXISTING_CITY   = "{{ $vendor->city ?? '' }}";
+</script> -->
+
+<script>
+    const SAVED_STATE  = "{{ $vendor->state ?? '' }}";
+    const SAVED_REGION = "{{ $vendor->region ?? '' }}";
+    const SAVED_CITY   = "{{ $vendor->city ?? '' }}";
+</script>
 
 <script>
    $(document).ready(function() {
@@ -1160,5 +1183,84 @@
        }
    });
 </script>
+<script>
+$(document).ready(function () {
+
+    // 🔹 AUTO LOAD REGION IF STATE EXISTS
+    if (SAVED_STATE) {
+        loadRegions(SAVED_STATE);
+    }
+
+    $('#stateSelect').on('change', function () {
+        let stateId = $(this).val();
+        loadRegions(stateId);
+    });
+
+    $('#regionSelect').on('change', function () {
+        let regionId = $(this).val();
+        loadCities(regionId);
+    });
+
+    function loadRegions(stateId) {
+
+        $('#regionSelect')
+            .html('<option>Loading...</option>')
+            .prop('disabled', true);
+
+        $('#citySelect')
+            .html('<option>Select City</option>')
+            .prop('disabled', true);
+
+        if (!stateId) return;
+
+        $.get('/locations/regions/' + stateId, function (regions) {
+
+            let options = '<option value="">Select Region</option>';
+            regions.forEach(r => {
+                options += `<option value="${r.id}">${r.name}</option>`;
+            });
+
+            $('#regionSelect')
+                .html(options)
+                .prop('disabled', false);
+
+            // 🔹 AUTO SELECT SAVED REGION
+            if (SAVED_REGION) {
+                $('#regionSelect').val(SAVED_REGION);
+                loadCities(SAVED_REGION);
+            }
+        });
+    }
+
+    function loadCities(regionId) {
+
+        $('#citySelect')
+            .html('<option>Loading...</option>')
+            .prop('disabled', true);
+
+        if (!regionId) return;
+
+        $.get('/locations/cities/' + regionId, function (cities) {
+
+            let options = '<option value="">Select City</option>';
+            cities.forEach(c => {
+                options += `<option value="${c.id}">${c.name}</option>`;
+            });
+
+            $('#citySelect')
+                .html(options)
+                .prop('disabled', false);
+
+            // 🔹 AUTO SELECT SAVED CITY
+            if (SAVED_CITY) {
+                $('#citySelect').val(SAVED_CITY);
+            }
+        });
+    }
+
+});
+</script>
+
+
 
 @endsection
