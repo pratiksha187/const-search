@@ -285,7 +285,7 @@ body{
 <!-- PROFILE DROPDOWN -->
 <div class="profile-dropdown" id="profileDropdown">
     <a href="{{route('vendor.profile')}}"><i class="bi bi-person"></i> Profile</a>
-    <a href="/projects"><i class="bi bi-briefcase"></i> My Leads</a>
+  
     <a href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
 </div>
 

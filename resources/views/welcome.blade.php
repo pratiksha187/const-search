@@ -499,7 +499,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
         </a>
 
         <!-- FIND SUPPLIERS -->
-        <a href="{{ route('login_register') }}" class="text-decoration-none">
+        <a href="{{ route('supplierserch') }}" class="text-decoration-none">
             <div class="overlap-card">
                 <div class="card-icon icon-orange">
                     <i class="bi bi-geo-alt"></i>
@@ -531,7 +531,25 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
         </a>
 
         <!-- BUSINESS ERP -->
-        <a href="" class="text-decoration-none">
+        <!-- <a href="" class="text-decoration-none">
+            <div class="overlap-card">
+                <div class="card-icon icon-purple">
+                    <i class="bi bi-kanban"></i>
+                </div>
+                <div>
+                    <h6 class="text-dark mb-1">Business ERP</h6>
+                    <p class="mb-1 text-muted">Manage projects, billing & teams</p>
+                    <small class="text-secondary fw-semibold">
+                        ✔ All-in-One • Smart Control
+                    </small>
+                </div>
+            </div>
+        </a> -->
+        <a href="javascript:void(0)" 
+        class="text-decoration-none"
+        data-bs-toggle="modal"
+        data-bs-target="#comingSoonModal">
+
             <div class="overlap-card">
                 <div class="card-icon icon-purple">
                     <i class="bi bi-kanban"></i>
@@ -545,6 +563,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                 </div>
             </div>
         </a>
+
 
     </div>
 
@@ -882,6 +901,37 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
         </div>
     </div>
 </div>
+<div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">🚧 Coming Soon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-hourglass-split fs-1 text-warning"></i>
+                </div>
+
+                <h6 class="fw-semibold mb-2">Business ERP Module</h6>
+                <p class="text-muted mb-0">
+                    This powerful ERP feature is currently under development.  
+                    It will be available very soon on ConstructKaro.
+                </p>
+            </div>
+
+            <div class="modal-footer border-0 justify-content-center">
+                <button class="btn btn-warning text-white px-4" data-bs-dismiss="modal">
+                    OK, Got it
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 document.querySelectorAll(".stat-num").forEach(num => {

@@ -111,8 +111,8 @@ $savedNotes = [];
                   </div>
                   <div class="col-md-6">
                      <label class="form-label">Mobile</label>
-                     <input type="text" name="phone" class="form-control"
-                        value="{{ old('phone',$supplier->mobile ?? '') }}">
+                     <input type="text" name="mobile" class="form-control"
+                        value="{{ old('mobile',$supplier->mobile ?? '') }}">
                   </div>
                   <div class="col-md-6">
                      <label class="form-label">WhatsApp</label>
@@ -138,7 +138,7 @@ $savedNotes = [];
                <div class="row g-3">
 
                      {{-- Primary Supplier Type --}}
-                     <div class="col-md-6">
+                     <!-- <div class="col-md-6">
                         <label class="form-label">
                            Primary Supplier Type 
                         </label>
@@ -151,7 +151,7 @@ $savedNotes = [];
                                  </option>
                            @endforeach
                         </select>
-                     </div>
+                     </div> -->
 
                      {{-- Years in Business --}}
                      <div class="col-md-6">

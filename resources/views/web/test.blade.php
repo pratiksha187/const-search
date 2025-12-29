@@ -1,9 +1,12 @@
+
 @extends('layouts.vendorapp')
 @section('title', 'Search Vendors')
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <style>
    /* ================= ROOT ================= */
    :root{
@@ -230,8 +233,9 @@
    .vendor-avatar{width:80px;height:80px}
    }
 </style>
+
 <script>
-   window.CUSTOMERID = @json($customer_id);
+   window.VENDOR_ID = @json($vendor_id);
 </script>
 <!-- MAIN CONTENT -->
 <div class="container-fluid px-4 py-4">
@@ -327,7 +331,7 @@
          <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
                <div>
-                  <h3 class="fw-bold mb-1"><span id="vendorCount"></span> Professional Lead</h3>
+                  <h3 class="fw-bold mb-1"><span id="vendorCount">{{ $projects->count() }}</span> Professional Lead</h3>
                   <p class="text-muted mb-0 d-flex align-items-center gap-2">
                      <span class="badge bg-success rounded-circle p-1 pulse-animation" style="width: 10px; height: 10px;"></span>
                      Verified and ready to serve
@@ -335,13 +339,13 @@
                </div>
             </div>
          </div>
-         @foreach($vendor_reg as $vendor)
+         @foreach($projects as $project)
          <div class="vendor-card"
-            data-work-type-id="{{ $vendor->work_type_id }}"
-    data-work-subtype-id="{{ $vendor->work_subtype_id }}"
-    data-work-subtype="{{ strtolower($vendor->work_subtype) }}"
-    data-name="{{ strtolower($vendor->name) }}"
-    data-state="{{ strtolower($vendor->state ?? '') }}">
+            data-work-type-id="{{ $project->work_type_id }}"
+    data-work-subtype-id="{{ $project->work_subtype_id }}"
+    data-work-subtype="{{ strtolower($project->work_subtype) }}"
+    data-title="{{ strtolower($project->title) }}"
+    data-state="{{ strtolower($project->state ?? '') }}">
 
             <span class="premium-badge">
             <i class="bi bi-star-fill me-1"></i>VERIFIED PRO
@@ -350,7 +354,7 @@
                <!-- AVATAR -->
                <div class="col-auto">
                   <div class="vendor-avatar">
-                     {{ strtoupper(substr($vendor->business_name,0,1)) }}
+                     {{ strtoupper(substr($project->contact_name,0,1)) }}
                      <div class="online-badge">
                         <div class="online-indicator"></div>
                      </div>
@@ -360,18 +364,18 @@
                <div class="col">
                   <!-- NAME -->
                   <h3 class="vendor-name">
-                     {{ strtoupper($vendor->business_name) }}
+                     {{ strtoupper($project->contact_name) }}
                   </h3>
                   <!-- CATEGORY + TITLE -->
                   <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
                      <span class="category-badge">
-                     {{ $vendor->work_type }} -  {{ $vendor->work_subtype }}
+                     {{ $project->work_type }} -  {{ $project->work_subtype }}
                      </span>
                      <span class="text-muted">•</span>
                      <div class="d-flex align-items-center gap-1">
                         <i class="bi bi-briefcase-fill text-primary"></i>
                         <span class="fw-semibold small">
-                        {{ $vendor->name }}
+                        {{ $project->title }}
                         </span>
                      </div>
                   </div>
@@ -406,7 +410,7 @@
                                     <div class="contact-icon-box">
                                        <i class="bi bi-telephone-fill text-success"></i>
                                     </div>
-                                    <span>{{ $vendor->mobile }}</span>
+                                    <span>{{ $project->mobile }}</span>
                                  </div>
                               </div>
                               <div class="col-12">
@@ -414,7 +418,7 @@
                                     <div class="contact-icon-box">
                                        <i class="bi bi-envelope-fill text-warning"></i>
                                     </div>
-                                    <span>{{ $vendor->email }}</span>
+                                    <span>{{ $project->email }}</span>
                                  </div>
                               </div>
                            </div>
@@ -424,10 +428,10 @@
                      <div class="col-md-5 d-flex justify-content-end mt-3 mt-md-0">
                         <button class="btn btn-interested px-4"
                            onclick="handleInterested(
-                           {{ $vendor->id }},
-                           '{{ addslashes($vendor->business_name) }}',
-                           '{{ addslashes($vendor->name) }}',
-                           '{{ addslashes($vendor->work_subtype) }}'
+                           {{ $project->id }},
+                           '{{ addslashes($project->contact_name) }}',
+                           '{{ addslashes($project->title) }}',
+                           '{{ addslashes($project->work_subtype) }}'
                            )">
                         ❤️ I'm Interested
                         </button>
@@ -575,14 +579,14 @@
    </div>
 </div>
 <!-- Bootstrap 5 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
 <!-- jQuery (Optional - for easier DOM manipulation) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
    function handleInterested(id, name, business, work) {
-//    alert(id);
+   
        // FRONTEND CHECK
-       if (!window.CUSTOMERID) {
+       if (!window.VENDOR_ID) {
            new bootstrap.Modal(
                document.getElementById('authModal')
            ).show();
@@ -591,11 +595,14 @@
    
        // BACKEND CHECK (DOUBLE SECURITY)
        $.ajax({
-           url: "{{ route('customer.interest.check') }}",
+           url: "{{ route('vendor.interest.check') }}",
+         //   url: "{{ route('customer.interest.check') }}",
+
+         
            type: "POST",
            data: {
                _token: "{{ csrf_token() }}",
-               vend_id: id
+               cust_id: id
            },
            success: function (res) {
                openVendorModal(
@@ -633,8 +640,8 @@
    let id = $(this).data('id');
    window.location.href = "{{ route('razorpay.form') }}?cust_id=" + btoa(id);
    });
-</script>
-@if(session('payment_success') && session('unlock_vendor'))
+</script> -->
+<!-- @if(session('payment_success') && session('unlock_vendor'))
 <script>
    document.addEventListener("DOMContentLoaded", function () {
        let vendor = @json(session('unlock_vendor'));
@@ -647,7 +654,68 @@
        );
    });
 </script>
-@endif
+@endif -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+function handleInterested(id, name, business, work) {
+
+    // AUTH CHECK
+    if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
+
+    $.ajax({
+        url: "{{ route('vendor.interest.check') }}",
+        type: "POST",
+        data: {
+            _token: document.querySelector('meta[name="csrf-token"]').content,
+            cust_id: id
+        },
+        success: function(res) {
+
+            // LEADS OVER → PAYMENT
+            if (res.payment_required === true) {
+                $('#modalName').text('Locked');
+                $('#modalCategory').text('Upgrade Required');
+                $('#modalBusiness').text('');
+
+                $('#remainingLeadsInfo').addClass('d-none');
+                $('#paymentSection').show();
+                $('#payNowBtn').data('id', id);
+
+                new bootstrap.Modal(
+                    document.getElementById('vendorModal')
+                ).show();
+                return;
+            }
+
+            // FREE LEAD
+            $('#modalName').text(name);
+            $('#modalCategory').text(work);
+            $('#modalBusiness').text(business);
+
+            $('#paymentSection').hide();
+
+            $('#remainingLeadsInfo')
+                .removeClass('d-none')
+                .text(`🎯 ${res.remaining} free leads remaining`);
+
+            new bootstrap.Modal(
+                document.getElementById('vendorModal')
+            ).show();
+        }
+    });
+}
+
+$('#payNowBtn').on('click', function () {
+    let id = $(this).data('id');
+    window.location.href =
+        "{{ route('razorpay.form') }}?cust_id=" + btoa(id);
+});
+</script>
 
 <script>
 function applyFilters() {

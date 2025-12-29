@@ -125,7 +125,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('login_register')}}">Materials Supplier</a>
+                <a class="nav-link" href="{{route('login_register')}}">Materials Suppliers</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{route('login_register')}}">Search Lead</a>
@@ -134,10 +134,6 @@
 
         <!-- Right Buttons -->
         <div class="d-flex flex-column flex-lg-row align-items-center ms-lg-3">
-            <!-- <a href="{{ route('login_register') }}"
-               class="btn btn-cta me-lg-2 mb-2 mb-lg-0">
-               Search Lead
-            </a> -->
 
             <a href="{{ route('login_register') }}"
                class="btn btn-login ms-lg-1">

@@ -52,10 +52,12 @@ class HomeController extends Controller
 
     public function post(){
         $work_types = DB::table('work_types')->get();
+         $states = DB::table('state')->orderBy('name')->get();
+
         $work_subtypes = DB::table('work_subtypes')->get();
         $budget_range = DB::table('budget_range')->get();
         // $states = DB::connection('mysql2')->table('states')->get();
-        return view('web.post',compact('work_subtypes','budget_range','work_types'));
+        return view('web.post',compact('work_subtypes','budget_range','work_types','states'));
     }
 
     public function getProjectTypes($workTypeId)
@@ -130,6 +132,7 @@ class HomeController extends Controller
         $customer_id = Session::get('customer_id');
         // dd($customer_id);
         $work_types = DB::table('work_types')->get();
+        $states = DB::table('state')->orderBy('name')->get();
 
         // 🔹 ADD THIS
         $work_subtypes = DB::table('work_subtypes')
@@ -151,6 +154,7 @@ class HomeController extends Controller
 
         return view('web.search_vendor', [
             'work_types' => $work_types,
+            'states' => $states,
             'vendor_reg' => $vendor_reg, 
             'customer_id' => $customer_id,
             'filters' => []   
@@ -161,6 +165,7 @@ class HomeController extends Controller
     public function search_customer(Request $request)
     {
         $vendor_id = Session::get('vendor_id');
+        $states = DB::table('state')->orderBy('name')->get();
       
         $work_types = DB::table('work_types')->get();
         $work_subtypes = DB::table('work_subtypes')
@@ -186,6 +191,7 @@ class HomeController extends Controller
            
         return view('web.search_customer', [
             'work_types' => $work_types,
+            'states' => $states,
             'projects' => $projects, 
             'vendor_id' => $vendor_id,
             'filters' => []        
@@ -195,25 +201,21 @@ class HomeController extends Controller
 
     public function vendorinterestcheck(Request $request)
     {
-      
         $cust_id   = $request->cust_id;
-        
         $vendor_id = Session::get('vendor_id');
-        // dd($vendor_id);
+        //    dd( $vendor_id );
         if (!$vendor_id) {
             return response()->json([
                 'error' => 'Unauthorized'
             ], 401);
         }
 
-        // Count used leads BEFORE insert
+        // 🔢 TOTAL USED LEADS (IMPORTANT)
         $usedLeads = DB::table('vendor_interests')
             ->where('vendor_id', $vendor_id)
-            ->where('customer_id', $cust_id)
-
             ->count();
-       
-       
+        // dd( $usedLeads );
+        // 🚫 LIMIT REACHED → PAYMENT REQUIRED
         if ($usedLeads >= 5) {
             return response()->json([
                 'payment_required' => true,
@@ -221,7 +223,7 @@ class HomeController extends Controller
             ]);
         }
 
-        // Prevent duplicate vendor interest
+        // 🔁 Prevent duplicate interest for same customer
         $already = DB::table('vendor_interests')
             ->where('customer_id', $cust_id)
             ->where('vendor_id', $vendor_id)
@@ -236,6 +238,7 @@ class HomeController extends Controller
         }
 
         $remaining = 5 - ($usedLeads + 1);
+    
 
         return response()->json([
             'success' => true,
@@ -243,59 +246,155 @@ class HomeController extends Controller
             'remaining' => max(0, $remaining)
         ]);
     }
-   
 
-     public function customerinterestcheck(Request $request)
-    {
+
+    // public function customerinterestcheck(Request $request)
+    // {
      
-        $vend_id   = $request->vend_id;
-        //    dd($vend_id);
-       $customer_id = Session::get('customer_id');
-        // dd($customer_id);
-        if (!$customer_id) {
-            return response()->json([
-                'error' => 'Unauthorized'
-            ], 401);
-        }
+    //     $vend_id   = $request->vend_id;
+    //     //    dd($vend_id);
+    //     $customer_id = Session::get('customer_id');
+    //     // dd($customer_id);
+    //     if (!$customer_id) {
+    //         return response()->json([
+    //             'error' => 'Unauthorized'
+    //         ], 401);
+    //     }
 
-        // Count used leads BEFORE insert
-        $venderLeads = DB::table('customer_interests')
-            ->where('vendor_id', $vend_id)
-            ->where('customer_id', $customer_id)
+    //     // Count used leads BEFORE insert
+    //     $venderLeads = DB::table('customer_interests')
+    //         ->where('vendor_id', $vend_id)
+    //         ->where('customer_id', $customer_id)
 
-            ->count();
+    //         ->count();
      
        
-        if ($venderLeads >= 5) {
-            return response()->json([
-                'payment_required' => true,
-                'remaining' => 0
-            ]);
-        }
+    //     if ($venderLeads >= 5) {
+    //         return response()->json([
+    //             'payment_required' => true,
+    //             'remaining' => 0
+    //         ]);
+    //     }
 
-        // Prevent duplicate vendor interest
-        $already = DB::table('customer_interests')
-            ->where('customer_id', $customer_id)
-            ->where('vendor_id', $vend_id)
-            ->exists();
-//   dd($already);
-        if (!$already) {
-            DB::table('customer_interests')->insert([
-                'customer_id' => $customer_id,
-                'vendor_id'   => $vend_id,
-                'created_at'  => now()
-            ]);
-        }
+    //     // Prevent duplicate vendor interest
+    //     $already = DB::table('customer_interests')
+    //         ->where('customer_id', $customer_id)
+    //         ->where('vendor_id', $vend_id)
+    //         ->exists();
+    //     //   dd($already);
+    //     if (!$already) {
+    //         DB::table('customer_interests')->insert([
+    //             'customer_id' => $customer_id,
+    //             'vendor_id'   => $vend_id,
+    //             'created_at'  => now()
+    //         ]);
+    //     }
 
-        $remaining = 5 - ($venderLeads + 1);
+    //     $remaining = 5 - ($venderLeads + 1);
 
+    //     return response()->json([
+    //         'success' => true,
+    //         'payment_required' => false,
+    //         'remaining' => max(0, $remaining)
+    //     ]);
+    // }
+//     public function customerinterestcheck(Request $request)
+// {
+//     $vend_id     = $request->vend_id;
+//     $customer_id = Session::get('customer_id');
+
+//     if (!$customer_id) {
+//         return response()->json(['error' => 'Unauthorized'], 401);
+//     }
+
+//     // 🔢 TOTAL USED LEADS BY CUSTOMER
+//     $usedLeads = DB::table('customer_interests')
+//         ->where('customer_id', $customer_id)
+//         ->count();
+
+//     // 🚫 LIMIT REACHED
+//     if ($usedLeads >= 5) {
+//         return response()->json([
+//             'payment_required' => true,
+//             'remaining' => 0
+//         ]);
+//     }
+
+//     // ❌ Prevent duplicate vendor interest
+//     $already = DB::table('customer_interests')
+//         ->where('customer_id', $customer_id)
+//         ->where('vendor_id', $vend_id)
+//         ->exists();
+
+//     if (!$already) {
+//         DB::table('customer_interests')->insert([
+//             'customer_id' => $customer_id,
+//             'vendor_id'   => $vend_id,
+//             'created_at'  => now()
+//         ]);
+//     }
+
+//     return response()->json([
+//         'success' => true,
+//         'payment_required' => false,
+//         'remaining' => 5 - ($usedLeads + 1)
+//     ]);
+// }
+
+   public function customerinterestcheck(Request $request)
+{
+    $vend_id     = $request->vend_id;
+    $customer_id = Session::get('customer_id');
+// dd($vend_id);
+    if (!$customer_id) {
         return response()->json([
-            'success' => true,
-            'payment_required' => false,
-            'remaining' => max(0, $remaining)
+            'authorized' => false
+        ], 401);
+    }
+
+    // Check duplicate interest
+    $alreadyInterested = DB::table('customer_interests')
+        ->where('customer_id', $customer_id)
+        ->where('vendor_id', $vend_id)
+        ->exists();
+
+    // Total used leads
+    $usedLeads = DB::table('customer_interests')
+        ->where('customer_id', $customer_id)
+        ->count();
+
+    // If already interested → allow access without payment
+    if ($alreadyInterested) {
+        return response()->json([
+            'authorized'        => true,
+            'payment_required'  => false,
+            'remaining'         => max(0, 5 - $usedLeads)
         ]);
     }
-   
+
+    // Free limit reached
+    if ($usedLeads >= 5) {
+        return response()->json([
+            'authorized'       => true,
+            'payment_required' => true,
+            'remaining'        => 0
+        ]);
+    }
+
+    // Insert interest (consume 1 free lead)
+    DB::table('customer_interests')->insert([
+        'customer_id' => $customer_id,
+        'vendor_id'   => $vend_id,
+        'created_at'  => now()
+    ]);
+
+    return response()->json([
+        'authorized'        => true,
+        'payment_required' => false,
+        'remaining'        => 5 - ($usedLeads + 1)
+    ]);
+}
+
     public function projectInterestCheck(Request $request)
     {
         $vendorId  = session('vendor_id');

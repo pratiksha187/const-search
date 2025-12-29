@@ -1,9 +1,20 @@
 @extends('layouts.vendorapp')
 @section('title', 'Search Vendors')
+
 @section('content')
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+<script>
+    window.VENDOR_ID = @json($vendor_id);
+</script>
+
+{{-- ================= YOUR EXISTING STYLES (UNCHANGED) ================= --}}
+
 <style>
    /* ================= ROOT ================= */
    :root{
@@ -113,16 +124,7 @@
    transform:translateY(-2px);
    box-shadow:0 20px 60px rgba(15,23,42,.15);
    }
-   .premium-badge{
-   position:absolute;
-   top:0;right:0;
-   background:linear-gradient(135deg,#fbbf24,#f97316);
-   color:#fff;
-   font-size:10px;
-   padding:4px 12px;
-   font-weight:800;
-   border-bottom-left-radius:16px;
-   }
+  
    /* ================= AVATAR ================= */
    .vendor-avatar{
    width:64px;height:64px;
@@ -136,18 +138,8 @@
    font-weight:800;
    position:relative;
    }
-   .online-badge{
-   position:absolute;
-   bottom:-4px;right:-4px;
-   background:#fff;
-   border-radius:50%;
-   padding:3px;
-   }
-   .online-indicator{
-   width:16px;height:16px;
-   background:var(--success-green);
-   border-radius:50%;
-   }
+  
+ 
    /* ================= TEXT ================= */
    .vendor-name{
    font-size:16px;
@@ -168,20 +160,8 @@
    padding:10px;
    border:1px solid #e2e8f0;
    }
-   .contact-item{
-   display:flex;
-   align-items:center;
-   gap:8px;
-   font-size:13px;
-   }
-   .contact-icon-box{
-   width:26px;height:26px;
-   background:#fff;
-   border-radius:8px;
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   }
+  
+ 
    /* ================= ACTION BUTTONS ================= */
    .btn-interested{
    background:linear-gradient(135deg,#f97316,#ea580c);
@@ -191,19 +171,13 @@
    border-radius:12px;
    font-weight:700;
    }
-   .btn-interested:hover{
-   transform:scale(1.05);
-   }
+  
    /* ================= MODAL ================= */
    .modal-content{
    border-radius:24px;
    overflow:hidden;
    }
-   .modal-header-gradient{
-   background:linear-gradient(135deg,var(--primary-blue),var(--primary-indigo));
-   color:#fff;
-   padding:32px;
-   }
+ 
    .payment-section{
    background:linear-gradient(135deg,var(--success-green),#059669);
    border-radius:16px;
@@ -214,14 +188,7 @@
    font-size:40px;
    font-weight:800;
    }
-   /* ================= EMPTY ================= */
-   .empty-state{
-   text-align:center;
-   padding:80px 20px;
-   background:#fff;
-   border-radius:24px;
-   border:1px solid #e2e8f0;
-   }
+
    /* ================= RESPONSIVE ================= */
    @media(max-width:991px){
    .filter-sidebar{position:relative;top:0}
@@ -229,15 +196,204 @@
    @media(max-width:768px){
    .vendor-avatar{width:80px;height:80px}
    }
+
+
+   /* ===== PREMIUM MODAL ===== */
+.premium-modal {
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.premium-header {
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #fff;
+    padding: 24px 28px;
+}
+
+/* LOCKED SECTION */
+.locked-info {
+    padding: 20px;
+    border-radius: 18px;
+    background: #f8fafc;
+    border: 1px dashed #e2e8f0;
+}
+
+.lock-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 28px;
+    margin: auto;
+}
+
+/* PAYMENT BOX */
+.payment-section-modern {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #fff;
+    border-radius: 20px;
+    padding: 24px;
+    margin-top: 20px;
+}
+
+.price-tag {
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0 0;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.benefits-list i {
+    color: #d1fae5;
+}
+
+/* PAY BUTTON */
+.pay-btn {
+    background: #065f46;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.pay-btn:hover {
+    background: #064e3b;
+    transform: translateY(-1px);
+}
+
+/* ===== AUTH MODAL ===== */
+.auth-modal {
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+/* HEADER */
+.auth-header {
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #fff;
+    padding: 32px 24px 28px;
+    text-align: center;
+    position: relative;
+}
+
+.auth-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 28px;
+}
+
+/* BUTTONS */
+.btn-auth-primary {
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 14px;
+    transition: all .3s ease;
+}
+/* ===== BLUR SENSITIVE INFO ===== */
+.blur-text {
+    filter: blur(6px);
+    pointer-events: none;
+    user-select: none;
+    transition: all 0.3s ease;
+}
+
+/* Unblur when allowed */
+.unblur {
+    filter: blur(0);
+    pointer-events: auto;
+}
+
+/* Optional: lock hint */
+.blur-text::after {
+    content: ' 🔒';
+    filter: blur(0);
+}
+
+.btn-auth-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+}
+
+.btn-auth-outline {
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    color: #1e293b;
+    font-weight: 600;
+    padding: 14px;
+    border-radius: 14px;
+    transition: all .3s ease;
+}
+
+.btn-auth-outline:hover {
+    background: #f8fafc;
+    border-color: #c7d2fe;
+}
+
+.search-section {
+    background: linear-gradient(135deg,#ffffff,#f8fafc);
+    border-radius: 22px;
+    border: 1px solid #e5e7eb;
+    padding: 22px;
+    box-shadow: 0 10px 40px rgba(15,23,42,.08);
+}
+
+.form-select-custom {
+    height: 54px;
+    font-weight: 600;
+    border-radius: 14px;
+    background-color: #fff;
+    transition: all .25s ease;
+}
+
+.form-select-custom:hover {
+    border-color: #93c5fd;
+}
+
+.form-select-custom:disabled {
+    background: #f1f5f9;
+    cursor: not-allowed;
+}
+
+/* Icon colors */
+.text-indigo { color:#4f46e5 }
+.text-orange { color:#f97316 }
+
+
 </style>
-<script>
-   window.VENDOR_ID = @json($vendor_id);
-</script>
-<!-- MAIN CONTENT -->
+
+{{-- ================= MAIN CONTENT ================= --}}
 <div class="container-fluid px-4 py-4">
-   <div class="row g-4">
-      <!-- FILTER SIDEBAR -->
-      <div class="col-lg-3">
+    <div class="row g-4">
+
+        {{-- ================= SIDEBAR (UNCHANGED) ================= --}}
+        <div class="col-lg-3">
          <div class="filter-sidebar">
             <div class="filter-header">
                <div class="filter-icon-box">
@@ -285,44 +441,56 @@
                   @endforeach
                </div>
             </div>
-            <button class="btn btn-gradient-primary w-100 py-3 fw-bold" onclick="applyFilters()">
-            Apply Filters
-            </button>
-            <button class="btn btn-link w-100 mt-2 text-secondary fw-semibold" onclick="resetFilters()">
-            Reset All
-            </button>
+          
          </div>
-      </div>
-      <!-- MAIN CONTENT AREA -->
-      <div class="col-lg-9">
-         <!-- SEARCH BAR -->
-         <div class="search-section">
-            <div class="row g-3">
-               <div class="col-md-4">
-                  <label class="form-label fw-bold small d-flex align-items-center gap-2">
-                  <i class="bi bi-search text-primary"></i>
-                  Search Location
-                  </label>
-                  <input type="text" class="form-control form-control-custom" placeholder="Enter city, area or landmark...">
-               </div>
-               <div class="col-md-3">
-                  <label class="form-label fw-bold small">State / Region</label>
-                  <select class="form-select form-select-custom" id="stateSelect">
-                     <option value="">All States</option>
-                     <option value="Maharashtra">Maharashtra</option>
-                     <option value="Delhi">Delhi</option>
-                     <option value="Karnataka">Karnataka</option>
-                     <option value="Gujarat">Gujarat</option>
-                     <option value="Rajasthan">Rajasthan</option>
-                     <option value="Tamil Nadu">Tamil Nadu</option>
-                     <option value="Kerala">Kerala</option>
-                  </select>
-               </div>
-              
-               
+        </div>
+
+        {{-- ================= MAIN LIST ================= --}}
+        <div class="col-lg-9">
+           
+            <div class="search-section mb-4">
+                <div class="row g-3 align-items-end">
+
+                    <!-- STATE -->
+                    <div class="col-lg-4 col-md-6">
+                        <label class="form-label fw-semibold small text-muted">
+                            <i class="bi bi-geo-alt-fill me-1 text-primary"></i> State
+                        </label>
+                        <select id="stateSelect" class="form-select form-select-custom">
+                            <option value="">Select State</option>
+                            @foreach($states as $state)
+                                <option value="{{ $state->id }}">{{ $state->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- REGION -->
+                    <div class="col-lg-4 col-md-6">
+                        <label class="form-label fw-semibold small text-muted">
+                            <i class="bi bi-map-fill me-1 text-indigo"></i> Region / Zone
+                        </label>
+                        <select id="regionSelect" class="form-select form-select-custom" disabled>
+                            <option value="">Select Region</option>
+                        </select>
+                    </div>
+
+                    <!-- CITY -->
+                    <div class="col-lg-4 col-md-12">
+                        <label class="form-label fw-semibold small text-muted">
+                            <i class="bi bi-buildings-fill me-1 text-orange"></i> City
+                        </label>
+                        <select id="citySelect" class="form-select form-select-custom" disabled>
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+
+                </div>
             </div>
+
+                
+            <!-- </div> -->
             <!-- Quick Filters -->
-         </div>
+            <!-- </div> -->
          <!-- RESULTS HEADER -->
          <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -335,328 +503,279 @@
                </div>
             </div>
          </div>
-         @foreach($projects as $project)
-         <div class="vendor-card"
-            data-work-type-id="{{ $project->work_type_id }}"
-    data-work-subtype-id="{{ $project->work_subtype_id }}"
-    data-work-subtype="{{ strtolower($project->work_subtype) }}"
-    data-title="{{ strtolower($project->title) }}"
-    data-state="{{ strtolower($project->state ?? '') }}">
 
-            <span class="premium-badge">
-            <i class="bi bi-star-fill me-1"></i>VERIFIED PRO
-            </span>
-            <div class="row">
-               <!-- AVATAR -->
-               <div class="col-auto">
-                  <div class="vendor-avatar">
-                     {{ strtoupper(substr($project->contact_name,0,1)) }}
-                     <div class="online-badge">
-                        <div class="online-indicator"></div>
-                     </div>
-                  </div>
-               </div>
-               <!-- CONTENT -->
-               <div class="col">
-                  <!-- NAME -->
-                  <h3 class="vendor-name">
-                     {{ strtoupper($project->contact_name) }}
-                  </h3>
-                  <!-- CATEGORY + TITLE -->
-                  <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-                     <span class="category-badge">
-                     {{ $project->work_type }} -  {{ $project->work_subtype }}
-                     </span>
-                     <span class="text-muted">•</span>
-                     <div class="d-flex align-items-center gap-1">
-                        <i class="bi bi-briefcase-fill text-primary"></i>
-                        <span class="fw-semibold small">
-                        {{ $project->title }}
-                        </span>
-                     </div>
-                  </div>
-                  <!-- RATING (STATIC / FUTURE DYNAMIC) -->
-                  <div class="d-flex align-items-center gap-3 mb-2">
-                     <div class="d-flex align-items-center gap-2">
-                        <span class="rating-stars">★★★★★</span>
-                        <span class="rating-number">4.8</span>
-                        <span class="text-muted small">(156 reviews)</span>
-                     </div>
-                     <span class="top-rated-badge">
-                     <i class="bi bi-graph-up-arrow me-1"></i>Top Rated
-                     </span>
-                  </div>
-                  <!-- CONTACT + ACTION -->
-                  <div class="row align-items-center mt-3">
-                     <!-- LEFT -->
-                     <div class="col-md-6">
-                        <div class="contact-info-section">
-                           <div class="row g-2">
-                              <div class="col-md-6">
-                                 <div class="contact-item">
-                                    <div class="contact-icon-box">
-                                       <i class="bi bi-geo-alt-fill text-primary"></i>
-                                    </div>
-                                    <span>
-                                    </span>
-                                 </div>
-                              </div>
-                              <div class="col-md-6">
-                                 <div class="contact-item">
-                                    <div class="contact-icon-box">
-                                       <i class="bi bi-telephone-fill text-success"></i>
-                                    </div>
-                                    <span>{{ $project->mobile }}</span>
-                                 </div>
-                              </div>
-                              <div class="col-12">
-                                 <div class="contact-item">
-                                    <div class="contact-icon-box">
-                                       <i class="bi bi-envelope-fill text-warning"></i>
-                                    </div>
-                                    <span>{{ $project->email }}</span>
-                                 </div>
-                              </div>
-                           </div>
+            {{-- RESULTS --}}
+         
+
+            @foreach($projects as $project)
+         
+                  <div class="vendor-card"
+                data-work-type-id="{{ $project->work_type_id }}"
+                data-work-subtype-id="{{ $project->work_subtype_id }}"
+                data-work-subtype="{{ strtolower($project->work_subtype) }}"
+                data-name="{{ strtolower($project->title) }}"
+                data-state-id="{{ $project->state_id ?? '' }}"
+                data-region-id="{{ $project->region_id ?? '' }}"
+                data-city-id="{{ $project->city_id ?? '' }}"
+                data-project-id="{{ $project->id }}">
+
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="vendor-avatar">
+                            {{ strtoupper(substr($project->contact_name,0,1)) }}
                         </div>
-                     </div>
-                     <!-- RIGHT -->
-                     <div class="col-md-5 d-flex justify-content-end mt-3 mt-md-0">
-                        <button class="btn btn-interested px-4"
-                           onclick="handleInterested(
-                           {{ $project->id }},
-                           '{{ addslashes($project->contact_name) }}',
-                           '{{ addslashes($project->title) }}',
-                           '{{ addslashes($project->work_subtype) }}'
-                           )">
-                        ❤️ I'm Interested
-                        </button>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+
+                    <div class="col">
+
+                        <!-- 🔒 BLURRED NAME -->
+                        <h3 class="vendor-name blur-text blur-name-{{ $project->id }}">
+                            {{ strtoupper($project->contact_name) }}
+                        </h3>
+
+                        <span class="category-badge">
+                            {{ $project->work_type }} - {{ $project->work_subtype }}
+                        </span>
+
+                        <div class="row mt-3 align-items-center">
+                            <div class="col-md-6">
+                                <div class="contact-info-section">
+
+                                    <!-- 🔒 BLURRED MOBILE -->
+                                    <div class="blur-text blur-mobile-{{ $project->id }}">
+                                        {{ $project->mobile }}
+                                    </div>
+
+                                    <!-- 🔒 BLURRED EMAIL -->
+                                    <div class="blur-text blur-email-{{ $project->id }}">
+                                        {{ $project->email }}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 text-end">
+                                <button class="btn btn-interested"
+                                    onclick="handleInterested(
+                                        {{ $project->id }},
+                                        '{{ addslashes($project->contact_name) }}',
+                                        '{{ addslashes($project->title) }}',
+                                        '{{ addslashes($project->work_subtype) }}'
+                                    )">
+                                    ❤️ I'm Interested
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-         </div>
-         @endforeach
-         <!-- EMPTY STATE (Hidden by default) -->
-         <div class="empty-state d-none" id="emptyState">
-            <div class="empty-icon">🔍</div>
-            <h3 class="fw-bold mb-3">No vendors found</h3>
-            <p class="text-muted mb-4">We couldn't find any vendors matching your criteria.<br>Try adjusting your filters or search terms.</p>
-            <button class="btn btn-gradient-primary px-5 py-3" onclick="resetFilters()">Clear All Filters</button>
-         </div>
-      </div>
-   </div>
+            @endforeach
+
+        </div>
+    </div>
 </div>
-<!-- Customer MODAL -->
+
+{{-- ================= CUSTOMER / PAYMENT MODAL ================= --}}
 <div class="modal fade" id="vendorModal" tabindex="-1">
-   <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-         <div class="modal-header-gradient">
-            <div class="d-flex align-items-center gap-3 position-relative">
-               <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                  <i class="bi bi-sparkles" style="font-size: 24px;"></i>
-               </div>
-               <div>
-                  <h5 class="mb-0 fw-bold">Premium Vendor Profile</h5>
-                  <small style="color: rgba(255,255,255,0.8);">Complete professional details</small>
-               </div>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content premium-modal">
+
+            <!-- HEADER -->
+            <div class="modal-header premium-header">
+                <div>
+                    <h5 class="fw-bold mb-0">Customer Details</h5>
+                    <small class="text-white-50">Access protected information</small>
+                </div>
+                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
-         </div>
-         <div class="modal-body p-4">
-            <div class="row mb-4">
-               <div class="col-auto">
-                  <div class="vendor-avatar" style="width: 112px; height: 112px; font-size: 48px;">
-                     <span id="modalAvatar">R</span>
-                     <div class="online-badge" style="bottom: -8px; right: -8px;">
-                        <div class="online-indicator" style="width: 24px; height: 24px;"></div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col">
-                  <h4 class="fw-bold mb-2" id="modalName">Rajesh Kumar</h4>
-                  <span class="category-badge mb-3 d-inline-block" id="modalCategory">Construction</span>
-                  <p class="text-muted mb-3" id="modalBusiness">Kumar Constructions</p>
-                  <div class="d-flex flex-wrap gap-3">
-                     <div class="px-4 py-2 rounded-3" style="background: #eff6ff; border: 1px solid #bfdbfe;">
-                        <i class="bi bi-award-fill text-primary me-2"></i>
-                        <span class="fw-bold text-primary">12 years experience</span>
-                     </div>
-                     <div class="px-4 py-2 rounded-3" style="background: #d1fae5; border: 1px solid #a7f3d0;">
-                        <i class="bi bi-shield-check text-success me-2"></i>
-                        <span class="fw-bold text-success">Verified Pro</span>
-                     </div>
-                  </div>
-               </div>
+
+            <!-- BODY -->
+            <div class="modal-body p-4">
+
+                <!-- REMAINING LEADS -->
+                <div id="remainingLeadsInfo"
+                     class="alert alert-success text-center fw-semibold d-none mb-4"></div>
+
+                <!-- LOCKED INFO -->
+                <div class="locked-info text-center mb-4">
+                    <div class="lock-icon">
+                        <i class="bi bi-lock-fill"></i>
+                    </div>
+                    <h4 id="modalName" class="fw-bold mt-3">Locked</h4>
+                    <p id="modalCategory" class="text-muted mb-1">Upgrade Required</p>
+                    <p id="modalBusiness" class="small text-muted">
+                        Unlock full customer contact details
+                    </p>
+                </div>
+
+                <!-- PAYMENT SECTION -->
+                <div class="payment-section-modern d-none" id="paymentSection">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h3 class="price-tag mb-0">₹500</h3>
+                            <small class="text-white-50">One-time access fee</small>
+                        </div>
+                        <span class="badge bg-light text-success fw-bold px-3 py-2">
+                            Verified Lead
+                        </span>
+                    </div>
+
+                    <ul class="benefits-list">
+                        <li><i class="bi bi-check-circle-fill"></i> Full customer contact</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Genuine project lead</li>
+                        <li><i class="bi bi-check-circle-fill"></i> No commission</li>
+                    </ul>
+
+                    <button class="btn pay-btn w-100 mt-3" id="payNowBtn">
+                        <i class="bi bi-credit-card me-2"></i> Pay Now
+                    </button>
+                </div>
+
             </div>
-            <div class="payment-section mb-4">
-               <div class="row align-items-center position-relative">
-                  <div class="col-md-8">
-                     <p class="text-white fw-semibold mb-2 opacity-90">Unlock Full Access</p>
-                     <p class="small text-white mb-3 opacity-75">Connect directly with this professional vendor</p>
-                     <div class="d-flex align-items-center gap-2 px-3 py-2 rounded-3" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);">
-                        <i class="bi bi-check-circle-fill text-white"></i>
-                        <small class="text-white">Instant contact • Priority support • 30-day guarantee</small>
-                     </div>
-                  </div>
-                  <div class="col-md-4 text-end">
-                     <div class="price-tag">₹500</div>
-                     <small class="text-white opacity-75">one-time fee</small>
-                  </div>
-               </div>
-            </div>
-            <div class="d-flex gap-3">
-               <button class="btn btn-profile flex-grow-1 py-3" data-bs-dismiss="modal">Maybe Later</button>
-               <button class="btn btn-contact flex-grow-1 py-3" id="payNowBtn" style="background: linear-gradient(135deg, var(--success-green), #059669);">
-               💳 Pay ₹500 Now
-               </button>
-            </div>
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
 </div>
-<!-- AUTH MODAL -->
+
+
+{{-- ================= AUTH MODAL ================= --}}
+
 <div class="modal fade" id="authModal" tabindex="-1">
-   <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-         <div class="modal-header-gradient text-center position-relative">
-            <div class="w-100">
-               <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
-                  <i class="bi bi-shield-lock" style="font-size: 40px;"></i>
-               </div>
-               <h5 class="fw-bold mb-2">Authentication Required</h5>
-               <p class="mb-0" style="color: rgba(255,255,255,0.8);">Sign in to access premium vendor services</p>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content auth-modal">
+
+            <!-- HEADER -->
+            <div class="auth-header">
+                <div class="auth-icon">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h5 class="fw-bold mb-1">Login Required</h5>
+                <p class="mb-0 small opacity-75">
+                    Please sign in to continue
+                </p>
+
+                <button type="button"
+                        class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                        data-bs-dismiss="modal"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
-         </div>
-         <div class="modal-body p-4">
-            <div class="text-center mb-4">
-               <h6 class="fw-bold mb-2">Join VendorHub Pro</h6>
-               <p class="text-muted small">Get instant access to verified vendors, exclusive deals, and priority support.</p>
+
+            <!-- BODY -->
+            <div class="modal-body text-center p-4">
+
+                <p class="text-muted mb-4">
+                    To view customer contact details and unlock premium leads,
+                    please log in to your vendor account.
+                </p>
+
+                <a href="{{ route('login_register') }}"
+                   class="btn btn-auth-primary w-100 mb-3">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Login to Continue
+                </a>
+
+                <a href="{{ route('login_register') }}"
+                   class="btn btn-auth-outline w-100">
+                    <i class="bi bi-person-plus me-2"></i>
+                    Create Free Account
+                </a>
+
+              
+
             </div>
-            <div class="p-4 rounded-3 mb-4" style="background: linear-gradient(135deg, #f8fafc, #eff6ff); border: 1px solid #e2e8f0;">
-               <p class="fw-semibold small text-muted mb-3">What you'll get:</p>
-               <div class="d-flex flex-column gap-2">
-                  <div class="d-flex align-items-start gap-2 small">
-                     <span class="text-success fw-bold">✓</span>
-                     <span>Direct access to 1000+ verified vendors</span>
-                  </div>
-                  <div class="d-flex align-items-start gap-2 small">
-                     <span class="text-success fw-bold">✓</span>
-                     <span>Priority customer support 24/7</span>
-                  </div>
-                  <div class="d-flex align-items-start gap-2 small">
-                     <span class="text-success fw-bold">✓</span>
-                     <span>Exclusive member discounts up to 20%</span>
-                  </div>
-                  <div class="d-flex align-items-start gap-2 small">
-                     <span class="text-success fw-bold">✓</span>
-                     <span>Secure payment protection</span>
-                  </div>
-               </div>
-            </div>
-            <div class="d-grid gap-2 mb-3">
-               <button class="btn btn-gradient-primary py-3 fw-bold">
-               <i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Continue
-               </button>
-               <button class="btn btn-profile py-3 fw-bold">
-               <i class="bi bi-person-plus me-2"></i>Create Free Account
-               </button>
-            </div>
-            <div class="text-center">
-               <small class="text-muted">
-               By continuing, you agree to our 
-               <a href="#" class="text-primary fw-semibold">Terms of Service</a> and 
-               <a href="#" class="text-primary fw-semibold">Privacy Policy</a>
-               </small>
-            </div>
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
 </div>
-<!-- Bootstrap 5 JS -->
+
+
+{{-- ================= SCRIPTS ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- jQuery (Optional - for easier DOM manipulation) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-   function handleInterested(id, name, business, work) {
-   
-       // FRONTEND CHECK
-       if (!window.VENDOR_ID) {
-           new bootstrap.Modal(
-               document.getElementById('authModal')
-           ).show();
-           return;
-       }
-   
-       // BACKEND CHECK (DOUBLE SECURITY)
-       $.ajax({
-           url: "{{ route('vendor.interest.check') }}",
-           type: "POST",
-           data: {
-               _token: "{{ csrf_token() }}",
-               cust_id: id
-           },
-           success: function (res) {
-               openVendorModal(
-                   id,
-                   name,
-                   business,
-                   work,
-                   res.payment_required === true
-               );
-           },
-           error: function () {
-               alert('Something went wrong');
-           }
-       });
-   }
-   
-   
-   function openVendorModal(id, name, business, work, showPayment) {
-   $('#vendorName').text(name);
-   $('#vendorBusiness').text(business);
-   $('#vendorWork').text(work);
-   
-   if (showPayment) {
-       $('#paymentSection').show();
-       $('#payNowBtn').show().data('id', id);
-   } else {
-       $('#paymentSection').hide();
-       $('#payNowBtn').hide();
-   }
-   
-   new bootstrap.Modal(document.getElementById('vendorModal')).show();
-   }
-   
-   $('#payNowBtn').on('click', function () {
-   let id = $(this).data('id');
-   window.location.href = "{{ route('razorpay.form') }}?cust_id=" + btoa(id);
-   });
-</script>
-@if(session('payment_success') && session('unlock_vendor'))
-<script>
-   document.addEventListener("DOMContentLoaded", function () {
-       let vendor = @json(session('unlock_vendor'));
-       openVendorModal(
-           vendor.id,
-           vendor.name,
-           vendor.business_name,
-           vendor.work_type,
-           false
-       );
-   });
-</script>
-@endif
 
 <script>
+function handleInterested(id, name, business, work) {
+
+    // AUTH CHECK
+    if (!window.VENDOR_ID) {
+        new bootstrap.Modal(
+            document.getElementById('authModal')
+        ).show();
+        return;
+    }
+
+    $.ajax({
+        url: "{{ route('vendor.interest.check') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            cust_id: id
+        },
+        success: function (res) {
+
+            /* =============================
+               PAYMENT REQUIRED (LOCKED)
+            ==============================*/
+            if (res.payment_required === true) {
+
+                // Locked text
+                $('#modalName').text('Locked');
+                $('#modalCategory').text('Upgrade Required');
+                $('#modalBusiness').text('Unlock full customer details');
+
+                // Hide remaining leads
+                $('#remainingLeadsInfo').addClass('d-none');
+
+                // 🔥 SHOW PAYMENT SECTION (FIX)
+                $('#paymentSection').removeClass('d-none');
+
+                // Attach ID for payment
+                $('#payNowBtn').data('id', id);
+
+                new bootstrap.Modal(
+                    document.getElementById('vendorModal')
+                ).show();
+                return;
+            }
+
+            /* =============================
+               FREE LEAD (SHOW DETAILS)
+            ==============================*/
+            $('#modalName').text(name);
+            $('#modalCategory').text(work);
+            $('#modalBusiness').text(business);
+
+            $('#paymentSection').addClass('d-none');
+
+            $('#remainingLeadsInfo')
+                .removeClass('d-none')
+                .text(`🎯 ${res.remaining} free leads remaining`);
+
+            new bootstrap.Modal(
+                document.getElementById('vendorModal')
+            ).show();
+        }
+    });
+}
+
+/* PAY NOW */
+$('#payNowBtn').on('click', function () {
+    let id = $(this).data('id');
+    window.location.href =
+        "{{ route('razorpay.form') }}?cust_id=" + btoa(id);
+});
+</script>
+
+<script>
+
 function applyFilters() {
 
     let selectedCategories = [];
     let selectedSubtypes = [];
 
     let searchText = document.querySelector('.form-control-custom')?.value.toLowerCase().trim() || '';
-    let state = document.getElementById('stateSelect')?.value.toLowerCase().trim() || '';
+
+    let stateId  = document.getElementById('stateSelect')?.value || '';
+    let regionId = document.getElementById('regionSelect')?.value || '';
+    let cityId   = document.getElementById('citySelect')?.value || '';
 
     // MAIN CATEGORIES
     document.querySelectorAll('.category-check:checked').forEach(cb => {
@@ -672,25 +791,24 @@ function applyFilters() {
 
     document.querySelectorAll('.vendor-card').forEach(card => {
 
-        let cardTypeId = card.dataset.workTypeId?.toString() || '';
-        let cardSubtypeId = card.dataset.workSubtypeId?.toString() || '';
-        let cardTitle = card.dataset.title || '';
-        let cardSubtypeText = card.dataset.workSubtype || '';
-        let cardState = card.dataset.state || '';
+        let cardTypeId    = card.dataset.workTypeId || '';
+        let cardSubtypeId = card.dataset.workSubtypeId || '';
+        let cardTitle     = card.dataset.name || '';
+        let cardSubtype   = card.dataset.workSubtype || '';
+
+        let cardStateId  = card.dataset.stateId || '';
+        let cardRegionId = card.dataset.regionId || '';
+        let cardCityId   = card.dataset.cityId || '';
 
         /* ===============================
-           MAIN CATEGORY LOGIC (IMPORTANT)
+           CATEGORY FILTER
         ================================*/
-
         let categoryMatch = true;
 
         if (selectedCategories.length > 0) {
-
             if (selectedSubtypes.length > 0) {
-                // Subtypes selected → match subtype
                 categoryMatch = selectedSubtypes.includes(cardSubtypeId);
             } else {
-                // ONLY main category selected → match all under it
                 categoryMatch = selectedCategories.includes(cardTypeId);
             }
         }
@@ -701,16 +819,16 @@ function applyFilters() {
         let textMatch =
             searchText === '' ||
             cardTitle.includes(searchText) ||
-            cardSubtypeText.includes(searchText);
+            cardSubtype.includes(searchText);
 
         /* ===============================
-           STATE FILTER
+           LOCATION FILTER (STATE → REGION → CITY)
         ================================*/
-        let stateMatch =
-            state === '' ||
-            cardState.includes(state);
+        let stateMatch  = stateId  === '' || cardStateId  === stateId;
+        let regionMatch = regionId === '' || cardRegionId === regionId;
+        let cityMatch   = cityId   === '' || cardCityId   === cityId;
 
-        if (categoryMatch && textMatch && stateMatch) {
+        if (categoryMatch && textMatch && stateMatch && regionMatch && cityMatch) {
             card.style.display = 'block';
             visible++;
         } else {
@@ -719,9 +837,11 @@ function applyFilters() {
     });
 
     document.getElementById('vendorCount').innerText = visible;
+
     document.getElementById('emptyState')
-        .classList.toggle('d-none', visible !== 0);
+        ?.classList.toggle('d-none', visible !== 0);
 }
+
 
 /* ===============================
    CATEGORY → SHOW SUBTYPES
@@ -765,6 +885,4 @@ function resetFilters() {
     applyFilters();
 }
 </script>
-
-
 @endsection

@@ -212,25 +212,54 @@ textarea.form-control-lg {
                 <label class="form-label-custom">State</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                    <select class="form-select form-select-lg" id="stateDropdown" name="state">
-                        <option value="">Select State</option>
+                    <select class="form-select form-select-lg" id="stateSelect"  name="state">
                       
+                         <option value="">Select State</option>
+                            @foreach($states as $state)
+                                <option value="{{ $state->id }}">{{ $state->name }}</option>
+                            @endforeach
                     </select>
+
+                    
                 </div>
             </div>
 
             <!-- REGION -->
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
                 <label class="form-label-custom">Region</label>
-                <select class="form-select form-select-lg" id="regionDropdown" name="region"></select>
-            </div>
+                 <select id="regionSelect" class="form-select form-select-custom" disabled>
+                            <option value="">Select Region</option>
+                        </select>
+            </div> -->
 
             <!-- CITY -->
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
                 <label class="form-label-custom">City</label>
-                 <input type="text" class="form-control form-control-lg" name="city">
-                
-            </div>
+                <select id="citySelect" class="form-select form-select-custom" disabled>
+                            <option value="">Select City</option>
+                        </select>
+            </div> -->
+<!-- REGION -->
+<div class="col-md-4">
+    <label class="form-label-custom">Region</label>
+    <select id="regionSelect"
+            name="region_id"
+            class="form-select form-select-lg"
+            disabled>
+        <option value="">Select Region</option>
+    </select>
+</div>
+
+<!-- CITY -->
+<div class="col-md-4">
+    <label class="form-label-custom">City</label>
+    <select id="citySelect"
+            name="city_id"
+            class="form-select form-select-lg"
+            disabled>
+        <option value="">Select City</option>
+    </select>
+</div>
 
             <!-- BUDGET -->
             <div class="col-md-4">
@@ -293,30 +322,30 @@ textarea.form-control-lg {
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-$("#stateDropdown").change(function () {
-    let id = $(this).val();
-    $("#regionDropdown").html('<option>Loading...</option>');
-    $("#cityDropdown").html('');
+// $("#stateDropdown").change(function () {
+//     let id = $(this).val();
+//     $("#regionDropdown").html('<option>Loading...</option>');
+//     $("#cityDropdown").html('');
 
-    $.get("/get-regions/" + id, function (data) {
-        $("#regionDropdown").html('<option value="">Select Region</option>');
-        data.forEach(item => {
-            $("#regionDropdown").append(`<option value="${item.id}">${item.name}</option>`);
-        });
-    });
-});
+//     $.get("/get-regions/" + id, function (data) {
+//         $("#regionDropdown").html('<option value="">Select Region</option>');
+//         data.forEach(item => {
+//             $("#regionDropdown").append(`<option value="${item.id}">${item.name}</option>`);
+//         });
+//     });
+// });
 
-$("#regionDropdown").change(function () {
-    let id = $(this).val();
-    $("#cityDropdown").html('<option>Loading...</option>');
+// $("#regionDropdown").change(function () {
+//     let id = $(this).val();
+//     $("#cityDropdown").html('<option>Loading...</option>');
 
-    $.get("/get-cities/" + id, function (data) {
-        $("#cityDropdown").html('<option value="">Select City</option>');
-        data.forEach(item => {
-            $("#cityDropdown").append(`<option value="${item.id}">${item.name}</option>`);
-        });
-    });
-});
+//     $.get("/get-cities/" + id, function (data) {
+//         $("#cityDropdown").html('<option value="">Select City</option>');
+//         data.forEach(item => {
+//             $("#cityDropdown").append(`<option value="${item.id}">${item.name}</option>`);
+//         });
+//     });
+// });
 </script>
 <script>
 $(document).ready(function () {
@@ -357,4 +386,79 @@ $('#work_type').on('change', function () {
 
 });
 </script>
+
+<script>
+$(document).ready(function () {
+
+    /* ===============================
+       STATE → REGION
+    ================================*/
+    $('#stateSelect').on('change', function () {
+
+        let stateId = $(this).val();
+
+        $('#regionSelect')
+            .html('<option value="">Loading...</option>')
+            .prop('disabled', true);
+
+        $('#citySelect')
+            .html('<option value="">Select City</option>')
+            .prop('disabled', true);
+
+        if (!stateId) {
+            $('#regionSelect').html('<option value="">Select Region</option>');
+            return;
+        }
+
+        $.get('/locations/regions/' + stateId, function (regions) {
+
+            let options = '<option value="">Select Region</option>';
+
+            regions.forEach(function (region) {
+                options += `<option value="${region.id}">
+                                ${region.name}
+                            </option>`;
+            });
+
+            $('#regionSelect')
+                .html(options)
+                .prop('disabled', false);
+        });
+    });
+
+    /* ===============================
+       REGION → CITY
+    ================================*/
+    $('#regionSelect').on('change', function () {
+
+        let regionId = $(this).val();
+
+        $('#citySelect')
+            .html('<option value="">Loading...</option>')
+            .prop('disabled', true);
+
+        if (!regionId) {
+            $('#citySelect').html('<option value="">Select City</option>');
+            return;
+        }
+
+        $.get('/locations/cities/' + regionId, function (cities) {
+
+            let options = '<option value="">Select City</option>';
+
+            cities.forEach(function (city) {
+                options += `<option value="${city.id}">
+                                ${city.name}
+                            </option>`;
+            });
+
+            $('#citySelect')
+                .html(options)
+                .prop('disabled', false);
+        });
+    });
+
+});
+</script>
+
 @endsection

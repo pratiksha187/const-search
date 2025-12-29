@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\VenderController;
 use App\Http\Controllers\SuppliersController;
+use App\Http\Controllers\MasterController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -93,13 +94,15 @@ Route::get('/addproducts', [SuppliersController::class, 'addproducts'])->name('a
 Route::post('/supplier/products/save', [SuppliersController::class, 'saveProducts'])
      ->name('supplier.products.save');
 
+     Route::get('/locations/regions/{stateId}', [MasterController::class, 'getRegions']);
+Route::get('/locations/cities/{regionId}', [MasterController::class, 'getCities']);
 // Route::post('/vendor/profile/update-field', [VenderController::class, 'updateVendorField'])
 //     ->name('vendor.profile.update.field');
 Route::post('/vendor/profile/update', [VenderController::class, 'updateProfile'])
     ->name('vendor.profile.update');
 
 Route::get('/get-subtypes/{id}', [VenderController::class, 'getSubtypes']);
-Route::get('/get-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
+Route::get('/find-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
 
 Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->name('productenquiry');
 

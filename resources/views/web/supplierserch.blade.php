@@ -1,4 +1,6 @@
-@extends('layouts.custapp')
+
+@extends($layout)
+
 @section('title','Search Suppliers | ConstructKaro')
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -35,10 +37,7 @@
    color:var(--muted);
    font-size:14px;
    }
-   /* .header-actions{
-   display:flex;
-   gap:10px;
-   } */
+  
    .header-actions {
    display: flex;
    gap: 10px;
@@ -426,18 +425,17 @@
             {{ $supplier->delivery_days ? $supplier->delivery_days.' days' : 'Same / Next day' }}
             • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
             </span>
-            <!-- <a href="" class="btn-enquire">
-            Enquire
-            </a> -->
+          
+          
             <a href="javascript:void(0)"
-   class="btn-enquire"
-   data-bs-toggle="modal"
-   data-bs-target="#enquiryModal"
-   data-supplier-id="{{ $supplier->id }}"
-   data-supplier-name="{{ $supplier->shop_name }}"
-   data-categories='@json(json_decode($supplier->categories_json ?? "[]"))'
-   data-credit="{{ $supplier->credit_days }}"
->
+               class="btn-enquire enquire-btn"
+               data-supplier-id="{{ $supplier->id }}"
+               data-supplier-name="{{ $supplier->shop_name }}"
+               data-categories='@json(json_decode($supplier->categories_json ?? "[]"))'
+               data-credit="{{ $supplier->credit_days }}">
+               Enquire
+            </a>
+
    Enquire
 </a>
 
@@ -544,6 +542,30 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="loginModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Login Required</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="text-muted mb-3">
+          Please login to send enquiry to suppliers.
+        </p>
+        <a href="{{ route('login_register') }}" class="btn btn-dark w-100 mb-2">
+          Login
+        </a>
+        <a href="{{ route('login_register') }}" class="btn btn-outline-dark w-100">
+          Create Account
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -602,6 +624,99 @@
    });
 </script>
 <script>
+    window.IS_LOGGED_IN = @json(
+        session()->has('customer_id') ||
+        session()->has('vendor_id') ||
+        session()->has('supplier_id')
+    );
+</script>
+<script>
+document.querySelectorAll('.enquire-btn').forEach(btn => {
+
+    btn.addEventListener('click', function () {
+
+        /* ============================
+           🔐 LOGIN CHECK
+        ============================ */
+        if (!window.IS_LOGGED_IN) {
+            new bootstrap.Modal(
+                document.getElementById('loginModal')
+            ).show();
+            return;
+        }
+
+        /* ============================
+           📩 ENQUIRY MODAL LOGIC
+        ============================ */
+        const supplierId   = this.dataset.supplierId;
+        const supplierName = this.dataset.supplierName;
+        const categories   = JSON.parse(this.dataset.categories || '[]');
+        const creditDays   = this.dataset.credit;
+
+        // Fill hidden fields
+        document.getElementById('modalSupplierId').value = supplierId;
+        document.getElementById('modalSupplierName').innerText = supplierName;
+
+        // Fill category dropdown
+        const categorySelect = document.getElementById('modalCategory');
+        categorySelect.innerHTML = `<option value="">Select Category</option>`;
+        categories.forEach(cat => {
+            categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+        });
+
+        // Payment preference
+        document.getElementById('modalPayment').value =
+            creditDays ? 'credit' : 'cash';
+
+        // Open enquiry modal
+        new bootstrap.Modal(
+            document.getElementById('enquiryModal')
+        ).show();
+    });
+
+});
+</script>
+<script>
+document.getElementById('enquiryForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const form = this;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Sending...';
+
+    const formData = new FormData(form);
+
+    fetch("{{ route('supplier.enquiry.store') }}", {
+        method: "POST",
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status){
+            alert('✅ Enquiry sent successfully');
+            form.reset();
+            bootstrap.Modal.getInstance(
+                document.getElementById('enquiryModal')
+            ).hide();
+        }else{
+            alert('❌ Something went wrong');
+        }
+    })
+    .catch(() => {
+        alert('❌ Server error');
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Send enquiry';
+    });
+});
+</script>
+
+<!-- <script>
 document.getElementById('enquiryModal').addEventListener('show.bs.modal', function (event) {
 
     const button = event.relatedTarget;
@@ -627,9 +742,9 @@ document.getElementById('enquiryModal').addEventListener('show.bs.modal', functi
     paymentSelect.value = creditDays ? 'credit' : 'cash';
 
 });
-</script>
+</script> -->
 
-<script>
+<!-- <script>
 document.getElementById('enquiryForm').addEventListener('submit', function(e){
     e.preventDefault();
 
@@ -660,7 +775,7 @@ document.getElementById('enquiryForm').addEventListener('submit', function(e){
         alert('❌ Server error');
     });
 });
-</script>
+</script> -->
 
 
 @endsection
