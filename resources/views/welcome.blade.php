@@ -530,21 +530,6 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             </div>
         </a>
 
-        <!-- BUSINESS ERP -->
-        <!-- <a href="" class="text-decoration-none">
-            <div class="overlap-card">
-                <div class="card-icon icon-purple">
-                    <i class="bi bi-kanban"></i>
-                </div>
-                <div>
-                    <h6 class="text-dark mb-1">Business ERP</h6>
-                    <p class="mb-1 text-muted">Manage projects, billing & teams</p>
-                    <small class="text-secondary fw-semibold">
-                        ✔ All-in-One • Smart Control
-                    </small>
-                </div>
-            </div>
-        </a> -->
         <a href="javascript:void(0)" 
         class="text-decoration-none"
         data-bs-toggle="modal"
