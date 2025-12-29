@@ -7,6 +7,7 @@ use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\VenderController;
 use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\MasterController;
+use App\Http\Controllers\ImportController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -118,6 +119,8 @@ Route::post('/customer-interest-check', [HomeController::class, 'customerinteres
     ->name('customer.interest.check');
 
 
+Route::get('/test', [ImportController::class, 'test'])->name('test');
+
     
 
 Route::post('/project-interest-check', 
@@ -129,6 +132,8 @@ Route::get('/my-posts/{id}', [HomeController::class, 'postsshow'])->name('posts.
 Route::put('/posts/{id}', [HomeController::class, 'updateposts'])->name('posts.update');
 
 Route::get('/delete-post/{id}', [HomeController::class, 'destroy'])->name('posts.delete');
+
+Route::post('/import-posts', [ImportController::class, 'import']);
 
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

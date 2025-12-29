@@ -417,8 +417,6 @@ body {
     .section-after-hero{ padding-top: 70px; }
 }
 
-
-
 </style>
 
 @if(session('success'))
