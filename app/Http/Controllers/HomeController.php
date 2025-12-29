@@ -141,7 +141,8 @@ class HomeController extends Controller
 
         $vendor_reg = DB::table('vendor_reg')
             ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type_id')
-             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
+            // ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
             
             ->select(
                 'work_types.*',
@@ -151,7 +152,7 @@ class HomeController extends Controller
              ->orderBy('vendor_reg.id', 'desc')
             ->get();
 
-
+// dd($vendor_reg);
         return view('web.search_vendor', [
             'work_types' => $work_types,
             'states' => $states,

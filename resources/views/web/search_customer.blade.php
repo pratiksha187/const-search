@@ -885,4 +885,38 @@ function resetFilters() {
     applyFilters();
 }
 </script>
+<script>
+$('#stateSelect').on('change', function () {
+    let stateId = $(this).val();
+
+    $('#regionSelect').html('<option>Loading...</option>').prop('disabled', true);
+    $('#citySelect').html('<option>Select City</option>').prop('disabled', true);
+
+    if (stateId) {
+        $.get('/locations/regions/' + stateId, function (regions) {
+            let options = '<option value="">Select Region</option>';
+            regions.forEach(r => {
+                options += `<option value="${r.id}">${r.name}</option>`;
+            });
+            $('#regionSelect').html(options).prop('disabled', false);
+        });
+    }
+});
+
+$('#regionSelect').on('change', function () {
+    let regionId = $(this).val();
+
+    $('#citySelect').html('<option>Loading...</option>').prop('disabled', true);
+
+    if (regionId) {
+        $.get('/locations/cities/' + regionId, function (cities) {
+            let options = '<option value="">Select City</option>';
+            cities.forEach(c => {
+                options += `<option value="${c.id}">${c.name}</option>`;
+            });
+            $('#citySelect').html(options).prop('disabled', false);
+        });
+    }
+});
+</script>
 @endsection
