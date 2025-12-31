@@ -136,7 +136,7 @@ Route::post('/import-posts', [ImportController::class, 'import']);
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "123456789";
+    $password = "Animesh@123";
     $hash = Hash::make($password);
 
     return $hash; 
