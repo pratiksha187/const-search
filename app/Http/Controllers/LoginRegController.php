@@ -261,7 +261,7 @@ class LoginRegController extends Controller
             return redirect('/'); 
         }
         $customer_id = Session::get('customer_id');
-         dd( $customer_id);
+        //  dd( $customer_id);
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
         //  dd( $cust_data);
         $post_data = DB::table('posts')->where('user_id',$customer_id)->get();
