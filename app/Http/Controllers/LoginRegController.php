@@ -162,7 +162,7 @@ class LoginRegController extends Controller
             $user = User::where('mobile', $request->login)
                         ->orWhere('email', $request->login)
                         ->first();
-
+dd($user);
             if (!$user || !Hash::check($request->password, $user->password)) {
                 return response()->json([
                     'status'  => false,
