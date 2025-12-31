@@ -153,6 +153,7 @@ class LoginRegController extends Controller
             'role'     => 'required'
         ]);
 
+        
         /* ======================================================
         CUSTOMER LOGIN (users table only)
         ====================================================== */
