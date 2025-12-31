@@ -1,4 +1,4 @@
-@extends('layouts.vendorapp')
+@extends('layouts.custapp')
 @section('title', 'Search Vendors')
 
 @section('content')

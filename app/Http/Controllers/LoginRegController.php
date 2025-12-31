@@ -260,15 +260,17 @@ class LoginRegController extends Controller
             return redirect('/'); 
         }
         $customer_id = Session::get('customer_id');
-        //  dd( $customer_id);
+        $cust_data = DB::table('users')->where('id',$customer_id)->first();
+        //  dd( $cust_data);
         $post_data = DB::table('posts')->where('user_id',$customer_id)->get();
+        //  dd( $post_data);
         $count_post_data = count($post_data);
 
         $vendor_data = DB::table('vendor_reg')->get();
         $count_vendor_data = count($vendor_data);
         
         //  dd($post_data);
-        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data')); 
+        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data','cust_data')); 
     }
 
     // ============================= Vender DASHBOARD =============================
@@ -281,14 +283,15 @@ class LoginRegController extends Controller
         }
         $vendor_id = Session::get('vendor_id');
         //   dd($vendor_id);
-        $vendor_details = DB::table('vendor_reg')
+        $vendor = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->first();
+            //  dd($vendor_details);        
         $ActiveLeads  = DB::connection('mysql')->table('posts')->count();   
         $projects  = DB::connection('mysql')->table('posts')->get();       
         // dd( $ActiveLeads_data );
 
-        return view('web.vendordashboard',compact('ActiveLeads','projects')); 
+        return view('web.vendordashboard',compact('ActiveLeads','projects','vendor','vendor_id')); 
     }
 
     // ============================= supplierdashboard =============================

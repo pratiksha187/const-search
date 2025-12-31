@@ -189,7 +189,7 @@ body{ background:var(--bg); }
 
     <!-- HEADER -->
     <div class="dashboard-header">
-        <h2>Hi {{ Session::get('user_name') }} 👋</h2>
+        <h2>Hi {{ $vendor->name }} 👋</h2>
         <p>Track your leads, bids and projects at a glance</p>
     </div>
 

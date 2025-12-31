@@ -166,7 +166,7 @@ body {
         <!-- HEADER -->
         <div class="dashboard-header">
             <h3 class="welcome-title">
-                Hi {{ session('user_name') ?? 'Customer' }} 👋
+                Hi {{ $cust_data->name ?? 'Customer' }} 👋
             </h3>
             <p class="welcome-sub">
                 Track your leads, bids and projects at a glance.

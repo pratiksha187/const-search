@@ -131,178 +131,165 @@
             justify-content: center;
         }
 
-       .profile-dropdown {
-            position: absolute;
-            top: 65px;
-            right: 20px;
-            width: 220px;
-            background: #ffffff;
-            border-radius: 14px;
-            overflow: hidden;
-            display: none;
-            z-index: 9999;
-            animation: fadeSlide 0.25s ease;
-        }
         .dashboard-content {
             margin-top: 120px;
             padding: 30px;
         }
 
-        /* Animation */
-        @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Dropdown */
+        .profile-dropdown {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            width: 240px;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 10px 0;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            display: none;
+            z-index: 9999;
+            animation: fadeSlide 0.25s ease;
         }
 
-        .profile-dropdown {
-    position: absolute;
-    top: 70px;
-    right: 20px;
-    width: 240px;
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 10px 0;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-    display: none;
-    z-index: 9999;
-}
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
-.profile-dropdown .dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 22px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #0f172a;
-    text-decoration: none;
-    transition: background 0.2s ease;
-}
+        .profile-dropdown .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 22px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #0f172a;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
 
-.profile-dropdown .dropdown-item:hover {
-    background: #f8fafc;
-}
+        .profile-dropdown .dropdown-item:hover {
+            background: #f8fafc;
+        }
 
-.profile-dropdown .icon {
-    width: 34px;
-    height: 34px;
-    background: #f1f5f9;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .profile-dropdown .icon {
+            width: 34px;
+            height: 34px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-.profile-dropdown .icon svg {
-    width: 18px;
-    height: 18px;
-    color: #1c2c3e;
-}
-
-.profile-dropdown .logout .icon {
-    background: #fff1f2;
-}
-
-.profile-dropdown .logout svg {
-    color: #dc2626;
-}
-
+        .profile-dropdown .logout .icon {
+            background: #fff1f2;
+        }
     </style>
 </head>
+
+@php
+    // ✅ Safe Customer Session Logic
+    $cust_data = null;
+    $customer_id = session('customer_id');
+
+    if ($customer_id) {
+        // change table name if your customer table is different
+        $cust_data = DB::table('users')->where('id', $customer_id)->first();
+
+        // ✅ If you have is_read column use it, else remove where('is_read',0)
+        $unreadCountQuery = DB::table('customer_notifications')->where('customer_id', $customer_id);
+
+        // If column exists in your table then keep, otherwise comment this line
+        // $unreadCountQuery->where('is_read', 0);
+
+        $unreadCount = $unreadCountQuery->count();
+
+        $usernotifications = DB::table('customer_notifications')
+            ->where('customer_id', $customer_id)
+            ->latest()
+            ->limit(5)
+            ->get();
+    } else {
+        $unreadCount = 0;
+        $usernotifications = collect();
+    }
+@endphp
 
 <body>
 
 <div class="main-header">
 
     <!-- LOGO -->
-    <a href="{{route('dashboard')}}">
+    <a href="{{ $cust_data ? route('dashboard') : url('/') }}">
         <img src="{{ asset('images/logobg.png') }}" alt="ConstructKaro">
     </a>
 
     <!-- MENU -->
     <div class="top-menu">
-        <a href="{{route('dashboard')}}">Dashboard</a>
-        <a href="{{ route('myposts') }}">My Posts</a>
-        <a href="{{ route('post') }}">Add Post</a>
-        <a href="{{ route('search_vendor') }}">Search Vendors</a>
-        <a href="{{ route('supplierserch') }}">Search Suppliers</a>
-        
-    </div>
+        @if($cust_data)
 
-    <!-- NOTIFICATION -->
-    <div class="notification-container">
-        @php
-            $customer_id = session('user_id');
-            $unreadCount = DB::table('customer_notifications')
-                ->where('customer_id',$customer_id)
-              
-                ->count();
+            <a href="{{route('dashboard')}}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
+            <a href="{{ route('myposts') }}" class="{{ request()->routeIs('myposts') ? 'active' : '' }}">My Posts</a>
+            <a href="{{ route('post') }}" class="{{ request()->routeIs('post') ? 'active' : '' }}">Add Post</a>
+            <a href="{{ route('search_vendor') }}" class="{{ request()->routeIs('search_vendor') ? 'active' : '' }}">Search Vendors</a>
+            <a href="{{ route('supplierserch') }}" class="{{ request()->routeIs('supplierserch') ? 'active' : '' }}">Search Suppliers</a>
 
-            $usernotifications = DB::table('customer_notifications')
-                ->where('customer_id',$customer_id)
-                ->latest()
-                ->limit(5)
-                ->get();
-        @endphp
+            <!-- NOTIFICATION -->
+            <div class="notification-container">
+                <i class="bi bi-bell" onclick="toggleNotificationMenu(event)"></i>
 
-        <i class="bi bi-bell" onclick="toggleNotificationMenu(event)"></i>
+                @if($unreadCount > 0)
+                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-circle">
+                        {{ $unreadCount }}
+                    </span>
+                @endif
 
-        @if($unreadCount > 0)
-            <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-circle">
-                {{ $unreadCount }}
-            </span>
+                <div class="notification-dropdown" id="notificationDropdown">
+                    <div class="fw-bold p-3 border-bottom text-center">Notifications</div>
+
+                    @forelse($usernotifications as $note)
+                        <a href="#">
+                            <small class="text-muted">{{ Str::limit($note->message,45) }}</small>
+                        </a>
+                    @empty
+                        <div class="text-center text-muted p-3">No notifications</div>
+                    @endforelse
+
+                    <a href="{{route('user.notifications')}}" class="text-center text-primary d-block py-2">View All</a>
+                </div>
+            </div>
+
+            <!-- PROFILE -->
+            <div class="header-profile" onclick="toggleProfileMenu(event)">
+                <div class="profile-trigger-avatar">
+                    {{ strtoupper(substr($cust_data->name ?? 'U', 0, 1)) }}
+                </div>
+                <span>{{ $cust_data->name ?? 'User' }}</span>
+                <i class="bi bi-chevron-down"></i>
+            </div>
+
+        @else
+            <!-- ✅ GUEST MENU -->
+            <a href="{{ route('login_register') }}">Customer Login</a>
+            <a href="{{ route('login_register') }}">Customer Register</a>
         @endif
-
-        <div class="notification-dropdown" id="notificationDropdown">
-            <div class="fw-bold p-3 border-bottom text-center">Notifications</div>
-
-            @forelse($usernotifications as $note)
-                <a href="#">
-                    
-                    <small class="text-muted">{{ Str::limit($note->message,45) }}</small>
-                </a>
-            @empty
-                <div class="text-center text-muted p-3">No notifications</div>
-            @endforelse
-
-            <a href="{{route('user.notifications')}}" class="text-center text-primary d-block py-2">View All</a>
-        </div>
-    </div>
-
-    <!-- PROFILE -->
-    <div class="header-profile" onclick="toggleProfileMenu(event)">
-        <div class="profile-trigger-avatar">
-            {{ strtoupper(substr(session('user_name') ?? 'U', 0, 1)) }}
-        </div>
-        <span>{{ session('user_name') ?? 'User' }}</span>
-        <i class="bi bi-chevron-down"></i>
     </div>
 </div>
 
-
+@if($cust_data)
 <div class="profile-dropdown" id="profileDropdown">
     <a href="{{ route('cutomerprofile') }}" class="dropdown-item">
-        <span class="icon">
-            <i data-lucide="user"></i>
-        </span>
+        <span class="icon"><i data-lucide="user"></i></span>
         <span>Profile</span>
     </a>
 
-    <a href="/logout" class="dropdown-item logout">
-        <span class="icon">
-            <i data-lucide="log-out"></i>
-        </span>
+    <a href="{{ route('logout') }}" class="dropdown-item logout">
+        <span class="icon"><i data-lucide="log-out"></i></span>
         <span>Logout</span>
     </a>
 </div>
-
-
+@endif
 
 <div class="dashboard-content">
     @yield('content')
@@ -312,18 +299,28 @@
 function toggleProfileMenu(event){
     event.stopPropagation();
     const menu = document.getElementById('profileDropdown');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    if(!menu) return;
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+
+    const notify = document.getElementById('notificationDropdown');
+    if(notify) notify.style.display = 'none';
 }
 
 function toggleNotificationMenu(event){
     event.stopPropagation();
     const menu = document.getElementById('notificationDropdown');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    if(!menu) return;
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+
+    const profile = document.getElementById('profileDropdown');
+    if(profile) profile.style.display = 'none';
 }
 
 document.addEventListener('click', function(){
-    document.getElementById('profileDropdown').style.display = 'none';
-    document.getElementById('notificationDropdown').style.display = 'none';
+    const profile = document.getElementById('profileDropdown');
+    const notify  = document.getElementById('notificationDropdown');
+    if(profile) profile.style.display = 'none';
+    if(notify) notify.style.display = 'none';
 });
 </script>
 
@@ -331,21 +328,6 @@ document.addEventListener('click', function(){
 <script>
     lucide.createIcons();
 </script>
-<script>
-function toggleProfileDropdown() {
-    const dropdown = document.getElementById('profileDropdown');
-    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-}
-
-// click outside close
-document.addEventListener('click', function (e) {
-    const dropdown = document.getElementById('profileDropdown');
-    if (!e.target.closest('.profile-area')) {
-        dropdown.style.display = 'none';
-    }
-});
-</script>
-
 
 </body>
 </html>

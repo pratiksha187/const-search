@@ -540,7 +540,7 @@ public function supplierstore(Request $request)
         $delivery_type = DB::table('delivery_type')->get();
         $maximum_distances = DB::table('maximum_distances')->get();
         $supplier_data = DB::table('supplier_reg')->get();
-dd( $supplier_data);
+        // dd( $supplier_data);
         // ======================
         // LAYOUT SELECTION
         // ======================

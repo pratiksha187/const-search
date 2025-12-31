@@ -487,10 +487,6 @@
                 </div>
             </div>
 
-                
-            <!-- </div> -->
-            <!-- Quick Filters -->
-            <!-- </div> -->
          <!-- RESULTS HEADER -->
          <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
@@ -510,26 +506,20 @@
             @foreach($projects as $project)
          
                   <div class="vendor-card"
-                data-work-type-id="{{ $project->work_type_id }}"
-                data-work-subtype-id="{{ $project->work_subtype_id }}"
-                data-work-subtype="{{ strtolower($project->work_subtype) }}"
-                data-name="{{ strtolower($project->title) }}"
-                data-state-id="{{ $project->state_id ?? '' }}"
-                data-region-id="{{ $project->region_id ?? '' }}"
-                data-city-id="{{ $project->city_id ?? '' }}"
-                data-project-id="{{ $project->id }}">
+                    data-work-type-id="{{ $project->work_type_id }}"
+                    data-work-subtype-id="{{ $project->work_subtype_id }}"
+                    data-work-subtype="{{ strtolower($project->work_subtype) }}"
+                    data-name="{{ strtolower($project->title) }}"
+                    data-state-id="{{ $project->state_id ?? '' }}"
+                    data-region-id="{{ $project->region_id ?? '' }}"
+                    data-city-id="{{ $project->city_id ?? '' }}"
+                    data-project-id="{{ $project->id }}">
 
-                <div class="row">
-                    <div class="col-auto">
-                        <div class="vendor-avatar">
-                            {{ strtoupper(substr($project->contact_name,0,1)) }}
-                        </div>
-                    </div>
-
-                    <div class="col">
+              
+                  <div class="col">
 
                         <!-- 🔒 BLURRED NAME -->
-                        <h3 class="vendor-name blur-text blur-name-{{ $project->id }}">
+                        <h3 class="vendor-name  blur-name-{{ $project->id }}">
                             {{ strtoupper($project->contact_name) }}
                         </h3>
 
@@ -550,12 +540,12 @@
                                 <div class="contact-info-section">
 
                                     <!-- 🔒 BLURRED MOBILE -->
-                                    <div class="blur-text blur-mobile-{{ $project->id }}">
+                                    <div class=" blur-mobile-{{ $project->id }}">
                                         {{ $project->mobile }}
                                     </div>
 
                                     <!-- 🔒 BLURRED EMAIL -->
-                                    <div class="blur-text blur-email-{{ $project->id }}">
+                                    <div class=" blur-email-{{ $project->id }}">
                                         {{ $project->email }}
                                     </div>
 
@@ -576,7 +566,6 @@
                         </div>
 
                     </div>
-                </div>
             </div>
             @endforeach
 

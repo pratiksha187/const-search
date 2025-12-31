@@ -519,8 +519,8 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <i class="bi bi-graph-up"></i>
                 </div>
                 <div>
-                    <h6 class="text-dark mb-1">Find Customer</h6>
-                    <p class="mb-1 text-muted">Find customers near your site</p>
+                    <h6 class="text-dark mb-1">Find Leads</h6>
+                    <p class="mb-1 text-muted">Find Leads near your site</p>
                     <small class="text-primary fw-semibold">
                         ✔ Genuine Leads • No Middlemen
                     </small>
