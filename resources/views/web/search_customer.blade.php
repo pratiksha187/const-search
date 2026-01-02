@@ -503,101 +503,101 @@
             {{-- RESULTS --}}
          
 
-           @foreach($projects as $project)
-<div class="vendor-card shadow-sm p-4 mb-4 rounded"
-     data-work-type-id="{{ $project->work_type_id }}"
-     data-work-subtype-id="{{ $project->work_subtype_id }}"
-     data-work-subtype="{{ strtolower($project->work_subtype) }}"
-     data-name="{{ strtolower($project->title) }}"
-     data-state-id="{{ $project->state_id ?? '' }}"
-     data-region-id="{{ $project->region_id ?? '' }}"
-     data-city-id="{{ $project->city_id ?? '' }}"
-     data-project-id="{{ $project->id }}">
+            @foreach($projects as $project)
+                <div class="vendor-card shadow-sm p-4 mb-4 rounded"
+                    data-work-type-id="{{ $project->work_type_id }}"
+                    data-work-subtype-id="{{ $project->work_subtype_id }}"
+                    data-work-subtype="{{ strtolower($project->work_subtype) }}"
+                    data-name="{{ strtolower($project->title) }}"
+                    data-state-id="{{ $project->state_id ?? '' }}"
+                    data-region-id="{{ $project->region_id ?? '' }}"
+                    data-city-id="{{ $project->city_id ?? '' }}"
+                    data-project-id="{{ $project->id }}">
 
-    <!-- 🔹 HEADER -->
-    <div class="d-flex justify-content-between align-items-start mb-2">
-        <div>
-            <span class="text-muted small">Type of Work</span>
-            <h5 class="fw-bold text-dark mb-0 blur-name-{{ $project->id }}">
-                {{ strtoupper($project->title) }}
-            </h5>
-        </div>
-        <span class="badge bg-primary-subtle text-primary px-3 py-2">
-            {{ $project->work_type }} - {{ $project->work_subtype }}
-        </span>
-    </div>
+                    <!-- 🔹 HEADER -->
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <span class="text-muted small">Type of Work</span>
+                            <h5 class="fw-bold text-dark mb-0 blur-name-{{ $project->id }}">
+                                {{ strtoupper($project->title) }}
+                            </h5>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                            {{ $project->work_type }} - {{ $project->work_subtype }}
+                        </span>
+                    </div>
 
-    <!-- 🔒 CONTACT NAME -->
-    <div class="mb-2">
-        <span class="text-muted small">Contact Person</span>
-        <h6 class="vendor-name blur-text blur-name-{{ $project->id }} mb-0">
-            {{ strtoupper($project->contact_name) }}
-        </h6>
-    </div>
+                    <!-- 🔒 CONTACT NAME -->
+                    <div class="mb-2">
+                        <span class="text-muted small">Contact Person</span>
+                        <h6 class="vendor-name blur-text blur-name-{{ $project->id }} mb-0">
+                            {{ strtoupper($project->contact_name) }}
+                        </h6>
+                    </div>
 
-    <!-- 📍 LOCATION -->
-    <div class="text-muted small d-flex align-items-center gap-2 mb-3">
-        <i class="bi bi-geo-alt-fill text-primary"></i>
-        {{ $vendor->cityname ?? '' }},
-        {{ $vendor->regionname ?? '' }},
-        {{ $vendor->statename ?? '' }}
-    </div>
+                    <!-- 📍 LOCATION -->
+                    <div class="text-muted small d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-geo-alt-fill text-primary"></i>
+                        {{ $vendor->cityname ?? '' }},
+                        {{ $vendor->regionname ?? '' }},
+                        {{ $vendor->statename ?? '' }}
+                    </div>
 
-    <!-- 🔹 CONTACT INFO -->
-    <div class="row align-items-center border-top pt-3">
-        <div class="col-md-7">
-            <div class="contact-info-section small">
+                    <!-- 🔹 CONTACT INFO -->
+                    <div class="row align-items-center border-top pt-3">
+                        <div class="col-md-7">
+                            <div class="contact-info-section small">
 
-                <!-- 📞 MOBILE -->
-                <div class="blur-mobile-{{ $project->id }} mb-1">
-                    <i class="bi bi-telephone-fill text-primary me-2"></i>
-                    <strong>Mobile:</strong>
-                    @php
-                        $mobile = preg_replace('/\D/', '', $project->mobile);
-                        $maskedMobile = $mobile
-                            ? substr($mobile, 0, 2) . str_repeat('x', max(strlen($mobile) - 2, 0))
-                            : 'xxxxxxxxxxxx';
-                    @endphp
-                    {{ $maskedMobile }}
+                                <!-- 📞 MOBILE -->
+                                <div class="blur-mobile-{{ $project->id }} mb-1">
+                                    <i class="bi bi-telephone-fill text-primary me-2"></i>
+                                    <strong>Mobile:</strong>
+                                    @php
+                                        $mobile = preg_replace('/\D/', '', $project->mobile);
+                                        $maskedMobile = $mobile
+                                            ? substr($mobile, 0, 2) . str_repeat('x', max(strlen($mobile) - 2, 0))
+                                            : 'xxxxxxxxxxxx';
+                                    @endphp
+                                    {{ $maskedMobile }}
+                                </div>
+
+                                <!-- ✉ EMAIL -->
+                                <div class="blur-email-{{ $project->id }}">
+                                    <i class="bi bi-envelope-fill text-primary me-2"></i>
+                                    <strong>Email:</strong>
+                                    @php
+                                        $email = $project->email;
+                                        if (!empty($email) && str_contains($email, '@')) {
+                                            [$name, $domain] = explode('@', $email, 2);
+                                            $maskedEmail =
+                                                substr($name, 0, 2)
+                                                . str_repeat('*', max(strlen($name) - 2, 0))
+                                                . '@' . $domain;
+                                        } else {
+                                            $maskedEmail = 'xxxx@xxxx.com';
+                                        }
+                                    @endphp
+                                    {{ $maskedEmail }}
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- ❤️ CTA -->
+                        <div class="col-md-5 text-end mt-3 mt-md-0">
+                            <button class="btn btn-primary px-4 py-2"
+                                onclick="handleInterested(
+                                    {{ $project->id }},
+                                    '{{ addslashes($project->contact_name) }}',
+                                    '{{ addslashes($project->title) }}',
+                                    '{{ addslashes($project->work_subtype) }}'
+                                )">
+                                ❤️ I'm Interested
+                            </button>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- ✉ EMAIL -->
-                <div class="blur-email-{{ $project->id }}">
-                    <i class="bi bi-envelope-fill text-primary me-2"></i>
-                    <strong>Email:</strong>
-                    @php
-                        $email = $project->email;
-                        if (!empty($email) && str_contains($email, '@')) {
-                            [$name, $domain] = explode('@', $email, 2);
-                            $maskedEmail =
-                                substr($name, 0, 2)
-                                . str_repeat('*', max(strlen($name) - 2, 0))
-                                . '@' . $domain;
-                        } else {
-                            $maskedEmail = 'xxxx@xxxx.com';
-                        }
-                    @endphp
-                    {{ $maskedEmail }}
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ❤️ CTA -->
-        <div class="col-md-5 text-end mt-3 mt-md-0">
-            <button class="btn btn-primary px-4 py-2"
-                onclick="handleInterested(
-                    {{ $project->id }},
-                    '{{ addslashes($project->contact_name) }}',
-                    '{{ addslashes($project->title) }}',
-                    '{{ addslashes($project->work_subtype) }}'
-                )">
-                ❤️ I'm Interested
-            </button>
-        </div>
-    </div>
-</div>
-@endforeach
+            @endforeach
 
 
         </div>

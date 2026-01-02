@@ -105,12 +105,12 @@ $savedNotes = [];
                         value="{{ old('shop_name',$supplier->shop_name ?? '') }}">
                   </div>
                   <div class="col-md-6">
-                     <label class="form-label">Contact Person</label>
+                     <label class="form-label">Owner/Contact Person</label>
                      <input type="text" name="contact_person" class="form-control"
                         value="{{ old('contact_person',$supplier->contact_person ?? '') }}">
                   </div>
                   <div class="col-md-6">
-                     <label class="form-label">Mobile</label>
+                     <label class="form-label">Phone Number</label>
                      <input type="text" name="mobile" class="form-control"
                         value="{{ old('mobile',$supplier->mobile ?? '') }}">
                   </div>
@@ -119,15 +119,41 @@ $savedNotes = [];
                      <input type="text" name="whatsapp" class="form-control"
                         value="{{ old('whatsapp',$supplier->whatsapp ?? '') }}">
                   </div>
-                  <div class="col-12">
+                  <div class="col-md-6">
                      <label class="form-label">Email</label>
                      <input type="email" name="email" class="form-control"
                         value="{{ old('email',$supplier->email ?? '') }}">
                   </div>
+                  <div class="col-md-6">
+                  <label for="state" class="form-label">State</label>
+                     <select id="stateSelect" name="state_id" class="form-select form-select-custom">
+                        <option value="">Select State</option>
+                        @foreach($states as $state)
+                              <option value="{{ $state->id }}"
+                                 {{ isset($vendor->state) && $vendor->state == $state->id ? 'selected' : '' }}>
+                                 {{ $state->name }}
+                              </option>
+                        @endforeach
+                     </select>
+                  </div>
+                  <div class="col-md-6">
+                  <label for="region" class="form-label">Region</label>
+                     <select id="regionSelect" name="region_id" class="form-select form-select-custom" disabled>
+                     <option value="">Select Region</option>
+                     </select>
+                  </div>
+                  <div class="col-md-6">
+                     <label for="region" class="form-label">City</label>
+                     <select id="citySelect" name="city_id" class="form-select form-select-custom" disabled>
+                     <option value="">Select City</option>
+                     </select>
+                  </div>
+
                   <div class="col-12">
                      <label class="form-label">Shop Address</label>
                      <textarea name="shop_address" class="form-control" rows="3">{{ old('shop_address',$supplier->shop_address ?? '') }}</textarea>
                   </div>
+
                </div>
             </div>
          </div>
@@ -137,21 +163,7 @@ $savedNotes = [];
             <div class="cardx">
                <div class="row g-3">
 
-                     {{-- Primary Supplier Type --}}
-                     <!-- <div class="col-md-6">
-                        <label class="form-label">
-                           Primary Supplier Type 
-                        </label>
-                        <select name="primary_type" class="form-select">
-                           <option value="">Select Supplier Type</option>
-                           @foreach ($primary_type as $primary_types)
-                                 <option value="{{ $primary_types->id }}"
-                                    {{ old('primary_types', $supplier->primary_type ?? '') == $primary_types->id ? 'selected' : '' }}>
-                                    {{ ucfirst($primary_types->primary_type) }}
-                                 </option>
-                           @endforeach
-                        </select>
-                     </div> -->
+                     
 
                      {{-- Years in Business --}}
                      <div class="col-md-6">
@@ -197,15 +209,31 @@ $savedNotes = [];
                               >
                      </div>
 
-                     {{-- MSME --}}
                      <div class="col-md-6">
                         <label class="form-label">MSME Registration</label>
-                        <select name="msme_status" class="form-select">
+                        <select name="msme_status" id="msme_status" class="form-select">
                            <option value="">Select Status</option>
-                           <option value="yes" {{ old('msme_status', $supplier->msme_status ?? '') == 'yes' ? 'selected' : '' }}>Yes - Registered</option>
-                           <option value="no" {{ old('msme_status', $supplier->msme_status ?? '') == 'no' ? 'selected' : '' }}>No - Not Registered</option>
-                           <option value="applied" {{ old('msme_status', $supplier->msme_status ?? '') == 'applied' ? 'selected' : '' }}>Applied - Under Process</option>
+                           <option value="yes" {{ old('msme_status', $supplier->msme_status ?? '') == 'yes' ? 'selected' : '' }}>
+                                 Yes - Registered
+                           </option>
+                           <option value="no" {{ old('msme_status', $supplier->msme_status ?? '') == 'no' ? 'selected' : '' }}>
+                                 No - Not Registered
+                           </option>
+                           <option value="applied" {{ old('msme_status', $supplier->msme_status ?? '') == 'applied' ? 'selected' : '' }}>
+                                 Applied - Under Process
+                           </option>
                         </select>
+                     </div>
+                     <!-- MSME Number Field -->
+                     <div class="col-md-6 mt-2" id="msme_number_div" style="display: none;">
+                        <label class="form-label">MSME Registration Number</label>
+                        <input
+                           type="text"
+                           name="msme_number"
+                           class="form-control"
+                           placeholder="Enter MSME Registration Number"
+                           value="{{ old('msme_number', $supplier->msme_number ?? '') }}"
+                        >
                      </div>
 
                      {{-- Credit Days --}}
@@ -474,4 +502,107 @@ $savedNotes = [];
 <script>
    $('.select2').select2();
 </script>
+<script>
+    const SAVED_STATE  = "{{ $vendor->state ?? '' }}";
+    const SAVED_REGION = "{{ $vendor->region ?? '' }}";
+    const SAVED_CITY   = "{{ $vendor->city ?? '' }}";
+</script>
+<script>
+$(document).ready(function () {
+
+    // 🔹 AUTO LOAD REGION IF STATE EXISTS
+    if (SAVED_STATE) {
+        loadRegions(SAVED_STATE);
+    }
+
+    $('#stateSelect').on('change', function () {
+        let stateId = $(this).val();
+        loadRegions(stateId);
+    });
+
+    $('#regionSelect').on('change', function () {
+        let regionId = $(this).val();
+        loadCities(regionId);
+    });
+
+    function loadRegions(stateId) {
+
+        $('#regionSelect')
+            .html('<option>Loading...</option>')
+            .prop('disabled', true);
+
+        $('#citySelect')
+            .html('<option>Select City</option>')
+            .prop('disabled', true);
+
+        if (!stateId) return;
+
+        $.get('/locations/regions/' + stateId, function (regions) {
+
+            let options = '<option value="">Select Region</option>';
+            regions.forEach(r => {
+                options += `<option value="${r.id}">${r.name}</option>`;
+            });
+
+            $('#regionSelect')
+                .html(options)
+                .prop('disabled', false);
+
+            // 🔹 AUTO SELECT SAVED REGION
+            if (SAVED_REGION) {
+                $('#regionSelect').val(SAVED_REGION);
+                loadCities(SAVED_REGION);
+            }
+        });
+    }
+
+    function loadCities(regionId) {
+
+        $('#citySelect')
+            .html('<option>Loading...</option>')
+            .prop('disabled', true);
+
+        if (!regionId) return;
+
+        $.get('/locations/cities/' + regionId, function (cities) {
+
+            let options = '<option value="">Select City</option>';
+            cities.forEach(c => {
+                options += `<option value="${c.id}">${c.name}</option>`;
+            });
+
+            $('#citySelect')
+                .html(options)
+                .prop('disabled', false);
+
+            // 🔹 AUTO SELECT SAVED CITY
+            if (SAVED_CITY) {
+                $('#citySelect').val(SAVED_CITY);
+            }
+        });
+    }
+
+});
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const msmeSelect = document.getElementById('msme_status');
+        const msmeDiv = document.getElementById('msme_number_div');
+
+        function toggleMsmeField() {
+            if (msmeSelect.value === 'yes') {
+                msmeDiv.style.display = 'block';
+            } else {
+                msmeDiv.style.display = 'none';
+            }
+        }
+
+        // Run on load (for edit form)
+        toggleMsmeField();
+
+        // Run on change
+        msmeSelect.addEventListener('change', toggleMsmeField);
+    });
+</script>
+
 @endsection

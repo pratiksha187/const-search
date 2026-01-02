@@ -476,33 +476,31 @@
                           </div>
                       </div>
 
-                      <div class="row mb-3">
-                          <div class="col-md-6">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
                               <label for="state" class="form-label">State</label>
                                 <select id="stateSelect" class="form-select form-select-custom">
-    <option value="">Select State</option>
-    @foreach($states as $state)
-        <option value="{{ $state->id }}"
-            {{ isset($vendor->state) && $vendor->state == $state->id ? 'selected' : '' }}>
-            {{ $state->name }}
-        </option>
-    @endforeach
-</select>
+                                    <option value="">Select State</option>
+                                    @foreach($states as $state)
+                                        <option value="{{ $state->id }}"
+                                            {{ isset($vendor->state) && $vendor->state == $state->id ? 'selected' : '' }}>
+                                            {{ $state->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-
-                          </div>
-
-                          <div class="col-md-6">
+                            <div class="col-md-6">
                               <label for="region" class="form-label">Region</label>
                                <select id="regionSelect"  class="form-select form-select-custom" disabled>
-                            <option value="">Select Region</option>
-                        </select>
-                          </div>
-                          <div class="col-md-6">
-                              <label for="region" class="form-label">City</label>
-                                <select id="citySelect" class="form-select form-select-custom" disabled>
-                            <option value="">Select City</option>
-                        </select>
+                                <option value="">Select Region</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="region" class="form-label">City</label>
+                                    <select id="citySelect" class="form-select form-select-custom" disabled>
+                                <option value="">Select City</option>
+                            </select>
                           </div>
 
                           <div class="col-md-6">

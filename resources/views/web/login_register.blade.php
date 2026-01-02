@@ -86,6 +86,21 @@
 @media(max-width: 992px){
     .illustration-img { display: none; }
 }
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 1.2rem;
+}
+
+.password-toggle:hover {
+    color: #00a8ff;
+}
+
 </style>
 
 <div class="auth-wrapper">
@@ -135,7 +150,13 @@
                 <input type="text" class="form-control mb-3" id="login-input">
 
                 <label class="fw-bold mb-1">Password</label>
-                <input type="password" class="form-control mb-3" id="login-pass">
+                <!-- <input type="password" class="form-control mb-3" id="login-pass"> -->
+                <div class="position-relative mb-3">
+                    <input type="password" class="form-control" id="login-pass">
+                    <span class="password-toggle" id="toggle-login-password">
+                        <i class="bi bi-eye"></i>
+                    </span>
+                </div>
 
                 <button class="btn-blue w-100" id="login-btn">Login</button>
             </div>
@@ -175,7 +196,13 @@
                     <input type="text" class="form-control mb-3" id="reg-name" placeholder="Full Name">
                     <input type="text" class="form-control mb-3" id="reg-mobile" placeholder="Mobile Number">
                     <input type="email" class="form-control mb-3" id="reg-email" placeholder="Email">
-                    <input type="password" class="form-control mb-3" id="reg-pass" placeholder="Password">
+                    <!-- <input type="password" class="form-control mb-3" id="reg-pass" placeholder="Password"> -->
+                    <input type="password" class="form-control mb-2" id="reg-pass" placeholder="Password">
+
+                    <input type="password" class="form-control mb-1" id="reg-confirm-pass" placeholder="Re-enter Password">
+
+                    <small id="password-match-msg" class="fw-semibold"></small>
+
                 </div>
 
                 <!-- VENDOR EXTRA FIELDS -->
@@ -254,6 +281,75 @@ $("#login-btn").click(function(){
         login: $("#login-input").val(),
         password: $("#login-pass").val(),
         role: $("#selected-role").val(),
+        _token: "{{ csrf_token() }}"
+    }, function(res){
+        if(res.status){
+            window.location.href = res.redirect;
+        } else {
+            alert(res.message);
+        }
+    });
+});
+</script>
+<script>
+/* SHOW / HIDE LOGIN PASSWORD */
+$("#toggle-login-password").click(function () {
+    let input = $("#login-pass");
+    let icon = $(this).find("i");
+
+    if (input.attr("type") === "password") {
+        input.attr("type", "text");
+        icon.removeClass("bi-eye").addClass("bi-eye-slash");
+    } else {
+        input.attr("type", "password");
+        icon.removeClass("bi-eye-slash").addClass("bi-eye");
+    }
+});
+</script>
+<script>
+/* PASSWORD MATCH CHECK */
+function checkPasswordMatch() {
+    let pass = $("#reg-pass").val();
+    let confirmPass = $("#reg-confirm-pass").val();
+
+    if (confirmPass.length === 0) {
+        $("#password-match-msg").text("").removeClass("text-danger text-success");
+        return false;
+    }
+
+    if (pass === confirmPass) {
+        $("#password-match-msg")
+            .text("Passwords match ✔")
+            .removeClass("text-danger")
+            .addClass("text-success");
+        return true;
+    } else {
+        $("#password-match-msg")
+            .text("Passwords do not match ✖")
+            .removeClass("text-success")
+            .addClass("text-danger");
+        return false;
+    }
+}
+
+$("#reg-pass, #reg-confirm-pass").on("keyup", checkPasswordMatch);
+
+/* BLOCK REGISTER IF PASSWORD MISMATCH */
+$("#btn-send-otp").click(function () {
+
+    if (!checkPasswordMatch()) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    $.post("{{ route('register') }}", {
+        role: $("#selected-role").val(),
+        name: $("#reg-name").val(),
+        mobile: $("#reg-mobile").val(),
+        email: $("#reg-email").val(),
+        password: $("#reg-pass").val(),
+        business_name: $("#vendor-business-name").val(),
+        gst_number: $("#vendor-gst-number").val(),
         _token: "{{ csrf_token() }}"
     }, function(res){
         if(res.status){

@@ -8,10 +8,19 @@ use App\Http\Controllers\VenderController;
 use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\MaterialCategoryController;
+use App\Http\Controllers\MaterialProductController;
+use App\Http\Controllers\MaterialProductSubtypeController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ProfileTypeController;
+
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
+Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');
+
 
 Route::get('/login-register', [LoginRegController::class, 'login_register'])->name('login_register');
 
@@ -90,6 +99,29 @@ Route::get('/supplier/profile', [SuppliersController::class, 'suppliersprofile']
 Route::post('/supplierstore', [SuppliersController::class, 'supplierstore'])->name('supplier.store');
 Route::get('/addproducts', [SuppliersController::class, 'addproducts'])->name('addproducts');
 
+// Route::get('/get-product-subtypes/{productId}', 
+//     [SuppliersController::class, 'getProductSubtypes']
+// );
+// Route::get('/get-brands/{materialProductId}', 
+//     [SuppliersController::class, 'getBrands']
+// );
+Route::get('/get-product-subtypes/{productId}', [SuppliersController::class, 'getProductSubtypes']);
+Route::get('/get-brands/{productId}', [SuppliersController::class, 'getBrands']);
+
+
+Route::post(
+    '/supplier-products/store',
+    [SuppliersController::class, 'storeSupplierProductData']
+)->name('supplier-products.store');
+
+
+Route::get('/get-profile-types/{subCategoryId}', 
+    [SuppliersController::class, 'getProfileTypes']
+);
+
+
+Route::get('/get-product-meta/{id}', [SuppliersController::class, 'getProductMeta']);
+
 Route::post('/supplier/products/save', [SuppliersController::class, 'saveProducts'])
      ->name('supplier.products.save');
 
@@ -133,10 +165,25 @@ Route::get('/delete-post/{id}', [HomeController::class, 'destroy'])->name('posts
 
 Route::post('/import-posts', [ImportController::class, 'import']);
 
+Route::resource('material-categories', MaterialCategoryController::class);
+Route::post('material-categories/status/{id}', 
+    [MaterialCategoryController::class, 'updateStatus']
+)->name('material-categories.status');
+
+Route::resource('material-products', MaterialProductController::class);
+Route::resource(
+    'material-product-subtypes',
+    MaterialProductSubtypeController::class
+);
+
+Route::resource('brands', BrandController::class);
+Route::resource('profiletypes', ProfileTypeController::class);
+
+
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "Animesh@123";
+    $password = "Dnyaneshwar@123";
     $hash = Hash::make($password);
 
     return $hash; 
