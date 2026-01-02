@@ -417,6 +417,154 @@ body {
     .section-after-hero{ padding-top: 70px; }
 }
 
+/* ================= RESPONSIVE FIXES ONLY ================= */
+
+/* --------- LARGE TABLETS --------- */
+@media (max-width: 1200px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    .hero-img {
+        max-width: 380px;
+    }
+}
+
+/* --------- TABLETS --------- */
+@media (max-width: 992px) {
+
+    /* HERO */
+    .hero-new {
+        padding: 100px 0 160px;
+    }
+
+    .hero-inner .row {
+        text-align: center;
+    }
+
+    .hero-illustration {
+        margin-top: 30px;
+    }
+
+    /* OVERLAP CARDS → STACK */
+    .hero-overlap-cards {
+        position: static;
+        transform: none;
+        margin-top: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .overlap-card {
+        width: 90%;
+        max-width: 360px;
+    }
+
+    .section-after-hero {
+        padding-top: 40px;
+    }
+
+    /* SEARCH BAR */
+    .search-bar-wrapper {
+        flex-direction: column;
+        border-radius: 20px;
+        gap: 10px;
+    }
+
+    .search-btn-final {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* VENDOR ROW */
+    .vendor-row {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+}
+
+/* --------- MOBILE DEVICES --------- */
+@media (max-width: 576px) {
+
+    /* HERO TEXT */
+    .hero-title {
+        font-size: 1.7rem;
+        line-height: 1.3;
+    }
+
+    .hero-subtext {
+        font-size: 1rem;
+    }
+
+    /* BADGE */
+    .hero-badge {
+        font-size: 0.75rem;
+    }
+
+    /* TRUST PILLS */
+    .trusted-strip {
+        justify-content: center;
+    }
+
+    /* OVERLAP CARDS */
+    .overlap-card {
+        height: auto;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    /* CATEGORY BOX */
+    .category-box {
+        min-width: 160px;
+        padding: 20px 14px;
+    }
+
+    /* MATERIAL GRID */
+    .category-img {
+        width: 100px;
+        height: 80px;
+    }
+
+    /* FLOW CARDS */
+    .flow-card {
+        padding: 20px;
+    }
+
+    .flow-icon-circle {
+        width: 56px;
+        height: 56px;
+        font-size: 22px;
+    }
+
+    /* TESTIMONIAL */
+    .testimonial-card {
+        min-width: 280px;
+    }
+
+    /* LEAD FORM */
+    .lead-input {
+        font-size: 0.9rem;
+    }
+
+    .lead-card {
+        padding: 20px;
+    }
+}
+
+/* --------- EXTRA SMALL --------- */
+@media (max-width: 400px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+}
+
+
 </style>
 
 @if(session('success'))
