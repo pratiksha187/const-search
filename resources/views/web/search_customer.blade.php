@@ -816,7 +816,7 @@ $('#payNowBtn').on('click', function () {
             key: res.key,
             amount: res.amount,
             currency: "INR",
-            name: "ConstructKaro",
+            name: "SWARAJYA CONSTRUCTION PRIVATE LIMITED",
             description: "Unlock Customer Lead",
             order_id: res.order_id,
 
