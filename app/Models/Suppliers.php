@@ -18,9 +18,9 @@ class Suppliers extends Model
         'email',
         'shop_address',
         'city_id',
-        'area_id',
+        'state_id',
 
-        'primary_type',
+        'region_id',
         'years_in_business',
         'gst_number',
         'pan_number',
@@ -38,7 +38,7 @@ class Suppliers extends Model
         'pan_card_path',
         'shop_license_path',
         'sample_invoice_path',
-        'costing_sheet',
+        'costing_sheet_path',
 
         'images',
 

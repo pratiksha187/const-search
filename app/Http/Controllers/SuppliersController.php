@@ -27,7 +27,7 @@ class SuppliersController extends Controller
         $supplier = DB::table('supplier_reg')
                     ->where('id', $supplier_id)
                     ->first();
-
+        // dd($supplier);
         return view('web.suppliersprofile', compact(
             'primary_type',
             'experience',
@@ -43,7 +43,7 @@ class SuppliersController extends Controller
 
     public function supplierstore(Request $request)
     {
-        
+        // dd($request);
         $supplier_id = Session::get('supplier_id');
       
         if (!$supplier_id) {
@@ -60,13 +60,7 @@ class SuppliersController extends Controller
             'whatsapp'          => 'nullable',
             'email'             => 'nullable',
             'shop_address'      => 'nullable',
-
-            // 'city'              => 'nullable',
-            // 'area'              => 'nullable',
-
-            // 'primary_type'      => 'nullable',
             'years_in_business' => 'nullable',
-
             'gst_number'        => 'nullable',
             'pan_number'        => 'nullable',
             'msme_status'       => 'nullable',
@@ -95,6 +89,9 @@ class SuppliersController extends Controller
 
             'confirm_details'   => 'nullable',
             'agree_terms'       => 'nullable',
+            'state_id'  => 'nullable',
+            'region_id' => 'nullable',
+            'city_id' => 'nullable'
         ]);
 
         /* ===============================
@@ -131,10 +128,10 @@ class SuppliersController extends Controller
             'whatsapp'           => $validated['whatsapp'] ?? null,
             'email'              => $validated['email'],
             'shop_address'       => $validated['shop_address'],
-            // 'city_id'            => $validated['city'],
-            // 'area_id'            => $validated['area'],
+            'city_id'            => $validated['city_id'],
+            'region_id'            => $validated['region_id'],
 
-            // 'primary_type'       => $validated['primary_type'],
+            'state_id'       => $validated['state_id'],
             'years_in_business'  => $validated['years_in_business'],
             'gst_number'         => $validated['gst_number'],
             'pan_number'         => $validated['pan_number'],
@@ -257,33 +254,7 @@ class SuppliersController extends Controller
             'brands'   => $brands
         ]);
     }
-    // public function getProductSubtypes($productId)
-    // {
-    //     return DB::table('material_product_subtype')
-    //         ->where('material_product_id', $productId)
-    //         ->orderBy('material_subproduct')
-    //         ->get(['id', 'material_subproduct']);
-    // }
-
-    // public function getBrands($productId)
-    // {
-    //     // dd($productId);
-    //     return DB::table('brands')
-    //         ->where('material_product_id', $productId)
-    //         ->orderBy('name')
-    //         ->get(['id', 'name']);
-    // }
-
-    // public function getProfileTypes($subCategoryId)
-    // {
-    //     $profiles = DB::table('profiletype')
-    //         ->where('sub_categories_id', $subCategoryId)
-    //         ->orderBy('sub_categories_id')
-    //         ->get(['id', 'type']);
-
-    //     return response()->json($profiles);
-    // }
-
+  
     public function saveProducts(Request $request)
     {
         // $supplierId = auth()->id(); 
@@ -381,16 +352,7 @@ class SuppliersController extends Controller
             $layout = 'layouts.guest';
         }
 
-//         dd([
-//     'customer' => $customer_id,
-//     'vendor'   => $vendor_id,
-//     'supplier' => $supplier_id,
-//     'layout'   => $layout
-// ]);
 
-        // ======================
-        // RETURN VIEW
-        // ======================
         return view('web.supplierserch', compact(
             'credit_days',
             'delivery_type',
@@ -459,7 +421,7 @@ class SuppliersController extends Controller
     public function storeSupplierProductData(Request $request)
     {
 
-        dd($request);
+        // dd($request);
         // Basic validation
         $request->validate([
             'product_type'    => 'required',

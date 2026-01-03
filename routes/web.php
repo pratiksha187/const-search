@@ -82,6 +82,14 @@ Route::post('/save-leadform', [HomeController::class, 'storeleadform'])->name('s
 
 
 Route::get('/pay', [RazorpayController::class, 'showPaymentForm'])->name('razorpay.form');
+Route::post('/razorpay/handle', [RazorpayController::class, 'handlePayment'])
+    ->name('razorpay.handle');
+    
+Route::post('/razorpay/create-order', [RazorpayController::class, 'createOrder'])
+    ->name('razorpay.createOrder');
+
+Route::post('/razorpay/verify', [RazorpayController::class, 'verifyPayment'])
+    ->name('razorpay.verify');
 
 Route::get('/vendor_reg_form', [HomeController::class, 'vendor_reg_form'])->name('vendor_reg_form');
 

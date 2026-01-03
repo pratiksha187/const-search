@@ -41,8 +41,8 @@
 
             <div class="col-md-4">
                 <h5 class="fw-bold mb-3">Contact</h5>
-                <p>Email: support@constructkaro.com</p>
-                <p>Phone: +91 8446115797</p>
+                <p>Email: connect@constructkaro.com</p>
+                <p>Phone: +91 7385882657</p>
             </div>
 
         </div>

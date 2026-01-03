@@ -13,10 +13,10 @@ class HomeController extends Controller
     public function homepage(){
         
          $vendors = DB::table('vendor_reg')->count();
-        //  $cities =DB::connection('mysql2')->table('cities')->count();
+         $cities =DB::table('city')->count();
          $posts= DB::table('posts')->count();
         //  dd( $vendors);
-        return view('welcome',compact('vendors','posts'));
+        return view('welcome',compact('vendors','posts','cities'));
     }
 
     public function index()
@@ -220,7 +220,7 @@ class HomeController extends Controller
     {
         $cust_id   = $request->cust_id;
         $vendor_id = Session::get('vendor_id');
-        //    dd( $vendor_id );
+          
         if (!$vendor_id) {
             return response()->json([
                 'error' => 'Unauthorized'

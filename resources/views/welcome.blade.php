@@ -609,7 +609,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 
                 <div class="trusted-strip d-flex gap-2 mt-4 flex-wrap">
                     <span class="trusted-pill"><i class="bi bi-building"></i> <strong>{{$vendors}}+ Vendors</strong></span>
-                    <span class="trusted-pill"><i class="bi bi-geo-alt"></i> <strong> Cities</strong></span>
+                    <span class="trusted-pill"><i class="bi bi-geo-alt"></i> <strong> {{$cities}}+ Cities</strong></span>
                     <span class="trusted-pill"><i class="bi bi-clipboard-check"></i> <strong>{{$posts}}+ Projects</strong></span>
                 </div>
 
@@ -915,11 +915,19 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 <section class="section-wrapper">
     <div class="container">
         <div class="row g-4 align-items-center">
-
             <div class="col-lg-5">
-                <h2 class="section-title">How much can you save?</h2>
-                <p class="text-muted">Our team will help you choose the most economical vendor.</p>
+                <h2 class="section-title">Reduce Your Construction Cost</h2>
+                <p class="text-muted">
+                    Get matched with the right vendor at the right price — saving you time, money, and effort.
+                </p>
+
+                <ul class="list-unstyled mt-3">
+                    <li class="mb-2">✔ Verified vendors & suppliers near your site</li>
+                    <li class="mb-2">✔ Compare prices without middlemen</li>
+                    <li class="mb-2">✔ Faster decisions, better control</li>
+                </ul>
             </div>
+
 
             <div class="col-lg-7">
                 <form action="{{ route('save.leadform') }}" method="POST">

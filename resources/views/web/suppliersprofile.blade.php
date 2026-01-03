@@ -124,18 +124,20 @@ $savedNotes = [];
                      <input type="email" name="email" class="form-control"
                         value="{{ old('email',$supplier->email ?? '') }}">
                   </div>
+               
                   <div class="col-md-6">
-                  <label for="state" class="form-label">State</label>
-                     <select id="stateSelect" name="state_id" class="form-select form-select-custom">
+                     <label class="form-label">State</label>
+                     <select id="stateSelect" name="state_id" class="form-select">
                         <option value="">Select State</option>
                         @foreach($states as $state)
                               <option value="{{ $state->id }}"
-                                 {{ isset($vendor->state) && $vendor->state == $state->id ? 'selected' : '' }}>
+                                 {{ $supplier->state_id == $state->id ? 'selected' : '' }}>
                                  {{ $state->name }}
                               </option>
                         @endforeach
                      </select>
                   </div>
+
                   <div class="col-md-6">
                   <label for="region" class="form-label">Region</label>
                      <select id="regionSelect" name="region_id" class="form-select form-select-custom" disabled>
@@ -333,9 +335,9 @@ $savedNotes = [];
             <div class="cardx">
                <div class="row g-3">
                {{-- GST Certificate --}}
-               <div class="col-md-6">
+               <!-- <div class="col-md-6">
                      <label class="form-label fw-semibold">
-                        GST Certificate <span class="text-danger">*</span>
+                        GST Certificate 
                      </label>
 
                      @if(!empty($supplier?->gst_certificate_path))
@@ -347,84 +349,118 @@ $savedNotes = [];
                         </div>
                      @endif
 
-                     <input type="file" name="gst_certificate_path" class="form-control">
+                     <input type="file" name="gst_certificate" class="form-control">
+               </div> -->
+               <div class="col-md-6">
+                  <label class="form-label fw-semibold">
+                     GST Certificate 
+                  </label>
+
+                  @if(!empty($supplier->gst_certificate_path))
+                     <div class="mb-2 d-flex gap-2">
+                           <a href="{{ asset($supplier->gst_certificate_path) }}"
+                              target="_blank"
+                              class="badge bg-success text-decoration-none">
+                              View
+                           </a>
+
+                           <a href="{{ asset($supplier->gst_certificate_path) }}"
+                              download
+                              class="badge bg-primary text-decoration-none">
+                              Download
+                           </a>
+                     </div>
+                  @endif
+
+                  <input type="file" name="gst_certificate" class="form-control">
                </div>
+
 
 
                {{-- PAN Card --}}
+              
                <div class="col-md-6">
-                     <label class="form-label fw-semibold">
-                        PAN Card <span class="text-danger">*</span>
-                     </label>
+                  <label class="form-label fw-semibold">
+                     PAN Card 
+                  </label>
 
-                     @if(!empty($supplier?->pan_card_path))
-                        <div class="mb-2">
+                  @if(!empty($supplier->pan_card_path))
+                     <div class="mb-2 d-flex gap-2">
                            <a href="{{ asset($supplier->pan_card_path) }}" target="_blank"
-                              class="badge bg-success text-decoration-none">
-                                 View PAN Card
-                           </a>
-                        </div>
-                     @endif
+                              class="badge bg-success text-decoration-none">View</a>
 
-                     <input type="file" name="pan_card_path" class="form-control">
+                           <a href="{{ asset($supplier->pan_card_path) }}" download
+                              class="badge bg-primary text-decoration-none">Download</a>
+                     </div>
+                  @endif
+
+                  <input type="file" name="pan_card" class="form-control">
                </div>
 
 
+
                {{-- Shop License --}}
+            
                <div class="col-md-6">
-                     <label class="form-label fw-semibold">
-                        Shop License / Registration
-                     </label>
+                  <label class="form-label fw-semibold">
+                     Shop License / Registration
+                  </label>
 
-                     @if(!empty($supplier?->shop_license_path))
-                        <div class="mb-2">
+                  @if(!empty($supplier->shop_license_path))
+                     <div class="mb-2 d-flex gap-2">
                            <a href="{{ asset($supplier->shop_license_path) }}" target="_blank"
-                              class="badge bg-success text-decoration-none">
-                                 View Shop License
-                           </a>
-                        </div>
-                     @endif
+                              class="badge bg-success">View</a>
 
-                     <input type="file" name="shop_license_path" class="form-control">
+                           <a href="{{ asset($supplier->shop_license_path) }}" download
+                              class="badge bg-primary">Download</a>
+                     </div>
+                  @endif
+
+                  <input type="file" name="shop_license" class="form-control">
                </div>
 
 
                {{-- Sample Invoice --}}
+            
                <div class="col-md-6">
-                     <label class="form-label fw-semibold">
-                        Sample Invoice
-                     </label>
+                  <label class="form-label fw-semibold">
+                     Sample Invoice
+                  </label>
 
-                     @if(!empty($supplier?->sample_invoice_path))
-                        <div class="mb-2">
+                  @if(!empty($supplier->sample_invoice_path))
+                     <div class="mb-2 d-flex gap-2">
                            <a href="{{ asset($supplier->sample_invoice_path) }}" target="_blank"
-                              class="badge bg-success text-decoration-none">
-                                 View Sample Invoice
-                           </a>
-                        </div>
-                     @endif
+                              class="badge bg-success">View</a>
 
-                     <input type="file" name="sample_invoice_path" class="form-control">
+                           <a href="{{ asset($supplier->sample_invoice_path) }}" download
+                              class="badge bg-primary">Download</a>
+                     </div>
+                  @endif
+
+                  <input type="file" name="sample_invoice" class="form-control">
                </div>
 
 
                {{-- Costing Sheet --}}
+              
                <div class="col-md-6">
-                     <label class="form-label fw-semibold">
-                        Costing Sheet
-                     </label>
+                  <label class="form-label fw-semibold">
+                     Costing Sheet
+                  </label>
 
-                     @if(!empty($supplier?->costing_sheet))
-                        <div class="mb-2">
-                           <a href="{{ asset($supplier->costing_sheet) }}" target="_blank"
-                              class="badge bg-success text-decoration-none">
-                                 View Costing Sheet
-                           </a>
-                        </div>
-                     @endif
+                  @if(!empty($supplier->costing_sheet_path))
+                     <div class="mb-2 d-flex gap-2">
+                           <a href="{{ asset($supplier->costing_sheet_path) }}" target="_blank"
+                              class="badge bg-success">View</a>
 
-                     <input type="file" name="costing_sheet" class="form-control">
+                           <a href="{{ asset($supplier->costing_sheet_path) }}" download
+                              class="badge bg-primary">Download</a>
+                     </div>
+                  @endif
+
+                  <input type="file" name="costing_sheet" class="form-control">
                </div>
+
                </div>
             </div>
          </div>
@@ -438,7 +474,7 @@ $savedNotes = [];
                      {{-- Account Holder --}}
                      <div class="col-md-6">
                         <label class="form-label fw-semibold">
-                           Account Holder Name <span class="text-danger">*</span>
+                           Account Holder Name 
                         </label>
                         <input type="text"
                               name="account_holder"
@@ -450,7 +486,7 @@ $savedNotes = [];
                      {{-- Bank Name --}}
                      <div class="col-md-6">
                         <label class="form-label fw-semibold">
-                           Bank Name <span class="text-danger">*</span>
+                           Bank Name 
                         </label>
                         <input type="text"
                               name="bank_name"
@@ -462,7 +498,7 @@ $savedNotes = [];
                      {{-- Account Number --}}
                      <div class="col-md-6">
                         <label class="form-label fw-semibold">
-                           Account Number <span class="text-danger">*</span>
+                           Account Number 
                         </label>
                         <input type="text"
                               name="account_number"
@@ -474,7 +510,7 @@ $savedNotes = [];
                      {{-- IFSC Code --}}
                      <div class="col-md-6">
                         <label class="form-label fw-semibold">
-                           IFSC Code <span class="text-danger">*</span>
+                           IFSC Code 
                         </label>
                         <input type="text"
                               name="ifsc_code"
@@ -502,15 +538,16 @@ $savedNotes = [];
 <script>
    $('.select2').select2();
 </script>
+
 <script>
-    const SAVED_STATE  = "{{ $vendor->state ?? '' }}";
-    const SAVED_REGION = "{{ $vendor->region ?? '' }}";
-    const SAVED_CITY   = "{{ $vendor->city ?? '' }}";
+    const SAVED_STATE  = "{{ $supplier->state_id ?? '' }}";
+    const SAVED_REGION = "{{ $supplier->region_id ?? '' }}";
+    const SAVED_CITY   = "{{ $supplier->city_id ?? '' }}";
 </script>
 <script>
 $(document).ready(function () {
 
-    // 🔹 AUTO LOAD REGION IF STATE EXISTS
+    // 🔹 If editing & state exists → auto load regions
     if (SAVED_STATE) {
         loadRegions(SAVED_STATE);
     }
@@ -527,13 +564,8 @@ $(document).ready(function () {
 
     function loadRegions(stateId) {
 
-        $('#regionSelect')
-            .html('<option>Loading...</option>')
-            .prop('disabled', true);
-
-        $('#citySelect')
-            .html('<option>Select City</option>')
-            .prop('disabled', true);
+        $('#regionSelect').html('<option>Loading...</option>').prop('disabled', true);
+        $('#citySelect').html('<option>Select City</option>').prop('disabled', true);
 
         if (!stateId) return;
 
@@ -544,11 +576,9 @@ $(document).ready(function () {
                 options += `<option value="${r.id}">${r.name}</option>`;
             });
 
-            $('#regionSelect')
-                .html(options)
-                .prop('disabled', false);
+            $('#regionSelect').html(options).prop('disabled', false);
 
-            // 🔹 AUTO SELECT SAVED REGION
+            // ✅ Auto select saved region
             if (SAVED_REGION) {
                 $('#regionSelect').val(SAVED_REGION);
                 loadCities(SAVED_REGION);
@@ -558,9 +588,7 @@ $(document).ready(function () {
 
     function loadCities(regionId) {
 
-        $('#citySelect')
-            .html('<option>Loading...</option>')
-            .prop('disabled', true);
+        $('#citySelect').html('<option>Loading...</option>').prop('disabled', true);
 
         if (!regionId) return;
 
@@ -571,11 +599,9 @@ $(document).ready(function () {
                 options += `<option value="${c.id}">${c.name}</option>`;
             });
 
-            $('#citySelect')
-                .html(options)
-                .prop('disabled', false);
+            $('#citySelect').html(options).prop('disabled', false);
 
-            // 🔹 AUTO SELECT SAVED CITY
+            // ✅ Auto select saved city
             if (SAVED_CITY) {
                 $('#citySelect').val(SAVED_CITY);
             }
@@ -584,6 +610,7 @@ $(document).ready(function () {
 
 });
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const msmeSelect = document.getElementById('msme_status');
