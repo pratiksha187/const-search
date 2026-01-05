@@ -268,8 +268,9 @@ class HomeController extends Controller
     public function customerinterestcheck(Request $request)
     {
         $vend_id     = $request->vend_id;
-        $customer_id = Session::get('customer_id');
         // dd($vend_id);
+        $customer_id = Session::get('customer_id');
+        // dd($customer_id);
         if (!$customer_id) {
             return response()->json([
                 'authorized' => false
@@ -281,7 +282,7 @@ class HomeController extends Controller
             ->where('customer_id', $customer_id)
             ->where('vendor_id', $vend_id)
             ->exists();
-
+        // dd( $alreadyInterested );
         // Total used leads
         $usedLeads = DB::table('customer_interests')
             ->where('customer_id', $customer_id)

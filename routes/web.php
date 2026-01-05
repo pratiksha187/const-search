@@ -13,6 +13,10 @@ use App\Http\Controllers\MaterialProductController;
 use App\Http\Controllers\MaterialProductSubtypeController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProfileTypeController;
+use App\Http\Controllers\UnitController;
+use App\Http\Controllers\ThicknessSizeController;
+use App\Http\Controllers\GradeController;
+use App\Http\Controllers\StandardController;
 
 
 // Route::get('/', function () {
@@ -185,8 +189,47 @@ Route::resource(
 
 Route::resource('brands', BrandController::class);
 Route::resource('profiletypes', ProfileTypeController::class);
+Route::get('/unit-master', [UnitController::class,'index'])->name('unit.index');
+Route::post('/unit-store', [UnitController::class,'store'])->name('unit.store');
+Route::post('/unit-update/{id}', [UnitController::class,'update'])->name('unit.update');
+Route::get('/unit-delete/{id}', [UnitController::class,'destroy'])->name('unit.delete');
+Route::get('/thickness-size-master', [ThicknessSizeController::class,'index'])
+        ->name('thickness.size.index');
+
+Route::post('/thickness-size-store', [ThicknessSizeController::class,'store'])
+        ->name('thickness.size.store');
+
+Route::post('/thickness-size-update/{id}', [ThicknessSizeController::class,'update'])
+        ->name('thickness.size.update');
+
+Route::get('/thickness-size-delete/{id}', [ThicknessSizeController::class,'destroy'])
+        ->name('thickness.size.delete');
 
 
+Route::get('/grade-master', [GradeController::class,'index'])
+        ->name('grade.index');
+
+Route::post('/grade-store', [GradeController::class,'store'])
+        ->name('grade.store');
+
+Route::post('/grade-update/{id}', [GradeController::class,'update'])
+        ->name('grade.update');
+
+Route::get('/grade-delete/{id}', [GradeController::class,'destroy'])
+        ->name('grade.delete');
+
+
+Route::get('/standard-master', [StandardController::class,'index'])
+    ->name('standard.index');
+
+Route::post('/standard-store', [StandardController::class,'store'])
+    ->name('standard.store');
+
+Route::post('/standard-update/{id}', [StandardController::class,'update'])
+    ->name('standard.update');
+
+Route::get('/standard-delete/{id}', [StandardController::class,'destroy'])
+    ->name('standard.delete');
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";

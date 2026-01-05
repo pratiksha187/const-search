@@ -142,109 +142,7 @@ class LoginRegController extends Controller
         ]);
     }
     // ============================= LOGIN =============================
-    // public function login(Request $request)
-    // {
-    //     // dd($request);
-    //     $request->validate([
-    //         'login'    => 'required',   // mobile or email
-    //         'password' => 'required',
-    //         'role'     => 'required'
-    //     ]);
-
-    //     if ($request->role === 'customer') {
-
-    //         $user = User::where('mobile', $request->login)
-    //                     ->orWhere('email', $request->login)
-    //                     ->first();
-    //         if (!$user || !Hash::check($request->password, $user->password)) {
-    //             return response()->json([
-    //                 'status'  => false,
-    //                 'message' => 'Invalid customer login details'
-    //             ]);
-    //         }
-
-    //         // Session
-    //         Session::put('customer_id', $user->id);
-    //         Session::put('user_name', $user->name);
-    //         Session::put('user_role', 'customer');
-
-    //         return response()->json([
-    //             'status'   => true,
-    //             'message'  => 'Customer login successful',
-    //             'redirect' => route('dashboard')
-    //         ]);
-    //     }
-
-    //     /* ======================================================
-    //     VENDOR LOGIN (vendor_reg table only)
-    //     ====================================================== */
-    //     if ($request->role === 'vendor') {
-
-    //         $vendor = DB::table('vendor_reg')
-    //                     ->where('mobile', $request->login)
-    //                     ->orWhere('email', $request->login)
-    //                     ->first();
-
-    //         if (!$vendor || !Hash::check($request->password, $vendor->password)) {
-    //             return response()->json([
-    //                 'status'  => false,
-    //                 'message' => 'Invalid vendor login details'
-    //             ]);
-    //         }
-
-          
-    //         // Session (IMPORTANT)
-    //         Session::put('vendor_id', $vendor->id);
-    //         Session::put('user_name', $vendor->name);
-    //         Session::put('user_role', 'vendor');
-
-    //         return response()->json([
-    //             'status'   => true,
-    //             'message'  => 'Vendor login successful',
-    //             'redirect' => route('vendordashboard')
-    //         ]);
-    //     }
-
-
-    //       /* ======================================================
-    //     supplier LOGIN (suplier table only)
-    //     ====================================================== */
-    //     if ($request->role === 'supplier') {
-
-    //         $supplier = DB::table('supplier_reg')
-    //                     ->where('mobile', $request->login)
-    //                     ->orWhere('email', $request->login)
-    //                     ->first();
-
-    //         if (!$supplier || !Hash::check($request->password, $supplier->password)) {
-    //             return response()->json([
-    //                 'status'  => false,
-    //                 'message' => 'Invalid supplier login details'
-    //             ]);
-    //         }
-
-          
-    //         // Session (IMPORTANT)
-    //         Session::put('supplier_id', $supplier->id);
-    //         Session::put('user_name', $supplier->contact_person);
-    //         Session::put('user_role', 'supplier');
-
-    //         return response()->json([
-    //             'status'   => true,
-    //             'message'  => 'supplier login successful',
-    //             'redirect' => route('supplierdashboard')
-    //         ]);
-    //     }
-
-    //     /* ======================================================
-    //     INVALID ROLE
-    //     ====================================================== */
-    //     return response()->json([
-    //         'status'  => false,
-    //         'message' => 'Invalid role selected'
-    //     ]);
-    // }
-
+   
     public function login(Request $request)
     {
         $request->validate([
@@ -372,18 +270,20 @@ class LoginRegController extends Controller
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
         //  dd( $cust_data);
         $post_data = DB::table('posts')->where('user_id',$customer_id)->get();
+        // dd( $post_data);
         $count_post_data = count($post_data);
         //  dd( $post_data);
         $totalsuppliers = DB::table('supplier_reg')->get();
         $count_suppliers = count($totalsuppliers);
 
-        $vendor_interests = DB::table('vendor_interests')->get();
-        
         $vendor_data = DB::table('vendor_reg')->get();
+        //  dd( $vendor_data);
         $count_vendor_data = count($vendor_data);
         
+        $customer_interests_data = DB::table('customer_interests')->where('customer_id',$customer_id)->get();
+        $count_customer_interests_data = count($customer_interests_data);
         //  dd($post_data);
-        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data','cust_data','count_suppliers')); 
+        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data','vendor_data','cust_data','count_suppliers','count_customer_interests_data')); 
     }
 
     // ============================= Vender DASHBOARD =============================
@@ -425,7 +325,7 @@ class LoginRegController extends Controller
           $post_data = DB::table('posts')->get();
         //  dd( $post_data);
         $count_post_data = count($post_data);
-$vendor_data = DB::table('vendor_reg')->get();
+        $vendor_data = DB::table('vendor_reg')->get();
         $count_vendor_data = count($vendor_data);
         return view('web.admindashboard',compact('count_post_data','count_vendor_data'));
     }

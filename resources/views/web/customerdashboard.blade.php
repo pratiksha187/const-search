@@ -30,21 +30,21 @@ body{
 /* MAIN CARD */
 .dashboard-card{
     background:#fff;
-    border-radius:14px;
+    border-radius:16px;
     padding:28px;
     border:1px solid var(--border);
 }
 
 /* HEADER */
 .dashboard-header{
-    margin-bottom:28px;
+    margin-bottom:30px;
 }
 
 .dashboard-header h2{
     font-size:24px;
     font-weight:700;
     color:var(--navy);
-    margin-bottom:4px;
+    margin-bottom:6px;
 }
 
 .dashboard-header p{
@@ -56,17 +56,22 @@ body{
 .kpi-card{
     background:#fff;
     border:1px solid var(--border);
-    border-radius:12px;
+    border-radius:14px;
     padding:18px;
     display:flex;
     align-items:center;
     gap:14px;
+    transition:.2s;
+}
+
+.kpi-card:hover{
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
 }
 
 .kpi-icon{
-    width:42px;
-    height:42px;
-    border-radius:10px;
+    width:44px;
+    height:44px;
+    border-radius:12px;
     background:#f3f4f6;
     display:flex;
     align-items:center;
@@ -79,7 +84,6 @@ body{
     font-size:22px;
     font-weight:700;
     color:var(--navy);
-    line-height:1;
 }
 
 .kpi-label{
@@ -87,32 +91,42 @@ body{
     color:var(--muted);
 }
 
-/* SECTIONS */
+/* SECTION CARD */
 .section-card{
     background:#fff;
     border:1px solid var(--border);
-    border-radius:12px;
-    padding:20px;
+    border-radius:16px;
+    padding:22px;
 }
 
 .section-title{
-    font-size:16px;
+    font-size:15px;
     font-weight:700;
     color:var(--navy);
-    margin-bottom:16px;
+    margin-bottom:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-/* PROJECTS */
+/* PROJECT LIST */
 .project-row{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:12px 0;
-    border-bottom:1px solid var(--border);
+    padding:14px 0;
+    border-bottom:1px dashed var(--border);
 }
 
 .project-row:last-child{
     border-bottom:none;
+}
+
+.project-row:hover{
+    background:#f9fafb;
+    border-radius:10px;
+    padding-left:10px;
+    padding-right:10px;
 }
 
 .project-name{
@@ -127,10 +141,10 @@ body{
 
 /* STATUS */
 .status{
-    font-size:12px;
+    font-size:11px;
     font-weight:600;
-    padding:4px 10px;
-    border-radius:20px;
+    padding:5px 12px;
+    border-radius:999px;
 }
 
 .status-pending{background:#fff7ed;color:#9a3412;}
@@ -140,6 +154,9 @@ body{
 /* CHART */
 .chart-wrap{
     height:260px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 /* VENDORS */
@@ -147,12 +164,19 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:14px 0;
-    border-bottom:1px solid var(--border);
+    padding:16px 0;
+    border-bottom:1px dashed var(--border);
 }
 
 .vendor-row:last-child{
     border-bottom:none;
+}
+
+.vendor-row:hover{
+    background:#f9fafb;
+    border-radius:10px;
+    padding-left:10px;
+    padding-right:10px;
 }
 
 .vendor-name{
@@ -165,19 +189,25 @@ body{
     color:var(--muted);
 }
 
+/* BUTTON */
 .btn-view{
     border:1px solid var(--orange);
     background:#fff;
     color:var(--orange);
     font-size:13px;
     font-weight:600;
-    padding:6px 14px;
-    border-radius:6px;
+    padding:6px 16px;
+    border-radius:8px;
 }
 
 .btn-view:hover{
     background:var(--orange);
     color:#fff;
+}
+
+.dashboard-content {
+    margin-top: 54px;
+    padding: 30px;
 }
 
 /* MOBILE */
@@ -192,7 +222,7 @@ body{
     <!-- HEADER -->
     <div class="dashboard-header">
         <h2>Welcome, {{ $cust_data->name ?? 'Customer' }}</h2>
-        <p>Overview of your projects, vendors and quotations</p>
+        <p>Overview of your projects, vendors and activities</p>
     </div>
 
     <!-- KPI -->
@@ -212,27 +242,27 @@ body{
                 <div class="kpi-icon"><i class="bi bi-people"></i></div>
                 <div>
                     <div class="kpi-value">{{ $count_vendor_data }}</div>
-                    <div class="kpi-label">Connected Vendors</div>
+                    <div class="kpi-label">Shortlist Vendors</div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
+                <div class="kpi-icon"><i class="bi bi-truck"></i></div>
                 <div>
                     <div class="kpi-value">{{ $count_suppliers ?? 0 }}</div>
-                    <div class="kpi-label">Total Suppliers</div>
+                    <div class="kpi-label">Suppliers History</div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-bell"></i></div>
+                <div class="kpi-icon"><i class="bi bi-heart"></i></div>
                 <div>
-                    <div class="kpi-value">{{ $vendor_interests ?? 0 }}</div>
-                    <div class="kpi-label">Interests Vendor</div>
+                    <div class="kpi-value">{{ $count_customer_interests_data ?? 0 }}</div>
+                    <div class="kpi-label">Vendor History</div>
                 </div>
             </div>
         </div>
@@ -244,38 +274,33 @@ body{
             <div class="section-card">
                 <div class="section-title">Recent Projects</div>
 
-                <div class="project-row">
-                    <div>
-                        <div class="project-name">Industrial Shed at Chakan</div>
-                        <div class="project-location">Pune</div>
+                @forelse($post_data as $post)
+                    <div class="project-row">
+                        <div>
+                            <div class="project-name">{{ $post->title }}</div>
+                            <div class="project-location">
+                                {{ $post->city }}, {{ $post->region }}
+                            </div>
+                        </div>
+                        <span class="status status-pending">Submitted</span>
                     </div>
-                    <span class="status status-pending">Pending</span>
-                </div>
-
-                <div class="project-row">
-                    <div>
-                        <div class="project-name">Residential Bungalow – Nashik</div>
-                        <div class="project-location">Nashik</div>
+                @empty
+                    <div class="text-center text-muted py-4">
+                        No projects posted yet
                     </div>
-                    <span class="status status-active">Active</span>
-                </div>
-
-                <div class="project-row">
-                    <div>
-                        <div class="project-name">Office Interior – Baner</div>
-                        <div class="project-location">Pune</div>
-                    </div>
-                    <span class="status status-review">Under Review</span>
-                </div>
-
+                @endforelse
             </div>
         </div>
 
         <div class="col-lg-5">
             <div class="section-card">
-                <div class="section-title">Project Status</div>
+                <div class="section-title">Activity Overview</div>
                 <div class="chart-wrap">
                     <canvas id="progressChart"></canvas>
+                </div>
+                <div class="text-center mt-3">
+                   
+                    <small class="text-muted">Total Activities</small>
                 </div>
             </div>
         </div>
@@ -285,50 +310,60 @@ body{
     <div class="section-card">
         <div class="section-title">Recommended Vendors</div>
 
-        <div class="vendor-row">
-            <div>
-                <div class="vendor-name">Shreeyash Construction Pvt Ltd</div>
-                <div class="vendor-type">PEB / Industrial Contractor</div>
-            </div>
-            <button class="btn-view">View</button>
-        </div>
+        @forelse($vendor_data as $vendor)
+            <div class="vendor-row">
+                <div>
+                    <div class="vendor-name">
+                        {{ $vendor->company_name ?? $vendor->business_name ?? $vendor->name }}
+                    </div>
+                    <div class="vendor-type">Verified Construction Vendor</div>
+                </div>
 
-        <div class="vendor-row">
-            <div>
-                <div class="vendor-name">DesignArc Architects</div>
-                <div class="vendor-type">Architect / Planning</div>
+                <a href="#" class="btn-view">View</a>
             </div>
-            <button class="btn-view">View</button>
-        </div>
-
-        <div class="vendor-row">
-            <div>
-                <div class="vendor-name">Urban Interiors</div>
-                <div class="vendor-type">Interior Designer</div>
+        @empty
+            <div class="text-center text-muted py-4">
+                No vendors recommended yet
             </div>
-            <button class="btn-view">View</button>
-        </div>
+        @endforelse
     </div>
 
 </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
+const chartData = {
+    posts: {{ $count_post_data ?? 0 }},
+    vendors: {{ $count_vendor_data ?? 0 }},
+    suppliers: {{ $count_suppliers ?? 0 }},
+    interests: {{ $count_customer_interests_data ?? 0 }},
+};
+
 new Chart(document.getElementById('progressChart'), {
     type: 'doughnut',
     data: {
-        labels: ['Submitted','Shortlisted','Quotes','Selected'],
+        labels: ['Posts','Vendors','Suppliers','Interests'],
         datasets: [{
-            data: [12,6,4,2],
-            backgroundColor: ['#2563eb','#16a34a','#facc15','#dc2626'],
-            borderWidth:0
+            data: [
+                chartData.posts,
+                chartData.vendors,
+                chartData.suppliers,
+                chartData.interests
+            ],
+            backgroundColor: ['#2563eb','#16a34a','#f59e0b','#dc2626'],
+            borderWidth: 0
         }]
     },
-    options:{
-        cutout:'70%',
-        plugins:{ legend:{display:false} },
-        maintainAspectRatio:false
+    options: {
+        cutout: '70%',
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
     }
 });
 </script>

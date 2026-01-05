@@ -20,42 +20,36 @@
 
 body{ background:var(--bg); }
 
-/* PAGE WRAPPER */
+/* PAGE */
 .dashboard-wrap{
     max-width:1450px;
-    margin:25px auto 50px;
+    margin:24px auto 40px;
     padding:0 16px;
 }
 
 /* HEADER */
 .dashboard-header{
-    margin-bottom:26px;
+    margin-bottom:24px;
 }
 .dashboard-header h2{
-    font-size:28px;
+    font-size:26px;
     font-weight:800;
-    color:var(--text);
 }
 .dashboard-header p{
-    color:var(--muted);
     font-size:14px;
+    color:var(--muted);
 }
 
-/* KPI CARDS */
-.kpi-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
-    margin-bottom:30px;
-}
+/* KPI */
 .kpi-card{
     background:#fff;
-    border-radius:14px;
-    padding:20px;
     border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    height:100%;
 }
 .kpi-title{
     font-size:12px;
@@ -71,72 +65,56 @@ body{ background:var(--bg); }
     color:var(--muted);
 }
 .kpi-icon{
-    width:44px;
-    height:44px;
+    width:42px;
+    height:42px;
     border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
     color:#fff;
-    font-size:18px;
 }
 .orange{background:#f97316;}
 .blue{background:#2563eb;}
 .green{background:#16a34a;}
 .gold{background:#f59e0b;}
 
-/* MAIN GRID */
-.main-grid{
-    display:grid;
-    grid-template-columns:2fr 1fr;
-    gap:24px;
-}
-
 /* CARD */
 .card{
     background:#fff;
-    border-radius:14px;
     border:1px solid var(--border);
-    padding:22px;
-    margin-bottom:24px;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
 }
 .card-title{
-    font-size:17px;
+    font-size:16px;
     font-weight:700;
     margin-bottom:14px;
-}
-
-/* OPPORTUNITIES */
-.opportunity{
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:14px 16px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:12px;
 }
-.opportunity h6{
-    margin:0;
-    font-weight:700;
-}
-.opportunity small{
+
+/* TABLE */
+.table th{
+    font-size:12px;
+    text-transform:uppercase;
     color:var(--muted);
 }
 .btn-interest{
-    background:linear-gradient(135deg,#ff9a3c,#f25c05);
+    background:var(--orange);
     color:#fff;
-    border:none;
-    padding:8px 18px;
+    padding:6px 16px;
     border-radius:20px;
     font-size:13px;
     font-weight:700;
+    text-decoration:none;
 }
 
-/* QUICK ACTIONS */
+/* QUICK */
 .quick-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:1fr 1fr;
     gap:12px;
 }
 .quick-btn{
@@ -156,10 +134,10 @@ body{ background:var(--bg); }
     margin-bottom:8px;
 }
 .dot{
-    display:inline-block;
     width:7px;
     height:7px;
     border-radius:50%;
+    display:inline-block;
     margin-right:8px;
 }
 .dot-blue{background:#2563eb;}
@@ -171,17 +149,11 @@ body{ background:var(--bg); }
     height:8px;
     background:#e5e7eb;
     border-radius:10px;
-    overflow:hidden;
 }
 .progress-bar{
     width:65%;
     height:100%;
     background:linear-gradient(135deg,#ff9a3c,#f25c05);
-}
-
-@media(max-width:1200px){
-    .kpi-grid{grid-template-columns:repeat(2,1fr);}
-    .main-grid{grid-template-columns:1fr;}
 }
 </style>
 
@@ -193,97 +165,109 @@ body{ background:var(--bg); }
         <p>Track your leads, bids and projects at a glance</p>
     </div>
 
-    <!-- KPI -->
-    <div class="kpi-grid">
-        <div class="kpi-card">
-            <div>
-                <div class="kpi-title">Active Leads</div>
-                <div class="kpi-value">{{ $ActiveLeads }}</div>
-                <div class="kpi-sub">Open opportunities</div>
+    <!-- KPI ROW -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div>
+                    <div class="kpi-title">Active Leads</div>
+                    <div class="kpi-value">{{ $ActiveLeads }}</div>
+                    <div class="kpi-sub">Open opportunities</div>
+                </div>
+                <div class="kpi-icon orange"><i class="bi bi-briefcase-fill"></i></div>
             </div>
-            <div class="kpi-icon orange"><i class="bi bi-briefcase-fill"></i></div>
         </div>
 
-        <div class="kpi-card">
-            <div>
-                <div class="kpi-title">Bids Submitted</div>
-                <div class="kpi-value">12</div>
-                <div class="kpi-sub">Under review</div>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div>
+                    <div class="kpi-title">Bids Submitted</div>
+                    <div class="kpi-value">{{ $BidsSubmitted ?? 0 }}</div>
+                    <div class="kpi-sub">Under review</div>
+                </div>
+                <div class="kpi-icon blue"><i class="bi bi-file-earmark-text"></i></div>
             </div>
-            <div class="kpi-icon blue"><i class="bi bi-file-earmark-text"></i></div>
         </div>
 
-        <div class="kpi-card">
-            <div>
-                <div class="kpi-title">Projects Won</div>
-                <div class="kpi-value">04</div>
-                <div class="kpi-sub">Converted deals</div>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div>
+                    <div class="kpi-title">Projects Won</div>
+                    <div class="kpi-value">{{ $ProjectsWon ?? 0 }}</div>
+                    <div class="kpi-sub">Converted</div>
+                </div>
+                <div class="kpi-icon green"><i class="bi bi-check-circle-fill"></i></div>
             </div>
-            <div class="kpi-icon green"><i class="bi bi-check-circle-fill"></i></div>
         </div>
 
-        <div class="kpi-card">
-            <div>
-                <div class="kpi-title">Rating</div>
-                <div class="kpi-value">0.0</div>
-                <div class="kpi-sub">Profile based</div>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div>
+                    <div class="kpi-title">Rating</div>
+                    <div class="kpi-value">0.0</div>
+                    <div class="kpi-sub">Profile based</div>
+                </div>
+                <div class="kpi-icon gold"><i class="bi bi-star-fill"></i></div>
             </div>
-            <div class="kpi-icon gold"><i class="bi bi-star-fill"></i></div>
         </div>
     </div>
 
-    <!-- MAIN -->
-    <div class="main-grid">
+    <!-- MAIN CONTENT -->
+    <div class="row">
 
         <!-- LEFT -->
-        <div class="card">
-            <div class="card-title">New Opportunities</div>
-
-            @forelse($projects as $project)
-                <div class="opportunity">
-                    <div>
-                        <h6>{{ $project->title }}</h6>
-                        <small>{{ $project->city ?? 'City' }}, {{ $project->state ?? 'State' }}</small><br>
-                        <small>Posted {{ \Carbon\Carbon::parse($project->created_at)->diffForHumans() }}</small>
-                    </div>
-                    <button class="btn-interest">Interested</button>
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-title">
+                    <span>New Opportunities</span>
+                    <a href="{{ route('search_customer') }}" class="btn btn-sm btn-outline-primary">View All</a>
                 </div>
-            @empty
-                <div class="text-muted">No opportunities available</div>
-            @endforelse
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Location</th>
+                                <th>Posted</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($projects->take(6) as $project)
+                            <tr>
+                                <td><strong>{{ $project->title }}</strong></td>
+                                <td>{{ $project->city }}, {{ $project->state }}</td>
+                                <td>{{ \Carbon\Carbon::parse($project->created_at)->diffForHumans() }}</td>
+                                <td class="text-end">
+                                    <a href="#" class="btn-interest">Interested</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No opportunities available</td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+              <div class="card">
+                <div class="card-title">Quick Actions</div>
+                <div class="quick-grid">
+                    <a href="{{route('vendor.profile')}}" class="quick-btn">Complete Profile</a>
+                    <a href="{{ route('search_customer') }}" class="quick-btn">View Leads</a>
+
+                </div>
+            </div>
         </div>
 
         <!-- RIGHT -->
-        <div>
+        <div class="col-lg-4">
 
             <div class="card">
                 <div class="card-title">Leads Overview</div>
-                <canvas id="leadsPieChart" height="240"></canvas>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Quick Actions</div>
-                <div class="quick-grid">
-                    <a href="#" class="quick-btn">Complete Profile</a>
-                    <a href="{{ route('search_customer') }}" class="quick-btn">View Leads</a>
-                    <a href="#" class="quick-btn">Upload Documents</a>
-                    <a href="#" class="quick-btn">Subscription</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Recent Activity</div>
-                <div class="activity"><span class="dot dot-blue"></span>Lead viewed</div>
-                <div class="activity"><span class="dot dot-green"></span>Bid submitted</div>
-                <div class="activity"><span class="dot dot-orange"></span>Profile pending</div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">Profile Completion 65%</div>
-                <div class="progress"><div class="progress-bar"></div></div>
-                <small class="text-muted d-block mt-2">
-                    Complete profile to unlock more leads
-                </small>
+                <canvas id="leadsPieChart" height="220"></canvas>
             </div>
 
         </div>
@@ -297,7 +281,7 @@ new Chart(document.getElementById('leadsPieChart'),{
     data:{
         labels:['Active Leads','Bids Submitted','Projects Won'],
         datasets:[{
-            data:[{{ $ActiveLeads }},12,4],
+            data:[{{ $ActiveLeads }},{{ $BidsSubmitted ?? 0 }},{{ $ProjectsWon ?? 0 }}],
             backgroundColor:['#f97316','#2563eb','#16a34a'],
             borderWidth:2,
             borderColor:'#fff'

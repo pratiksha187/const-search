@@ -206,6 +206,37 @@
                         <a href="{{ route('profiletypes.create') }}">Add</a>
                     </div>
                 </li>
+                <li class="master-tile">
+                    <div class="master-title">Unit</div>
+                    <div class="master-actions">
+                        <a href="{{ route('unit.index') }}">Add/View</a>
+                        
+                    </div>
+                </li>
+                <li class="master-tile">
+                    <div class="master-title">Size</div>
+                    <div class="master-actions">
+                        <a href="{{ route('thickness.size.index') }}">Add/View</a>
+                        
+                    </div>
+                </li>
+
+                <li class="master-tile">
+                    <div class="master-title">Grade</div>
+                    <div class="master-actions">
+                        <a href="{{ route('grade.index') }}">Add/View</a>
+                        
+                    </div>
+                </li>
+                <li class="master-tile">
+                    <div class="master-title">Standard</div>
+                    <div class="master-actions">
+                        <a href="{{ route('standard.index') }}">Add/View</a>
+                        
+                    </div>
+                </li>
+                
+
 
             </ul>
         </div>
