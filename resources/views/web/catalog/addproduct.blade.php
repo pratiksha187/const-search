@@ -81,15 +81,8 @@
                     <li class="list-group-item" data-target="paintcoating">Paint & Coatings</li>
                     <li class="list-group-item" data-target="tilesflooring">Tiles & Flooring</li>
                     <li class="list-group-item" data-target="steeltmt">Steel & TMT Bars</li>
+                    <li class="list-group-item" data-target="cement-concrete">Cement & Concrete</li>
                     											
-									
-
-					
-														
-
-
-                    
-                   
                 </ul>
             </div>
         </div>
@@ -319,6 +312,17 @@
                     </div>
                 </div>
             </div>
+
+            <!-- cement-concrete -->
+            <div class="category-page" id="cement-concrete">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header fw-semibold">Add Product – Cement & Concrete</div>
+                    <div class="card-body">
+                        @include('web.catalog.cementconcrete')
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>

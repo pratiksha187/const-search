@@ -5,312 +5,330 @@
 @section('content')
 
 <style>
-:root {
-    --navy: #1c2c3e;
-    --orange: #f25c05;
-    --bg: #f5f7fb;
+:root{
+    --navy:#1c2c3e;
+    --orange:#f25c05;
+    --bg:#f4f6f9;
+    --border:#e5e7eb;
+    --text:#374151;
+    --muted:#6b7280;
 }
 
 /* PAGE */
-body {
-    background: var(--bg);
+body{
+    background:var(--bg);
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* MAIN WRAPPER */
-.dashboard-wrapper {
-    max-width: 1630px;
-    margin: 30px auto;
-    padding: 0 15px;
+/* WRAPPER */
+.dashboard-wrapper{
+    max-width:1400px;
+    margin:30px auto;
+    padding:0 16px;
 }
 
-/* MASTER CARD */
-.dashboard-card {
-    background: #fff;
-    border-radius: 28px;
-    padding: 30px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.10);
-    border: 1px solid #e5e7eb;
+/* MAIN CARD */
+.dashboard-card{
+    background:#fff;
+    border-radius:14px;
+    padding:28px;
+    border:1px solid var(--border);
 }
 
 /* HEADER */
-.dashboard-header {
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eef1f6;
-    margin-bottom: 25px;
+.dashboard-header{
+    margin-bottom:28px;
 }
 
-.welcome-title {
-    font-weight: 800;
-    font-size: 28px;
-    color: var(--navy);
+.dashboard-header h2{
+    font-size:24px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:4px;
 }
 
-.welcome-sub {
-    color: #6b7280;
-    font-size: 14px;
+.dashboard-header p{
+    color:var(--muted);
+    font-size:14px;
 }
 
-/* KPI CARDS */
-.kpi-card {
-    background: #f9fafb;
-    border-radius: 18px;
-    padding: 22px;
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    border: 1px solid #eef1f6;
+/* KPI */
+.kpi-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
 }
 
-.kpi-icon {
-    width: 48px;
-    height: 48px;
-    background: #eaf2ff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    color: var(--navy);
+.kpi-icon{
+    width:42px;
+    height:42px;
+    border-radius:10px;
+    background:#f3f4f6;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--navy);
+    font-size:18px;
 }
 
-.kpi-value {
-    font-size: 26px;
-    font-weight: 800;
-    margin: 0;
-    color: var(--navy);
+.kpi-value{
+    font-size:22px;
+    font-weight:700;
+    color:var(--navy);
+    line-height:1;
 }
 
-.kpi-label {
-    font-size: 14px;
-    color: #6b7280;
+.kpi-label{
+    font-size:13px;
+    color:var(--muted);
 }
 
-/* DATA CARDS */
-.data-card {
-    background: #ffffff;
-    padding: 24px;
-    border-radius: 22px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
-    border: 1px solid #eef1f6;
+/* SECTIONS */
+.section-card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
 }
 
-.section-title {
-    font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 20px;
-    color: var(--navy);
+.section-title{
+    font-size:16px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:16px;
 }
 
-/* ITEMS */
-.project-item, .vendor-item {
-    padding: 14px 0;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #eef1f6;
+/* PROJECTS */
+.project-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
 }
 
-.project-item:last-child,
-.vendor-item:last-child {
-    border-bottom: none;
+.project-row:last-child{
+    border-bottom:none;
+}
+
+.project-name{
+    font-weight:600;
+    color:var(--text);
+}
+
+.project-location{
+    font-size:12px;
+    color:var(--muted);
 }
 
 /* STATUS */
-.badge-status {
-    padding: 4px 12px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 700;
+.status{
+    font-size:12px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:20px;
 }
 
-.bg-warning-light { background:#fff3cd; color:#8a6d3b;}
-.bg-success-light { background:#d4edda; color:#155724;}
-.bg-info-light { background:#d1ecf1; color:#0c5460;}
-
-/* BUTTON */
-.btn-view {
-    border: 1px solid var(--orange);
-    color: var(--orange);
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.btn-view:hover {
-    background: var(--orange);
-    color: #fff;
-}
+.status-pending{background:#fff7ed;color:#9a3412;}
+.status-active{background:#ecfdf5;color:#065f46;}
+.status-review{background:#eff6ff;color:#1e40af;}
 
 /* CHART */
-.chart-card {
-    background: #ffffff;
-    border-radius: 22px;
-    padding: 22px;
-    border: 1px solid #eef1f6;
-    height: 100%;
+.chart-wrap{
+    height:260px;
 }
-#progressChart {
-    height: 320px !important;
+
+/* VENDORS */
+.vendor-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid var(--border);
 }
-.dashboard-content {
-    margin-top: 62px;
-    padding: 14px;
+
+.vendor-row:last-child{
+    border-bottom:none;
+}
+
+.vendor-name{
+    font-weight:600;
+    color:var(--text);
+}
+
+.vendor-type{
+    font-size:13px;
+    color:var(--muted);
+}
+
+.btn-view{
+    border:1px solid var(--orange);
+    background:#fff;
+    color:var(--orange);
+    font-size:13px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:6px;
+}
+
+.btn-view:hover{
+    background:var(--orange);
+    color:#fff;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .dashboard-card{padding:20px;}
 }
 </style>
 
 <div class="dashboard-wrapper">
+<div class="dashboard-card">
 
-    <!-- 🔥 MASTER DASHBOARD CARD -->
-    <div class="dashboard-card">
+    <!-- HEADER -->
+    <div class="dashboard-header">
+        <h2>Welcome, {{ $cust_data->name ?? 'Customer' }}</h2>
+        <p>Overview of your projects, vendors and quotations</p>
+    </div>
 
-        <!-- HEADER -->
-        <div class="dashboard-header">
-            <h3 class="welcome-title">
-                Hi {{ $cust_data->name ?? 'Customer' }} 👋
-            </h3>
-            <p class="welcome-sub">
-                Track your leads, bids and projects at a glance.
-            </p>
-        </div>
-
-        <!-- KPI ROW -->
-        <div class="row g-3 mb-4">
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-icon"><i class="bi bi-folder"></i></div>
-                    <div>
-                        <p class="kpi-value">{{ $count_post_data }}</p>
-                        <p class="kpi-label">Projects</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-icon"><i class="bi bi-people"></i></div>
-                    <div>
-                        <p class="kpi-value">{{ $count_vendor_data  }}</p>
-                        <p class="kpi-label">Connected Vendors</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
-                    <div>
-                        <p class="kpi-value">{{ $pending_quotes ?? 4 }}</p>
-                        <p class="kpi-label">Pending Quotations</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-icon"><i class="bi bi-bell"></i></div>
-                    <div>
-                        <p class="kpi-value">{{ $notifications ?? 2 }}</p>
-                        <p class="kpi-label">Notifications</p>
-                    </div>
+    <!-- KPI -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-folder"></i></div>
+                <div>
+                    <div class="kpi-value">{{ $count_post_data }}</div>
+                    <div class="kpi-label">My Posts</div>
                 </div>
             </div>
         </div>
 
-        <!-- PROJECTS + CHART -->
-        <div class="row g-4">
-
-            <div class="col-lg-8">
-                <div class="data-card">
-                    <h6 class="section-title">Recent Projects 🏗️</h6>
-
-                    <div class="project-item">
-                        <div>
-                            <strong>Industrial Shed at Chakan</strong><br>
-                            <small class="text-muted">📍 Pune</small>
-                        </div>
-                        <span class="badge-status bg-warning-light">Pending</span>
-                    </div>
-
-                    <div class="project-item">
-                        <div>
-                            <strong>Residential Bungalow – Nashik</strong><br>
-                            <small class="text-muted">📍 Nashik</small>
-                        </div>
-                        <span class="badge-status bg-success-light">Active</span>
-                    </div>
-
-                    <div class="project-item">
-                        <div>
-                            <strong>Office Interior – Baner</strong><br>
-                            <small class="text-muted">📍 Pune</small>
-                        </div>
-                        <span class="badge-status bg-info-light">Under Review</span>
-                    </div>
-
-                    <a href="#" class="text-primary small fw-bold mt-2 d-inline-block">
-                        View all projects ➜
-                    </a>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-people"></i></div>
+                <div>
+                    <div class="kpi-value">{{ $count_vendor_data }}</div>
+                    <div class="kpi-label">Connected Vendors</div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-lg-4">
-                <div class="chart-card">
-                    <h6 class="section-title">Project Status Overview</h6>
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
+                <div>
+                    <div class="kpi-value">{{ $count_suppliers ?? 0 }}</div>
+                    <div class="kpi-label">Total Suppliers</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div class="kpi-icon"><i class="bi bi-bell"></i></div>
+                <div>
+                    <div class="kpi-value">{{ $vendor_interests ?? 0 }}</div>
+                    <div class="kpi-label">Interests Vendor</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROJECT + CHART -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-7">
+            <div class="section-card">
+                <div class="section-title">Recent Projects</div>
+
+                <div class="project-row">
+                    <div>
+                        <div class="project-name">Industrial Shed at Chakan</div>
+                        <div class="project-location">Pune</div>
+                    </div>
+                    <span class="status status-pending">Pending</span>
+                </div>
+
+                <div class="project-row">
+                    <div>
+                        <div class="project-name">Residential Bungalow – Nashik</div>
+                        <div class="project-location">Nashik</div>
+                    </div>
+                    <span class="status status-active">Active</span>
+                </div>
+
+                <div class="project-row">
+                    <div>
+                        <div class="project-name">Office Interior – Baner</div>
+                        <div class="project-location">Pune</div>
+                    </div>
+                    <span class="status status-review">Under Review</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="section-card">
+                <div class="section-title">Project Status</div>
+                <div class="chart-wrap">
                     <canvas id="progressChart"></canvas>
                 </div>
             </div>
-
         </div>
-
-        <!-- VENDORS -->
-        <div class="data-card mt-4">
-            <h6 class="section-title">Recommended Vendors ⭐</h6>
-
-            <div class="vendor-item">
-                <div>
-                    <strong>Shreeyash Construction Pvt Ltd</strong><br>
-                    <small class="text-muted">PEB / Industrial Contractor</small>
-                </div>
-                <button class="btn-view">View</button>
-            </div>
-
-            <div class="vendor-item">
-                <div>
-                    <strong>DesignArc Architects</strong><br>
-                    <small class="text-muted">Architect / Planning</small>
-                </div>
-                <button class="btn-view">View</button>
-            </div>
-
-            <div class="vendor-item">
-                <div>
-                    <strong>Urban Interiors</strong><br>
-                    <small class="text-muted">Interior Designer</small>
-                </div>
-                <button class="btn-view">View</button>
-            </div>
-        </div>
-
     </div>
+
+    <!-- VENDORS -->
+    <div class="section-card">
+        <div class="section-title">Recommended Vendors</div>
+
+        <div class="vendor-row">
+            <div>
+                <div class="vendor-name">Shreeyash Construction Pvt Ltd</div>
+                <div class="vendor-type">PEB / Industrial Contractor</div>
+            </div>
+            <button class="btn-view">View</button>
+        </div>
+
+        <div class="vendor-row">
+            <div>
+                <div class="vendor-name">DesignArc Architects</div>
+                <div class="vendor-type">Architect / Planning</div>
+            </div>
+            <button class="btn-view">View</button>
+        </div>
+
+        <div class="vendor-row">
+            <div>
+                <div class="vendor-name">Urban Interiors</div>
+                <div class="vendor-type">Interior Designer</div>
+            </div>
+            <button class="btn-view">View</button>
+        </div>
+    </div>
+
+</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
 new Chart(document.getElementById('progressChart'), {
     type: 'doughnut',
     data: {
-        labels: ['Submitted', 'Shortlisted', 'Quotes', 'Selection'],
+        labels: ['Submitted','Shortlisted','Quotes','Selected'],
         datasets: [{
-            data: [90, 40, 20, 10],
-            backgroundColor: ['#1A73E8','#34A853','#FBBC05','#D93025'],
-            borderWidth: 0
+            data: [12,6,4,2],
+            backgroundColor: ['#2563eb','#16a34a','#facc15','#dc2626'],
+            borderWidth:0
         }]
     },
-    options: {
-        maintainAspectRatio: false,
-        cutout: "65%",
-        plugins: { legend: { display: false } }
+    options:{
+        cutout:'70%',
+        plugins:{ legend:{display:false} },
+        maintainAspectRatio:false
     }
 });
 </script>

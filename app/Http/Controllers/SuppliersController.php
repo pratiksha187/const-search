@@ -223,6 +223,9 @@ class SuppliersController extends Controller
         // steeltmt
         $steeltmt	=DB::table('material_product')->where('material_id','2')->get();	
 
+        // cement-concrete
+        $cementconcrete	=DB::table('material_product')->where('material_id','1')->get();	
+
 
         // Supplier (as you already have)
         $supplier = DB::table('supplier_products')

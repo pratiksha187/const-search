@@ -19,9 +19,7 @@ class LoginRegController extends Controller
    
     public function register(Request $request)
     {
-        // dd($request);
-        /* ================= VALIDATION ================= */
-
+       
         $request->validate([
             'role'     => ['required', 'in:customer,vendor,supplier'],
             'name'     => ['required', 'string', 'max:255'],
@@ -61,7 +59,7 @@ class LoginRegController extends Controller
         }
 
 
-         if ($request->role === 'customer') {
+        if ($request->role === 'customer') {
             $exists = DB::table('users')
                 ->where('mobile', $request->mobile)
                 ->orWhere('email', $request->email)
@@ -370,18 +368,22 @@ class LoginRegController extends Controller
             return redirect('/'); 
         }
         $customer_id = Session::get('customer_id');
-        //  dd( $customer_id);
+        //  dd($customer_id);
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
         //  dd( $cust_data);
         $post_data = DB::table('posts')->where('user_id',$customer_id)->get();
-        //  dd( $post_data);
         $count_post_data = count($post_data);
+        //  dd( $post_data);
+        $totalsuppliers = DB::table('supplier_reg')->get();
+        $count_suppliers = count($totalsuppliers);
 
+        $vendor_interests = DB::table('vendor_interests')->get();
+        
         $vendor_data = DB::table('vendor_reg')->get();
         $count_vendor_data = count($vendor_data);
         
         //  dd($post_data);
-        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data','cust_data')); 
+        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data','cust_data','count_suppliers')); 
     }
 
     // ============================= Vender DASHBOARD =============================
