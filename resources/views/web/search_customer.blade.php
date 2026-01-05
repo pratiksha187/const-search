@@ -600,252 +600,54 @@ function handleInterested(
 }
 </script>
 
-<!-- <script>
-function resetLeadModalUI() {
-    $('#paymentSection').addClass('d-none');
-    $('#remainingLeadsInfo').addClass('d-none').text('');
-    $('#projectDetailsSection').removeClass('d-none');
-    $('#lockedInfo').removeClass('d-none');
-}
-
-function handleInterested(
-    id,
-    contactName,
-    title,
-    work,
-    location,
-    budget,
-    description,
-    contactTime,
-    postedOn
-) {
-
-    /* ================= AUTH CHECK ================= */
-    if (!window.VENDOR_ID) {
-        new bootstrap.Modal(
-            document.getElementById('authModal')
-        ).show();
-        return;
-    }
-
-    resetLeadModalUI();
-
-    /* ================= FILL DETAILS ================= */
-    $('#modalTitle').text(title || '—');
-    $('#modalWork').text(work || '—');
-    $('#modalLocation').text(location || '—');
-    $('#modalBudget').text(budget || 'Flexible');
-    $('#modalDescription').text(description || '—');
-    $('#modalContactTime').text(contactTime || 'Anytime');
-    $('#modalPosted').text(postedOn || '—');
-
-    /* ================= CHECK LEADS ================= */
-    $.ajax({
-        url: "{{ route('vendor.interest.check') }}",
-        type: "POST",
-        data: {
-            _token: "{{ csrf_token() }}",
-            cust_id: id
-        },
-        success: function (res) {
-
-            resetLeadModalUI();
-
-            let remaining = parseInt(res.remaining, 10) || 0;
-
-            /* =================================================
-               🔒 NO FREE LEADS (remaining = 0)
-               → PAYMENT ONLY
-            ================================================= */
-            if (remaining <= 0) {
-
-                $('#projectDetailsSection').addClass('d-none');
-                $('#remainingLeadsInfo').addClass('d-none');
-
-                $('#lockedInfo').removeClass('d-none');
-                $('#paymentSection').removeClass('d-none');
-
-                $('#payNowBtn').data('id', id);
-
-                new bootstrap.Modal(
-                    document.getElementById('vendorModal')
-                ).show();
-
-                return;
-            }
-
-            /* =================================================
-               ✅ FREE LEADS AVAILABLE (remaining > 0)
-               → SHOW DETAILS
-            ================================================= */
-            $('#lockedInfo').addClass('d-none');
-            $('#paymentSection').addClass('d-none');
-
-            $('#projectDetailsSection').removeClass('d-none');
-
-            $('#remainingLeadsInfo')
-                .removeClass('d-none')
-                .text(`🎯 ${remaining} free leads remaining`);
-
-            new bootstrap.Modal(
-                document.getElementById('vendorModal')
-            ).show();
-        },
-        error: function () {
-            alert('Something went wrong. Please try again.');
-        }
-    });
-}
-
-
-</script> -->
-<!-- <script>
-$('#payNowBtn').on('click', function () {
-
-    let custId = $(this).data('id');
-
-    let options = {
-        key: "{{ config('services.razorpay.key') }}",
-        amount: 500 * 100, // ₹500
-        currency: "INR",
-        name: "ConstructKaro",
-        description: "Unlock Customer Lead",
-        image: "{{ asset('logo.png') }}", // optional
-        handler: function (response) {
-
-            // 🔥 Payment success → send to backend
-            $.post("{{ route('razorpay.handle') }}", {
-                _token: "{{ csrf_token() }}",
-                razorpay_payment_id: response.razorpay_payment_id,
-                vendor_id: btoa(custId),
-                amount: 500 * 100
-            }, function (res) {
-
-                // Close modal
-                bootstrap.Modal.getInstance(
-                    document.getElementById('vendorModal')
-                ).hide();
-
-                // Success UX
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Payment Successful',
-                    text: 'Lead unlocked successfully!',
-                    confirmButtonColor: '#10b981'
-                }).then(() => {
-                    location.reload(); // refresh to unlock lead
-                });
-
-            }).fail(function () {
-                alert('Payment saved failed!');
-            });
-        },
-        theme: {
-            color: "#2563eb"
-        }
-    };
-
-    let rzp = new Razorpay(options);
-    rzp.open();
-});
-</script> -->
-
-<!-- <script>
-$('#payNowBtn').on('click', function () {
-
-    let custId = $(this).data('id');
-
-    let options = {
-        key: "{{ config('services.razorpay.key') }}",
-        amount: 500 * 100,
-        currency: "INR",
-        name: "ConstructKaro",
-        description: "Unlock Customer Lead",
-        handler: function (response) {
-
-            // Save payment
-            $.post("{{ route('razorpay.handle') }}", {
-                _token: "{{ csrf_token() }}",
-                razorpay_payment_id: response.razorpay_payment_id,
-                vendor_id: btoa(custId),
-                amount: 500 * 100
-            })
-            .done(function () {
-
-                // Close modal
-                bootstrap.Modal.getInstance(
-                    document.getElementById('vendorModal')
-                ).hide();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Payment Successful',
-                    text: 'Lead unlocked successfully!',
-                    confirmButtonColor: '#10b981'
-                }).then(() => {
-                    location.reload();
-                });
-
-            })
-            .fail(function () {
-                Swal.fire('Error','Payment saved failed','error');
-            });
-        },
-        theme: {
-            color: "#2563eb"
-        }
-    };
-
-    let rzp = new Razorpay(options);
-    rzp.open();
-});
-</script> -->
-
 <script>
+
 $('#payNowBtn').on('click', function () {
 
     let custId = $(this).data('id');
 
-    // 1️⃣ Create order on server
     $.post("{{ route('razorpay.createOrder') }}", {
         _token: "{{ csrf_token() }}",
         cust_id: custId
     }, function (res) {
 
+        if (!res.success) {
+            alert('Order creation failed');
+            return;
+        }
+
         let options = {
             key: res.key,
-            amount: res.amount,
+            amount: res.amount, // ₹1 * 100
             currency: "INR",
-            name: "SWARAJYA CONSTRUCTION PRIVATE LIMITED",
-            description: "Unlock Customer Lead",
+            name: "ConstructKaro",
+            description: "₹1 Lead Unlock",
             order_id: res.order_id,
 
             handler: function (response) {
 
-                // 2️⃣ Verify payment
                 $.post("{{ route('razorpay.verify') }}", {
                     _token: "{{ csrf_token() }}",
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_signature: response.razorpay_signature,
                     cust_id: btoa(custId)
-                })
-                .done(function () {
+                }, function (verifyRes) {
 
-                    bootstrap.Modal.getInstance(
-                        document.getElementById('vendorModal')
-                    ).hide();
+                    if (verifyRes.success) {
+                        bootstrap.Modal.getInstance(
+                            document.getElementById('vendorModal')
+                        ).hide();
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Payment Successful',
-                        text: 'Lead unlocked successfully!',
-                        confirmButtonColor: '#10b981'
-                    }).then(() => location.reload());
-
-                })
-                .fail(function () {
-                    Swal.fire('Error', 'Payment verification failed', 'error');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Payment Successful',
+                            text: '₹1 payment completed. Lead unlocked!',
+                            confirmButtonColor: '#10b981'
+                        }).then(() => location.reload());
+                    } else {
+                        alert('Verification failed');
+                    }
                 });
             },
 
@@ -853,9 +655,9 @@ $('#payNowBtn').on('click', function () {
         };
 
         new Razorpay(options).open();
-
     });
 });
+
 </script>
 
 {{-- ================= YOUR FILTER + LOCATION SCRIPTS (UNCHANGED) ================= --}}

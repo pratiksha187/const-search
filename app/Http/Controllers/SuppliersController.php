@@ -218,7 +218,8 @@ class SuppliersController extends Controller
         $paintcoating	=DB::table('material_product')->where('material_id','21')->get();	
         // tilesflooring
         $tilesflooring	=DB::table('material_product')->where('material_id','22')->get();	
-
+        // steeltmt
+        $steeltmt	=DB::table('material_product')->where('material_id','2')->get();	
 
         // Supplier (as you already have)
         $supplier = DB::table('supplier_products')
@@ -234,7 +235,7 @@ class SuppliersController extends Controller
 
         return view('web.catalog.addproduct', compact('supplier','thickness_size', 'categories','mc_chemicals','units','delivery_type',
         'Plumbingmaterials','electricalitems','doorswindows','glassglazing','hardwaretools','machineries','timberwood','roofingmaterials','pavers',
-        'concreteproducts','roadsafety','facadecladding','scaffolding','hvacutilities','readymix','paintcoating','tilesflooring','designcode'));
+        'concreteproducts','roadsafety','facadecladding','scaffolding','hvacutilities','readymix','paintcoating','tilesflooring','designcode','steeltmt'));
     }
 
     public function getProductMeta($productId)

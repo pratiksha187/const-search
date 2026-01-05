@@ -79,7 +79,8 @@
                     <li class="list-group-item" data-target="hvacutilities">HVAC & Utilities</li>
                     <li class="list-group-item" data-target="readymix">Ready Mix Concrete</li>
                     <li class="list-group-item" data-target="paintcoating">Paint & Coatings</li>
-                    <li class="list-group-item" data-target="tilesflooring">Tiles & Flooring	</li>
+                    <li class="list-group-item" data-target="tilesflooring">Tiles & Flooring</li>
+                    <li class="list-group-item" data-target="steeltmt">Steel & TMT Bars</li>
                     											
 									
 
@@ -305,6 +306,16 @@
                     <div class="card-header fw-semibold">Add Product – Tiles & Flooring	</div>
                     <div class="card-body">
                         @include('web.catalog.tilesflooring')
+                    </div>
+                </div>
+            </div>
+
+            <!-- steeltmt -->
+            <div class="category-page" id="steeltmt">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header fw-semibold">Add Product – Steel & TMT Bars</div>
+                    <div class="card-body">
+                        @include('web.catalog.steeltmt')
                     </div>
                 </div>
             </div>

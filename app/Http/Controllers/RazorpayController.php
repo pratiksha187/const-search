@@ -13,27 +13,58 @@ use Illuminate\Support\Facades\Session;
 
 class RazorpayController extends Controller
 {
+    // public function createOrder(Request $request)
+    // {
+    //     $api = new Api(
+    //         config('services.razorpay.key'),
+    //         config('services.razorpay.secret')
+    //     );
+
+    //     $amount = 1 * 100; // ₹500
+
+    //     $order = $api->order->create([
+    //         'amount' => $amount,
+    //         'currency' => 'INR',
+    //         'receipt' => 'lead_'.$request->cust_id,
+    //     ]);
+
+    //     return response()->json([
+    //         'order_id' => $order['id'],
+    //         'amount' => $amount,
+    //         'key' => config('services.razorpay.key')
+    //     ]);
+    // }
     public function createOrder(Request $request)
-    {
-        $api = new Api(
-            config('services.razorpay.key'),
-            config('services.razorpay.secret')
-        );
+{
+    $request->validate([
+        'cust_id' => 'required'
+    ]);
 
-        $amount = 1 * 100; // ₹500
+    $api = new Api(
+        config('services.razorpay.key'),
+        config('services.razorpay.secret')
+    );
 
-        $order = $api->order->create([
-            'amount' => $amount,
-            'currency' => 'INR',
-            'receipt' => 'lead_'.$request->cust_id,
-        ]);
+    $amount = 1 * 100; // ✅ ₹1 ONLY
 
-        return response()->json([
-            'order_id' => $order['id'],
-            'amount' => $amount,
-            'key' => config('services.razorpay.key')
-        ]);
-    }
+    $order = $api->order->create([
+        'amount'   => $amount,
+        'currency' => 'INR',
+        'receipt'  => 'lead_'.$request->cust_id,
+        'notes' => [
+            'purpose' => 'Lead Unlock ₹1',
+            'platform' => 'ConstructKaro'
+        ]
+    ]);
+
+    return response()->json([
+        'success'   => true,
+        'order_id' => $order['id'],
+        'amount'   => $amount,
+        'key'      => config('services.razorpay.key')
+    ]);
+}
+
 
     /* ================= VERIFY PAYMENT ================= */
     public function verifyPayment(Request $request)
@@ -51,14 +82,25 @@ class RazorpayController extends Controller
             ]);
 
             // ✅ Save payment
+            // Payment::create([
+            //     'payment_id' => $request->razorpay_payment_id,
+            //     'order_id'   => $request->razorpay_order_id,
+            //     'amount'     => 500,
+            //     'status'     => 'success',
+            //     'login_id'   => Session::get('user_id'),
+            //     'user_id'    => base64_decode($request->cust_id),
+            // ]);
             Payment::create([
                 'payment_id' => $request->razorpay_payment_id,
                 'order_id'   => $request->razorpay_order_id,
-                'amount'     => 500,
+                'amount'     => 1, // ✅ ₹1
+                'currency'   => 'INR',
                 'status'     => 'success',
                 'login_id'   => Session::get('user_id'),
                 'user_id'    => base64_decode($request->cust_id),
+                'response'   => json_encode($request->all())
             ]);
+
 
             return response()->json(['success' => true]);
 
