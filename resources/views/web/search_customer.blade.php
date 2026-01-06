@@ -661,9 +661,100 @@ $('#payNowBtn').on('click', function () {
 });
 
 </script>
+<script>
+/* =====================================================
+   SMART FILTER – SINGLE SOURCE OF TRUTH
+   ✔ Category
+   ✔ Subtype
+   ✔ State
+   ✔ Region
+   ✔ City
+===================================================== */
+
+function applyFilters() {
+
+    let selectedCategories = [];
+    let selectedSubtypes   = [];
+
+    document.querySelectorAll('.category-check:checked')
+        .forEach(cb => selectedCategories.push(cb.value));
+
+    document.querySelectorAll('.subtype-check:checked')
+        .forEach(cb => selectedSubtypes.push(cb.value));
+
+    // 🔑 IMPORTANT: use TEXT, not ID
+    let stateText  = (document.querySelector('#stateSelect option:checked')?.textContent || '').toLowerCase().trim();
+    let regionText = (document.querySelector('#regionSelect option:checked')?.textContent || '').toLowerCase().trim();
+    let cityText   = (document.querySelector('#citySelect option:checked')?.textContent || '').toLowerCase().trim();
+
+    if (stateText === 'select state') stateText = '';
+    if (regionText === 'select region') regionText = '';
+    if (cityText === 'select city') cityText = '';
+
+    let visible = 0;
+
+    document.querySelectorAll('.vendor-card').forEach(card => {
+
+        let cardTypeId    = card.dataset.workTypeId || '';
+        let cardSubtypeId = card.dataset.workSubtypeId || '';
+
+        let cardState  = (card.dataset.state  || '').toLowerCase();
+        let cardRegion = (card.dataset.region || '').toLowerCase();
+        let cardCity   = (card.dataset.city   || '').toLowerCase();
+
+        /* ---------- CATEGORY MATCH ---------- */
+        let categoryMatch = true;
+
+        if (selectedCategories.length > 0) {
+            categoryMatch = selectedCategories.includes(cardTypeId);
+        }
+
+        if (selectedSubtypes.length > 0) {
+            categoryMatch = selectedSubtypes.includes(cardSubtypeId);
+        }
+
+        /* ---------- LOCATION MATCH ---------- */
+        let stateMatch  = !stateText  || cardState.includes(stateText);
+        let regionMatch = !regionText || cardRegion.includes(regionText);
+        let cityMatch   = !cityText   || cardCity.includes(cityText);
+
+        if (categoryMatch && stateMatch && regionMatch && cityMatch) {
+            card.style.display = 'block';
+            visible++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    document.getElementById('vendorCount').innerText = visible;
+}
+
+/* ================= EVENTS ================= */
+
+// Category toggle + subtype show/hide
+document.querySelectorAll('.category-check').forEach(cb => {
+    cb.addEventListener('change', function () {
+        let box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
+        if (box) box.classList.toggle('d-none', !this.checked);
+        applyFilters();
+    });
+});
+
+// Subtype
+document.querySelectorAll('.subtype-check')
+    .forEach(cb => cb.addEventListener('change', applyFilters));
+
+// Location dropdowns
+document.getElementById('stateSelect')?.addEventListener('change', applyFilters);
+document.getElementById('regionSelect')?.addEventListener('change', applyFilters);
+document.getElementById('citySelect')?.addEventListener('change', applyFilters);
+
+// Run once on load
+document.addEventListener('DOMContentLoaded', applyFilters);
+</script>
 
 {{-- ================= YOUR FILTER + LOCATION SCRIPTS (UNCHANGED) ================= --}}
-<script>
+<!-- <script>
 function applyFilters() {
 
   let selectedCategories = [];
@@ -823,6 +914,6 @@ $('#stateSelect').on('change', applyLocationFilterPatch);
 $('#regionSelect').on('change', applyLocationFilterPatch);
 $('#citySelect').on('change', applyLocationFilterPatch);
 
-</script>
+</script> -->
 
 @endsection

@@ -191,7 +191,7 @@ class HomeController extends Controller
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
             ->leftJoin('region', 'region.id', '=', 'posts.region')
             ->leftJoin('state', 'state.id', '=', 'posts.state')
-            ->leftJoin('city', 'city.id', '=', 'posts.state')
+            ->leftJoin('city', 'city.id', '=', 'posts.city')
             
             ->select(
                 'work_types.*',
