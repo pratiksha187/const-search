@@ -11,10 +11,103 @@ use App\Models\SupplierProductData;
 
 class SuppliersController extends Controller
 {
-    public function myproducts(){
+
+    public function myproducts()
+    {
+        $supplier_id = Session::get('supplier_id'); // or auth()->id()
+
+        $products = DB::table('supplier_products_data as sp')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+            ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
+            ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'sp.material_product_subtype_id')
+            ->leftJoin('brands as b', 'b.id', '=', 'sp.brand_id')
+            ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
+            ->leftJoin('delivery_type as dt', 'dt.id', '=', 'sp.delivery_type_id')
+            ->where('sp.supp_id', $supplier_id)
+            ->select(
+                'sp.id',
+                'mc.name as category',
+                'mp.product_name as product',
+                'ms.material_subproduct as subtype',
+                'b.name as brand',
+                'u.unitname as unit',
+                'sp.price',
+                'sp.gst_included',
+                'sp.gst_percent',
+                'dt.type as delivery_type',
+                'sp.image',
+                'sp.created_at'
+            )
+            ->orderBy('sp.id', 'desc')
+            ->get();
+
+        return view('web.myproducts', compact('products'));
+    }
+
+    public function editProduct($id)
+    {
         $supplier_id = Session::get('supplier_id');
 
-        return view('web.myproducts');
+        $product = DB::table('supplier_products_data')
+            ->where('id', $id)
+            ->where('supp_id', $supplier_id)
+            ->first();
+
+        if (!$product) {
+            abort(404);
+        }
+
+        return view('web.productsuppedit', [
+            'product' => $product,
+            'categories' => DB::table('material_categories')->get(),
+            'products' => DB::table('material_product')->get(),
+            'subtypes' => DB::table('material_product_subtype')->get(),
+            'brands' => DB::table('brands')->get(),
+            'units' => DB::table('unit')->get(),
+            'deliveryTypes' => DB::table('delivery_type')->get(),
+        ]);
+    }
+
+
+     public function updateProduct(Request $request, $id)
+    {
+        $supplier_id = Session::get('supplier_id');
+
+        $request->validate([
+            'price' => 'required|numeric',
+            'gst_percent' => 'nullable|numeric',
+        ]);
+
+        DB::table('supplier_products_data')
+            ->where('id', $id)
+            ->where('supp_id', $supplier_id)
+            ->update([
+                'price'         => $request->price,
+                'gst_percent'   => $request->gst_percent,
+                'gst_included'  => $request->gst_included ?? 0,
+                'updated_at'    => now(),
+            ]);
+
+        return redirect()
+            ->route('myproducts')
+            ->with('success', 'Product updated successfully');
+    }
+
+    /* =========================================================
+       4️⃣ DELETE PRODUCT
+    ========================================================= */
+    public function deleteProduct($id)
+    {
+         $supplier_id = Session::get('supplier_id');
+
+        DB::table('supplier_products_data')
+            ->where('id', $id)
+            ->where('supp_id', $supplier_id)
+            ->delete();
+
+        return redirect()
+            ->back()
+            ->with('success', 'Product deleted successfully');
     }
   
     public function suppliersprofile()
@@ -127,6 +220,7 @@ class SuppliersController extends Controller
         UPDATE DATA
         =============================== */
         $supplier->fill([
+
             'shop_name'          => $validated['shop_name'],
             'contact_person'     => $validated['contact_person'],
             'mobile'              => $validated['mobile'],
@@ -438,6 +532,7 @@ class SuppliersController extends Controller
     public function storeSupplierProductData(Request $request)
     {
 
+        $supp_id = Session::get('supplier_id');
         // dd($request);
         // Basic validation
         $request->validate([
@@ -462,6 +557,7 @@ class SuppliersController extends Controller
 
         // Save product
         SupplierProductData::create([
+            'supp_id'                     =>$supp_id,
             'material_category_id'        =>$request->material_category_id,
             'material_product_id'         => $request->product_type,
             'material_product_subtype_id' => $request->product_subtype,

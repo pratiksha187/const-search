@@ -111,15 +111,16 @@ Route::post('/supplierstore', [SuppliersController::class, 'supplierstore'])->na
 Route::get('/addproducts', [SuppliersController::class, 'addproducts'])->name('addproducts');
 
 Route::get('/myproducts', [SuppliersController::class, 'myproducts'])->name('myproducts');
+Route::get('/products/edit/{id}', [SuppliersController::class, 'editProduct'])
+    ->name('products.edit');
+
+Route::post('/products/update/{id}', [SuppliersController::class, 'updateProduct'])
+    ->name('products.update');
+
+Route::get('/products/delete/{id}', [SuppliersController::class, 'deleteProduct'])
+    ->name('products.delete');
 
 
-
-// Route::get('/get-product-subtypes/{productId}', 
-//     [SuppliersController::class, 'getProductSubtypes']
-// );
-// Route::get('/get-brands/{materialProductId}', 
-//     [SuppliersController::class, 'getBrands']
-// );
 Route::get('/get-product-subtypes/{productId}', [SuppliersController::class, 'getProductSubtypes']);
 Route::get('/get-brands/{productId}', [SuppliersController::class, 'getBrands']);
 

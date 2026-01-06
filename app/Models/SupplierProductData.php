@@ -9,6 +9,7 @@ class SupplierProductData extends Model
     protected $table = 'supplier_products_data';
 
     protected $fillable = [
+        'supp_id',
         'material_category_id',
         'material_product_id',
         'material_product_subtype_id',
