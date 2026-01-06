@@ -204,7 +204,7 @@ class HomeController extends Controller
             )
             ->orderBy('posts.id', 'desc')
             ->get();
-           
+           dd($projects);
         return view('web.search_customer', [
             'work_types' => $work_types,
             'states' => $states,
