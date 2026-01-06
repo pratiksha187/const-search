@@ -685,42 +685,6 @@ function applyFilters() {
 
   let visible = 0;
 
-  // document.querySelectorAll('.vendor-card').forEach(card => {
-
-  //   let cardTypeId    = card.dataset.workTypeId || '';
-  //   let cardSubtypeId = card.dataset.workSubtypeId || '';
-  //   let cardTitle     = card.dataset.name || '';
-  //   let cardSubtype   = card.dataset.workSubtype || '';
-
-  //   // let cardStateId  = card.dataset.stateId || '';
-  //   // let cardRegionId = card.dataset.regionId || '';
-  //   // let cardCityId   = card.dataset.cityId || '';
-
-  //   let categoryMatch = true;
-  //   if (selectedCategories.length > 0) {
-  //     if (selectedSubtypes.length > 0) {
-  //       categoryMatch = selectedSubtypes.includes(cardSubtypeId);
-  //     } else {
-  //       categoryMatch = selectedCategories.includes(cardTypeId);
-  //     }
-  //   }
-
-  //   let textMatch =
-  //     searchText === '' ||
-  //     cardTitle.includes(searchText) ||
-  //     cardSubtype.includes(searchText);
-
-  //   let stateMatch  = stateId  === '' || cardStateId  === stateId;
-  //   let regionMatch = regionId === '' || cardRegionId === regionId;
-  //   let cityMatch   = cityId   === '' || cardCityId   === cityId;
-
-  //   if (categoryMatch && textMatch && stateMatch && regionMatch && cityMatch) {
-  //     card.style.display = 'block';
-  //     visible++;
-  //   } else {
-  //     card.style.display = 'none';
-  //   }
-  // });
 document.querySelectorAll('.vendor-card').forEach(card => {
 
     let cardTypeId    = card.dataset.workTypeId || '';
