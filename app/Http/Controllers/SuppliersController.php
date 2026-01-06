@@ -11,6 +11,11 @@ use App\Models\SupplierProductData;
 
 class SuppliersController extends Controller
 {
+    public function myproducts(){
+        $supplier_id = Session::get('supplier_id');
+
+        return view('web.myproducts');
+    }
   
     public function suppliersprofile()
     {
@@ -227,10 +232,10 @@ class SuppliersController extends Controller
         $cementconcrete	=DB::table('material_product')->where('material_id','1')->get();	
         
         // aggregatessand
-        $aggregates	=DB::table('material_product')->where('material_id','26')->get();	
+        $aggregates	=DB::table('material_product')->where('material_id','28')->get();	
 
         // roadconstruction
-        $roadconstruction	=DB::table('material_product')->where('material_id','27')->get();	
+        $roadconstruction	=DB::table('material_product')->where('material_id','29')->get();	
 
         // Supplier (as you already have)
         $supplier = DB::table('supplier_products')

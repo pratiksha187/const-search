@@ -240,7 +240,12 @@ body{
         </div>
 
         <div class="top-menu">
-            <a href="{{ route('addproducts') }}" class="{{ request()->is('addproducts') ? 'active' : '' }}">Products</a>
+            <a href="{{ route('addproducts') }}" class="{{ request()->is('addproducts') ? 'active' : '' }}">Add Products</a>
+           
+        </div>
+
+        <div class="top-menu">
+            <a href="{{ route('myproducts') }}" class="{{ request()->is('myproducts') ? 'active' : '' }}">My Products</a>
            
         </div>
 

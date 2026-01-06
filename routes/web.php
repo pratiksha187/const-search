@@ -110,6 +110,10 @@ Route::get('/supplier/profile', [SuppliersController::class, 'suppliersprofile']
 Route::post('/supplierstore', [SuppliersController::class, 'supplierstore'])->name('supplier.store');
 Route::get('/addproducts', [SuppliersController::class, 'addproducts'])->name('addproducts');
 
+Route::get('/myproducts', [SuppliersController::class, 'myproducts'])->name('myproducts');
+
+
+
 // Route::get('/get-product-subtypes/{productId}', 
 //     [SuppliersController::class, 'getProductSubtypes']
 // );
