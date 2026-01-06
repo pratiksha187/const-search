@@ -225,7 +225,12 @@ class SuppliersController extends Controller
 
         // cement-concrete
         $cementconcrete	=DB::table('material_product')->where('material_id','1')->get();	
+        
+        // aggregatessand
+        $aggregates	=DB::table('material_product')->where('material_id','26')->get();	
 
+        // roadconstruction
+        $roadconstruction	=DB::table('material_product')->where('material_id','27')->get();	
 
         // Supplier (as you already have)
         $supplier = DB::table('supplier_products')
@@ -241,7 +246,7 @@ class SuppliersController extends Controller
 
         return view('web.catalog.addproduct', compact('supplier','thickness_size', 'categories','mc_chemicals','units','delivery_type',
         'Plumbingmaterials','electricalitems','doorswindows','glassglazing','hardwaretools','machineries','timberwood','roofingmaterials','pavers',
-        'concreteproducts','roadsafety','facadecladding','scaffolding','hvacutilities','readymix','paintcoating','tilesflooring','cementconcrete','designcode','steeltmt'));
+        'concreteproducts','roadsafety','facadecladding','roadconstruction','scaffolding','hvacutilities','readymix','paintcoating','aggregates','tilesflooring','cementconcrete','designcode','steeltmt'));
     }
 
     public function getProductMeta($productId)

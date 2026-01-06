@@ -82,6 +82,8 @@
                     <li class="list-group-item" data-target="tilesflooring">Tiles & Flooring</li>
                     <li class="list-group-item" data-target="steeltmt">Steel & TMT Bars</li>
                     <li class="list-group-item" data-target="cement-concrete">Cement & Concrete</li>
+                    <li class="list-group-item" data-target="aggregates">Aggregates, sand, and Masonry Materials</li>
+                    <li class="list-group-item" data-target="roadconstruction">Road Construction Materials & Asphalt Works</li>
                     											
                 </ul>
             </div>
@@ -319,6 +321,25 @@
                     <div class="card-header fw-semibold">Add Product – Cement & Concrete</div>
                     <div class="card-body">
                         @include('web.catalog.cementconcrete')
+                    </div>
+                </div>
+            </div>
+
+            <!-- aggregates -->
+            <div class="category-page" id="aggregates">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header fw-semibold">Add Product – Aggregates, sand, and Masonry Materials</div>
+                    <div class="card-body">
+                        @include('web.catalog.aggregates')
+                    </div>
+                </div>
+            </div>
+            <!-- roadconstruction -->
+            <div class="category-page" id="roadconstruction">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header fw-semibold">Add Product – Road Construction Materials & Asphalt Works</div>
+                    <div class="card-body">
+                        @include('web.catalog.roadconstruction')
                     </div>
                 </div>
             </div>

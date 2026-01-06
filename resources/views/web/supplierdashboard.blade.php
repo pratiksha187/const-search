@@ -148,15 +148,15 @@ body{
         <!-- STATS -->
         <div class="stats-grid">
             <div class="stat-box">
-                <div class="stat-value">12</div>
+                <div class="stat-value">0</div>
                 <div class="stat-label">New Orders</div>
             </div>
             <div class="stat-box">
-                <div class="stat-value">₹ 24,500</div>
+                <div class="stat-value">₹00</div>
                 <div class="stat-label">Today’s Earnings</div>
             </div>
             <div class="stat-box">
-                <div class="stat-value">58</div>
+                <div class="stat-value">00</div>
                 <div class="stat-label">Products Listed</div>
             </div>
         </div>
@@ -164,24 +164,34 @@ body{
         <!-- STORE + PRODUCT (ROW) -->
         <div class="row g-4 mb-4">
 
+         
             <div class="col-md-6">
                 <div class="section h-100">
                     <h5>Store Setup</h5>
                     <p>Manage store details, service areas, timings and KYC documents.</p>
                     <div class="actions">
-                        <button class="btn" style="background:var(--orange);color:#fff;">
+                        <a href="{{ route('suppliers.profile') }}"
+                        class="btn"
+                        style="background:var(--orange);color:#fff;">
                             Manage Store
-                        </button>
+                        </a>
+                      
                     </div>
                 </div>
             </div>
+
 
             <div class="col-md-6">
                 <div class="section h-100">
                     <h5>Product Management</h5>
                     <p>Add materials, manage pricing, stock and categories.</p>
                     <div class="actions">
-                        <button class="btn btn-success">Add Product</button>
+                       
+                         <a href="{{ route('addproducts') }}"
+                        class="btn"
+                        style="background:var(--navy);color:#fff;">
+                           Add Product
+                        </a>
                         <button class="btn btn-outline-secondary">View Products</button>
                     </div>
                 </div>
@@ -196,19 +206,19 @@ body{
 
             <div class="status-grid">
                 <div class="status-box">
-                    <div class="count">5</div>
+                    <div class="count">0</div>
                     <div class="text">New</div>
                 </div>
                 <div class="status-box">
-                    <div class="count">3</div>
+                    <div class="count">0</div>
                     <div class="text">Preparing</div>
                 </div>
                 <div class="status-box">
-                    <div class="count">2</div>
+                    <div class="count">0</div>
                     <div class="text">Out for Delivery</div>
                 </div>
                 <div class="status-box">
-                    <div class="count">18</div>
+                    <div class="count">0</div>
                     <div class="text">Completed</div>
                 </div>
             </div>
