@@ -8,17 +8,35 @@ class SupplierProductData extends Model
 {
     protected $table = 'supplier_products_data';
 
+    // protected $fillable = [
+    //     'supp_id',
+    //     'material_category_id',
+    //     'material_product_id',
+    //     'material_product_subtype_id',
+    //     'brand_id',
+    //     'unit_id',
+    //     'price',
+    //     'gst_included',
+    //     'gst_percent',
+    //     'delivery_type_id',
+    //     'image',
+    //     'thickness_size',
+    //     'delivery_time'
+    // ];
     protected $fillable = [
-        'supp_id',
-        'material_category_id',
-        'material_product_id',
-        'material_product_subtype_id',
-        'brand_id',
-        'unit_id',
-        'price',
-        'gst_included',
-        'gst_percent',
-        'delivery_type_id',
-        'image',
-    ];
+    'supp_id',
+    'material_category_id',
+    'material_product_id',
+    'material_product_subtype_id',
+    'brand_id',
+    'unit_id',
+    'price',
+    'gst_included',
+    'gst_percent',
+    'delivery_type_id',
+    'image',
+    'thickness_size',
+    'delivery_time'
+];
+
 }

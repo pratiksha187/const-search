@@ -12,37 +12,90 @@ use App\Models\SupplierProductData;
 class SuppliersController extends Controller
 {
 
-    public function myproducts()
-    {
-        $supplier_id = Session::get('supplier_id'); // or auth()->id()
+    // public function myproducts()
+    // {
+    //     $supplier_id = Session::get('supplier_id'); // or auth()->id()
 
-        $products = DB::table('supplier_products_data as sp')
-            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-            ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
-            ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'sp.material_product_subtype_id')
-            ->leftJoin('brands as b', 'b.id', '=', 'sp.brand_id')
-            ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
-            ->leftJoin('delivery_type as dt', 'dt.id', '=', 'sp.delivery_type_id')
-            ->where('sp.supp_id', $supplier_id)
-            ->select(
-                'sp.id',
-                'mc.name as category',
-                'mp.product_name as product',
-                'ms.material_subproduct as subtype',
-                'b.name as brand',
-                'u.unitname as unit',
-                'sp.price',
-                'sp.gst_included',
-                'sp.gst_percent',
-                'dt.type as delivery_type',
-                'sp.image',
-                'sp.created_at'
-            )
-            ->orderBy('sp.id', 'desc')
-            ->get();
+    //     $products = DB::table('supplier_products_data as sp')
+    //         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+    //         ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
+    //         ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'sp.material_product_subtype_id')
+    //         ->leftJoin('brands as b', 'b.id', '=', 'sp.brand_id')
+    //         ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
+    //         ->leftJoin('delivery_type as dt', 'dt.id', '=', 'sp.delivery_type_id')
+    //         ->where('sp.supp_id', $supplier_id)
+    //         ->select(
+    //             'sp.id',
+    //             'mc.name as category',
+    //             'mp.product_name as product',
+    //             'ms.material_subproduct as subtype',
+    //             'b.name as brand',
+    //             'u.unitname as unit',
+    //             'sp.price',
+    //             'sp.gst_included',
+    //             'sp.gst_percent',
+    //             'dt.type as delivery_type',
+    //             'sp.image',
+    //             'sp.delivery_time',
+    //             'sp.created_at'
+    //         )
+    //         ->orderBy('sp.id', 'desc')
+    //         ->get();
 
-        return view('web.myproducts', compact('products'));
+    //     return view('web.myproducts', compact('products'));
+    // }
+    public function myproducts(Request $request)
+{
+    $supplier_id = Session::get('supplier_id');
+
+    $query = DB::table('supplier_products_data as sp')
+        ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+        ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
+        ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'sp.material_product_subtype_id')
+        ->leftJoin('brands as b', 'b.id', '=', 'sp.brand_id')
+        ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
+        ->leftJoin('delivery_type as dt', 'dt.id', '=', 'sp.delivery_type_id')
+        ->where('sp.supp_id', $supplier_id);
+
+    /* 🔍 SEARCH (PRODUCT / BRAND) */
+    if ($request->filled('search')) {
+        $query->where(function ($q) use ($request) {
+            $q->where('mp.product_name', 'like', '%'.$request->search.'%')
+              ->orWhere('b.name', 'like', '%'.$request->search.'%');
+        });
     }
+
+    /* 🏷️ CATEGORY FILTER */
+    if ($request->filled('category')) {
+        $query->where('mc.name', $request->category);
+    }
+
+    /* 🧾 GST FILTER */
+    if ($request->filled('gst')) {
+        $query->where('sp.gst_included', $request->gst);
+    }
+
+    $products = $query->select(
+            'sp.id',
+            'mc.name as category',
+            'mp.product_name as product',
+            'ms.material_subproduct as subtype',
+            'b.name as brand',
+            'u.unitname as unit',
+            'sp.price',
+            'sp.gst_included',
+            'sp.gst_percent',
+            'dt.type as delivery_type',
+            'sp.image',
+            'sp.delivery_time',
+            'sp.created_at'
+        )
+        ->orderBy('sp.id', 'desc')
+        ->get();
+
+    return view('web.myproducts', compact('products'));
+}
+
 
     public function editProduct($id)
     {
@@ -529,47 +582,93 @@ class SuppliersController extends Controller
         return view('web.productenquiry',compact('enquiries'));
     }
 
+    // public function storeSupplierProductData(Request $request)
+    // {
+
+    //     $supp_id = Session::get('supplier_id');
+    //     // dd($request);
+    //     // Basic validation
+    //     $request->validate([
+    //         'product_type'    => 'required',
+    //         'unit'            => 'required',
+    //         'price'           => 'nullable|numeric',
+    //         'gst_percent'     => 'nullable|numeric',
+    //         'product_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    //     ]);
+
+    //     // Image upload
+    //     $imageName = null;
+    //     if ($request->hasFile('product_image')) {
+    //         $imageName = time() . '_' .
+    //             $request->product_image->getClientOriginalName();
+
+    //         $request->product_image->move(
+    //             public_path('uploads/products'),
+    //             $imageName
+    //         );
+    //     }
+
+    //     // Save product
+    //     SupplierProductData::create([
+    //         'supp_id'                     =>$supp_id,
+    //         'material_category_id'        =>$request->material_category_id,
+    //         'material_product_id'         => $request->product_type,
+    //         'material_product_subtype_id' => $request->product_subtype,
+    //         'brand_id'                    => $request->brand,
+    //         'unit_id'                     => $request->unit,
+    //         'price'                       => $request->price,
+    //         'gst_included'                => $request->gst_included ? 1 : 0,
+    //         'gst_percent'                 => $request->gst_percent,
+    //         'delivery_type_id'            => $request->delivery_type,
+    //         'image'                       => $imageName,
+    //     ]);
+
+    //     return back()->with('success', 'Product saved successfully!');
+    // }
     public function storeSupplierProductData(Request $request)
-    {
+{
+    $supp_id = session('supplier_id'); // keep as-is if working
 
-        $supp_id = Session::get('supplier_id');
-        // dd($request);
-        // Basic validation
-        $request->validate([
-            'product_type'    => 'required',
-            'unit'            => 'required',
-            'price'           => 'nullable|numeric',
-            'gst_percent'     => 'nullable|numeric',
-            'product_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+    // ✅ FIXED VALIDATION (MATCH REQUEST)
+    $request->validate([
+        'material_category_id' => 'required',
+        'product_type'         => 'required',
+        'product_subtype'      => 'nullable',
+        'brand'                => 'nullable',
+        'unit'                 => 'required',
+        'price'                => 'nullable|numeric',
+        'gst'                  => 'nullable|numeric',
+        'delivery_time'        => 'nullable',
+        'product_image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        // Image upload
-        $imageName = null;
-        if ($request->hasFile('product_image')) {
-            $imageName = time() . '_' .
-                $request->product_image->getClientOriginalName();
-
-            $request->product_image->move(
-                public_path('uploads/products'),
-                $imageName
-            );
-        }
-
-        // Save product
-        SupplierProductData::create([
-            'supp_id'                     =>$supp_id,
-            'material_category_id'        =>$request->material_category_id,
-            'material_product_id'         => $request->product_type,
-            'material_product_subtype_id' => $request->product_subtype,
-            'brand_id'                    => $request->brand,
-            'unit_id'                     => $request->unit,
-            'price'                       => $request->price,
-            'gst_included'                => $request->gst_included ? 1 : 0,
-            'gst_percent'                 => $request->gst_percent,
-            'delivery_type_id'            => $request->delivery_type,
-            'image'                       => $imageName,
-        ]);
-
-        return back()->with('success', 'Product saved successfully!');
+    // ✅ IMAGE UPLOAD
+    $imageName = null;
+    if ($request->hasFile('product_image')) {
+        $imageName = time().'_'.$request->product_image->getClientOriginalName();
+        $request->product_image->move(
+            public_path('uploads/products'),
+            $imageName
+        );
     }
+
+    // ✅ SAVE DATA (PROPER MAPPING)
+    SupplierProductData::create([
+        'supp_id'                     => $supp_id,
+        'material_category_id'        => $request->material_category_id,
+        'material_product_id'         => $request->product_type,
+        'material_product_subtype_id' => $request->product_subtype,
+        'brand_id'                    => $request->brand,
+        'unit_id'                     => $request->unit,
+        'price'                       => $request->price,
+        'gst_percent'                 => $request->gst, // ✅ FIXED
+        'gst_included'                => $request->has('gst_included') ? 1 : 0,
+        'delivery_time'               => $request->delivery_time,
+        'delivery_type_id'            => $request->delivery_type,
+        'image'                       => $imageName,
+    ]);
+
+    return back()->with('success', 'Product saved successfully!');
+}
+
 }

@@ -13,8 +13,58 @@
             + Add Product
         </a>
     </div>
+<form method="GET" action="{{ route('myproducts') }}" class="row g-2 mb-3">
+
+    <div class="col-md-3">
+        <input type="text"
+               name="search"
+               class="form-control"
+               placeholder="Search product / brand"
+               value="{{ request('search') }}">
+    </div>
+
+    <div class="col-md-3">
+        <select name="category" class="form-select">
+            <option value="">All Categories</option>
+            @foreach($products->unique('category') as $p)
+                @if($p->category)
+                    <option value="{{ $p->category }}"
+                        {{ request('category') == $p->category ? 'selected' : '' }}>
+                        {{ $p->category }}
+                    </option>
+                @endif
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select name="gst" class="form-select">
+            <option value="">GST Status</option>
+            <option value="1" {{ request('gst') === '1' ? 'selected' : '' }}>
+                GST Included
+            </option>
+            <option value="0" {{ request('gst') === '0' ? 'selected' : '' }}>
+                GST Excluded
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100">
+            🔍 Filter
+        </button>
+    </div>
+
+    <div class="col-md-2">
+        <a href="{{ route('myproducts') }}" class="btn btn-secondary w-100">
+            Reset
+        </a>
+    </div>
+
+</form>
 
     <div class="card shadow-sm">
+        
         <div class="card-body">
 
             <table class="table table-bordered table-hover align-middle">
@@ -28,7 +78,7 @@
                         <th>Unit</th>
                         <th>Price</th>
                         <th>GST</th>
-                        <th>Delivery</th>
+                        <th>Delivery Time</th>
                         <th>Image</th>
                         <th>Added On</th>
                         <th>Action</th>
@@ -55,7 +105,7 @@
                                 @endif
                             </td>
 
-                            <td>{{ $row->delivery_type ?? '-' }}</td>
+                            <td>{{ $row->delivery_time ?? '-' }} - Days</td>
 
                             <td>
                                 @if($row->image)
