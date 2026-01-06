@@ -685,42 +685,80 @@ function applyFilters() {
 
   let visible = 0;
 
-  document.querySelectorAll('.vendor-card').forEach(card => {
+  // document.querySelectorAll('.vendor-card').forEach(card => {
+
+  //   let cardTypeId    = card.dataset.workTypeId || '';
+  //   let cardSubtypeId = card.dataset.workSubtypeId || '';
+  //   let cardTitle     = card.dataset.name || '';
+  //   let cardSubtype   = card.dataset.workSubtype || '';
+
+  //   // let cardStateId  = card.dataset.stateId || '';
+  //   // let cardRegionId = card.dataset.regionId || '';
+  //   // let cardCityId   = card.dataset.cityId || '';
+
+  //   let categoryMatch = true;
+  //   if (selectedCategories.length > 0) {
+  //     if (selectedSubtypes.length > 0) {
+  //       categoryMatch = selectedSubtypes.includes(cardSubtypeId);
+  //     } else {
+  //       categoryMatch = selectedCategories.includes(cardTypeId);
+  //     }
+  //   }
+
+  //   let textMatch =
+  //     searchText === '' ||
+  //     cardTitle.includes(searchText) ||
+  //     cardSubtype.includes(searchText);
+
+  //   let stateMatch  = stateId  === '' || cardStateId  === stateId;
+  //   let regionMatch = regionId === '' || cardRegionId === regionId;
+  //   let cityMatch   = cityId   === '' || cardCityId   === cityId;
+
+  //   if (categoryMatch && textMatch && stateMatch && regionMatch && cityMatch) {
+  //     card.style.display = 'block';
+  //     visible++;
+  //   } else {
+  //     card.style.display = 'none';
+  //   }
+  // });
+document.querySelectorAll('.vendor-card').forEach(card => {
 
     let cardTypeId    = card.dataset.workTypeId || '';
     let cardSubtypeId = card.dataset.workSubtypeId || '';
     let cardTitle     = card.dataset.name || '';
     let cardSubtype   = card.dataset.workSubtype || '';
 
-    // let cardStateId  = card.dataset.stateId || '';
-    // let cardRegionId = card.dataset.regionId || '';
-    // let cardCityId   = card.dataset.cityId || '';
+    // ✅ FIXED: TEXT BASED LOCATION DATA
+    let cardStateId  = card.dataset.state || '';
+    let cardRegionId = card.dataset.region || '';
+    let cardCityId   = card.dataset.city || '';
 
     let categoryMatch = true;
     if (selectedCategories.length > 0) {
-      if (selectedSubtypes.length > 0) {
-        categoryMatch = selectedSubtypes.includes(cardSubtypeId);
-      } else {
-        categoryMatch = selectedCategories.includes(cardTypeId);
-      }
+        if (selectedSubtypes.length > 0) {
+            categoryMatch = selectedSubtypes.includes(cardSubtypeId);
+        } else {
+            categoryMatch = selectedCategories.includes(cardTypeId);
+        }
     }
 
     let textMatch =
-      searchText === '' ||
-      cardTitle.includes(searchText) ||
-      cardSubtype.includes(searchText);
+        searchText === '' ||
+        cardTitle.includes(searchText) ||
+        cardSubtype.includes(searchText);
 
-    let stateMatch  = stateId  === '' || cardStateId  === stateId;
-    let regionMatch = regionId === '' || cardRegionId === regionId;
-    let cityMatch   = cityId   === '' || cardCityId   === cityId;
+    // ✅ TEXT BASED LOCATION MATCH
+    let stateMatch  = stateId  === '' || cardStateId.includes(stateId);
+    let regionMatch = regionId === '' || cardRegionId.includes(regionId);
+    let cityMatch   = cityId   === '' || cardCityId.includes(cityId);
 
     if (categoryMatch && textMatch && stateMatch && regionMatch && cityMatch) {
-      card.style.display = 'block';
-      visible++;
+        card.style.display = 'block';
+        visible++;
     } else {
-      card.style.display = 'none';
+        card.style.display = 'none';
     }
-  });
+});
 
   document.getElementById('vendorCount').innerText = visible;
 }
