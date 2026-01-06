@@ -327,9 +327,9 @@
 
           <div class="text-muted small d-flex align-items-center gap-2 mb-3">
             <i class="bi bi-geo-alt-fill text-primary"></i>
-            {{ $vendor->cityname ?? '' }},
-            {{ $vendor->regionname ?? '' }},
-            {{ $vendor->statename ?? '' }}
+            {{ $project->cityname  }},
+            {{ $project->regionname }},
+            {{ $project->statename  }}
           </div>
 
           <div class="row align-items-center border-top pt-3">
