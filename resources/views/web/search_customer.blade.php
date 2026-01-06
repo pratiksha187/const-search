@@ -328,9 +328,10 @@
 
           <div class="text-muted small d-flex align-items-center gap-2 mb-3">
             <i class="bi bi-geo-alt-fill text-primary"></i>
-            {{ $project->cityname ?? '' }},
+             {{ $project->statename ?? '' }},
             {{ $project->regionname ?? '' }},
-            {{ $project->statename ?? '' }}
+           
+            {{ $project->cityname ?? '' }},
           </div>
 
           <div class="row align-items-center border-top pt-3">
