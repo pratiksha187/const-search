@@ -242,7 +242,9 @@ Route::post('/standard-update/{id}', [StandardController::class,'update'])
 Route::get('/standard-delete/{id}', [StandardController::class,'destroy'])
     ->name('standard.delete');
 
-    
+    Route::post('/erp-interest/save', [HomeController::class, 'saveErpInterest'])
+    ->name('erp.interest.save');
+
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";

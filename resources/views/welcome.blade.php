@@ -563,8 +563,72 @@ body {
         font-size: 1.5rem;
     }
 }
+/* 
+:root{
+  --ck-navy:#0f172a;
+  --ck-orange:#f25c05;
+  --ck-bg:#f6f8fb;
+  --ck-border:#e5e7eb;
+} */
 
+.modal-xl{
+  max-width:1200px;
+}
 
+/* Header */
+.ck-modal-header{
+  background:#ffffff;
+  border-bottom:1px solid var(--ck-border);
+}
+
+.ck-modal-title{
+  color:var(--ck-navy);
+  font-weight:700;
+}
+
+.ck-modal-subtitle{
+  color:#64748b;
+  font-size:14px;
+}
+
+/* Steps */
+.ck-step{
+  background:#eef2ff;
+  color:#1e3a8a;
+  font-weight:600;
+  border-radius:6px;
+  padding:2px 8px;
+  font-size:12px;
+}
+
+/* Options */
+.ck-option{
+  border:1px solid var(--ck-border);
+  border-radius:14px;
+  padding:14px 16px;
+  transition:.2s;
+  cursor:pointer;
+  background:#fff;
+}
+
+.ck-option:hover{
+  border-color:var(--ck-orange);
+  background:#fff7ed;
+}
+
+/* Submit */
+.ck-submit{
+     background:#f79111;
+  /* background:var(--ck-orange); */
+  border:none;
+  border-radius:14px;
+  padding:14px;
+  font-weight:700;
+}
+
+/* .ck-submit:hover{
+  background:#fff7ed;
+} */
 </style>
 
 @if(session('success'))
@@ -1094,7 +1158,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
         </div>
     </div>
 </div>
-<div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
+<!-- <div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4">
 
@@ -1123,7 +1187,245 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 
         </div>
     </div>
+</div> -->
+<div class="modal fade" id="comingSoonModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+
+      <!-- HEADER -->
+      <div class="modal-header ck-modal-header px-4 py-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <img src="{{ asset('images/logobg.png') }}" alt="ConstructKaro" style="height:30px;">
+            <h5 class="ck-modal-title mb-0">ERP</h5>
+          </div>
+          <p class="ck-modal-subtitle mb-0">
+            Tendering + Execution • Interest Registration
+          </p>
+        </div>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- FEATURE STRIP -->
+      <div class="bg-white px-4 py-3 border-bottom">
+        <div class="row g-3 text-center">
+          <div class="col-md-4">
+            <div class="ck-option h-100">
+              <div class="fw-bold">All-in-One ERP</div>
+              <small class="text-muted">Tender • Execution • Billing</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="ck-option h-100">
+              <div class="fw-bold">Construction-Focused</div>
+              <small class="text-muted">Built for Indian projects</small>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="ck-option h-100">
+              <div class="fw-bold">Cost-Effective</div>
+              <small class="text-muted">No heavy ERP pricing</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body bg-light px-4 py-4">
+        <form id="erpInterestForm">
+
+          <!-- 1 -->
+          <div class="mb-3">
+            <label class="fw-semibold">
+              <span class="ck-step me-1">1</span> Full Name *
+            </label>
+            <input class="form-control form-control-lg" name="full_name" required>
+          </div>
+
+          <!-- 2 -->
+          <div class="mb-3">
+            <label class="fw-semibold">
+              <span class="ck-step me-1">2</span> Company Name *
+            </label>
+            <input class="form-control form-control-lg" name="company_name" required>
+          </div>
+
+          <!-- 3 -->
+          <!-- <div class="mb-4">
+            <label class="fw-semibold">
+              <span class="ck-step me-1">3</span> Your Role *
+            </label>
+            <select class="form-select form-select-lg" name="role_in_org" required>
+              <option value="">Select role</option>
+              <option>Owner / Founder</option>
+              <option>Director</option>
+              <option>Project Manager</option>
+              <option>Engineer</option>
+              <option>Procurement</option>
+              <option>Consultant</option>
+              <option>Other</option>
+            </select>
+          </div> -->
+
+          <!-- 3 -->
+<div class="mb-4">
+  <label class="fw-semibold">
+    <span class="ck-step me-1">3</span> Your Role *
+  </label>
+
+  <select class="form-select form-select-lg"
+          name="role_in_org"
+          id="roleSelect"
+          required>
+    <option value="">Select role</option>
+    <option value="Owner / Founder">Owner / Founder</option>
+    <option value="Director">Director</option>
+    <option value="Project Manager">Project Manager</option>
+    <option value="Engineer">Engineer</option>
+    <option value="Procurement">Procurement</option>
+    <option value="Consultant">Consultant</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <!-- OTHER ROLE TEXTBOX (HIDDEN) -->
+  <div id="roleOtherBox" class="mt-2 d-none">
+    <input type="text"
+           class="form-control form-control-lg"
+           name="role_in_org_other"
+           placeholder="Please specify your role">
+  </div>
 </div>
+
+          <!-- 4 -->
+        <div class="mb-4">
+        <label class="fw-semibold mb-2 d-block">
+            <span class="ck-step me-1">4</span> Organization Type *
+        </label>
+
+        @foreach([
+            'Real Estate Builder / Developer',
+            'EPC / Infrastructure Contractor',
+            'Government Tender Contractor',
+            'Industrial / Factory Owner',
+            'PMC / Consultant',
+            'Other'
+        ] as $type)
+            <label class="ck-option d-flex align-items-center mb-2">
+            <input
+                type="radio"
+                name="organization_type"
+                class="me-3 org-type-radio"
+                value="{{ $type }}"
+                required
+            >
+            {{ $type }}
+            </label>
+        @endforeach
+
+        <!-- OTHER TEXTBOX (HIDDEN BY DEFAULT) -->
+        <div id="orgTypeOtherBox" class="mt-2 d-none">
+            <input type="text"
+                class="form-control form-control-lg"
+                name="organization_type_other"
+                placeholder="Please specify organization type">
+        </div>
+        </div>
+
+
+          <!-- 5 -->
+          <div class="mb-4">
+            <label class="fw-semibold">
+              <span class="ck-step me-1">5</span> Project Size *
+            </label>
+            <select class="form-select form-select-lg" name="project_size" required>
+              <option value="">Select size</option>
+              <option>Below ₹5 Cr</option>
+              <option>₹5 – 25 Cr</option>
+              <option>₹25 – 100 Cr</option>
+              <option>₹100 Cr+</option>
+            </select>
+          </div>
+
+          <!-- 6 -->
+          <div class="mb-4">
+            <label class="fw-semibold mb-2 d-block">
+              <span class="ck-step me-1">6</span> Looking For *
+            </label>
+
+            @foreach([
+              'Tender publishing & bid comparison',
+              'BOQ-based tendering',
+              'Subcontractor procurement',
+              'Execution dashboard',
+              'Billing / RA tracking',
+              'All-in-one ERP'
+            ] as $need)
+              <label class="ck-option d-flex align-items-center mb-2">
+                <input type="checkbox" name="looking_for[]" class="me-3">
+                {{ $need }}
+              </label>
+            @endforeach
+          </div>
+
+          <!-- 7 -->
+          <div class="mb-4">
+            <label class="fw-semibold mb-2 d-block">
+              <span class="ck-step me-1">7</span> Current Challenge *
+            </label>
+
+            @foreach([
+              'Managing tenders manually',
+              'No visibility after L1',
+              'Poor execution & billing',
+              'ERP too costly / complex',
+              'No structured system'
+            ] as $c)
+              <label class="ck-option d-flex align-items-center mb-2">
+                <input type="radio" name="current_challenge" class="me-3" required>
+                {{ $c }}
+              </label>
+            @endforeach
+          </div>
+
+          <!-- 8 -->
+          <div class="mb-4">
+            <label class="fw-semibold mb-2 d-block">
+              <span class="ck-step me-1">8</span> Interest Level *
+            </label>
+
+            @foreach(['Urgent','Exploring','Maybe','No'] as $i)
+              <label class="ck-option d-flex align-items-center mb-2">
+                <input type="radio" name="interest_level" class="me-3" required>
+                {{ $i }}
+              </label>
+            @endforeach
+          </div>
+
+          <!-- 9 -->
+          <div class="mb-4">
+            <label class="fw-semibold">
+              <span class="ck-step me-1">9</span> Contact Details *
+            </label>
+            <textarea class="form-control form-control-lg"
+                      rows="3"
+                      name="contact_details"
+                      placeholder="Mobile number & Email"
+                      required></textarea>
+          </div>
+
+          <!-- SUBMIT -->
+          <button type="submit" class="ck-submit w-100 ">
+            Submit Registration
+          </button>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -1153,6 +1455,61 @@ function openLoginPrompt() {
     const modal = new bootstrap.Modal(document.getElementById('loginPromptModal'));
     modal.show();
 }
+</script>
+<script>
+document.querySelectorAll('.org-type-radio').forEach(radio => {
+    radio.addEventListener('change', function () {
+
+        const otherBox = document.getElementById('orgTypeOtherBox');
+
+        if (this.value === 'Other') {
+            otherBox.classList.remove('d-none');
+        } else {
+            otherBox.classList.add('d-none');
+            otherBox.querySelector('input').value = '';
+        }
+    });
+});
+</script>
+<script>
+document.getElementById('roleSelect').addEventListener('change', function () {
+
+    const otherBox = document.getElementById('roleOtherBox');
+
+    if (this.value === 'Other') {
+        otherBox.classList.remove('d-none');
+    } else {
+        otherBox.classList.add('d-none');
+        otherBox.querySelector('input').value = '';
+    }
+});
+</script>
+
+<script>
+document.getElementById('erpInterestForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch("{{ route('erp.interest.save') }}", {
+        method: "POST",
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(res => {
+        if(res.status){
+            alert('✅ Registration submitted successfully');
+            this.reset();
+            bootstrap.Modal.getInstance(
+                document.getElementById('comingSoonModal')
+            ).hide();
+        }
+    })
+    .catch(() => alert('❌ Server error'));
+});
 </script>
 
 @endsection

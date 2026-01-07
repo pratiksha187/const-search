@@ -608,5 +608,82 @@ class HomeController extends Controller
     return redirect()->back()->with('success', 'Post deleted successfully');
     }
 
+    
+// public function saveErpInterest(Request $request)
+// {
+//     $request->validate([
+//         'full_name'          => 'required|string|max:150',
+//         'company_name'       => 'required|string|max:200',
+//         'role_in_org'        => 'required|string|max:100',
+//         'organization_type'  => 'required|string',
+//         'project_size'       => 'required|string',
+//         'looking_for'        => 'required|array',
+//         'current_challenge'  => 'required|string',
+//         'interest_level'     => 'required|string',
+//         'contact_details'    => 'required|string'
+//     ]);
+
+//     DB::table('erp_interest_registrations')->insert([
+//         'full_name'         => $request->full_name,
+//         'company_name'      => $request->company_name,
+//         'role_in_org'       => $request->role_in_org,
+//         'organization_type' => $request->organization_type,
+//         'project_size'      => $request->project_size,
+//         'looking_for'       => json_encode($request->looking_for),
+//         'current_challenge' => $request->current_challenge,
+//         'interest_level'    => $request->interest_level,
+//         'contact_details'   => $request->contact_details,
+//         'created_at'        => now(),
+//         'updated_at'        => now()
+//     ]);
+
+//     return response()->json([
+//         'status' => true,
+//         'message' => 'Interest registered successfully'
+//     ]);
+// }
+public function saveErpInterest(Request $request)
+{
+    $request->validate([
+        'full_name'          => 'required|string|max:150',
+        'company_name'       => 'required|string|max:200',
+        'role_in_org'        => 'required|string|max:100',
+        'organization_type'  => 'required|string',
+        'project_size'       => 'required|string',
+        'looking_for'        => 'required|array',
+        'current_challenge'  => 'required|string',
+        'interest_level'     => 'required|string',
+        'contact_details'    => 'required|string'
+    ]);
+
+    // ✅ HANDLE ROLE "OTHER"
+    $role = $request->role_in_org === 'Other'
+        ? $request->role_in_org_other
+        : $request->role_in_org;
+
+    // ✅ HANDLE ORG TYPE "OTHER"
+    $organizationType = $request->organization_type === 'Other'
+        ? $request->organization_type_other
+        : $request->organization_type;
+
+    DB::table('erp_interest_registrations')->insert([
+        'full_name'         => $request->full_name,
+        'company_name'      => $request->company_name,
+        'role_in_org'       => $role,
+        'organization_type' => $organizationType,
+        'project_size'      => $request->project_size,
+        'looking_for'       => json_encode($request->looking_for),
+        'current_challenge' => $request->current_challenge,
+        'interest_level'    => $request->interest_level,
+        'contact_details'   => $request->contact_details,
+        'created_at'        => now(),
+        'updated_at'        => now()
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Interest registered successfully'
+    ]);
+}
 
 }
