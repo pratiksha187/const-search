@@ -479,7 +479,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                               <label for="state" class="form-label">State</label>
-                                <select id="stateSelect" class="form-select form-select-custom">
+                                <select id="stateSelect" name="state" class="form-select form-select-custom">
                                     <option value="">Select State</option>
                                     @foreach($states as $state)
                                         <option value="{{ $state->id }}"
@@ -492,13 +492,13 @@
 
                             <div class="col-md-6">
                               <label for="region" class="form-label">Region</label>
-                               <select id="regionSelect"  class="form-select form-select-custom" disabled>
+                               <select id="regionSelect" name="region" class="form-select form-select-custom" disabled>
                                 <option value="">Select Region</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label for="region" class="form-label">City</label>
-                                    <select id="citySelect" class="form-select form-select-custom" disabled>
+                                    <select id="citySelect" name="city" class="form-select form-select-custom" disabled>
                                 <option value="">Select City</option>
                             </select>
                           </div>

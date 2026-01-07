@@ -145,12 +145,16 @@ class HomeController extends Controller
         $vendor_reg = DB::table('vendor_reg')
             ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type_id')
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
+            ->leftJoin('team_size', 'team_size.id', '=', 'vendor_reg.team_size')
+
             ->leftJoin('region', 'region.id', '=', 'vendor_reg.region')
             ->leftJoin('state', 'state.id', '=', 'vendor_reg.state')
             ->leftJoin('city', 'city.id', '=', 'vendor_reg.state')
             
+            
             ->select(
                 'work_types.*',
+                'team_size.team_size as team_size_data',
                 'work_subtypes.*',
                 'vendor_reg.*' ,
                 'region.name as regionname','state.name as statename','city.name as cityname'      
@@ -187,6 +191,8 @@ class HomeController extends Controller
         $projects = DB::connection('mysql')
             ->table('posts')
             ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
+
+            ->leftJoin('users','users.id', '=','posts.user_id')
             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
             ->leftJoin('region', 'region.id', '=', 'posts.region')
@@ -194,6 +200,9 @@ class HomeController extends Controller
             ->leftJoin('city', 'city.id', '=', 'posts.city')
             
             ->select(
+                'users.name as username',
+                'users.mobile as usersmobile',
+                'users.email as useremail',
                 'work_types.*',
                 'work_subtypes.*',
                 'posts.*',

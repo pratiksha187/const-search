@@ -966,62 +966,116 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
     <div class="container">
 
         <h2 class="section-title text-center mb-3">What People Say About Us</h2>
-        <p class="text-center text-muted mb-4">Trusted by customers, contractors & suppliers across Maharashtra.</p>
+        <p class="text-center text-muted mb-4">
+            Trusted by customers, contractors & suppliers across Maharashtra.
+        </p>
+
+        @php
+            $testimonials = [
+                [
+                    'name' => 'Vikram Naik',
+                    'role' => 'Civil Contractor | Pen, Maharashtra',
+                    'text' => 'Getting genuine private bungalow work is very difficult for small contractors. Through ConstructKaro, I received my first bungalow construction lead in Pen, which actually converted into a real project. The lead was clear, the client was genuine, and there was no unnecessary back-and-forth. ConstructKaro helped me get work without running behind brokers, and that made a big difference for my business.',
+                    'image' => 'vikram.jpeg',
+                    'rating' => 5,
+                ],
+                [
+                    'name' => 'Sanket Asgaonkar',
+                    'role' => 'Land Surveyor & Drone Survey Specialist | Raigad',
+                    'text' => 'I had the skills and equipment, but getting the right clients for drone survey work was always a challenge. With ConstructKaro, I got a drone survey requirement in Poladpur which matched exactly with my service profile. The platform helped me connect directly with the client, and the project went smoothly.',
+                    'image' => 'sanket.jpg',
+                    'rating' => 4,
+                ],
+                [
+                    'name' => 'Ivan Maben',
+                    'role' => 'Home Owner | Pen, Maharashtra',
+                    'text' => 'While planning my bungalow construction at Pen, I didn’t want to depend on local references alone. Through ConstructKaro, I connected with Shreeyash Construction and finalized them for my 4,000 sq.ft bungalow project. The platform helped me take a confident decision.',
+                   'image' => 'ivan.jpg',
+                   'rating' => 3,
+                ],
+                [
+                    'name' => 'Mohammed Khopoliwala',
+                    'role' => 'Owner, Aarwa Plastics | Khopoli',
+                    'text' => 'As a supplier, visibility is very important. After registering on ConstructKaro, we started receiving enquiries from contractors and customers we were not reaching earlier. We received multiple orders for plumbing materials and construction chemicals.',
+                    'image' => 'mohammed.jpg',
+                    'rating' => 5,
+                ],
+                [
+                    'name' => 'Patil Infra & Realtors Pvt. Ltd.',
+                    'role' => 'Real Estate Developer | Khopoli',
+                    'text' => 'For our ongoing building projects, finding dependable labour contractors on time is always a challenge. Through ConstructKaro, we were able to identify suitable labour contractors quickly, improving our execution efficiency.',
+                    'image' => 'patil-infra.jpg',
+                    'rating' => 4,
+                ],
+                [
+                    'name' => 'Samiksha Shirke',
+                    'role' => 'Home Owner | Nagothane, Maharashtra',
+                    'text' => 'I was planning to construct a bungalow and didn’t know how to start. I posted my requirement on ConstructKaro and received genuine responses. One lead converted into actual work and my bungalow construction has started.',
+                    'image' => 'samiksha.jpg',
+                    'rating' => 4,
+                ],
+                [
+                    'name' => 'Omkar Vidhate',
+                    'role' => 'Architect | Pune',
+                    'text' => 'After leaving my job, getting independent projects was challenging. Through ConstructKaro, I received architectural planning and interior design work that matched my skills perfectly.',
+                     'image' => 'omkar.jpg',
+                     'rating' => 3,
+                ],
+                [
+                    'name' => 'Yashshree',
+                    'role' => 'Interior Contractor | Pune',
+                    'text' => 'Finding serious interior work in a competitive market like Pune is not easy. Through ConstructKaro, I received an interior project in Kharadi that converted into real work. The lead quality was very good.',
+                    'image' => 'yashshree.jpg',
+                    'rating' => 5,
+                ],
+            ];
+        @endphp
 
         <div class="testimonial-auto-wrapper">
             <div class="testimonial-track">
 
-                <!-- CARDS SET 1 -->
-                @foreach ([1,2,3,4] as $i)
+                {{-- FIRST SET --}}
+                @foreach ($testimonials as $t)
                 <div class="testimonial-card">
                     <div class="d-flex align-items-center mb-3">
-                        <img src="https://i.pravatar.cc/300?img={{ 10+$i }}" class="testimonial-avatar">
+                       <img 
+                            src="{{ asset('images/testo/'.$t['image']) }}" 
+                            class="testimonial-avatar"
+                            alt="{{ $t['name'] }}"
+                        >
+
                         <div class="ms-3">
-                            <p class="testimonial-name mb-0">User {{ $i }}</p>
-                            <p class="testimonial-role mb-0">Role {{ $i }}</p>
+                            <p class="testimonial-name mb-0">{{ $t['name'] }}</p>
+                            <p class="testimonial-role mb-0">{{ $t['role'] }}</p>
                         </div>
                     </div>
 
+                   
                     <div class="testimonial-rating mb-2">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
+                        @for ($i = 1; $i <= 5; $i++)
+                            @if ($i <= $t['rating'])
+                                <i class="bi bi-star-fill text-warning"></i>
+                            @else
+                                <i class="bi bi-star text-muted"></i>
+                            @endif
+                        @endfor
                     </div>
 
+
                     <p class="text-muted">
-                        ConstructKaro helped me find the right vendor quickly and professionally.
+                        {{ $t['text'] }}
                     </p>
                 </div>
                 @endforeach
 
-                <!-- CARDS SET 2 (duplicate for infinite scroll) -->
-                @foreach ([1,2,3,4] as $i)
-                <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="https://i.pravatar.cc/300?img={{ 20+$i }}" class="testimonial-avatar">
-                        <div class="ms-3">
-                            <p class="testimonial-name mb-0">User {{ $i }}</p>
-                            <p class="testimonial-role mb-0">Role {{ $i }}</p>
-                        </div>
-                    </div>
-
-                    <div class="testimonial-rating mb-2">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                    </div>
-
-                    <p class="text-muted">
-                        Great experience, very easy vendor comparison system.
-                    </p>
-                </div>
-                @endforeach
+                
 
             </div>
         </div>
 
     </div>
 </section>
+
 
 <!-- LOGIN REQUIRED MODAL -->
 <div class="modal fade" id="loginPromptModal" tabindex="-1">

@@ -366,19 +366,24 @@
 
             {{-- CTA (onclick version) --}}
             <div class="col-md-5 text-end mt-3 mt-md-0">
+             
               <button class="btn btn-primary px-4 py-2"
                 onclick="handleInterested(
-                  {{ $project->id }},
-                  '{{ addslashes($project->contact_name) }}',
-                  '{{ addslashes($project->title) }}',
-                  '{{ addslashes($project->work_subtype) }}',
-                  '{{ addslashes($project->area . ', ' . $project->city . ', ' . $project->region . ', ' . $project->state) }}',
-                  '{{ addslashes($project->budget->label ?? 'Flexible') }}',
-                  '{{ addslashes($project->description) }}',
-                  '{{ addslashes($project->contact_time) }}'
+                    {{ $project->id }},
+                    '{{ addslashes($project->username) }}',
+                    '{{ addslashes($project->usersmobile) }}',
+                    '{{ addslashes($project->useremail) }}',
+                    '{{ addslashes($project->contact_name) }}',
+                    '{{ addslashes($project->title) }}',
+                    '{{ addslashes($project->work_subtype) }}',
+                    '{{ addslashes($project->statename . ', ' . $project->regionname . ', ' . $project->cityname) }}',
+                    '{{ addslashes($project->budget_range_name ?? 'Flexible') }}',
+                    '{{ addslashes($project->description) }}',
+                    '{{ addslashes($project->contact_time) }}'
                 )">
                 ❤️ I'm Interested
-              </button>
+                </button>
+
             </div>
 
           </div>
@@ -421,6 +426,20 @@
           <h6 class="fw-bold mb-3">Project Details</h6>
 
           <div class="row g-3 small">
+             <div class="col-md-6">
+              <span class="text-muted">User Name</span>
+              <div class="fw-semibold" id="modalusername">—</div>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted">User Mobile</span>
+              <div class="fw-semibold" id="modalusersmobile">—</div>
+            </div>
+            <div class="col-md-6">
+              <span class="text-muted">User Email</span>
+              <div class="fw-semibold" id="modaluseremail">—</div>
+            </div>
+            
+
             <div class="col-md-6">
               <span class="text-muted">Project Title</span>
               <div class="fw-semibold" id="modalTitle">—</div>
@@ -523,6 +542,9 @@ function resetLeadModalUI() {
 
 function handleInterested(
     id,
+    username ,
+    usersmobile,
+    useremail ,
     contactName,
     title,
     work,
@@ -541,6 +563,10 @@ function handleInterested(
     resetLeadModalUI();
 
     // Fill modal content
+    $('#modalTitle').text(title || '—');
+    $('#modalusername').text(username || '—');
+    $('#modalusersmobile').text(usersmobile || '—');
+    $('#modaluseremail').text(useremail || '—');
     $('#modalTitle').text(title || '—');
     $('#modalWork').text(work || '—');
     $('#modalLocation').text(location || '—');
@@ -662,14 +688,6 @@ $('#payNowBtn').on('click', function () {
 
 </script>
 <script>
-/* =====================================================
-   SMART FILTER – SINGLE SOURCE OF TRUTH
-   ✔ Category
-   ✔ Subtype
-   ✔ State
-   ✔ Region
-   ✔ City
-===================================================== */
 
 function applyFilters() {
 
