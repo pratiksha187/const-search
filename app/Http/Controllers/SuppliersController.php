@@ -498,6 +498,37 @@ class SuppliersController extends Controller
         ));
     }
 
+    public function supplierSearchAjax(Request $request)
+{
+    $query = DB::table('supplier_reg');
+
+    if ($request->credit_days) {
+        $query->where('credit_days', $request->credit_days);
+    }
+
+    if ($request->delivery_type) {
+        $query->where('delivery_type', $request->delivery_type);
+    }
+
+    if ($request->maximum_distance) {
+        $query->where('maximum_distance', '<=', $request->maximum_distance);
+    }
+
+    if ($request->search) {
+        $query->where(function ($q) use ($request) {
+            $q->where('shop_name', 'like', '%'.$request->search.'%')
+              ->orWhere('contact_person', 'like', '%'.$request->search.'%');
+            //   ->orWhere('area_name', 'like', '%'.$request->search.'%');
+        });
+    }
+
+    return response()->json([
+        'status' => true,
+        'suppliers' => $query->get()
+    ]);
+}
+
+
     public function supplierenquirystore(Request $request){
         // dd($request);
         $validated = $request->validate([

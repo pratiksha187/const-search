@@ -273,6 +273,137 @@
    color:#fff;
    border-color:#0f172a;
    }
+
+   /* SUPPLIER GRID */
+.supplier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* CARD */
+.supplier-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.supplier-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* HEADER */
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.card-head h5 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.card-head p {
+    margin: 2px 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.location {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* RATING */
+.rating {
+    text-align: right;
+    font-weight: 500;
+    color: #f59e0b;
+}
+.rating small {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: #6b7280;
+}
+
+/* BADGES */
+.badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.badge {
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: 999px;
+    font-weight: 500;
+}
+
+.badge.verified { background: #e0f2fe; color: #0369a1; }
+.badge.open { background: #dcfce7; color: #166534; }
+.badge.closed { background: #fee2e2; color: #991b1b; }
+.badge.delivery { background: #ecfeff; color: #155e75; }
+.badge.cash { background: #fff7ed; color: #9a3412; }
+.badge.credit { background: #ecfdf5; color: #065f46; }
+
+/* CATEGORY TAGS */
+.category-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.tag {
+    background: #f3f4f6;
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 12px;
+    color: #374151;
+    font-weight: 500;
+}
+
+/* FOOTER */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.btn-enquire {
+    background: #0f172a;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-enquire:hover {
+    background: #f25c05;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .supplier-card { padding: 16px; }
+    .card-head h5 { font-size: 16px; }
+}
+
 </style>
 <div class="supplier-search-page">
    <!-- HEADER -->
@@ -353,191 +484,87 @@
          <button class="btn-primary">Filters</button>
       </div>
    </div>
-   <!-- <div class="supplier-grid">
-      @forelse($supplier_data as $supplier)
-      <div class="supplier-card">
-         {{-- HEADER --}}
-         <div class="card-head">
-            <div>
-               <h5>{{ $supplier->shop_name }}</h5>
-               <p>
-                  'Area',
-                  'City'
-                  {{-- Distance placeholder --}}
-                  • {{ $supplier->distance_km ?? '—' }} km
-               </p>
+  
+   <div class="supplier-grid">
+    @forelse($supplier_data as $supplier)
+    <div class="supplier-card">
+
+        <!-- HEADER -->
+        <div class="card-head">
+            <div class="supplier-info">
+                <h5>{{ $supplier->shop_name }}</h5>
+                <p>Owner: {{ $supplier->contact_person }}</p>
+                <p class="location">
+                    {{ $supplier->area_name ?? '—' }}, {{ $supplier->city_name ?? '—' }}
+                    • {{ $supplier->maximum_distance ?? '—' }} km
+                </p>
             </div>
             <div class="rating">
-               ⭐ {{ $supplier->rating ?? '4.5' }}
-               <small>{{ $supplier->reviews_count ?? rand(20,200) }} reviews</small>
+                ⭐ {{ $supplier->rating ?? '4.5' }}
+                <small>{{ $supplier->reviews_count ?? rand(20,200) }} reviews</small>
             </div>
-         </div>
-         {{-- BADGES --}}
-         <div class="badge-row">
-            <div class="badge-row">
-               <span class="badge verified">Verified</span>
-               <span class="badge closed">Closed</span>
-               <span class="badge delivery">Delivery</span>
-               <span class="badge cash">Cash Only</span>
-            </div>
-            {{-- Verified --}}
+        </div>
+
+        <!-- BADGES -->
+        <div class="badge-row">
             @if($supplier->status === 'verified')
-            <span class="badge verified">Verified</span>
+                <span class="badge verified">Verified</span>
             @endif
-            {{-- Open / Closed --}}
+
             @if($supplier->open_time && $supplier->close_time)
-            @php
-            $now = now()->format('H:i');
-            $isOpen = ($now >= $supplier->open_time && $now <= $supplier->close_time);
-            @endphp
-            <span class="badge {{ $isOpen ? 'open' : 'closed' }}">
-            {{ $isOpen ? 'Open now' : 'Closed' }}
-            </span>
-            @endif
-            {{-- Delivery --}}
-            @if($supplier->delivery_type)
-            <span class="badge delivery">Delivery</span>
-            @endif
-            {{-- Credit / Cash --}}
-            @if($supplier->credit_days)
-            <span class="badge credit">
-            Credit {{ $supplier->credit_days }}d
-            </span>
+                @php
+                    $now = now()->format('H:i');
+                    $isOpen = ($now >= $supplier->open_time && $now <= $supplier->close_time);
+                @endphp
+                <span class="badge {{ $isOpen ? 'open' : 'closed' }}">
+                    {{ $isOpen ? 'Open now' : 'Closed' }}
+                </span>
             @else
-            <span class="badge cash">Cash Only</span>
+                <span class="badge closed">Timings not set</span>
             @endif
-         </div>
-         {{-- CATEGORIES --}}
-         <div class="category-row">
-            @php
-            $categories = json_decode($supplier->categories_json ?? '[]', true);
-            @endphp
-            @foreach(array_slice($categories, 0, 3) as $cat)
-            <span class="tag">{{ ucfirst($cat) }}</span>
-            @endforeach
-            @if(count($categories) > 3)
-            <span class="tag">+{{ count($categories) - 3 }} more</span>
+
+            @if($supplier->delivery_type)
+                <span class="badge delivery">Delivery</span>
             @endif
-         </div>
-         {{-- FOOTER --}}
-         <div class="card-footer">
+
+            @if($supplier->credit_days)
+                <span class="badge credit">
+                    Credit {{ $supplier->credit_days }} days
+                </span>
+            @else
+                <span class="badge cash">Cash Only</span>
+            @endif
+        </div>
+
+        <!-- EXPERIENCE -->
+        @if($supplier->years_in_business)
+        <div class="category-row mb-2">
+            <span class="tag">{{ $supplier->years_in_business }} yrs experience</span>
+        </div>
+        @endif
+
+        <!-- FOOTER -->
+        <div class="card-footer">
             <span>
-            {{ $supplier->delivery_days ? $supplier->delivery_days.' days' : 'Same / Next day' }}
-            • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
+                {{ $supplier->delivery_days ? $supplier->delivery_days.' days' : 'Same / Next day' }}
+                • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
             </span>
-          
-          
             <a href="javascript:void(0)"
-               class="btn-enquire enquire-btn"
-               data-supplier-id="{{ $supplier->id }}"
-               data-supplier-name="{{ $supplier->shop_name }}"
-               data-categories='@json(json_decode($supplier->categories_json ?? "[]"))'
-               data-credit="{{ $supplier->credit_days }}">
-               Enquire
+              class="btn-enquire enquire-btn"
+              data-supplier-id="{{ $supplier->id }}"
+              data-supplier-name="{{ $supplier->shop_name }}"
+              data-categories='@json(json_decode($supplier->categories_json ?? "[]"))'
+              data-credit="{{ $supplier->credit_days }}">
+                Enquire
             </a>
-
-        Enquire
-      </a>
-
-         </div>
-      </div>
-      @empty
-      <p class="text-muted">No suppliers found.</p>
-      @endforelse
-   </div> -->
-   <div class="supplier-grid">
-@forelse($supplier_data as $supplier)
-
-<div class="supplier-card">
-
-    {{-- HEADER --}}
-    <div class="card-head">
-        <div>
-            <h5>{{ $supplier->shop_name }}</h5>
-            <p>
-                {{ $supplier->area_name ?? '—' }},
-                {{ $supplier->city_name ?? '—' }}
-                • {{ $supplier->maximum_distance ?? '—' }} km
-            </p>
         </div>
 
-        <div class="rating">
-            ⭐ {{ $supplier->rating ?? '4.5' }}
-            <small>{{ $supplier->reviews_count ?? rand(20,200) }} reviews</small>
-        </div>
     </div>
-
-    {{-- BADGES --}}
-    <div class="badge-row">
-
-        {{-- Verified --}}
-        @if($supplier->status === 'verified')
-            <span class="badge verified">Verified</span>
-        @endif
-
-        {{-- Open / Closed --}}
-        @if($supplier->open_time && $supplier->close_time)
-            @php
-                $now = now()->format('H:i');
-                $isOpen = ($now >= $supplier->open_time && $now <= $supplier->close_time);
-            @endphp
-            <span class="badge {{ $isOpen ? 'open' : 'closed' }}">
-                {{ $isOpen ? 'Open now' : 'Closed' }}
-            </span>
-        @else
-            <span class="badge closed">Timings not set</span>
-        @endif
-
-        {{-- Delivery --}}
-        @if($supplier->delivery_type)
-            <span class="badge delivery">Delivery</span>
-        @endif
-
-        {{-- Credit / Cash --}}
-        @if($supplier->credit_days)
-            <span class="badge credit">
-                Credit {{ $supplier->credit_days }} days
-            </span>
-        @else
-            <span class="badge cash">Cash Only</span>
-        @endif
-
-    </div>
-
-    {{-- EXPERIENCE --}}
-    @if($supplier->years_in_business)
-    <div class="category-row mb-2">
-        <span class="tag">
-            {{ $supplier->years_in_business }} yrs experience
-        </span>
-    </div>
-    @endif
-
-    {{-- FOOTER --}}
-    <div class="card-footer">
-        <span>
-            {{ $supplier->delivery_days ? $supplier->delivery_days.' days' : 'Same / Next day' }}
-            • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
-        </span>
-
-        <a href="javascript:void(0)"
-           class="btn-enquire enquire-btn"
-           data-supplier-id="{{ $supplier->id }}"
-           data-supplier-name="{{ $supplier->shop_name }}"
-           data-categories='@json(json_decode($supplier->categories_json ?? "[]"))'
-           data-credit="{{ $supplier->credit_days }}">
-            Enquire
-        </a>
-    </div>
-
+    @empty
+    <p class="text-muted text-center mt-5">No suppliers found.</p>
+    @endforelse
 </div>
 
-@empty
-<p class="text-muted">No suppliers found.</p>
-@endforelse
-</div>
-
-</div>
 
 
 <div class="modal fade" id="enquiryModal" tabindex="-1">
@@ -657,7 +684,7 @@
     </div>
   </div>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -869,5 +896,109 @@ document.getElementById('enquiryForm').addEventListener('submit', function(e){
 });
 </script> -->
 
+<script>
+function renderSuppliers(data) {
+
+    const grid = document.querySelector('.supplier-grid');
+    grid.innerHTML = '';
+
+    if (!data.length) {
+        grid.innerHTML = `<p class="text-muted text-center mt-4">No suppliers found</p>`;
+        return;
+    }
+
+    data.forEach(s => {
+        grid.innerHTML += `
+        <div class="supplier-card">
+            <div class="card-head">
+                <div>
+                    <h5>${s.shop_name}</h5>
+                    <p>Owner: ${s.contact_person ?? '-'}</p>
+                    <p class="location">
+                        ${s.area_name ?? '-'}, ${s.city_name ?? '-'}
+                        • ${s.maximum_distance ?? '-'} km
+                    </p>
+                </div>
+                <div class="rating">
+                    ⭐ ${s.rating ?? '4.5'}
+                    <small>${Math.floor(Math.random()*200)+20} reviews</small>
+                </div>
+            </div>
+
+            <div class="badge-row">
+                ${s.status === 'verified' ? `<span class="badge verified">Verified</span>` : ''}
+                ${s.delivery_type ? `<span class="badge delivery">Delivery</span>` : ''}
+                ${s.credit_days
+                    ? `<span class="badge credit">Credit ${s.credit_days} days</span>`
+                    : `<span class="badge cash">Cash Only</span>`}
+            </div>
+
+            <div class="card-footer">
+                <span>
+                    ${s.delivery_days ?? 'Same / Next day'}
+                    • Min: ₹${Number(s.minimum_order_cost ?? 0).toLocaleString()}
+                </span>
+                <a href="javascript:void(0)"
+                    class="btn-enquire enquire-btn"
+                    data-supplier-id="${s.id}"
+                    data-supplier-name="${s.shop_name}">
+                    Enquire
+                </a>
+            </div>
+        </div>`;
+    });
+
+    attachEnquireEvents();
+}
+
+function applyFilters() {
+
+    fetch("{{ route('supplier.search.ajax') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({
+            credit_days: document.getElementById('credit_days_input').value,
+            delivery_type: document.getElementById('delivery_type_input').value,
+            maximum_distance: document.getElementById('maximum_distance_input').value,
+            search: document.querySelector('.search-box input').value
+        })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res.status) {
+            renderSuppliers(res.suppliers);
+        }
+    });
+}
+
+/* AUTO APPLY */
+document.querySelectorAll('.chip, .pill').forEach(el => {
+    el.addEventListener('click', () => setTimeout(applyFilters, 150));
+});
+
+document.querySelector('.search-box input')
+    .addEventListener('keyup', applyFilters);
+
+/* RESET */
+document.querySelector('.btn-outline').addEventListener('click', () => {
+
+    document.querySelectorAll('.chip, .pill').forEach(el => el.classList.remove('active'));
+
+    document.querySelector('#creditFilter .chip[data-value=""]').classList.add('active');
+    document.querySelector('#deliveryTypeToggle .pill[data-value=""]').classList.add('active');
+    document.querySelector('#distanceFilter .chip[data-value=""]').classList.add('active');
+
+    document.getElementById('credit_days_input').value = '';
+    document.getElementById('delivery_type_input').value = '';
+    document.getElementById('maximum_distance_input').value = '';
+    document.querySelector('.search-box input').value = '';
+    document.getElementById('distanceLabel').innerText = 'Any';
+
+    applyFilters();
+});
+</script>
 
 @endsection
