@@ -95,9 +95,10 @@ class LoginRegController extends Controller
         }
 
         elseif ($request->role === 'supplier') {
-
+// dd($request);
             $supplierId = DB::table('supplier_reg')->insertGetId([
                 // 'user_id'         => $user->id,
+                
                 'contact_person' => $request->name,
                 'mobile'         => $request->mobile,
                 'email'          => $request->email,
@@ -307,82 +308,7 @@ class LoginRegController extends Controller
         return view('web.vendordashboard',compact('ActiveLeads','projects','vendor','vendor_id')); 
     }
 
-    // ============================= supplierdashboard =============================
-    // public function supplierdashboard()
-    // {
-        
-    //     if (!Session::has('supplier_id')) {
-    //         return redirect('/'); 
-    //     }
-
-    //     $supplier_id = Session::get('supplier_id');
-    //     // dd($supplier_id);
-    //     return view('web.supplierdashboard'); 
-    // }
-//     public function supplierdashboard()
-// {
-//     $supplier_id = Session::get('supplier_id');
-
-//     /* =======================
-//        PRODUCTS COUNT
-//     ======================= */
-//     $productCount = DB::table('supplier_products_data')
-//         ->where('supp_id', $supplier_id)
-//         ->count();
-
-//     /* =======================
-//        ORDERS (example table: supplier_orders)
-//        CHANGE table/columns if different
-//     ======================= */
-//     $orders = DB::table('supplier_orders')
-//         ->where('supplier_id', $supplier_id);
-
-//     $newOrders        = (clone $orders)->where('status', 'new')->count();
-//     $preparingOrders  = (clone $orders)->where('status', 'preparing')->count();
-//     $outOrders        = (clone $orders)->where('status', 'out_for_delivery')->count();
-//     $completedOrders  = (clone $orders)->where('status', 'completed')->count();
-
-//     /* =======================
-//        TODAY EARNINGS
-//     ======================= */
-//     $todayEarnings = DB::table('supplier_orders')
-//         ->where('supplier_id', $supplier_id)
-//         ->whereDate('created_at', today())
-//         ->where('status', 'completed')
-//         ->sum('total_amount');
-
-//     /* =======================
-//        LAST 7 DAYS EARNINGS
-//     ======================= */
-//     $earnings = DB::table('supplier_orders')
-//         ->selectRaw('DATE(created_at) as date, SUM(total_amount) as total')
-//         ->where('supplier_id', $supplier_id)
-//         ->where('status', 'completed')
-//         ->whereDate('created_at', '>=', now()->subDays(6))
-//         ->groupBy('date')
-//         ->orderBy('date')
-//         ->get();
-
-//     // Prepare chart data
-//     $labels = [];
-//     $values = [];
-
-//     foreach ($earnings as $e) {
-//         $labels[] = date('D', strtotime($e->date));
-//         $values[] = (int)$e->total;
-//     }
-
-//     return view('web.supplierdashboard', compact(
-//         'productCount',
-//         'todayEarnings',
-//         'newOrders',
-//         'preparingOrders',
-//         'outOrders',
-//         'completedOrders',
-//         'labels',
-//         'values'
-//     ));
-// }
+ 
 
     public function supplierDashboard()
 {

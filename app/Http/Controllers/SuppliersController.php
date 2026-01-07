@@ -12,89 +12,58 @@ use App\Models\SupplierProductData;
 class SuppliersController extends Controller
 {
 
-    // public function myproducts()
-    // {
-    //     $supplier_id = Session::get('supplier_id'); // or auth()->id()
-
-    //     $products = DB::table('supplier_products_data as sp')
-    //         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-    //         ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
-    //         ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'sp.material_product_subtype_id')
-    //         ->leftJoin('brands as b', 'b.id', '=', 'sp.brand_id')
-    //         ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
-    //         ->leftJoin('delivery_type as dt', 'dt.id', '=', 'sp.delivery_type_id')
-    //         ->where('sp.supp_id', $supplier_id)
-    //         ->select(
-    //             'sp.id',
-    //             'mc.name as category',
-    //             'mp.product_name as product',
-    //             'ms.material_subproduct as subtype',
-    //             'b.name as brand',
-    //             'u.unitname as unit',
-    //             'sp.price',
-    //             'sp.gst_included',
-    //             'sp.gst_percent',
-    //             'dt.type as delivery_type',
-    //             'sp.image',
-    //             'sp.delivery_time',
-    //             'sp.created_at'
-    //         )
-    //         ->orderBy('sp.id', 'desc')
-    //         ->get();
-
-    //     return view('web.myproducts', compact('products'));
-    // }
+   
     public function myproducts(Request $request)
-{
-    $supplier_id = Session::get('supplier_id');
+    {
+        $supplier_id = Session::get('supplier_id');
 
-    $query = DB::table('supplier_products_data as sp')
-        ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-        ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
-        ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'sp.material_product_subtype_id')
-        ->leftJoin('brands as b', 'b.id', '=', 'sp.brand_id')
-        ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
-        ->leftJoin('delivery_type as dt', 'dt.id', '=', 'sp.delivery_type_id')
-        ->where('sp.supp_id', $supplier_id);
+        $query = DB::table('supplier_products_data as sp')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+            ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
+            ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'sp.material_product_subtype_id')
+            ->leftJoin('brands as b', 'b.id', '=', 'sp.brand_id')
+            ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
+            ->leftJoin('delivery_type as dt', 'dt.id', '=', 'sp.delivery_type_id')
+            ->where('sp.supp_id', $supplier_id);
 
-    /* 🔍 SEARCH (PRODUCT / BRAND) */
-    if ($request->filled('search')) {
-        $query->where(function ($q) use ($request) {
-            $q->where('mp.product_name', 'like', '%'.$request->search.'%')
-              ->orWhere('b.name', 'like', '%'.$request->search.'%');
-        });
+        /* 🔍 SEARCH (PRODUCT / BRAND) */
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('mp.product_name', 'like', '%'.$request->search.'%')
+                ->orWhere('b.name', 'like', '%'.$request->search.'%');
+            });
+        }
+
+        /* 🏷️ CATEGORY FILTER */
+        if ($request->filled('category')) {
+            $query->where('mc.name', $request->category);
+        }
+
+        /* 🧾 GST FILTER */
+        if ($request->filled('gst')) {
+            $query->where('sp.gst_included', $request->gst);
+        }
+
+        $products = $query->select(
+                'sp.id',
+                'mc.name as category',
+                'mp.product_name as product',
+                'ms.material_subproduct as subtype',
+                'b.name as brand',
+                'u.unitname as unit',
+                'sp.price',
+                'sp.gst_included',
+                'sp.gst_percent',
+                'dt.type as delivery_type',
+                'sp.image',
+                'sp.delivery_time',
+                'sp.created_at'
+            )
+            ->orderBy('sp.id', 'desc')
+            ->get();
+
+        return view('web.myproducts', compact('products'));
     }
-
-    /* 🏷️ CATEGORY FILTER */
-    if ($request->filled('category')) {
-        $query->where('mc.name', $request->category);
-    }
-
-    /* 🧾 GST FILTER */
-    if ($request->filled('gst')) {
-        $query->where('sp.gst_included', $request->gst);
-    }
-
-    $products = $query->select(
-            'sp.id',
-            'mc.name as category',
-            'mp.product_name as product',
-            'ms.material_subproduct as subtype',
-            'b.name as brand',
-            'u.unitname as unit',
-            'sp.price',
-            'sp.gst_included',
-            'sp.gst_percent',
-            'dt.type as delivery_type',
-            'sp.image',
-            'sp.delivery_time',
-            'sp.created_at'
-        )
-        ->orderBy('sp.id', 'desc')
-        ->get();
-
-    return view('web.myproducts', compact('products'));
-}
 
 
     public function editProduct($id)

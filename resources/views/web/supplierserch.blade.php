@@ -353,7 +353,7 @@
          <button class="btn-primary">Filters</button>
       </div>
    </div>
-   <div class="supplier-grid">
+   <!-- <div class="supplier-grid">
       @forelse($supplier_data as $supplier)
       <div class="supplier-card">
          {{-- HEADER --}}
@@ -436,15 +436,107 @@
                Enquire
             </a>
 
-   Enquire
-</a>
+        Enquire
+      </a>
 
          </div>
       </div>
       @empty
       <p class="text-muted">No suppliers found.</p>
       @endforelse
-   </div>
+   </div> -->
+   <div class="supplier-grid">
+@forelse($supplier_data as $supplier)
+
+<div class="supplier-card">
+
+    {{-- HEADER --}}
+    <div class="card-head">
+        <div>
+            <h5>{{ $supplier->shop_name }}</h5>
+            <p>
+                {{ $supplier->area_name ?? '—' }},
+                {{ $supplier->city_name ?? '—' }}
+                • {{ $supplier->maximum_distance ?? '—' }} km
+            </p>
+        </div>
+
+        <div class="rating">
+            ⭐ {{ $supplier->rating ?? '4.5' }}
+            <small>{{ $supplier->reviews_count ?? rand(20,200) }} reviews</small>
+        </div>
+    </div>
+
+    {{-- BADGES --}}
+    <div class="badge-row">
+
+        {{-- Verified --}}
+        @if($supplier->status === 'verified')
+            <span class="badge verified">Verified</span>
+        @endif
+
+        {{-- Open / Closed --}}
+        @if($supplier->open_time && $supplier->close_time)
+            @php
+                $now = now()->format('H:i');
+                $isOpen = ($now >= $supplier->open_time && $now <= $supplier->close_time);
+            @endphp
+            <span class="badge {{ $isOpen ? 'open' : 'closed' }}">
+                {{ $isOpen ? 'Open now' : 'Closed' }}
+            </span>
+        @else
+            <span class="badge closed">Timings not set</span>
+        @endif
+
+        {{-- Delivery --}}
+        @if($supplier->delivery_type)
+            <span class="badge delivery">Delivery</span>
+        @endif
+
+        {{-- Credit / Cash --}}
+        @if($supplier->credit_days)
+            <span class="badge credit">
+                Credit {{ $supplier->credit_days }} days
+            </span>
+        @else
+            <span class="badge cash">Cash Only</span>
+        @endif
+
+    </div>
+
+    {{-- EXPERIENCE --}}
+    @if($supplier->years_in_business)
+    <div class="category-row mb-2">
+        <span class="tag">
+            {{ $supplier->years_in_business }} yrs experience
+        </span>
+    </div>
+    @endif
+
+    {{-- FOOTER --}}
+    <div class="card-footer">
+        <span>
+            {{ $supplier->delivery_days ? $supplier->delivery_days.' days' : 'Same / Next day' }}
+            • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
+        </span>
+
+        <a href="javascript:void(0)"
+           class="btn-enquire enquire-btn"
+           data-supplier-id="{{ $supplier->id }}"
+           data-supplier-name="{{ $supplier->shop_name }}"
+           data-categories='@json(json_decode($supplier->categories_json ?? "[]"))'
+           data-credit="{{ $supplier->credit_days }}">
+            Enquire
+        </a>
+    </div>
+
+</div>
+
+@empty
+<p class="text-muted">No suppliers found.</p>
+@endforelse
+</div>
+
 </div>
 
 

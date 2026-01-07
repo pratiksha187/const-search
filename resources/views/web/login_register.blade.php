@@ -220,7 +220,7 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
 /* TAB SWITCH */
@@ -358,6 +358,122 @@ $("#btn-send-otp").click(function () {
             alert(res.message);
         }
     });
+});
+</script> -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+/* ================= TAB SWITCH ================= */
+$("#tab-login").click(function () {
+    $("#tab-login").addClass("active");
+    $("#tab-register").removeClass("active");
+    $("#login-form").removeClass("d-none");
+    $("#register-form").addClass("d-none");
+});
+
+$("#tab-register").click(function () {
+    $("#tab-register").addClass("active");
+    $("#tab-login").removeClass("active");
+    $("#register-form").removeClass("d-none");
+    $("#login-form").addClass("d-none");
+});
+
+/* ================= ROLE SWITCH ================= */
+$(".role-box").click(function () {
+    $(".role-box").removeClass("active");
+    $(this).addClass("active");
+
+    let role = $(this).data("role");
+    $("#selected-role").val(role);
+
+    if (role === "vendor") {
+        $("#vendor-inline-fields").removeClass("d-none");
+    } else {
+        $("#vendor-inline-fields").addClass("d-none");
+    }
+});
+
+/* ================= PASSWORD MATCH CHECK ================= */
+function checkPasswordMatch() {
+    let pass = $("#reg-pass").val();
+    let confirmPass = $("#reg-confirm-pass").val();
+
+    if (confirmPass.length === 0) {
+        $("#password-match-msg").text("").removeClass("text-danger text-success");
+        return false;
+    }
+
+    if (pass === confirmPass) {
+        $("#password-match-msg")
+            .text("Passwords match ✔")
+            .removeClass("text-danger")
+            .addClass("text-success");
+        return true;
+    } else {
+        $("#password-match-msg")
+            .text("Passwords do not match ✖")
+            .removeClass("text-success")
+            .addClass("text-danger");
+        return false;
+    }
+}
+
+$("#reg-pass, #reg-confirm-pass").on("keyup", checkPasswordMatch);
+
+/* ================= REGISTER (ONLY ONE CALL) ================= */
+$("#btn-send-otp").click(function () {
+
+    if (!checkPasswordMatch()) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    $.post("{{ route('register') }}", {
+        role: $("#selected-role").val(),
+        name: $("#reg-name").val(),
+        mobile: $("#reg-mobile").val(),
+        email: $("#reg-email").val(),
+        password: $("#reg-pass").val(),
+        business_name: $("#vendor-business-name").val(),
+        gst_number: $("#vendor-gst-number").val(),
+        _token: "{{ csrf_token() }}"
+    }, function (res) {
+        if (res.status) {
+            window.location.href = res.redirect;
+        } else {
+            alert(res.message);
+        }
+    });
+});
+
+/* ================= LOGIN ================= */
+$("#login-btn").click(function () {
+    $.post("{{ route('login') }}", {
+        login: $("#login-input").val(),
+        password: $("#login-pass").val(),
+        role: $("#selected-role").val(),
+        _token: "{{ csrf_token() }}"
+    }, function (res) {
+        if (res.status) {
+            window.location.href = res.redirect;
+        } else {
+            alert(res.message);
+        }
+    });
+});
+
+/* ================= SHOW / HIDE LOGIN PASSWORD ================= */
+$("#toggle-login-password").click(function () {
+    let input = $("#login-pass");
+    let icon = $(this).find("i");
+
+    if (input.attr("type") === "password") {
+        input.attr("type", "text");
+        icon.removeClass("bi-eye").addClass("bi-eye-slash");
+    } else {
+        input.attr("type", "password");
+        icon.removeClass("bi-eye-slash").addClass("bi-eye");
+    }
 });
 </script>
 

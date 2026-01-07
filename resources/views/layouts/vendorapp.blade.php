@@ -137,6 +137,8 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
             <div class="top-menu">
                 <a href="{{ route('vendordashboard') }}" class="{{ request()->is('vendordashboard') ? 'active' : '' }}">Dashboard</a>
                 <a href="{{ route('search_customer') }}" class="{{ request()->is('search-customer*') ? 'active' : '' }}">Lead Marketplace</a>
+                <a href="{{ route('supplierserch') }}" class="{{ request()->routeIs('supplierserch') ? 'active' : '' }}">Search Suppliers</a>
+
             </div>
 
             <!-- NOTIFICATION -->
