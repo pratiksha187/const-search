@@ -1,588 +1,267 @@
-
 @extends($layout)
 
 @section('title','Search Suppliers | ConstructKaro')
 @section('content')
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <style>
-   :root{
-   --navy:#0f172a;
-   --orange:#f25c05;
-   --border:#e5e7eb;
-   --bg:#f6f8fb;
-   --card:#ffffff;
-   --muted:#64748b;
-   }
-   /* Page */
-   .supplier-search-page{
-   max-width:1450px;
-   margin:auto;
-   padding:24px;
-   background:var(--bg);
-   }
-   /* Header */
-   .search-header{
-   display:flex;
-   justify-content:space-between;
-   align-items:center;
-   margin-bottom:20px;
-   }
-   .search-header h4{
-   margin:0;
-   font-weight:700;
-   }
-   .search-header p{
-   margin:4px 0 0;
-   color:var(--muted);
-   font-size:14px;
-   }
-  
-   .header-actions {
-   display: flex;
-   gap: 10px;
-   align-content: space-around;
-   flex-wrap: wrap;
-   flex-direction: row-reverse;
-   }
-   .btn-outline{
-   border:1px solid var(--border);
-   background:#fff;
-   padding:10px 18px;
-   border-radius:12px;
-   font-weight:600;
-   }
-   .btn-primary{
-   background:var(--navy);
-   color:#fff;
-   padding:10px 18px;
-   border-radius:12px;
-   border:none;
-   font-weight:600;
-   }
-   /* Filter Panel */
-   .filter-panel{
-   background:#fff;
-   border-radius:20px;
-   padding:22px;
-   border:1px solid var(--border);
-   margin-bottom:26px;
-   }
-   .filter-grid{
-   display:grid;
-   grid-template-columns:2fr 1fr;
-   gap:30px;
-   }
-   .filter-block label{
-   font-weight:600;
-   }
-   .filter-block p{
-   font-size:13px;
-   color:var(--muted);
-   margin-bottom:8px;
-   }
-   /* Chips */
-   .chip-group{
-   display:flex;
-   gap:10px;
-   flex-wrap:wrap;
-   }
-   .chip{
-   padding:8px 16px;
-   border-radius:999px;
-   border:1px solid var(--border);
-   font-size:13px;
-   cursor:pointer;
-   background:#fff;
-   }
-   .chip.active{
-   background:var(--navy);
-   color:#fff;
-   border-color:var(--navy);
-   }
-   /* Toggle Pills */
-   .toggle-row{
-   display:flex;
-   gap:12px;
-   flex-wrap:wrap;
-   margin-top:18px;
-   }
-   .pill{
-   padding:10px 18px;
-   border-radius:16px;
-   border:1px solid var(--border);
-   font-size:14px;
-   cursor:pointer;
-   background:#fff;
-   }
-   /* Search */
-   .search-box input{
-   width:100%;
-   padding:12px 16px;
-   border-radius:14px;
-   border:1px solid var(--border);
-   }
-   /* Supplier Grid */
-   .supplier-grid{
-   display:grid;
-   grid-template-columns:repeat(auto-fill,minmax(430px,1fr));
-   gap:22px;
-   }
-   /* Supplier Card */
-   .supplier-card{
-   background:#fff;
-   border-radius:22px;
-   padding:22px;
-   border:1px solid var(--border);
-   }
-   .card-head{
-   display:flex;
-   justify-content:space-between;
-   }
-   .card-head h5{
-   margin:0;
-   font-weight:700;
-   }
-   .card-head p{
-   margin:4px 0 0;
-   font-size:13px;
-   color:var(--muted);
-   }
-   /* Rating */
-   .rating{
-   text-align:right;
-   font-weight:700;
-   }
-   .rating small{
-   display:block;
-   font-weight:400;
-   font-size:12px;
-   color:var(--muted);
-   }
-   /* Badges */
-   .badge-row{
-   display:flex;
-   gap:8px;
-   flex-wrap:wrap;
-   margin:14px 0;
-   }
-   .badge{
-   padding:6px 14px;
-   border-radius:999px;
-   font-size:12px;
-   }
-   .badge.verified{background:#e0f2fe;color:#0369a1}
-   .badge.open{background:#dcfce7;color:#166534}
-   .badge.closed{background:#fee2e2;color:#991b1b}
-   .badge.delivery{background:#ecfeff;color:#155e75}
-   .badge.cash{background:#fff7ed;color:#9a3412}
-   .badge.credit{background:#ecfdf5;color:#065f46}
-   /* Categories */
-   .category-row{
-   display:flex;
-   gap:8px;
-   flex-wrap:wrap;
-   }
-   .tag{
-   background:#f1f5f9;
-   padding:7px 14px;
-   border-radius:999px;
-   font-size:12px;
-   }
-   /* Footer */
-   .card-footer{
-   display:flex;
-   justify-content:space-between;
-   align-items:center;
-   margin-top:18px;
-   font-size:13px;
-   color:#475569;
-   }
-   .btn-enquire{
-   background:var(--navy);
-   color:#fff;
-   padding:10px 22px;
-   border-radius:14px;
-   border:none;
-   font-weight:600;
-   }
-   .chip-group{
-   display:flex;
-   flex-wrap:wrap;
-   gap:10px;
-   }
-   .chip{
-   padding:8px 14px;
-   border-radius:20px;
-   border:1px solid #e5e7eb;
-   cursor:pointer;
-   font-size:14px;
-   background:#fff;
-   transition:.2s;
-   }
-   .chip:hover{
-   border-color:#f25c05;
-   }
-   .chip.active{
-   background:#0f172a;
-   color:#fff;
-   border-color:#0f172a;
-   }
-   .toggle-row{
-   display:flex;
-   flex-wrap:wrap;
-   gap:10px;
-   margin-top:6px;
-   }
-   .pill{
-   padding:8px 16px;
-   border-radius:20px;
-   border:1px solid #e5e7eb;
-   cursor:pointer;
-   font-size:14px;
-   background:#fff;
-   transition:.2s;
-   }
-   .pill:hover{
-   border-color:#f25c05;
-   }
-   .pill.active{
-   background:#0f172a;
-   color:#fff;
-   border-color:#0f172a;
-   }
-   .chip-group{
-   display:flex;
-   flex-wrap:wrap;
-   gap:10px;
-   }
-   .chip{
-   padding:8px 16px;
-   border-radius:20px;
-   border:1px solid #e5e7eb;
-   cursor:pointer;
-   font-size:14px;
-   background:#fff;
-   transition:.2s;
-   }
-   .chip:hover{
-   border-color:#f25c05;
-   }
-   .chip.active{
-   background:#0f172a;
-   color:#fff;
-   border-color:#0f172a;
-   }
-
-   /* SUPPLIER GRID */
-.supplier-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+:root{
+  --navy:#0f172a;
+  --orange:#f25c05;
+  --border:#e5e7eb;
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --muted:#64748b;
 }
 
-/* CARD */
-.supplier-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
+/* Page */
+.supplier-search-page{max-width:1450px;margin:auto;padding:24px;background:var(--bg);}
+.search-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.search-header h4{margin:0;font-weight:800;color:var(--navy);}
+.search-header p{margin:6px 0 0;color:var(--muted);font-size:14px;}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.btn-outline-ck{
+  border:1px solid var(--border);background:#fff;padding:10px 18px;border-radius:12px;font-weight:700;
 }
-
-.supplier-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+.btn-primary-ck{
+  background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;border:none;font-weight:800;
 }
+.btn-primary-ck:hover{background:var(--orange);}
 
-/* HEADER */
-.card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    margin-bottom: 12px;
+/* Filter panel */
+.filter-panel{background:#fff;border-radius:18px;padding:18px;border:1px solid var(--border);margin-bottom:22px;}
+.filter-grid{display:grid;grid-template-columns:2fr 1fr;gap:22px;}
+@media(max-width:992px){.filter-grid{grid-template-columns:1fr;}}
+.filter-block label{font-weight:800;color:var(--navy);}
+.filter-block p{font-size:13px;color:var(--muted);margin-bottom:8px;}
+
+/* Chips / Pills */
+.chip-group,.toggle-row{display:flex;gap:10px;flex-wrap:wrap;}
+.chip,.pill{
+  padding:8px 14px;border-radius:999px;border:1px solid var(--border);cursor:pointer;font-size:14px;
+  background:#fff;transition:.15s;
 }
+.chip:hover,.pill:hover{border-color:var(--orange);}
+.chip.active,.pill.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 
-.card-head h5 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
+/* Search */
+.search-box input{width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border);outline:none;}
+.search-box input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(242,92,5,.10);}
+
+/* Grid */
+.supplier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px;margin-top:16px;}
+
+/* Card */
+.supplier-card{
+  background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;
+  box-shadow:0 8px 24px rgba(15,23,42,.05);transition:all .2s ease;
 }
+.supplier-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(15,23,42,.12);}
+.card-head h5{margin:0;font-weight:900;font-size:18px;color:#111827;}
+.card-head p{margin:3px 0 0;font-size:13px;color:var(--muted);}
+.location{margin-top:6px;display:flex;align-items:center;gap:6px;color:#64748b;font-size:13px;}
 
-.card-head p {
-    margin: 2px 0;
-    font-size: 14px;
-    color: #6b7280;
+/* Badges */
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.ck-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12px;font-weight:800;
+  border-radius:999px;white-space:nowrap;
 }
+.ck-badge i{font-size:13px;}
+.ck-badge.verified{background:#e0f2fe;color:#0369a1;}
+.ck-badge.open{background:#dcfce7;color:#166534;}
+.ck-badge.closed{background:#fee2e2;color:#991b1b;}
+.ck-badge.delivery{background:#fef3c7;color:#92400e;}
+.ck-badge.credit{background:#ede9fe;color:#5b21b6;}
+.ck-badge.cash{background:#f3f4f6;color:#374151;}
 
-.location {
-    font-size: 13px;
-    color: #9ca3af;
+/* Tags */
+.category-row{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
+.tag{background:#f1f5f9;padding:6px 10px;border-radius:10px;font-size:12px;font-weight:800;color:#334155;}
+
+/* Footer */
+.card-footer{
+  display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;color:#475569;
 }
-
-/* RATING */
-.rating {
-    text-align: right;
-    font-weight: 500;
-    color: #f59e0b;
+.btn-enquire{
+  background:var(--navy);color:#fff;padding:9px 16px;border-radius:12px;font-size:13px;font-weight:900;
+  text-decoration:none;transition:.2s;border:none;
 }
-.rating small {
-    display: block;
-    font-size: 12px;
-    font-weight: 400;
-    color: #6b7280;
+.btn-enquire:hover{background:var(--orange);color:#fff;}
+
+/* Small */
+@media(max-width:768px){
+  .supplier-search-page{padding:14px}
+  .supplier-card{padding:16px}
 }
-
-/* BADGES */
-.badge-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-}
-
-.badge {
-    padding: 4px 12px;
-    font-size: 12px;
-    border-radius: 999px;
-    font-weight: 500;
-}
-
-.badge.verified { background: #e0f2fe; color: #0369a1; }
-.badge.open { background: #dcfce7; color: #166534; }
-.badge.closed { background: #fee2e2; color: #991b1b; }
-.badge.delivery { background: #ecfeff; color: #155e75; }
-.badge.cash { background: #fff7ed; color: #9a3412; }
-.badge.credit { background: #ecfdf5; color: #065f46; }
-
-/* CATEGORY TAGS */
-.category-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 12px;
-}
-
-.tag {
-    background: #f3f4f6;
-    padding: 5px 12px;
-    font-size: 12px;
-    border-radius: 12px;
-    color: #374151;
-    font-weight: 500;
-}
-
-/* FOOTER */
-.card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: #4b5563;
-}
-
-.btn-enquire {
-    background: #0f172a;
-    color: #fff;
-    padding: 8px 18px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    transition: background 0.2s;
-}
-
-.btn-enquire:hover {
-    background: #f25c05;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .supplier-card { padding: 16px; }
-    .card-head h5 { font-size: 16px; }
-}
-
 </style>
+
 <div class="supplier-search-page">
-   <!-- HEADER -->
-   <div class="search-header">
+
+  <!-- HEADER -->
+  <div class="search-header">
+    <div>
+      <h4>Suppliers</h4>
+      <p>{{ $supplier_data->count() }} suppliers found</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="btn-outline-ck" id="resetBtn">Reset</button>
+      <button type="button" class="btn-primary-ck" onclick="applyFilters()">Apply</button>
+    </div>
+  </div>
+
+  <!-- FILTER PANEL -->
+  <div class="filter-panel">
+    <div class="filter-grid">
+
       <div>
-         <h4>Suppliers</h4>
-         <p>5 suppliers found • Sort: Verified → Rating → Distance</p>
+        <!-- Credit -->
+        <div class="filter-block mb-3">
+          <label>Credit filter</label>
+          <p>Choose credit days (or Any).</p>
+
+          <div class="chip-group" id="creditFilter">
+            <span class="chip active" data-value="">Any</span>
+            @foreach ($credit_days as $credit)
+              <span class="chip" data-value="{{ $credit->id }}">{{ $credit->days }}</span>
+            @endforeach
+          </div>
+
+          <input type="hidden" name="credit_days" id="credit_days_input" value="">
+        </div>
+
+        <!-- Delivery Type -->
+        <div class="filter-block">
+          <label>Delivery Type</label>
+          <p>Choose delivery option (or All).</p>
+
+          <div class="toggle-row" id="deliveryTypeToggle">
+            <span class="pill active" data-value="">All</span>
+            @foreach ($delivery_type as $dtype)
+              <span class="pill" data-value="{{ $dtype->id }}">{{ $dtype->type }}</span>
+            @endforeach
+          </div>
+
+          <input type="hidden" name="delivery_type" id="delivery_type_input" value="">
+        </div>
       </div>
-   </div>
-   <!-- FILTER PANEL -->
-   <div class="filter-panel">
-      <div class="filter-grid">
-         <div>
-            <div class="filter-block">
-               <label>Credit filter</label>
-               <p>Choose minimum credit days (or toggle Cash Only).</p>
-               <div class="chip-group" id="creditFilter">
-                  {{-- Any --}}
-                  <span class="chip active" data-value="">
-                  Any
-                  </span>
-                  {{-- Dynamic credit days --}}
-                  @foreach ($credit_days as $credit)
-                  <span class="chip"
-                     data-value="{{ $credit->id }}">
-                  {{ $credit->days }}
-                  </span>
-                  @endforeach
-               </div>
-               {{-- hidden input to submit selected credit --}}
-               <input type="hidden" name="credit_days" id="credit_days_input">
-            </div>
-            <div class="toggle-row" id="deliveryTypeToggle">
-               {{-- Static utility pills --}}
-               <span class="pill active" data-value="">
-               All
-               </span>
-               {{-- Dynamic delivery/payment types --}}
-               @foreach ($delivery_type as $dtype)
-               <span class="pill"
-                  data-value="{{ $dtype->id }}">
-               {{ $dtype->type }}
-               </span>
-               @endforeach
-               {{-- Hidden input for form / AJAX --}}
-               <input type="hidden" name="delivery_type" id="delivery_type_input">
-            </div>
-         </div>
-         <div>
-            <div class="filter-block">
-               <label>Distance</label>
-               <p>Max distance: <span id="distanceLabel">Any</span></p>
-               <div class="chip-group" id="distanceFilter">
-                  {{-- Any --}}
-                  <span class="chip active" data-value="">
-                  Any
-                  </span>
-                  {{-- Dynamic distances from DB --}}
-                  @foreach ($maximum_distances as $dist)
-                  <span class="chip"
-                     data-value="{{ $dist->id }}"
-                     data-label="{{ $dist->distance_km }}">
-                  {{ $dist->distance_km }}
-                  </span>
-                  @endforeach
-               </div>
-               {{-- Hidden input --}}
-               <input type="hidden" name="maximum_distance" id="maximum_distance_input">
-            </div>
-            <div class="search-box mt-3">
-               <input type="text" placeholder="Try: Fosroc, ACC, Khopoli, bricks..." />
-            </div>
-         </div>
+
+      <div>
+        <!-- Distance -->
+        <div class="filter-block">
+          <label>Distance</label>
+          <p>Max distance: <span id="distanceLabel">Any</span></p>
+
+          <div class="chip-group" id="distanceFilter">
+            <span class="chip active" data-value="">Any</span>
+            @foreach ($maximum_distances as $dist)
+              <span class="chip" data-value="{{ $dist->distance_km }}" data-label="{{ $dist->distance_km }}">
+                {{ $dist->distance_km }}
+              </span>
+            @endforeach
+          </div>
+
+          <input type="hidden" name="maximum_distance" id="maximum_distance_input" value="">
+        </div>
+
+        <!-- Search -->
+        <div class="search-box mt-3">
+          <input type="text" id="searchInput" placeholder="Try: Fosroc, ACC, Khopoli, bricks..." />
+        </div>
       </div>
-      <br><br>
-      <div class="header-actions">
-         <button class="btn-outline">Reset</button>
-         <button class="btn-primary">Filters</button>
-      </div>
-   </div>
-  
-   <div class="supplier-grid">
-    @forelse($supplier_data as $supplier)
-    <div class="supplier-card">
-
-        <!-- HEADER -->
-        <div class="card-head">
-            <div class="supplier-info">
-                <h5>{{ $supplier->shop_name }}</h5>
-                <p>Owner: {{ $supplier->contact_person }}</p>
-                <p class="location">
-                    {{ $supplier->area_name ?? '—' }}, {{ $supplier->city_name ?? '—' }}
-                    • {{ $supplier->maximum_distance ?? '—' }} km
-                </p>
-            </div>
-            <!-- <div class="rating">
-                ⭐ {{ $supplier->rating ?? '4.5' }}
-                <small>{{ $supplier->reviews_count ?? rand(20,200) }} reviews</small>
-            </div> -->
-        </div>
-
-        <!-- BADGES -->
-        <div class="badge-row">
-            @if($supplier->status === 'verified')
-                <span class="badge verified">Verified</span>
-            @endif
-
-            @if($supplier->open_time && $supplier->close_time)
-                @php
-                    $now = now()->format('H:i');
-                    $isOpen = ($now >= $supplier->open_time && $now <= $supplier->close_time);
-                @endphp
-                <span class="badge {{ $isOpen ? 'open' : 'closed' }}">
-                    {{ $isOpen ? 'Open now' : 'Closed' }}
-                </span>
-            @else
-                <span class="badge closed">Timings not set</span>
-            @endif
-
-            @if($supplier->delivery_type)
-                <span class="badge delivery">Delivery</span>
-            @endif
-
-            @if($supplier->credit_days)
-                <span class="badge credit">
-                    Credit {{ $supplier->credit_days }} days
-                </span>
-            @else
-                <span class="badge cash">Cash Only</span>
-            @endif
-        </div>
-
-        <!-- EXPERIENCE -->
-        @if($supplier->years_in_business)
-        <div class="category-row mb-2">
-            <span class="tag">{{ $supplier->years_in_business }} yrs experience</span>
-        </div>
-        @endif
-
-        <!-- FOOTER -->
-        <div class="card-footer">
-            <span>
-                {{ $supplier->delivery_days ? $supplier->delivery_days.' days' : 'Same / Next day' }}
-                • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
-            </span>
-            <a href="javascript:void(0)"
-              class="btn-enquire enquire-btn"
-              data-supplier-id="{{ $supplier->id }}"
-              data-supplier-name="{{ $supplier->shop_name }}"
-              data-categories='@json(json_decode($supplier->categories_json ?? "[]"))'
-              data-credit="{{ $supplier->credit_days }}">
-                Enquire
-            </a>
-        </div>
 
     </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="supplier-grid" id="supplierGrid">
+
+    @forelse($supplier_data as $supplier)
+      <div class="supplier-card">
+        <div class="card-head">
+          <div class="supplier-info">
+            <h5>{{ $supplier->shop_name }}</h5>
+            <p>Owner: {{ $supplier->contact_person }}</p>
+
+            <p class="location">
+              <i class="bi bi-geo-alt-fill"></i>
+              {{ $supplier->area_name ?? '—' }}, {{ $supplier->city_name ?? '—' }}
+              • {{ $supplier->maximum_distance ?? '—' }} km
+            </p>
+          </div>
+        </div>
+
+        <div class="badge-row">
+
+          @if($supplier->status === 'verified')
+            <span class="ck-badge verified"><i class="bi bi-patch-check-fill"></i> Verified</span>
+          @endif
+
+          @if($supplier->open_time && $supplier->close_time)
+            @php
+              $now = now()->format('H:i');
+              $isOpen = ($now >= $supplier->open_time && $now <= $supplier->close_time);
+            @endphp
+            <span class="ck-badge {{ $isOpen ? 'open' : 'closed' }}">
+              <i class="bi bi-clock-fill"></i> {{ $isOpen ? 'Open now' : 'Closed' }}
+            </span>
+          @else
+            <span class="ck-badge closed"><i class="bi bi-clock-history"></i> Timings not set</span>
+          @endif
+
+          @if($supplier->delivery_type)
+            <span class="ck-badge delivery"><i class="bi bi-truck"></i> Delivery</span>
+          @endif
+
+          @if(!empty($supplier->credit_days_value))
+            <span class="ck-badge credit"><i class="bi bi-calendar-check"></i> Credit {{ $supplier->credit_days_value }} Days</span>
+          @else
+            <span class="ck-badge cash"><i class="bi bi-cash-coin"></i> Cash Only</span>
+          @endif
+        </div>
+
+        @if($supplier->years_in_business)
+          <div class="category-row">
+            <span class="tag">{{ $supplier->years_in_business }} yrs experience</span>
+          </div>
+        @endif
+
+        <div class="card-footer">
+          <span>
+            {{ $supplier->delivery_days ? $supplier->delivery_days.' days delivery' : 'Same / Next day' }}
+            • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
+          </span>
+
+          <a href="javascript:void(0)"
+             class="btn-enquire enquire-btn"
+             data-supplier-id="{{ $supplier->id }}"
+             data-supplier-name="{{ $supplier->shop_name }}"
+             data-credit="{{ $supplier->credit_days }}">
+            Enquire
+          </a>
+        </div>
+      </div>
     @empty
-    <p class="text-muted text-center mt-5">No suppliers found.</p>
+      <p class="text-muted text-center mt-5">No suppliers found.</p>
     @endforelse
+
+  </div>
 </div>
 
-
-
+<!-- ENQUIRY MODAL -->
 <div class="modal fade" id="enquiryModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-
-      {{-- HEADER --}}
       <div class="modal-header">
         <div>
           <h5 class="modal-title">Send Enquiry</h5>
-          <small class="text-muted">
-            To: <span id="modalSupplierName"></span>
-          </small>
+          <small class="text-muted">To: <span id="modalSupplierName"></span></small>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      {{-- BODY --}}
       <form id="enquiryForm">
         <div class="modal-body">
 
@@ -590,7 +269,6 @@
 
           <div class="row g-3">
 
-            {{-- Category --}}
             <div class="col-md-6">
               <label class="form-label">Category</label>
               <select class="form-select" name="category" id="modalCategory">
@@ -598,37 +276,28 @@
               </select>
             </div>
 
-            {{-- Quantity --}}
             <div class="col-md-6">
               <label class="form-label">Quantity</label>
               <input type="text" class="form-control" name="quantity" placeholder="200 bags">
             </div>
 
-            {{-- Specs --}}
             <div class="col-12">
               <label class="form-label">Specs (type freely)</label>
               <textarea class="form-control" name="specs" rows="3"
-                placeholder="Brand, grade, size, approx qty..."></textarea>
-              <small class="text-muted">
-                Tip: Add brand preference, grade, pack size, usage, site urgency.
-              </small>
+                        placeholder="Brand, grade, size, approx qty..."></textarea>
+              <small class="text-muted">Tip: Add brand preference, grade, pack size, usage, site urgency.</small>
             </div>
 
-            {{-- Delivery Location --}}
             <div class="col-md-6">
               <label class="form-label">Delivery location</label>
-              <input type="text" class="form-control" name="delivery_location"
-                     placeholder="Khopoli site">
+              <input type="text" class="form-control" name="delivery_location" placeholder="Khopoli site">
             </div>
 
-            {{-- Required By --}}
             <div class="col-md-6">
               <label class="form-label">Required by</label>
-              <input type="text" class="form-control" name="required_by"
-                     placeholder="Tomorrow">
+              <input type="text" class="form-control" name="required_by" placeholder="Tomorrow">
             </div>
 
-            {{-- Payment --}}
             <div class="col-md-6">
               <label class="form-label">Payment preference</label>
               <select class="form-select" name="payment_preference" id="modalPayment">
@@ -638,7 +307,6 @@
               </select>
             </div>
 
-            {{-- Attachments --}}
             <div class="col-md-6">
               <label class="form-label">Attachments</label>
               <input type="file" class="form-control" name="attachments[]" multiple>
@@ -647,22 +315,16 @@
           </div>
         </div>
 
-        {{-- FOOTER --}}
         <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            Cancel
-          </button>
-          <button type="submit" class="btn btn-dark px-4">
-            Send enquiry
-          </button>
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-dark px-4">Send enquiry</button>
         </div>
       </form>
-
     </div>
   </div>
 </div>
 
-
+<!-- LOGIN MODAL -->
 <div class="modal fade" id="loginModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -671,333 +333,229 @@
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body text-center">
-        <p class="text-muted mb-3">
-          Please login to send enquiry to suppliers.
-        </p>
-        <a href="{{ route('login_register') }}" class="btn btn-dark w-100 mb-2">
-          Login
-        </a>
-        <a href="{{ route('login_register') }}" class="btn btn-outline-dark w-100">
-          Create Account
-        </a>
+        <p class="text-muted mb-3">Please login to send enquiry to suppliers.</p>
+        <a href="{{ route('login_register') }}" class="btn btn-dark w-100 mb-2">Login</a>
+        <a href="{{ route('login_register') }}" class="btn btn-outline-dark w-100">Create Account</a>
       </div>
     </div>
   </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-   document.querySelectorAll('#creditFilter .chip').forEach(chip => {
-       chip.addEventListener('click', function () {
-   
-           // remove active from all
-           document.querySelectorAll('#creditFilter .chip')
-               .forEach(c => c.classList.remove('active'));
-   
-           // add active to clicked
-           this.classList.add('active');
-   
-           // set hidden input value
-           document.getElementById('credit_days_input').value =
-               this.dataset.value || '';
-       });
-   });
+  window.IS_LOGGED_IN = @json(
+      session()->has('customer_id') ||
+      session()->has('vendor_id') ||
+      session()->has('supplier_id')
+  );
 </script>
-<script>
-   document.querySelectorAll('#deliveryTypeToggle .pill').forEach(pill => {
-       pill.addEventListener('click', function () {
-   
-           // remove active from all
-           document.querySelectorAll('#deliveryTypeToggle .pill')
-               .forEach(p => p.classList.remove('active'));
-   
-           // add active to clicked
-           this.classList.add('active');
-   
-           // set hidden input
-           document.getElementById('delivery_type_input').value =
-               this.dataset.value || '';
-       });
-   });
-</script>
-<script>
-   document.querySelectorAll('#distanceFilter .chip').forEach(chip => {
-       chip.addEventListener('click', function () {
-   
-           // remove active from all
-           document.querySelectorAll('#distanceFilter .chip')
-               .forEach(c => c.classList.remove('active'));
-   
-           // activate clicked
-           this.classList.add('active');
-   
-           // update hidden input
-           document.getElementById('maximum_distance_input').value =
-               this.dataset.value || '';
-   
-           // update label text
-           document.getElementById('distanceLabel').innerText =
-               this.dataset.label || 'Any';
-       });
-   });
-</script>
-<script>
-    window.IS_LOGGED_IN = @json(
-        session()->has('customer_id') ||
-        session()->has('vendor_id') ||
-        session()->has('supplier_id')
-    );
-</script>
-<script>
-document.querySelectorAll('.enquire-btn').forEach(btn => {
 
-    btn.addEventListener('click', function () {
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
-        /* ============================
-           🔐 LOGIN CHECK
-        ============================ */
+  // ========= CHIP / PILL UI -> hidden input =========
+  function makeSingleSelect(containerSelector, itemSelector, activeClass, inputId, extraOnSelect) {
+    const container = document.querySelector(containerSelector);
+    if (!container) return;
+
+    container.querySelectorAll(itemSelector).forEach(item => {
+      item.addEventListener('click', function () {
+        container.querySelectorAll(itemSelector).forEach(i => i.classList.remove(activeClass));
+        this.classList.add(activeClass);
+
+        const input = document.getElementById(inputId);
+        if (input) input.value = this.dataset.value || '';
+
+        if (typeof extraOnSelect === 'function') extraOnSelect(this);
+      });
+    });
+  }
+
+  makeSingleSelect('#creditFilter', '.chip', 'active', 'credit_days_input');
+  makeSingleSelect('#deliveryTypeToggle', '.pill', 'active', 'delivery_type_input');
+  makeSingleSelect('#distanceFilter', '.chip', 'active', 'maximum_distance_input', function (el) {
+    const label = document.getElementById('distanceLabel');
+    if (label) label.innerText = el.dataset.label || 'Any';
+  });
+
+  // ========= RENDER SUPPLIERS (AJAX RESULT) =========
+  function renderSuppliers(list) {
+    const grid = document.getElementById('supplierGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    if (!list || !list.length) {
+      grid.innerHTML = `<p class="text-muted text-center mt-5">No suppliers found.</p>`;
+      return;
+    }
+
+    list.forEach(s => {
+      const creditBadge = s.credit_days_value
+        ? `<span class="ck-badge credit"><i class="bi bi-calendar-check"></i> Credit ${s.credit_days_value} Days</span>`
+        : `<span class="ck-badge cash"><i class="bi bi-cash-coin"></i> Cash Only</span>`;
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="supplier-card">
+          <div class="card-head">
+            <div class="supplier-info">
+              <h5>${s.shop_name ?? '-'}</h5>
+              <p>Owner: ${s.contact_person ?? '-'}</p>
+              <p class="location"><i class="bi bi-geo-alt-fill"></i>
+                ${(s.area_name ?? '—')}, ${(s.city_name ?? '—')} • ${(s.maximum_distance ?? '—')} km
+              </p>
+            </div>
+          </div>
+
+          <div class="badge-row">
+            ${s.status === 'verified' ? `<span class="ck-badge verified"><i class="bi bi-patch-check-fill"></i> Verified</span>` : ''}
+            ${s.delivery_type ? `<span class="ck-badge delivery"><i class="bi bi-truck"></i> Delivery</span>` : ''}
+            ${creditBadge}
+          </div>
+
+          <div class="card-footer">
+            <span>${(s.delivery_days ?? 'Same / Next day')} • Min: ₹${Number(s.minimum_order_cost ?? 0).toLocaleString()}</span>
+            <a href="javascript:void(0)" class="btn-enquire enquire-btn"
+               data-supplier-id="${s.id}"
+               data-supplier-name="${s.shop_name}"
+               data-credit="${s.credit_days ?? ''}">
+              Enquire
+            </a>
+          </div>
+        </div>
+      `);
+    });
+
+    attachEnquireEvents(); // rebind after ajax render
+  }
+
+  // ========= APPLY FILTERS (AJAX) =========
+  window.applyFilters = function () {
+    const credit   = document.getElementById('credit_days_input')?.value || '';
+    const delivery = document.getElementById('delivery_type_input')?.value || '';
+    const distance = document.getElementById('maximum_distance_input')?.value || '';
+    const search   = document.getElementById('searchInput')?.value || '';
+
+    fetch("{{ route('supplier.search.ajax') }}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+      },
+      body: JSON.stringify({
+        credit_days: credit,
+        delivery_type: delivery,
+        maximum_distance: distance,
+        search: search
+      })
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status) renderSuppliers(res.suppliers);
+    })
+    .catch(err => console.error(err));
+  };
+
+  // ========= AUTO APPLY =========
+  document.querySelectorAll('#creditFilter .chip, #deliveryTypeToggle .pill, #distanceFilter .chip')
+    .forEach(el => el.addEventListener('click', () => setTimeout(window.applyFilters, 120)));
+
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) searchInput.addEventListener('keyup', window.applyFilters);
+
+  // ========= RESET =========
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      document.querySelectorAll('.chip, .pill').forEach(el => el.classList.remove('active'));
+      document.querySelector('#creditFilter .chip[data-value=""]')?.classList.add('active');
+      document.querySelector('#deliveryTypeToggle .pill[data-value=""]')?.classList.add('active');
+      document.querySelector('#distanceFilter .chip[data-value=""]')?.classList.add('active');
+
+      document.getElementById('credit_days_input').value = '';
+      document.getElementById('delivery_type_input').value = '';
+      document.getElementById('maximum_distance_input').value = '';
+      document.getElementById('searchInput').value = '';
+
+      const label = document.getElementById('distanceLabel');
+      if (label) label.innerText = 'Any';
+
+      window.applyFilters();
+    });
+  }
+
+  // ========= ENQUIRE =========
+  function attachEnquireEvents() {
+    document.querySelectorAll('.enquire-btn').forEach(btn => {
+      btn.onclick = function () {
+
         if (!window.IS_LOGGED_IN) {
-            new bootstrap.Modal(
-                document.getElementById('loginModal')
-            ).show();
-            return;
+          new bootstrap.Modal(document.getElementById('loginModal')).show();
+          return;
         }
 
-        /* ============================
-           📩 ENQUIRY MODAL LOGIC
-        ============================ */
         const supplierId   = this.dataset.supplierId;
         const supplierName = this.dataset.supplierName;
-        const categories   = JSON.parse(this.dataset.categories || '[]');
         const creditDays   = this.dataset.credit;
 
-        // Fill hidden fields
         document.getElementById('modalSupplierId').value = supplierId;
         document.getElementById('modalSupplierName').innerText = supplierName;
 
-        // Fill category dropdown
+        // If you are passing categories in HTML (data-categories), keep this safe:
+        const categories = (() => {
+          try { return JSON.parse(this.dataset.categories || '[]'); }
+          catch(e){ return []; }
+        })();
+
         const categorySelect = document.getElementById('modalCategory');
         categorySelect.innerHTML = `<option value="">Select Category</option>`;
-        categories.forEach(cat => {
-            categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
-        });
+        categories.forEach(cat => categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`);
 
-        // Payment preference
-        document.getElementById('modalPayment').value =
-            creditDays ? 'credit' : 'cash';
+        document.getElementById('modalPayment').value = creditDays ? 'credit' : 'cash';
 
-        // Open enquiry modal
-        new bootstrap.Modal(
-            document.getElementById('enquiryModal')
-        ).show();
+        new bootstrap.Modal(document.getElementById('enquiryModal')).show();
+      };
     });
+  }
+  attachEnquireEvents();
 
-});
-</script>
-<script>
-document.getElementById('enquiryForm').addEventListener('submit', function(e){
-    e.preventDefault();
+  // ========= ENQUIRY SUBMIT =========
+  const enquiryForm = document.getElementById('enquiryForm');
+  if (enquiryForm) {
+    enquiryForm.addEventListener('submit', function(e){
+      e.preventDefault();
 
-    const form = this;
-    const submitBtn = form.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.innerText = 'Sending...';
+      const submitBtn = this.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Sending...';
 
-    const formData = new FormData(form);
+      const formData = new FormData(this);
 
-    fetch("{{ route('supplier.enquiry.store') }}", {
+      fetch("{{ route('supplier.enquiry.store') }}", {
         method: "POST",
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
+        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
         body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
+      })
+      .then(res => res.json())
+      .then(data => {
         if(data.status){
-            alert('✅ Enquiry sent successfully');
-            form.reset();
-            bootstrap.Modal.getInstance(
-                document.getElementById('enquiryModal')
-            ).hide();
+          alert('✅ Enquiry sent successfully');
+          this.reset();
+          bootstrap.Modal.getInstance(document.getElementById('enquiryModal')).hide();
         }else{
-            alert('❌ Something went wrong');
+          alert('❌ Something went wrong');
         }
-    })
-    .catch(() => {
-        alert('❌ Server error');
-    })
-    .finally(() => {
+      })
+      .catch(() => alert('❌ Server error'))
+      .finally(() => {
         submitBtn.disabled = false;
         submitBtn.innerText = 'Send enquiry';
+      });
     });
-});
-</script>
+  }
 
-<!-- <script>
-document.getElementById('enquiryModal').addEventListener('show.bs.modal', function (event) {
-
-    const button = event.relatedTarget;
-
-    const supplierId   = button.getAttribute('data-supplier-id');
-    const supplierName = button.getAttribute('data-supplier-name');
-    const categories   = JSON.parse(button.getAttribute('data-categories') || '[]');
-    const creditDays   = button.getAttribute('data-credit');
-
-    // Set supplier info
-    document.getElementById('modalSupplierId').value = supplierId;
-    document.getElementById('modalSupplierName').innerText = supplierName;
-
-    // Fill categories
-    const categorySelect = document.getElementById('modalCategory');
-    categorySelect.innerHTML = `<option value="">Select Category</option>`;
-    categories.forEach(cat => {
-        categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
-    });
-
-    // Payment preference
-    const paymentSelect = document.getElementById('modalPayment');
-    paymentSelect.value = creditDays ? 'credit' : 'cash';
-
-});
-</script> -->
-
-<!-- <script>
-document.getElementById('enquiryForm').addEventListener('submit', function(e){
-    e.preventDefault();
-
-    const form = this;
-    const formData = new FormData(form);
-
-    fetch("{{ route('supplier.enquiry.store') }}", {
-        method: "POST",
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status){
-            alert('✅ Enquiry sent successfully');
-            form.reset();
-            bootstrap.Modal.getInstance(
-                document.getElementById('enquiryModal')
-            ).hide();
-        }else{
-            alert('❌ Something went wrong');
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert('❌ Server error');
-    });
-});
-</script> -->
-
-<script>
-function renderSuppliers(data) {
-
-    const grid = document.querySelector('.supplier-grid');
-    grid.innerHTML = '';
-
-    if (!data.length) {
-        grid.innerHTML = `<p class="text-muted text-center mt-4">No suppliers found</p>`;
-        return;
-    }
-
-    data.forEach(s => {
-        grid.innerHTML += `
-        <div class="supplier-card">
-            <div class="card-head">
-                <div>
-                    <h5>${s.shop_name}</h5>
-                    <p>Owner: ${s.contact_person ?? '-'}</p>
-                    <p class="location">
-                        ${s.area_name ?? '-'}, ${s.city_name ?? '-'}
-                        • ${s.maximum_distance ?? '-'} km
-                    </p>
-                </div>
-                <div class="rating">
-                    ⭐ ${s.rating ?? '4.5'}
-                    <small>${Math.floor(Math.random()*200)+20} reviews</small>
-                </div>
-            </div>
-
-            <div class="badge-row">
-                ${s.status === 'verified' ? `<span class="badge verified">Verified</span>` : ''}
-                ${s.delivery_type ? `<span class="badge delivery">Delivery</span>` : ''}
-                ${s.credit_days
-                    ? `<span class="badge credit">Credit ${s.credit_days} days</span>`
-                    : `<span class="badge cash">Cash Only</span>`}
-            </div>
-
-            <div class="card-footer">
-                <span>
-                    ${s.delivery_days ?? 'Same / Next day'}
-                    • Min: ₹${Number(s.minimum_order_cost ?? 0).toLocaleString()}
-                </span>
-                <a href="javascript:void(0)"
-                    class="btn-enquire enquire-btn"
-                    data-supplier-id="${s.id}"
-                    data-supplier-name="${s.shop_name}">
-                    Enquire
-                </a>
-            </div>
-        </div>`;
-    });
-
-    attachEnquireEvents();
-}
-
-function applyFilters() {
-
-    fetch("{{ route('supplier.search.ajax') }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-        },
-        body: JSON.stringify({
-            credit_days: document.getElementById('credit_days_input').value,
-            delivery_type: document.getElementById('delivery_type_input').value,
-            maximum_distance: document.getElementById('maximum_distance_input').value,
-            search: document.querySelector('.search-box input').value
-        })
-    })
-    .then(res => res.json())
-    .then(res => {
-        if (res.status) {
-            renderSuppliers(res.suppliers);
-        }
-    });
-}
-
-/* AUTO APPLY */
-document.querySelectorAll('.chip, .pill').forEach(el => {
-    el.addEventListener('click', () => setTimeout(applyFilters, 150));
-});
-
-document.querySelector('.search-box input')
-    .addEventListener('keyup', applyFilters);
-
-/* RESET */
-document.querySelector('.btn-outline').addEventListener('click', () => {
-
-    document.querySelectorAll('.chip, .pill').forEach(el => el.classList.remove('active'));
-
-    document.querySelector('#creditFilter .chip[data-value=""]').classList.add('active');
-    document.querySelector('#deliveryTypeToggle .pill[data-value=""]').classList.add('active');
-    document.querySelector('#distanceFilter .chip[data-value=""]').classList.add('active');
-
-    document.getElementById('credit_days_input').value = '';
-    document.getElementById('delivery_type_input').value = '';
-    document.getElementById('maximum_distance_input').value = '';
-    document.querySelector('.search-box input').value = '';
-    document.getElementById('distanceLabel').innerText = 'Any';
-
-    applyFilters();
 });
 </script>
 

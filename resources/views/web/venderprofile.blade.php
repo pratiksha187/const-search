@@ -580,7 +580,7 @@
 
                       <div class="row mb-3">
                           <div class="col-md-6">
-                              <label class="form-label">PAN Number *</label>
+                              <label class="form-label">PAN Number</label>
                               <input type="text" id="pan_number" name="pan_number" class="form-control" maxlength="10" style="text-transform: uppercase;" value="{{ $vendor->pan_number }}">
                               <div id="pan_error" style="color: red; display: none;">Please enter a valid PAN number.</div>
                           </div>

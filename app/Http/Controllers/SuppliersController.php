@@ -455,79 +455,159 @@ class SuppliersController extends Controller
 
   
 
-    public function supplierserch()
-    {
-        // ======================
-        // SESSION VALUES
-        // ======================
-        $customer_id = Session::get('customer_id');
-        $vendor_id   = Session::get('vendor_id');
-        $supplier_id = Session::get('supplier_id');
+    // public function supplierserch()
+    // {
+    //     // ======================
+    //     // SESSION VALUES
+    //     // ======================
+    //     $customer_id = Session::get('customer_id');
+    //     $vendor_id   = Session::get('vendor_id');
+    //     $supplier_id = Session::get('supplier_id');
 
-        // ======================
-        // DATA FETCH
-        // ======================
-        $credit_days = DB::table('credit_days')->get();
-        $delivery_type = DB::table('delivery_type')->get();
-        $maximum_distances = DB::table('maximum_distances')->get();
-        $supplier_data = DB::table('supplier_reg')->get();
-        // dd( $supplier_data);
-        // ======================
-        // LAYOUT SELECTION
-        // ======================
-        $layout = 'layouts.guest'; // default (NOT logged in)
+    //     // ======================
+    //     // DATA FETCH
+    //     // ======================
+    //     $credit_days = DB::table('credit_days')->get();
+    //     $delivery_type = DB::table('delivery_type')->get();
+    //     $maximum_distances = DB::table('maximum_distances')->get();
+    //     // $supplier_data = DB::table('supplier_reg')->get();
+    //     $supplier_data = DB::table('supplier_reg as s')
+    //                 ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+    //                 ->select(
+    //                     's.*',
+    //                     'cd.days as credit_days_value'
+                       
+    //                 )
+    //                 ->get();
 
-        if (!empty($customer_id)) {
-            $layout = 'layouts.custapp';
-        } elseif (!empty($vendor_id)) {
-            $layout = 'layouts.vendorapp';
-        } elseif (!empty($supplier_id)) {
-            $layout = 'layouts.guest';
-        }
+     
+    //     $layout = 'layouts.guest'; // default (NOT logged in)
+
+    //     if (!empty($customer_id)) {
+    //         $layout = 'layouts.custapp';
+    //     } elseif (!empty($vendor_id)) {
+    //         $layout = 'layouts.vendorapp';
+    //     } elseif (!empty($supplier_id)) {
+    //         $layout = 'layouts.guest';
+    //     }
 
 
-        return view('web.supplierserch', compact(
-            'credit_days',
-            'delivery_type',
-            'maximum_distances',
-            'supplier_data',
-            'layout',
-            'customer_id',
-            'vendor_id',
-            'supplier_id'
-        ));
-    }
-
-    public function supplierSearchAjax(Request $request)
+    //     return view('web.supplierserch', compact(
+    //         'credit_days',
+    //         'delivery_type',
+    //         'maximum_distances',
+    //         'supplier_data',
+    //         'layout',
+    //         'customer_id',
+    //         'vendor_id',
+    //         'supplier_id'
+    //     ));
+    // }
+public function supplierserch()
 {
-    $query = DB::table('supplier_reg');
+    $customer_id = Session::get('customer_id');
+    $vendor_id   = Session::get('vendor_id');
+    $supplier_id = Session::get('supplier_id');
 
-    if ($request->credit_days) {
-        $query->where('credit_days', $request->credit_days);
+    // MASTER DATA
+    $credit_days        = DB::table('credit_days')->get();
+    $delivery_type      = DB::table('delivery_type')->get();
+    $maximum_distances  = DB::table('maximum_distances')->get();
+
+    // SUPPLIER DATA (BASE QUERY)
+    $supplier_data = DB::table('supplier_reg as s')
+        ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+        ->select(
+            's.*',
+            'cd.days as credit_days_value'
+        )
+        ->orderBy('s.id', 'desc')
+        ->get();
+
+    // LAYOUT
+    $layout = 'layouts.guest';
+    if ($customer_id) $layout = 'layouts.custapp';
+    elseif ($vendor_id) $layout = 'layouts.vendorapp';
+
+    return view('web.supplierserch', compact(
+        'credit_days',
+        'delivery_type',
+        'maximum_distances',
+        'supplier_data',
+        'layout',
+        'customer_id',
+        'vendor_id',
+        'supplier_id'
+    ));
+}
+
+//     public function supplierSearchAjax(Request $request)
+// {
+//     $query = DB::table('supplier_reg');
+
+//     if ($request->credit_days) {
+//         $query->where('credit_days', $request->credit_days);
+//     }
+
+//     if ($request->delivery_type) {
+//         $query->where('delivery_type', $request->delivery_type);
+//     }
+
+//     if ($request->maximum_distance) {
+//         $query->where('maximum_distance', '<=', $request->maximum_distance);
+//     }
+
+//     if ($request->search) {
+//         $query->where(function ($q) use ($request) {
+//             $q->where('shop_name', 'like', '%'.$request->search.'%')
+//               ->orWhere('contact_person', 'like', '%'.$request->search.'%');
+//             //   ->orWhere('area_name', 'like', '%'.$request->search.'%');
+//         });
+//     }
+
+//     return response()->json([
+//         'status' => true,
+//         'suppliers' => $query->get()
+//     ]);
+// }
+
+public function supplierSearchAjax(Request $request)
+{
+    $query = DB::table('supplier_reg as s')
+        ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+        ->select(
+            's.*',
+            'cd.days as credit_days_value'
+        );
+
+    /* CREDIT FILTER */
+    if ($request->filled('credit_days')) {
+        $query->where('s.credit_days', $request->credit_days);
     }
 
-    if ($request->delivery_type) {
-        $query->where('delivery_type', $request->delivery_type);
+    /* DELIVERY FILTER */
+    if ($request->filled('delivery_type')) {
+        $query->where('s.delivery_type', $request->delivery_type);
     }
 
-    if ($request->maximum_distance) {
-        $query->where('maximum_distance', '<=', $request->maximum_distance);
+    /* DISTANCE FILTER */
+    if ($request->filled('maximum_distance')) {
+        $query->where('s.maximum_distance', '<=', $request->maximum_distance);
     }
 
-    if ($request->search) {
+    /* SEARCH */
+    if ($request->filled('search')) {
         $query->where(function ($q) use ($request) {
-            $q->where('shop_name', 'like', '%'.$request->search.'%')
-              ->orWhere('contact_person', 'like', '%'.$request->search.'%');
-            //   ->orWhere('area_name', 'like', '%'.$request->search.'%');
+            $q->where('s.shop_name', 'like', '%'.$request->search.'%')
+              ->orWhere('s.contact_person', 'like', '%'.$request->search.'%');
         });
     }
 
     return response()->json([
-        'status' => true,
+        'status'    => true,
         'suppliers' => $query->get()
     ]);
 }
-
 
     public function supplierenquirystore(Request $request){
         // dd($request);
