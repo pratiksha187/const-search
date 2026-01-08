@@ -45,7 +45,7 @@ class RazorpayController extends Controller
         config('services.razorpay.secret')
     );
 
-    $amount = 1 * 100; // ✅ ₹1 ONLY
+    $amount = 499 * 100; //
 
     $order = $api->order->create([
         'amount'   => $amount,
@@ -93,7 +93,7 @@ class RazorpayController extends Controller
             Payment::create([
                 'payment_id' => $request->razorpay_payment_id,
                 'order_id'   => $request->razorpay_order_id,
-                'amount'     => 1, // ✅ ₹1
+                'amount'     => 499, // ✅ ₹1
                 'currency'   => 'INR',
                 'status'     => 'success',
                 'login_id'   => Session::get('user_id'),
