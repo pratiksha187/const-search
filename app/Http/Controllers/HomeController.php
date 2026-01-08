@@ -147,7 +147,7 @@ class HomeController extends Controller
 
             ->leftJoin('region', 'region.id', '=', 'vendor_reg.region')
             ->leftJoin('state', 'state.id', '=', 'vendor_reg.state')
-            ->leftJoin('city', 'city.id', '=', 'vendor_reg.state')
+            ->leftJoin('city', 'city.id', '=', 'vendor_reg.city')
             
             
             ->select(
