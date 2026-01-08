@@ -444,7 +444,7 @@
          <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
                <div>
-                  <h3 class="fw-bold mb-1"><span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vender</h3>
+                  <h3 class="fw-bold mb-1"><span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor</h3>
                   <p class="text-muted mb-0 d-flex align-items-center gap-2">
                      <span class="badge bg-success rounded-circle p-1 pulse-animation" style="width: 10px; height: 10px;"></span>
                      Verified and ready to serve
