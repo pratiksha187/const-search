@@ -128,48 +128,85 @@ class HomeController extends Controller
         return back()->with('success', 'Profile updated successfully');
     }
 
+   
+
     public function search_vendor(Request $request)
     {
+        /* ======================
+        SESSION
+        ====================== */
         $customer_id = Session::get('customer_id');
-        // dd($customer_id);
-        $work_types = DB::table('work_types')->get();
-        $states = DB::table('state')->orderBy('name')->get();
 
-        // 🔹 ADD THIS
-        $work_subtypes = DB::table('work_subtypes')
-                        ->get()
-                        ->groupBy('work_type_id');
+        /* ======================
+        MASTER DATA
+        ====================== */
+        $work_types = DB::table('work_types')->orderBy('work_type')->get();
+        $states     = DB::table('state')->orderBy('name')->get();
 
-        $vendor_reg = DB::table('vendor_reg')
-            ->leftJoin('work_types', 'work_types.id', '=', 'vendor_reg.work_type_id')
-            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'vendor_reg.work_subtype_id')
-            ->leftJoin('team_size', 'team_size.id', '=', 'vendor_reg.team_size')
+        /* ======================
+        LOAD ALL SUBTYPES (ONCE)
+        id => name
+        ====================== */
+        $allSubtypes = DB::table('work_subtypes')
+            ->pluck('work_subtype', 'id');
 
-            ->leftJoin('region', 'region.id', '=', 'vendor_reg.region')
-            ->leftJoin('state', 'state.id', '=', 'vendor_reg.state')
-            ->leftJoin('city', 'city.id', '=', 'vendor_reg.city')
-            
-            
+        /* ======================
+        VENDOR LIST
+        ====================== */
+        $vendor_reg = DB::table('vendor_reg as v')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+            ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
+            ->leftJoin('state as s', 's.id', '=', 'v.state')
+            ->leftJoin('region as r', 'r.id', '=', 'v.region')
+            ->leftJoin('city as c', 'c.id', '=', 'v.city')
             ->select(
-                'work_types.*',
-                'team_size.team_size as team_size_data',
-                'work_subtypes.*',
-                'vendor_reg.*' ,
-                'region.name as regionname','state.name as statename','city.name as cityname'      
+                'v.*',
+
+                // work
+                'wt.work_type',
+                'ts.team_size as team_size_data',
+
+                // location
+                's.name as statename',
+                'r.name as regionname',
+                'c.name as cityname'
             )
-             ->orderBy('vendor_reg.id', 'desc')
+            // ->where('v.status', 'approved')   // optional but recommended
+            ->orderBy('v.id', 'desc')
             ->get();
 
-        // dd($vendor_reg);
-        return view('web.search_vendor', [
-            'work_types' => $work_types,
-            'states' => $states,
-            'vendor_reg' => $vendor_reg, 
-            'customer_id' => $customer_id,
-            'filters' => []   
-    ]);
-    }
+        /* ======================
+        MAP JSON SUBTYPES
+        ====================== */
+        $vendor_reg->transform(function ($vendor) use ($allSubtypes) {
 
+            // decode JSON ["16","17","19"]
+            $ids = json_decode($vendor->work_subtype_id, true);
+
+            if (!is_array($ids)) {
+                $ids = [];
+            }
+
+            // map id -> name
+            $vendor->work_subtype_data = collect($ids)
+                ->map(fn ($id) => $allSubtypes[$id] ?? null)
+                ->filter()
+                ->values()
+                ->implode(', ');
+
+            return $vendor;
+        });
+        // dd($vendor_reg);
+        /* ======================
+        RETURN VIEW
+        ====================== */
+        return view('web.search_vendor', [
+            'work_types'  => $work_types,
+            'states'      => $states,
+            'vendor_reg'  => $vendor_reg,
+            'customer_id' => $customer_id
+        ]);
+    }
     
     public function search_customer(Request $request)
     {

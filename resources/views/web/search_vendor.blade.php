@@ -464,9 +464,10 @@
          data-email="{{ $vendor->email }}"
          {{-- WORK --}}
          data-work-type-id="{{ $vendor->work_type_id }}"
-        data-work-subtype-id="{{ $vendor->work_subtype_id }}"
+         data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
+
         data-work-type="{{ strtolower($vendor->work_type) }}"
-        data-work-subtype="{{ strtolower($vendor->work_subtype) }}"
+        data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
 
          data-experience="{{ $vendor->experience_years }}"
          data-team-size="{{ $vendor->team_size_data }}"
@@ -488,18 +489,14 @@
          data-account-type="{{ $vendor->account_type }}"
          >
          <div class="row">
-            <!-- <div class="col-auto">
-               <div class="vendor-avatar">
-                  {{ strtoupper(substr($vendor->business_name,0,1)) }}
-               </div>
-            </div> -->
+           
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <div>
                 <span class="text-muted small">Type of Work</span>
                 <h5 class="fw-bold text-dark mb-0">{{ strtoupper($vendor->business_name) }}</h5>
                 </div>
                 <span class="badge bg-primary-subtle text-primary px-3 py-2">
-                {{ $vendor->work_type }} - {{ $vendor->work_subtype }}
+                {{ $vendor->work_type }} - {{ $vendor->work_subtype_data }}
                 </span>
             </div>
             <div class="mb-2">
@@ -511,7 +508,7 @@
              {{ $vendor->statename ?? '' }},
             {{ $vendor->regionname ?? '' }},
            
-            {{ $vendor->cityname ?? '' }},
+            {{ $vendor->cityname ?? '' }}
             </div>
             <div class="row align-items-center border-top pt-3">
                         <div class="col-md-7">
@@ -550,7 +547,7 @@
                                 {{ $vendor->id }},
                                     '{{ addslashes($vendor->business_name) }}',
                                     '{{ addslashes($vendor->name) }}',
-                                    '{{ addslashes($vendor->work_subtype) }}'
+                                    '{{ addslashes($vendor->work_subtype_data) }}'
                             )">
                             ❤️ I'm Interested
                         </button>
@@ -989,8 +986,7 @@
 
 //     document.getElementById('vendorCount').innerText = visible;
 // }
-
-  function applyFilters() {
+function applyFilters() {
 
     let selectedCategories = [];
     let selectedSubtypes = [];
@@ -1013,24 +1009,35 @@
 
         let card = this;
 
-        let cardTypeId    = card.dataset.workTypeId;
-        let cardSubtypeId = card.dataset.workSubtypeId;
+        let cardTypeId = card.dataset.workTypeId;
+
+        /* 👇 parse subtype array */
+        let cardSubtypes = [];
+        try {
+            cardSubtypes = JSON.parse(card.dataset.workSubtypeId || '[]');
+        } catch (e) {
+            cardSubtypes = [];
+        }
 
         let cardStateId  = card.dataset.stateId;
         let cardRegionId = card.dataset.regionId;
         let cardCityId   = card.dataset.cityId;
 
-        /* CATEGORY */
+        /* ================= CATEGORY MATCH ================= */
         let categoryMatch =
             selectedCategories.length === 0 ||
             selectedCategories.includes(cardTypeId);
 
-        /* SUBTYPE */
-        let subtypeMatch =
-            selectedSubtypes.length === 0 ||
-            selectedSubtypes.includes(cardSubtypeId);
+        /* ================= SUBTYPE MATCH (ARRAY LOGIC) ================= */
+        let subtypeMatch = true;
 
-        /* LOCATION */
+        if (selectedSubtypes.length > 0) {
+            subtypeMatch = selectedSubtypes.some(id =>
+                cardSubtypes.includes(id)
+            );
+        }
+
+        /* ================= LOCATION MATCH ================= */
         let stateMatch  = !selectedState  || selectedState == cardStateId;
         let regionMatch = !selectedRegion || selectedRegion == cardRegionId;
         let cityMatch   = !selectedCity   || selectedCity == cardCityId;
@@ -1045,6 +1052,7 @@
 
     $('#vendorCount').text(visible);
 }
+
 $('#stateSelect').on('change', function () {
 
     let stateId = this.value;
