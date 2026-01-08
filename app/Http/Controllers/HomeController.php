@@ -73,8 +73,7 @@ class HomeController extends Controller
 
     public function getRegions($state_id)
     {
-        $regions = DB::connection('mysql2')
-            ->table('regions')
+        $regions = DB::table('regions')
             ->where('states_id', $state_id)
             ->get();
 
@@ -83,8 +82,7 @@ class HomeController extends Controller
 
     public function getCities($region_id)
     {
-        $cities = DB::connection('mysql2')
-            ->table('cities')
+        $cities = DB::table('cities')
             ->where('regions_id', $region_id)
             ->get();
 

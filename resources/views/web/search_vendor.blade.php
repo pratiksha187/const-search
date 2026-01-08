@@ -478,19 +478,15 @@
          data-pan="{{ $vendor->pan_number }}"
          data-msme="{{ $vendor->msme_registered }}"
          {{-- LOCATION --}}
-         data-state="{{ $vendor->statename }}"
-         data-region="{{ $vendor->regionname }}"
-         data-city="{{ $vendor->cityname }}"
+         data-state-id="{{ $vendor->state }}"
+         data-region-id="{{ $vendor->region }}"
+         data-city-id="{{ $vendor->city }}"
          {{-- BANK (OPTIONAL) --}}
          data-bank-name="{{ $vendor->bank_name }}"
          data-account-type="{{ $vendor->account_type }}"
          >
          <div class="row">
-            <!-- <div class="col-auto">
-               <div class="vendor-avatar">
-                  {{ strtoupper(substr($vendor->business_name,0,1)) }}
-               </div>
-            </div> -->
+           
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <div>
                 <span class="text-muted small">Type of Work</span>
@@ -875,107 +871,51 @@
    
 </script>
 <script>
-//    function applyFilters() {
-   
-//        let selectedCategories = [];
-//        let selectedSubtypes   = [];
-   
-//        document.querySelectorAll('.category-check:checked')
-//            .forEach(cb => selectedCategories.push(cb.value));
-   
-//        document.querySelectorAll('.subtype-check:checked')
-//            .forEach(cb => selectedSubtypes.push(cb.value));
-   
-//        // 🔑 IMPORTANT: use TEXT, not ID
-//        let stateText  = (document.querySelector('#stateSelect option:checked')?.textContent || '').toLowerCase().trim();
-//        let regionText = (document.querySelector('#regionSelect option:checked')?.textContent || '').toLowerCase().trim();
-//        let cityText   = (document.querySelector('#citySelect option:checked')?.textContent || '').toLowerCase().trim();
-   
-//        if (stateText === 'select state') stateText = '';
-//        if (regionText === 'select region') regionText = '';
-//        if (cityText === 'select city') cityText = '';
-   
-//        let visible = 0;
-   
-//        document.querySelectorAll('.vendor-card').forEach(card => {
-   
-//            let cardTypeId    = card.dataset.workTypeId || '';
-//            let cardSubtypeId = card.dataset.workSubtypeId || '';
-   
-//            let cardState  = (card.dataset.state  || '').toLowerCase();
-//            let cardRegion = (card.dataset.region || '').toLowerCase();
-//            let cardCity   = (card.dataset.city   || '').toLowerCase();
-   
-//            /* ---------- CATEGORY MATCH ---------- */
-//            let categoryMatch = true;
-   
-//            if (selectedCategories.length > 0) {
-//                categoryMatch = selectedCategories.includes(cardTypeId);
-//            }
-   
-//            if (selectedSubtypes.length > 0) {
-//                categoryMatch = selectedSubtypes.includes(cardSubtypeId);
-//            }
-   
-//            /* ---------- LOCATION MATCH ---------- */
-//            let stateMatch  = !stateText  || cardState.includes(stateText);
-//            let regionMatch = !regionText || cardRegion.includes(regionText);
-//            let cityMatch   = !cityText   || cardCity.includes(cityText);
-   
-//            if (categoryMatch && stateMatch && regionMatch && cityMatch) {
-//                card.style.display = 'block';
-//                visible++;
-//            } else {
-//                card.style.display = 'none';
-//            }
-//        });
-   
-//        document.getElementById('vendorCount').innerText = visible;
-//    }
-function applyFilters() {
+
+  function applyFilters() {
 
     let selectedCategories = [];
     let selectedSubtypes = [];
 
-    document.querySelectorAll('.category-check:checked')
-        .forEach(cb => selectedCategories.push(cb.value));
+    $('.category-check:checked').each(function () {
+        selectedCategories.push(this.value);
+    });
 
-    document.querySelectorAll('.subtype-check:checked')
-        .forEach(cb => selectedSubtypes.push(cb.value));
+    $('.subtype-check:checked').each(function () {
+        selectedSubtypes.push(this.value);
+    });
 
-    let stateText  = ($('#stateSelect option:selected').text() || '').toLowerCase();
-    let regionText = ($('#regionSelect option:selected').text() || '').toLowerCase();
-    let cityText   = ($('#citySelect option:selected').text() || '').toLowerCase();
-
-    if (stateText.includes('select')) stateText = '';
-    if (regionText.includes('select')) regionText = '';
-    if (cityText.includes('select')) cityText = '';
+    let selectedState  = $('#stateSelect').val();
+    let selectedRegion = $('#regionSelect').val();
+    let selectedCity   = $('#citySelect').val();
 
     let visible = 0;
 
-    document.querySelectorAll('.vendor-card').forEach(card => {
+    $('.vendor-card').each(function () {
+
+        let card = this;
 
         let cardTypeId    = card.dataset.workTypeId;
         let cardSubtypeId = card.dataset.workSubtypeId;
 
-        let cardState  = (card.dataset.state || '').toLowerCase();
-        let cardRegion = (card.dataset.region || '').toLowerCase();
-        let cardCity   = (card.dataset.city || '').toLowerCase();
+        let cardStateId  = card.dataset.stateId;
+        let cardRegionId = card.dataset.regionId;
+        let cardCityId   = card.dataset.cityId;
 
-        /* CATEGORY MATCH */
+        /* CATEGORY */
         let categoryMatch =
             selectedCategories.length === 0 ||
             selectedCategories.includes(cardTypeId);
 
-        /* SUBTYPE MATCH */
+        /* SUBTYPE */
         let subtypeMatch =
             selectedSubtypes.length === 0 ||
             selectedSubtypes.includes(cardSubtypeId);
 
-        /* LOCATION MATCH */
-        let stateMatch  = !stateText  || cardState.includes(stateText);
-        let regionMatch = !regionText || cardRegion.includes(regionText);
-        let cityMatch   = !cityText   || cardCity.includes(cityText);
+        /* LOCATION */
+        let stateMatch  = !selectedState  || selectedState == cardStateId;
+        let regionMatch = !selectedRegion || selectedRegion == cardRegionId;
+        let cityMatch   = !selectedCity   || selectedCity == cardCityId;
 
         if (categoryMatch && subtypeMatch && stateMatch && regionMatch && cityMatch) {
             card.style.display = 'block';
@@ -985,24 +925,70 @@ function applyFilters() {
         }
     });
 
-    document.getElementById('vendorCount').innerText = visible;
+    $('#vendorCount').text(visible);
 }
+$('#stateSelect').on('change', function () {
 
-   
-   /* ================= EVENTS ================= */
-   
-   // Category toggle + subtype show/hide
-//    document.querySelectorAll('.category-check').forEach(cb => {
-//        cb.addEventListener('change', function () {
-//            let box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
-//            if (box) box.classList.toggle('d-none', !this.checked);
-//            applyFilters();
-//        });
-//    });
-   
-   // Subtype
-//    document.querySelectorAll('.subtype-check')
-//        .forEach(cb => cb.addEventListener('change', applyFilters));
+    let stateId = this.value;
+
+    $('#regionSelect')
+        .prop('disabled', true)
+        .html('<option value="">Loading regions...</option>');
+
+    $('#citySelect')
+        .prop('disabled', true)
+        .html('<option value="">Select City</option>');
+
+    if (!stateId) {
+        applyFilters();
+        return;
+    }
+
+    $.get(`/locations/regions/${stateId}`, function (regions) {
+
+        let options = '<option value="">Select Region</option>';
+        regions.forEach(r => {
+            options += `<option value="${r.id}">${r.name}</option>`;
+        });
+
+        $('#regionSelect')
+            .html(options)
+            .prop('disabled', false);
+
+        applyFilters();
+    });
+});
+$('#regionSelect').on('change', function () {
+
+    let regionId = this.value;
+
+    $('#citySelect')
+        .prop('disabled', true)
+        .html('<option value="">Loading cities...</option>');
+
+    if (!regionId) {
+        applyFilters();
+        return;
+    }
+
+    $.get(`/locations/cities/${regionId}`, function (cities) {
+
+        let options = '<option value="">Select City</option>';
+        cities.forEach(c => {
+            options += `<option value="${c.id}">${c.name}</option>`;
+        });
+
+        $('#citySelect')
+            .html(options)
+            .prop('disabled', false);
+
+        applyFilters();
+    });
+});
+
+$('#citySelect').on('change', applyFilters);
+ 
+  
    document.querySelectorAll('.category-check').forEach(cb => {
     cb.addEventListener('change', function () {
         let box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
@@ -1016,12 +1002,6 @@ document.querySelectorAll('.subtype-check')
 
 $('#stateSelect, #regionSelect, #citySelect').on('change', applyFilters);
 
-   // Location dropdowns
-//    document.getElementById('stateSelect')?.addEventListener('change', applyFilters);
-//    document.getElementById('regionSelect')?.addEventListener('change', applyFilters);
-//    document.getElementById('citySelect')?.addEventListener('change', applyFilters);
-   
-   // Run once on load
    document.addEventListener('DOMContentLoaded', applyFilters);
 </script>
 @endsection

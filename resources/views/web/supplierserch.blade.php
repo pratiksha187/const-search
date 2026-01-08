@@ -499,10 +499,10 @@
                     • {{ $supplier->maximum_distance ?? '—' }} km
                 </p>
             </div>
-            <div class="rating">
+            <!-- <div class="rating">
                 ⭐ {{ $supplier->rating ?? '4.5' }}
                 <small>{{ $supplier->reviews_count ?? rand(20,200) }} reviews</small>
-            </div>
+            </div> -->
         </div>
 
         <!-- BADGES -->
