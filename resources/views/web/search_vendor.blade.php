@@ -478,9 +478,11 @@
          data-pan="{{ $vendor->pan_number }}"
          data-msme="{{ $vendor->msme_registered }}"
          {{-- LOCATION --}}
-         data-state="{{ $vendor->statename }}"
-         data-region="{{ $vendor->regionname }}"
-         data-city="{{ $vendor->cityname }}"
+        
+         data-state-id="{{ $vendor->state }}"
+         data-region-id="{{ $vendor->region }}"
+         data-city-id="{{ $vendor->city }}"
+         
          {{-- BANK (OPTIONAL) --}}
          data-bank-name="{{ $vendor->bank_name }}"
          data-account-type="{{ $vendor->account_type }}"
