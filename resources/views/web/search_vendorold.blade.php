@@ -623,7 +623,7 @@
                 <div class="payment-section-modern d-none" id="paymentSection">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h3 class="price-tag mb-0">₹500</h3>
+                            <h3 class="price-tag mb-0">₹499</h3>
                             <small class="text-white-50">One-time access fee</small>
                         </div>
                         <span class="badge bg-light text-success fw-bold px-3 py-2">
