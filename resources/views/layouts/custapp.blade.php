@@ -188,7 +188,7 @@
     </style>
 </head>
 
-@php
+<!-- @php
     // ✅ Safe Customer Session Logic
     $cust_data = null;
     $customer_id = session('customer_id');
@@ -214,7 +214,7 @@
         $unreadCount = 0;
         $usernotifications = collect();
     }
-@endphp
+@endphp -->
 
 <body>
 
@@ -235,31 +235,7 @@
             <a href="{{ route('search_vendor') }}" class="{{ request()->routeIs('search_vendor') ? 'active' : '' }}">Search Vendors</a>
             <a href="{{ route('supplierserch') }}" class="{{ request()->routeIs('supplierserch') ? 'active' : '' }}">Search Suppliers</a>
 
-            <!-- NOTIFICATION -->
-            <div class="notification-container">
-                <i class="bi bi-bell" onclick="toggleNotificationMenu(event)"></i>
-
-                @if($unreadCount > 0)
-                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-circle">
-                        {{ $unreadCount }}
-                    </span>
-                @endif
-
-                <div class="notification-dropdown" id="notificationDropdown">
-                    <div class="fw-bold p-3 border-bottom text-center">Notifications</div>
-
-                    @forelse($usernotifications as $note)
-                        <a href="#">
-                            <small class="text-muted">{{ Str::limit($note->message,45) }}</small>
-                        </a>
-                    @empty
-                        <div class="text-center text-muted p-3">No notifications</div>
-                    @endforelse
-
-                    <a href="{{route('user.notifications')}}" class="text-center text-primary d-block py-2">View All</a>
-                </div>
-            </div>
-
+           
             <!-- PROFILE -->
             <div class="header-profile" onclick="toggleProfileMenu(event)">
                 <div class="profile-trigger-avatar">

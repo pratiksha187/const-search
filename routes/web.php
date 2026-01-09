@@ -149,7 +149,7 @@ Route::post('/vendor/profile/update', [VenderController::class, 'updateProfile']
     ->name('vendor.profile.update');
 
 Route::get('/get-subtypes/{id}', [VenderController::class, 'getSubtypes']);
-Route::get('/serch-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
+Route::get('/search-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
 // Route::get('/supplier-search', [HomeController::class, 'supplierserch'])
 //     ->name('supplier.search');
 

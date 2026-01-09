@@ -95,7 +95,7 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
 }
 </style>
 </head>
-
+<!-- 
 @php
     /* ================= SAFE VENDOR LOGIC ================= */
     $vendor_id = session('vendor_id');
@@ -116,7 +116,7 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
         $unreadCount = 0;
         $notifications = collect();
     }
-@endphp
+@endphp -->
 
 <body>
 
@@ -142,7 +142,7 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
             </div>
 
             <!-- NOTIFICATION -->
-            <div class="notification-container">
+            <!-- <div class="notification-container">
                 <i class="bi bi-bell" onclick="toggleNotificationMenu(event)"></i>
 
                 @if($unreadCount > 0)
@@ -166,14 +166,14 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
 
                     <a href="{{ route('vendor.notifications') }}" class="text-primary text-center border-top py-2">View All</a>
                 </div>
-            </div>
+            </div> -->
 
             <!-- PROFILE -->
             <div class="header-profile" onclick="toggleProfileMenu(event)">
                 <div class="profile-avatar">
-                    {{ strtoupper(substr($vendor_name ?? 'V',0,1)) }}
+                    {{ strtoupper(substr($vendor->name ?? 'V',0,1)) }}
                 </div>
-                <span>{{ $vendor_name }}</span>
+                <span>{{ $vendor->name  }}</span>
                 <i class="bi bi-chevron-down"></i>
             </div>
 

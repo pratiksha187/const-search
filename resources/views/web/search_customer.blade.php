@@ -333,6 +333,14 @@
            
             {{ $project->cityname ?? '' }},
           </div>
+           <div class="mb-2">
+          
+           <h6 class="vendor-name mb-0">
+              Project Post Date:
+                {{ \Carbon\Carbon::parse($project->created_at)->format('d M Y') }}
+            </h6>
+
+          </div>
 
           <div class="row align-items-center border-top pt-3">
             <div class="col-md-7">
@@ -583,44 +591,68 @@ function handleInterested(
             _token: "{{ csrf_token() }}",
             cust_id: id
         },
+       
         success: function (res) {
 
-            resetLeadModalUI();
+    resetLeadModalUI();
 
-            let remaining = parseInt(res.remaining, 10) || 0;
+    /* ===============================
+       1️⃣ ALREADY UNLOCKED → SHOW DETAILS
+    ================================ */
+    if (res.already_exists === true) {
 
-            // 🔒 NO FREE LEADS → PAYMENT ONLY
-            if (remaining <= 0) {
+        $('#lockedInfo').addClass('d-none');
+        $('#paymentSection').addClass('d-none');
 
-                $('#projectDetailsSection').addClass('d-none');
-                $('#remainingLeadsInfo').addClass('d-none');
+        $('#projectDetailsSection').removeClass('d-none');
+        $('#remainingLeadsInfo').addClass('d-none');
 
-                $('#lockedInfo').removeClass('d-none');
-                $('#paymentSection').removeClass('d-none');
+        new bootstrap.Modal(
+            document.getElementById('vendorModal')
+        ).show();
 
-                $('#payNowBtn').data('id', id);
+        return; // ⛔ VERY IMPORTANT
+    }
 
-                new bootstrap.Modal(
-                    document.getElementById('vendorModal')
-                ).show();
+    let remaining = parseInt(res.remaining, 10) || 0;
 
-                return;
-            }
+    /* ===============================
+       2️⃣ NO FREE LEADS → PAYMENT
+    ================================ */
+    if (res.payment_required === true || remaining <= 0) {
 
-            // ✅ FREE LEADS → SHOW DETAILS
-            $('#lockedInfo').addClass('d-none');
-            $('#paymentSection').addClass('d-none');
+        $('#projectDetailsSection').addClass('d-none');
+        $('#remainingLeadsInfo').addClass('d-none');
 
-            $('#projectDetailsSection').removeClass('d-none');
+        $('#lockedInfo').removeClass('d-none');
+        $('#paymentSection').removeClass('d-none');
 
-            $('#remainingLeadsInfo')
-                .removeClass('d-none')
-                .text(`🎯 ${remaining} free leads remaining`);
+        $('#payNowBtn').data('id', id);
 
-            new bootstrap.Modal(
-                document.getElementById('vendorModal')
-            ).show();
-        },
+        new bootstrap.Modal(
+            document.getElementById('vendorModal')
+        ).show();
+
+        return;
+    }
+
+    /* ===============================
+       3️⃣ FREE LEAD → SHOW DETAILS
+    ================================ */
+    $('#lockedInfo').addClass('d-none');
+    $('#paymentSection').addClass('d-none');
+
+    $('#projectDetailsSection').removeClass('d-none');
+
+    $('#remainingLeadsInfo')
+        .removeClass('d-none')
+        .text(`🎯 ${remaining} free leads remaining`);
+
+    new bootstrap.Modal(
+        document.getElementById('vendorModal')
+    ).show();
+},
+
         error: function () {
             alert('Something went wrong. Please try again.');
         }

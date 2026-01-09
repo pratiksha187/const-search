@@ -465,63 +465,152 @@ class SuppliersController extends Controller
     }
 
 
-    public function supplierserch()
-    {
-        $customer_id = Session::get('customer_id');
-        $vendor_id   = Session::get('vendor_id');
-        $supplier_id = Session::get('supplier_id');
+    // public function supplierserch()
+    // {
+    //     $customer_id = Session::get('customer_id');
+    //     $vendor_id   = Session::get('vendor_id');
 
-        $credit_days       = DB::table('credit_days')->get();
-        $delivery_type     = DB::table('delivery_type')->get();
-        $maximum_distances = DB::table('maximum_distances')->get();
+    //     $supplier_id = Session::get('supplier_id');
 
-        $supplier_data = DB::table('supplier_reg as s')
-            ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-            ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-            ->select(
-                's.*',
-                'cd.days as credit_days_value',
-                DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
-                DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
-            )
-            ->groupBy('s.id','cd.days')
-            ->orderBy('s.id','desc')
-            ->get();
+    //     $credit_days       = DB::table('credit_days')->get();
+    //     $delivery_type     = DB::table('delivery_type')->get();
+    //     $maximum_distances = DB::table('maximum_distances')->get();
 
-        // 🔥 NORMALIZE CATEGORY DATA
-        foreach ($supplier_data as $supplier) {
-            $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
-            $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
+    //     $supplier_data = DB::table('supplier_reg as s')
+    //         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+    //         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+    //         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+    //         ->select(
+    //             's.*',
+    //             'cd.days as credit_days_value',
+    //             DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
+    //             DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
+    //         )
+    //         ->groupBy('s.id','cd.days')
+    //         ->orderBy('s.id','desc')
+    //         ->get();
 
-            $supplier->material_categories = [];
+    //     // 🔥 NORMALIZE CATEGORY DATA
+    //     foreach ($supplier_data as $supplier) {
+    //         $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
+    //         $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
 
-            foreach ($ids as $i => $id) {
-                $supplier->material_categories[] = [
-                    'id'   => (int)$id,
-                    'name' => $names[$i] ?? null
-                ];
-            }
+    //         $supplier->material_categories = [];
 
-            unset($supplier->material_category_ids, $supplier->material_category_names);
+    //         foreach ($ids as $i => $id) {
+    //             $supplier->material_categories[] = [
+    //                 'id'   => (int)$id,
+    //                 'name' => $names[$i] ?? null
+    //             ];
+    //         }
+
+    //         unset($supplier->material_category_ids, $supplier->material_category_names);
+    //     }
+
+    //     $layout = 'layouts.guest';
+    //     if ($customer_id) $layout = 'layouts.custapp';
+    //     elseif ($vendor_id) $layout = 'layouts.vendorapp';
+
+    //     return view('web.supplierserch', compact(
+    //         'credit_days',
+    //         'delivery_type',
+    //         'maximum_distances',
+    //         'supplier_data',
+    //         'layout',
+    //         'customer_id',
+    //         'vendor_id',
+    //         'supplier_id'
+    //     ));
+    // }
+
+public function supplierserch()
+{
+    $customer_id = Session::get('customer_id');
+    $vendor_id   = Session::get('vendor_id');
+    $supplier_id = Session::get('supplier_id');
+
+    /* ===============================
+       MASTER DATA
+    =============================== */
+    $credit_days       = DB::table('credit_days')->get();
+    $delivery_type     = DB::table('delivery_type')->get();
+    $maximum_distances = DB::table('maximum_distances')->get();
+
+    /* ===============================
+       SUPPLIERS + CATEGORIES
+    =============================== */
+    $supplier_data = DB::table('supplier_reg as s')
+        ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+        ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+        ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+        ->select(
+            's.*',
+            'cd.days as credit_days_value',
+            DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
+            DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
+        )
+        ->groupBy('s.id', 'cd.days')
+        ->orderBy('s.id', 'desc')
+        ->get();
+
+    /* ===============================
+       NORMALIZE CATEGORY DATA
+    =============================== */
+    foreach ($supplier_data as $supplier) {
+
+        $ids   = $supplier->material_category_ids
+            ? explode(',', $supplier->material_category_ids)
+            : [];
+
+        $names = $supplier->material_category_names
+            ? explode(',', $supplier->material_category_names)
+            : [];
+
+        $supplier->material_categories = [];
+
+        foreach ($ids as $i => $id) {
+            $supplier->material_categories[] = [
+                'id'   => (int) $id,
+                'name' => $names[$i] ?? null
+            ];
         }
 
-        $layout = 'layouts.guest';
-        if ($customer_id) $layout = 'layouts.custapp';
-        elseif ($vendor_id) $layout = 'layouts.vendorapp';
-
-        return view('web.supplierserch', compact(
-            'credit_days',
-            'delivery_type',
-            'maximum_distances',
-            'supplier_data',
-            'layout',
-            'customer_id',
-            'vendor_id',
-            'supplier_id'
-        ));
+        unset($supplier->material_category_ids, $supplier->material_category_names);
     }
 
+    /* ===============================
+       ✅ FETCH VENDOR IF LOGGED IN
+    =============================== */
+    $vendor = null;
+
+    if ($vendor_id) {
+        $vendor = DB::table('vendor_reg')
+            ->where('id', $vendor_id)
+            ->first();
+    }
+
+    /* ===============================
+       LAYOUT
+    =============================== */
+    $layout = 'layouts.guest';
+    if ($customer_id) {
+        $layout = 'layouts.custapp';
+    } elseif ($vendor_id) {
+        $layout = 'layouts.vendorapp';
+    }
+
+    return view('web.supplierserch', compact(
+        'credit_days',
+        'delivery_type',
+        'maximum_distances',
+        'supplier_data',
+        'layout',
+        'customer_id',
+        'vendor_id',
+        'supplier_id',
+        'vendor' // ✅ PASS TO VIEW
+    ));
+}
 
     public function supplierSearchAjax(Request $request)
     {

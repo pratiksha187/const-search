@@ -540,39 +540,86 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ===============================
      ENQUIRE MODAL
   ================================ */
+  // function attachEnquireEvents() {
+
+  //   document.querySelectorAll('.enquire-btn').forEach(btn => {
+
+  //     btn.onclick = function () {
+
+  //       const supplierId   = this.dataset.supplierId;
+  //       const supplierName = this.dataset.supplierName;
+
+  //       let categories = [];
+  //       try {
+  //         categories = JSON.parse(this.dataset.categories || '[]');
+  //       } catch (e) {}
+
+  //       document.getElementById('modalSupplierId').value = supplierId;
+  //       document.getElementById('modalSupplierName').innerText = supplierName;
+
+  //       const select = document.getElementById('modalCategory');
+  //       select.innerHTML = `<option value="">Select Category</option>`;
+
+  //       categories.forEach(cat => {
+  //         const opt = document.createElement('option');
+  //         opt.value = cat.id;
+  //         opt.textContent = cat.name;
+  //         select.appendChild(opt);
+  //       });
+
+  //       new bootstrap.Modal(
+  //         document.getElementById('enquiryModal')
+  //       ).show();
+  //     };
+  //   });
+  // }
   function attachEnquireEvents() {
 
-    document.querySelectorAll('.enquire-btn').forEach(btn => {
+  document.querySelectorAll('.enquire-btn').forEach(btn => {
 
-      btn.onclick = function () {
+    btn.onclick = function () {
 
-        const supplierId   = this.dataset.supplierId;
-        const supplierName = this.dataset.supplierName;
-
-        let categories = [];
-        try {
-          categories = JSON.parse(this.dataset.categories || '[]');
-        } catch (e) {}
-
-        document.getElementById('modalSupplierId').value = supplierId;
-        document.getElementById('modalSupplierName').innerText = supplierName;
-
-        const select = document.getElementById('modalCategory');
-        select.innerHTML = `<option value="">Select Category</option>`;
-
-        categories.forEach(cat => {
-          const opt = document.createElement('option');
-          opt.value = cat.id;
-          opt.textContent = cat.name;
-          select.appendChild(opt);
-        });
-
+      /* ===============================
+         LOGIN CHECK (NEW LOGIC)
+      ================================ */
+      if (!window.IS_LOGGED_IN) {
         new bootstrap.Modal(
-          document.getElementById('enquiryModal')
+          document.getElementById('loginModal')
         ).show();
-      };
-    });
-  }
+        return; // ⛔ stop here
+      }
+
+      /* ===============================
+         ENQUIRY FLOW (EXISTING)
+      ================================ */
+      const supplierId   = this.dataset.supplierId;
+      const supplierName = this.dataset.supplierName;
+
+      let categories = [];
+      try {
+        categories = JSON.parse(this.dataset.categories || '[]');
+      } catch (e) {}
+
+      document.getElementById('modalSupplierId').value = supplierId;
+      document.getElementById('modalSupplierName').innerText = supplierName;
+
+      const select = document.getElementById('modalCategory');
+      select.innerHTML = `<option value="">Select Category</option>`;
+
+      categories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.id;
+        opt.textContent = cat.name;
+        select.appendChild(opt);
+      });
+
+      new bootstrap.Modal(
+        document.getElementById('enquiryModal')
+      ).show();
+    };
+  });
+}
+
 
   attachEnquireEvents();
 
