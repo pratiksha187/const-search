@@ -201,12 +201,14 @@
             </p>
           </div>
         </div>
-        @if(!empty($supplier->material_category_name))
+      
+        @if(!empty($supplier->material_categories))
           <div class="category-row">
-            <span class="tag material">
-              <i class="bi bi-box-seam"></i>
-              {{ $supplier->material_category_name }}
-            </span>
+            @foreach($supplier->material_categories as $cat)
+              <span class="tag material">
+                <i class="bi bi-box-seam"></i> {{ $cat['name'] }}
+              </span>
+            @endforeach
           </div>
         @endif
 
@@ -252,13 +254,17 @@
             • Min: ₹{{ number_format($supplier->minimum_order_cost ?? 0) }}
           </span>
 
+        
           <a href="javascript:void(0)"
-             class="btn-enquire enquire-btn"
-             data-supplier-id="{{ $supplier->id }}"
-             data-supplier-name="{{ $supplier->shop_name }}"
-             data-credit="{{ $supplier->credit_days }}">
+            class="btn-enquire enquire-btn"
+            data-supplier-id="{{ $supplier->id }}"
+            data-supplier-name="{{ $supplier->shop_name }}"
+            data-credit="{{ $supplier->credit_days }}"
+            data-categories='@json($supplier->material_categories)'>
             Enquire
           </a>
+
+
         </div>
       </div>
     @empty
@@ -363,30 +369,38 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  window.IS_LOGGED_IN = @json(
-      session()->has('customer_id') ||
-      session()->has('vendor_id') ||
-      session()->has('supplier_id')
-  );
-</script>
+/* ===============================
+   LOGIN FLAG
+================================ */
+window.IS_LOGGED_IN = @json(
+    session()->has('customer_id') ||
+    session()->has('vendor_id') ||
+    session()->has('supplier_id')
+);
 
-<script>
 document.addEventListener('DOMContentLoaded', function () {
 
-  // ========= CHIP / PILL UI -> hidden input =========
+  /* ===============================
+     CHIP / PILL SINGLE SELECT
+  ================================ */
   function makeSingleSelect(containerSelector, itemSelector, activeClass, inputId, extraOnSelect) {
     const container = document.querySelector(containerSelector);
     if (!container) return;
 
     container.querySelectorAll(itemSelector).forEach(item => {
       item.addEventListener('click', function () {
-        container.querySelectorAll(itemSelector).forEach(i => i.classList.remove(activeClass));
+
+        container.querySelectorAll(itemSelector)
+          .forEach(i => i.classList.remove(activeClass));
+
         this.classList.add(activeClass);
 
         const input = document.getElementById(inputId);
         if (input) input.value = this.dataset.value || '';
 
-        if (typeof extraOnSelect === 'function') extraOnSelect(this);
+        if (typeof extraOnSelect === 'function') {
+          extraOnSelect(this);
+        }
       });
     });
   }
@@ -398,63 +412,76 @@ document.addEventListener('DOMContentLoaded', function () {
     if (label) label.innerText = el.dataset.label || 'Any';
   });
 
-  // ========= RENDER SUPPLIERS (AJAX RESULT) =========
- function renderSuppliers(list){
-  const grid = document.getElementById('supplierGrid');
-  grid.innerHTML = '';
+  /* ===============================
+     RENDER SUPPLIERS (AJAX)
+  ================================ */
+  function renderSuppliers(list) {
 
-  if(!list.length){
-    grid.innerHTML = `<p class="text-muted text-center mt-5">No suppliers found.</p>`;
-    return;
+    const grid = document.getElementById('supplierGrid');
+    grid.innerHTML = '';
+
+    if (!list || !list.length) {
+      grid.innerHTML = `<p class="text-muted text-center mt-5">No suppliers found.</p>`;
+      return;
+    }
+
+    list.forEach(s => {
+
+      const categoriesHTML = (s.material_categories && s.material_categories.length)
+        ? `<div class="category-row">
+            ${s.material_categories.map(c =>
+              `<span class="tag material">${c.name}</span>`
+            ).join('')}
+           </div>`
+        : '';
+
+      grid.insertAdjacentHTML('beforeend', `
+        <div class="supplier-card">
+          <div class="card-head">
+            <h5>${s.shop_name ?? '-'}</h5>
+            <p>Owner: ${s.contact_person ?? '-'}</p>
+            <p class="location">
+              <i class="bi bi-geo-alt-fill"></i>
+              ${(s.area_name ?? '—')}, ${(s.city_name ?? '—')}
+              • ${(s.maximum_distance ?? '—')} km
+            </p>
+          </div>
+
+          ${categoriesHTML}
+
+          <div class="badge-row">
+            ${s.status === 'verified' ? `<span class="ck-badge verified">Verified</span>` : ''}
+            ${s.delivery_type ? `<span class="ck-badge delivery">Delivery</span>` : ''}
+            ${s.credit_days_value
+              ? `<span class="ck-badge credit">Credit ${s.credit_days_value} Days</span>`
+              : `<span class="ck-badge cash">Cash Only</span>`}
+          </div>
+
+          <div class="card-footer">
+            <span>
+              ${s.delivery_days ?? 'Same / Next day'}
+              • Min ₹${Number(s.minimum_order_cost ?? 0).toLocaleString()}
+            </span>
+
+            <a href="javascript:void(0)"
+               class="btn-enquire enquire-btn"
+               data-supplier-id="${s.id}"
+               data-supplier-name="${s.shop_name ?? s.contact_person}"
+               data-categories='${JSON.stringify(s.material_categories)}'>
+               Enquire
+            </a>
+          </div>
+        </div>
+      `);
+    });
+
+    attachEnquireEvents();
   }
 
-  list.forEach(s=>{
-    grid.insertAdjacentHTML('beforeend',`
-      <div class="supplier-card">
-        <div class="card-head">
-          <h5>${s.shop_name ?? '-'}</h5>
-          <p>Owner: ${s.contact_person ?? '-'}</p>
-          <p class="location">
-            <i class="bi bi-geo-alt-fill"></i>
-            ${(s.area_name ?? '—')}, ${(s.city_name ?? '—')} • ${(s.maximum_distance ?? '—')} km
-          </p>
-        </div>
-
-        ${s.material_category_name ? `
-        <div class="category-row">
-          <span class="tag material"><i class="bi bi-box-seam"></i> ${s.material_category_name}</span>
-        </div>` : ''}
-
-        <div class="badge-row">
-          ${s.status === 'verified' ? `<span class="ck-badge verified">Verified</span>`:''}
-          ${s.delivery_type ? `<span class="ck-badge delivery">Delivery</span>`:''}
-          ${s.credit_days_value
-            ? `<span class="ck-badge credit">Credit ${s.credit_days_value} Days</span>`
-            : `<span class="ck-badge cash">Cash Only</span>`}
-        </div>
-
-        <div class="card-footer">
-          <span>${s.delivery_days ?? 'Same / Next day'} • Min ₹${Number(s.minimum_order_cost ?? 0).toLocaleString()}</span>
-          <a href="javascript:void(0)" class="btn-enquire enquire-btn"
-             data-supplier-id="${s.id}"
-             data-supplier-name="${s.shop_name}"
-             data-credit="${s.credit_days ?? ''}">
-            Enquire
-          </a>
-        </div>
-      </div>
-    `);
-  });
-
-  attachEnquireEvents();
-}
-
-  // ========= APPLY FILTERS (AJAX) =========
+  /* ===============================
+     APPLY FILTERS (AJAX)
+  ================================ */
   window.applyFilters = function () {
-    const credit   = document.getElementById('credit_days_input')?.value || '';
-    const delivery = document.getElementById('delivery_type_input')?.value || '';
-    const distance = document.getElementById('maximum_distance_input')?.value || '';
-    const search   = document.getElementById('searchInput')?.value || '';
 
     fetch("{{ route('supplier.search.ajax') }}", {
       method: "POST",
@@ -463,118 +490,127 @@ document.addEventListener('DOMContentLoaded', function () {
         "X-CSRF-TOKEN": "{{ csrf_token() }}"
       },
       body: JSON.stringify({
-        credit_days: credit,
-        delivery_type: delivery,
-        maximum_distance: distance,
-        search: search
+        credit_days: document.getElementById('credit_days_input').value || '',
+        delivery_type: document.getElementById('delivery_type_input').value || '',
+        maximum_distance: document.getElementById('maximum_distance_input').value || '',
+        search: document.getElementById('searchInput').value || ''
       })
     })
-    .then(r => r.json())
+    .then(res => res.json())
     .then(res => {
       if (res.status) renderSuppliers(res.suppliers);
     })
     .catch(err => console.error(err));
   };
 
-  // ========= AUTO APPLY =========
-  document.querySelectorAll('#creditFilter .chip, #deliveryTypeToggle .pill, #distanceFilter .chip')
-    .forEach(el => el.addEventListener('click', () => setTimeout(window.applyFilters, 120)));
+  /* ===============================
+     AUTO APPLY FILTERS
+  ================================ */
+  document.querySelectorAll(
+    '#creditFilter .chip, #deliveryTypeToggle .pill, #distanceFilter .chip'
+  ).forEach(el => {
+    el.addEventListener('click', () => setTimeout(window.applyFilters, 150));
+  });
 
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) searchInput.addEventListener('keyup', window.applyFilters);
+  document.getElementById('searchInput')
+    ?.addEventListener('keyup', window.applyFilters);
 
-  // ========= RESET =========
-  const resetBtn = document.getElementById('resetBtn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', function () {
-      document.querySelectorAll('.chip, .pill').forEach(el => el.classList.remove('active'));
-      document.querySelector('#creditFilter .chip[data-value=""]')?.classList.add('active');
-      document.querySelector('#deliveryTypeToggle .pill[data-value=""]')?.classList.add('active');
-      document.querySelector('#distanceFilter .chip[data-value=""]')?.classList.add('active');
+  /* ===============================
+     RESET FILTERS
+  ================================ */
+  document.getElementById('resetBtn')?.addEventListener('click', function () {
 
-      document.getElementById('credit_days_input').value = '';
-      document.getElementById('delivery_type_input').value = '';
-      document.getElementById('maximum_distance_input').value = '';
-      document.getElementById('searchInput').value = '';
+    document.querySelectorAll('.chip, .pill')
+      .forEach(el => el.classList.remove('active'));
 
-      const label = document.getElementById('distanceLabel');
-      if (label) label.innerText = 'Any';
+    document.querySelector('#creditFilter .chip[data-value=""]')?.classList.add('active');
+    document.querySelector('#deliveryTypeToggle .pill[data-value=""]')?.classList.add('active');
+    document.querySelector('#distanceFilter .chip[data-value=""]')?.classList.add('active');
 
-      window.applyFilters();
-    });
-  }
+    document.getElementById('credit_days_input').value = '';
+    document.getElementById('delivery_type_input').value = '';
+    document.getElementById('maximum_distance_input').value = '';
+    document.getElementById('searchInput').value = '';
 
-  // ========= ENQUIRE =========
+    document.getElementById('distanceLabel').innerText = 'Any';
+
+    window.applyFilters();
+  });
+
+  /* ===============================
+     ENQUIRE MODAL
+  ================================ */
   function attachEnquireEvents() {
-    document.querySelectorAll('.enquire-btn').forEach(btn => {
-      btn.onclick = function () {
 
-        if (!window.IS_LOGGED_IN) {
-          new bootstrap.Modal(document.getElementById('loginModal')).show();
-          return;
-        }
+    document.querySelectorAll('.enquire-btn').forEach(btn => {
+
+      btn.onclick = function () {
 
         const supplierId   = this.dataset.supplierId;
         const supplierName = this.dataset.supplierName;
-        const creditDays   = this.dataset.credit;
+
+        let categories = [];
+        try {
+          categories = JSON.parse(this.dataset.categories || '[]');
+        } catch (e) {}
 
         document.getElementById('modalSupplierId').value = supplierId;
         document.getElementById('modalSupplierName').innerText = supplierName;
 
-        // If you are passing categories in HTML (data-categories), keep this safe:
-        const categories = (() => {
-          try { return JSON.parse(this.dataset.categories || '[]'); }
-          catch(e){ return []; }
-        })();
+        const select = document.getElementById('modalCategory');
+        select.innerHTML = `<option value="">Select Category</option>`;
 
-        const categorySelect = document.getElementById('modalCategory');
-        categorySelect.innerHTML = `<option value="">Select Category</option>`;
-        categories.forEach(cat => categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`);
+        categories.forEach(cat => {
+          const opt = document.createElement('option');
+          opt.value = cat.id;
+          opt.textContent = cat.name;
+          select.appendChild(opt);
+        });
 
-        document.getElementById('modalPayment').value = creditDays ? 'credit' : 'cash';
-
-        new bootstrap.Modal(document.getElementById('enquiryModal')).show();
+        new bootstrap.Modal(
+          document.getElementById('enquiryModal')
+        ).show();
       };
     });
   }
+
   attachEnquireEvents();
 
-  // ========= ENQUIRY SUBMIT =========
   const enquiryForm = document.getElementById('enquiryForm');
-  if (enquiryForm) {
-    enquiryForm.addEventListener('submit', function(e){
-      e.preventDefault();
 
-      const submitBtn = this.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'Sending...';
+  enquiryForm?.addEventListener('submit', function (e) {
+    e.preventDefault();
 
-      const formData = new FormData(this);
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerText = 'Sending...';
 
-      fetch("{{ route('supplier.enquiry.store') }}", {
-        method: "POST",
-        headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if(data.status){
-          alert('✅ Enquiry sent successfully');
-          this.reset();
-          bootstrap.Modal.getInstance(document.getElementById('enquiryModal')).hide();
-        }else{
-          alert('❌ Something went wrong');
-        }
-      })
-      .catch(() => alert('❌ Server error'))
-      .finally(() => {
-        submitBtn.disabled = false;
-        submitBtn.innerText = 'Send enquiry';
-      });
+    fetch("{{ route('supplier.enquiry.store') }}", {
+      method: "POST",
+      headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+      body: new FormData(this)
+    })
+    .then(res => res.json())
+    .then(res => {
+      if (res.status) {
+        alert('✅ Enquiry sent successfully');
+        this.reset();
+        bootstrap.Modal.getInstance(
+          document.getElementById('enquiryModal')
+        ).hide();
+      } else {
+        alert('❌ Something went wrong');
+      }
+    })
+    .catch(() => alert('❌ Server error'))
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerText = 'Send enquiry';
     });
-  }
+  });
 
 });
 </script>
+
 
 @endsection

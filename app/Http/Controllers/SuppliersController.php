@@ -464,7 +464,6 @@ class SuppliersController extends Controller
     return back()->with('success', 'Products & categories saved successfully');
     }
 
-  
 
     public function supplierserch()
     {
@@ -472,24 +471,41 @@ class SuppliersController extends Controller
         $vendor_id   = Session::get('vendor_id');
         $supplier_id = Session::get('supplier_id');
 
-        // MASTER DATA
-        $credit_days        = DB::table('credit_days')->get();
-        $delivery_type      = DB::table('delivery_type')->get();
-        $maximum_distances  = DB::table('maximum_distances')->get();
+        $credit_days       = DB::table('credit_days')->get();
+        $delivery_type     = DB::table('delivery_type')->get();
+        $maximum_distances = DB::table('maximum_distances')->get();
 
-        // SUPPLIER DATA (BASE QUERY)
         $supplier_data = DB::table('supplier_reg as s')
-            ->leftJoin('material_categories as mc', 'mc.id', '=', 's.material_category')
+            ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
             ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-            ->select(   
+            ->select(
                 's.*',
                 'cd.days as credit_days_value',
-                'mc.name as material_category_name'
+                DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
+                DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
             )
-            ->orderBy('s.id', 'desc')
+            ->groupBy('s.id','cd.days')
+            ->orderBy('s.id','desc')
             ->get();
-        // dd($supplier_data);
-        // LAYOUT
+
+        // 🔥 NORMALIZE CATEGORY DATA
+        foreach ($supplier_data as $supplier) {
+            $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
+            $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
+
+            $supplier->material_categories = [];
+
+            foreach ($ids as $i => $id) {
+                $supplier->material_categories[] = [
+                    'id'   => (int)$id,
+                    'name' => $names[$i] ?? null
+                ];
+            }
+
+            unset($supplier->material_category_ids, $supplier->material_category_names);
+        }
+
         $layout = 'layouts.guest';
         if ($customer_id) $layout = 'layouts.custapp';
         elseif ($vendor_id) $layout = 'layouts.vendorapp';
@@ -510,38 +526,60 @@ class SuppliersController extends Controller
     public function supplierSearchAjax(Request $request)
     {
         $query = DB::table('supplier_reg as s')
+            ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
             ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
             ->select(
                 's.*',
-                'cd.days as credit_days_value'
-            );
+                'cd.days as credit_days_value',
+                DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
+                DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_categories')
+            )
+            ->groupBy('s.id', 'cd.days');
 
-        /* CREDIT FILTER */
-        if ($request->filled('credit_days')) {
+        /* CREDIT FILTER (ID) */
+        if ($request->credit_days) {
             $query->where('s.credit_days', $request->credit_days);
         }
 
-        /* DELIVERY FILTER */
-        if ($request->filled('delivery_type')) {
+        /* DELIVERY TYPE (ID) */
+        if ($request->delivery_type) {
             $query->where('s.delivery_type', $request->delivery_type);
         }
 
-        /* DISTANCE FILTER */
-        if ($request->filled('maximum_distance')) {
+        /* DISTANCE */
+        if ($request->maximum_distance) {
             $query->where('s.maximum_distance', '<=', $request->maximum_distance);
         }
 
         /* SEARCH */
-        if ($request->filled('search')) {
+        if ($request->search) {
             $query->where(function ($q) use ($request) {
-                $q->where('s.shop_name', 'like', '%'.$request->search.'%')
-                ->orWhere('s.contact_person', 'like', '%'.$request->search.'%');
+                $q->where('s.shop_name', 'like', "%{$request->search}%")
+                ->orWhere('s.contact_person', 'like', "%{$request->search}%")
+                ->orWhere('mc.name', 'like', "%{$request->search}%");
             });
         }
 
+        $suppliers = $query->get();
+
+        /* FORMAT CATEGORIES */
+        foreach ($suppliers as $s) {
+            $ids   = $s->material_category_ids ? explode(',', $s->material_category_ids) : [];
+            $names = $s->material_categories ? explode(',', $s->material_categories) : [];
+
+            $s->material_categories = [];
+            foreach ($ids as $i => $id) {
+                $s->material_categories[] = [
+                    'id' => $id,
+                    'name' => $names[$i] ?? ''
+                ];
+            }
+        }
+
         return response()->json([
-            'status'    => true,
-            'suppliers' => $query->get()
+            'status' => true,
+            'suppliers' => $suppliers
         ]);
     }
 
@@ -602,93 +640,51 @@ class SuppliersController extends Controller
         return view('web.productenquiry',compact('enquiries','supplierName'));
     }
 
-    // public function storeSupplierProductData(Request $request)
-    // {
-
-    //     $supp_id = Session::get('supplier_id');
-    //     // dd($request);
-    //     // Basic validation
-    //     $request->validate([
-    //         'product_type'    => 'required',
-    //         'unit'            => 'required',
-    //         'price'           => 'nullable|numeric',
-    //         'gst_percent'     => 'nullable|numeric',
-    //         'product_image'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    //     ]);
-
-    //     // Image upload
-    //     $imageName = null;
-    //     if ($request->hasFile('product_image')) {
-    //         $imageName = time() . '_' .
-    //             $request->product_image->getClientOriginalName();
-
-    //         $request->product_image->move(
-    //             public_path('uploads/products'),
-    //             $imageName
-    //         );
-    //     }
-
-    //     // Save product
-    //     SupplierProductData::create([
-    //         'supp_id'                     =>$supp_id,
-    //         'material_category_id'        =>$request->material_category_id,
-    //         'material_product_id'         => $request->product_type,
-    //         'material_product_subtype_id' => $request->product_subtype,
-    //         'brand_id'                    => $request->brand,
-    //         'unit_id'                     => $request->unit,
-    //         'price'                       => $request->price,
-    //         'gst_included'                => $request->gst_included ? 1 : 0,
-    //         'gst_percent'                 => $request->gst_percent,
-    //         'delivery_type_id'            => $request->delivery_type,
-    //         'image'                       => $imageName,
-    //     ]);
-
-    //     return back()->with('success', 'Product saved successfully!');
-    // }
+   
     public function storeSupplierProductData(Request $request)
-{
-    $supp_id = session('supplier_id'); // keep as-is if working
+    {
+        $supp_id = session('supplier_id'); // keep as-is if working
+        // dd($supp_id );
+        // ✅ FIXED VALIDATION (MATCH REQUEST)
+        $request->validate([
+            'material_category_id' => 'required',
+            'product_type'         => 'required',
+            'product_subtype'      => 'nullable',
+            'brand'                => 'nullable',
+            'unit'                 => 'required',
+            'price'                => 'nullable|numeric',
+            'gst'                  => 'nullable|numeric',
+            'delivery_time'        => 'nullable',
+            'product_image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-    // ✅ FIXED VALIDATION (MATCH REQUEST)
-    $request->validate([
-        'material_category_id' => 'required',
-        'product_type'         => 'required',
-        'product_subtype'      => 'nullable',
-        'brand'                => 'nullable',
-        'unit'                 => 'required',
-        'price'                => 'nullable|numeric',
-        'gst'                  => 'nullable|numeric',
-        'delivery_time'        => 'nullable',
-        'product_image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
+        // ✅ IMAGE UPLOAD
+        $imageName = null;
+        if ($request->hasFile('product_image')) {
+            $imageName = time().'_'.$request->product_image->getClientOriginalName();
+            $request->product_image->move(
+                public_path('uploads/products'),
+                $imageName
+            );
+        }
 
-    // ✅ IMAGE UPLOAD
-    $imageName = null;
-    if ($request->hasFile('product_image')) {
-        $imageName = time().'_'.$request->product_image->getClientOriginalName();
-        $request->product_image->move(
-            public_path('uploads/products'),
-            $imageName
-        );
+        // ✅ SAVE DATA (PROPER MAPPING)
+        SupplierProductData::create([
+            'supp_id'                     => $supp_id,
+            'material_category_id'        => $request->material_category_id,
+            'material_product_id'         => $request->product_type,
+            'material_product_subtype_id' => $request->product_subtype,
+            'brand_id'                    => $request->brand,
+            'unit_id'                     => $request->unit,
+            'price'                       => $request->price,
+            'gst_percent'                 => $request->gst, 
+            'gst_included'                => $request->has('gst_included') ? 1 : 0,
+            'delivery_time'               => $request->delivery_time,
+            'delivery_type_id'            => $request->delivery_type,
+            'image'                       => $imageName,
+        ]);
+
+        return back()->with('success', 'Product saved successfully!');
     }
-
-    // ✅ SAVE DATA (PROPER MAPPING)
-    SupplierProductData::create([
-        'supp_id'                     => $supp_id,
-        'material_category_id'        => $request->material_category_id,
-        'material_product_id'         => $request->product_type,
-        'material_product_subtype_id' => $request->product_subtype,
-        'brand_id'                    => $request->brand,
-        'unit_id'                     => $request->unit,
-        'price'                       => $request->price,
-        'gst_percent'                 => $request->gst, // ✅ FIXED
-        'gst_included'                => $request->has('gst_included') ? 1 : 0,
-        'delivery_time'               => $request->delivery_time,
-        'delivery_type_id'            => $request->delivery_type,
-        'image'                       => $imageName,
-    ]);
-
-    return back()->with('success', 'Product saved successfully!');
-}
 
 }
