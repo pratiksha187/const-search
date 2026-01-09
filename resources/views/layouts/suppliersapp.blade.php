@@ -255,9 +255,10 @@ body{
         </div>
 
         <!-- NOTIFICATION -->
-        <div class="notification-container">
+        <!-- <div class="notification-container">
             @php
                 $vendor_id = session('vendor_id');
+                
                 $unreadCount = DB::table('vendor_notifications')->where('vendor_id',$vendor_id)->where('is_read',0)->count();
                 $notifications = DB::table('vendor_notifications')->where('vendor_id',$vendor_id)->latest()->limit(5)->get();
             @endphp
@@ -283,14 +284,15 @@ body{
                 @endforelse
                 <a href="{{ route('vendor.notifications') }}" class="text-primary text-center border-top py-2">View All</a>
             </div>
-        </div>
+        </div> -->
 
         <!-- PROFILE -->
+        
         <div class="header-profile" onclick="toggleProfileMenu(event)">
             <div class="profile-avatar">
-                {{ strtoupper(substr(session('user_name'),0,1)) }}
+                {{ strtoupper(substr($supplierName, 0, 1)) }}
             </div>
-            <span>{{ session('user_name') }}</span>
+            <span>{{ $supplierName }}</span>
             <i class="bi bi-chevron-down"></i>
         </div>
 

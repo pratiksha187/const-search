@@ -149,7 +149,7 @@ Route::post('/vendor/profile/update', [VenderController::class, 'updateProfile']
     ->name('vendor.profile.update');
 
 Route::get('/get-subtypes/{id}', [VenderController::class, 'getSubtypes']);
-Route::get('/find-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
+Route::get('/serch-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
 // Route::get('/supplier-search', [HomeController::class, 'supplierserch'])
 //     ->name('supplier.search');
 
@@ -248,7 +248,7 @@ Route::get('/standard-delete/{id}', [StandardController::class,'destroy'])
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "Dnyaneshwar@123";
+    $password = "123456789";
     $hash = Hash::make($password);
 
     return $hash; 

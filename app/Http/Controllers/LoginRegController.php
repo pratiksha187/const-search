@@ -12,7 +12,9 @@ class LoginRegController extends Controller
 {
 
     public function login_register(){
-        return view('web.login_register');
+        $materialCategories = DB::table('material_categories')->get();
+
+        return view('web.login_register',compact('materialCategories'));
     }
 
      // ============================= REGISTER ============================
@@ -95,10 +97,10 @@ class LoginRegController extends Controller
         }
 
         elseif ($request->role === 'supplier') {
-// dd($request);
+            // dd($request);
             $supplierId = DB::table('supplier_reg')->insertGetId([
                 // 'user_id'         => $user->id,
-                
+                'material_category' => $request->material_category,
                 'contact_person' => $request->name,
                 'mobile'         => $request->mobile,
                 'email'          => $request->email,
@@ -310,14 +312,80 @@ class LoginRegController extends Controller
 
  
 
-    public function supplierDashboard()
+//     public function supplierDashboard()
+// {
+//     $supplier_id = Session::get('supplier_id');
+//     // dd($supplier_id);
+//     /* ===============================
+//        PRODUCTS STATS
+//     =============================== */
+
+//     $productCount = DB::table('supplier_products_data')
+//         ->where('supp_id', $supplier_id)
+//         ->count();
+
+//     $avgPrice = DB::table('supplier_products_data')
+//         ->where('supp_id', $supplier_id)
+//         ->avg('price');
+
+//     $latestProduct = DB::table('supplier_products_data')
+//         ->where('supp_id', $supplier_id)
+//         ->latest()
+//         ->value('price');
+
+//     /* ===============================
+//        PRODUCTS ADDED – LAST 7 DAYS
+//     =============================== */
+//     $productsByDay = DB::table('supplier_products_data')
+//         ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+//         ->where('supp_id', $supplier_id)
+//         ->whereDate('created_at', '>=', now()->subDays(6))
+//         ->groupBy('date')
+//         ->orderBy('date')
+//         ->get();
+
+//     $labels = [];
+//     $values = [];
+
+//     foreach ($productsByDay as $row) {
+//         $labels[] = date('D', strtotime($row->date));
+//         $values[] = $row->total;
+//     }
+
+//     /* ===============================
+//        PRODUCT CATEGORY DISTRIBUTION
+//     =============================== */
+//     $categoryData = DB::table('supplier_products_data as sp')
+//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+//         ->where('sp.supp_id', $supplier_id)
+//         ->select('mc.name', DB::raw('COUNT(sp.id) as total'))
+//         ->groupBy('mc.name')
+//         ->get();
+
+//     $categoryLabels = $categoryData->pluck('name');
+//     $categoryCounts = $categoryData->pluck('total');
+
+//     return view('web.supplierdashboard', compact(
+//         'productCount',
+//         'avgPrice',
+//         'latestProduct',
+//         'labels',
+//         'values',
+//         'categoryLabels',
+//         'categoryCounts'
+//     ));
+// }
+public function supplierDashboard()
 {
     $supplier_id = Session::get('supplier_id');
+
+    $supplierName = DB::table('supplier_reg')
+    ->where('id', $supplier_id)
+    ->value('contact_person'); 
 
     /* ===============================
        PRODUCTS STATS
     =============================== */
-
     $productCount = DB::table('supplier_products_data')
         ->where('supp_id', $supplier_id)
         ->count();
@@ -351,7 +419,7 @@ class LoginRegController extends Controller
     }
 
     /* ===============================
-       PRODUCT CATEGORY DISTRIBUTION
+       CATEGORY DISTRIBUTION
     =============================== */
     $categoryData = DB::table('supplier_products_data as sp')
         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
@@ -359,11 +427,10 @@ class LoginRegController extends Controller
         ->select('mc.name', DB::raw('COUNT(sp.id) as total'))
         ->groupBy('mc.name')
         ->get();
-
     $categoryLabels = $categoryData->pluck('name');
     $categoryCounts = $categoryData->pluck('total');
-
     return view('web.supplierdashboard', compact(
+        'supplierName',
         'productCount',
         'avgPrice',
         'latestProduct',

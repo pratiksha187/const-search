@@ -56,6 +56,11 @@ body{
     font-size:13px;
     color:var(--muted);
 }
+.dashboard-content {
+    padding: 25px;
+    padding-top: 9px !important;
+    min-height: 85vh;
+}
 .section{
     border:1px solid var(--border);
     border-radius:12px;

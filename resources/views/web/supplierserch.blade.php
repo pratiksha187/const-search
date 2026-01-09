@@ -5,7 +5,6 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
 <style>
 :root{
   --navy:#0f172a;
@@ -16,87 +15,97 @@
   --muted:#64748b;
 }
 
-/* Page */
+/* PAGE */
 .supplier-search-page{max-width:1450px;margin:auto;padding:24px;background:var(--bg);}
 .search-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
 .search-header h4{margin:0;font-weight:800;color:var(--navy);}
 .search-header p{margin:6px 0 0;color:var(--muted);font-size:14px;}
-.header-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.btn-outline-ck{
-  border:1px solid var(--border);background:#fff;padding:10px 18px;border-radius:12px;font-weight:700;
-}
-.btn-primary-ck{
-  background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;border:none;font-weight:800;
-}
+.header-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn-outline-ck{border:1px solid var(--border);background:#fff;padding:10px 18px;border-radius:12px;font-weight:700;}
+.btn-primary-ck{background:var(--navy);color:#fff;padding:10px 18px;border-radius:12px;border:none;font-weight:800;}
 .btn-primary-ck:hover{background:var(--orange);}
 
-/* Filter panel */
+/* FILTER PANEL */
 .filter-panel{background:#fff;border-radius:18px;padding:18px;border:1px solid var(--border);margin-bottom:22px;}
 .filter-grid{display:grid;grid-template-columns:2fr 1fr;gap:22px;}
 @media(max-width:992px){.filter-grid{grid-template-columns:1fr;}}
 .filter-block label{font-weight:800;color:var(--navy);}
 .filter-block p{font-size:13px;color:var(--muted);margin-bottom:8px;}
 
-/* Chips / Pills */
-.chip-group,.toggle-row{display:flex;gap:10px;flex-wrap:wrap;}
+/* CHIPS */
 .chip,.pill{
-  padding:8px 14px;border-radius:999px;border:1px solid var(--border);cursor:pointer;font-size:14px;
-  background:#fff;transition:.15s;
+  padding:8px 14px;border-radius:999px;border:1px solid var(--border);
+  cursor:pointer;font-size:14px;background:#fff;
 }
-.chip:hover,.pill:hover{border-color:var(--orange);}
 .chip.active,.pill.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 
-/* Search */
-.search-box input{width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border);outline:none;}
-.search-box input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(242,92,5,.10);}
+/* SEARCH */
+.search-box input{
+  width:100%;padding:12px 16px;border-radius:14px;border:1px solid var(--border);
+}
+.search-box input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(242,92,5,.12);}
 
-/* Grid */
-.supplier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px;margin-top:16px;}
+/* GRID */
+.supplier-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:22px;
+}
 
-/* Card */
+/* CARD */
 .supplier-card{
   background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;
-  box-shadow:0 8px 24px rgba(15,23,42,.05);transition:all .2s ease;
+  box-shadow:0 10px 25px rgba(0,0,0,.06);
+  transition:.3s ease;position:relative;
 }
-.supplier-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(15,23,42,.12);}
-.card-head h5{margin:0;font-weight:900;font-size:18px;color:#111827;}
-.card-head p{margin:3px 0 0;font-size:13px;color:var(--muted);}
-.location{margin-top:6px;display:flex;align-items:center;gap:6px;color:#64748b;font-size:13px;}
+.supplier-card:hover{transform:translateY(-6px);box-shadow:0 20px 45px rgba(0,0,0,.12);}
 
-/* Badges */
+/* HEADER */
+.card-head h5{margin:0;font-weight:900;font-size:17px;color:#111827;}
+.card-head p{margin:3px 0 0;font-size:13px;color:var(--muted);}
+.location{margin-top:6px;font-size:13px;color:#64748b;display:flex;gap:6px}
+
+/* CATEGORY TAG */
+.category-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+.tag.material{
+  background:linear-gradient(135deg,#fff7ed,#ffedd5);
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* BADGES */
 .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
 .ck-badge{
-  display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12px;font-weight:800;
-  border-radius:999px;white-space:nowrap;
+  padding:6px 12px;font-size:12px;font-weight:700;border-radius:999px;
+  display:inline-flex;gap:6px;
 }
-.ck-badge i{font-size:13px;}
-.ck-badge.verified{background:#e0f2fe;color:#0369a1;}
-.ck-badge.open{background:#dcfce7;color:#166534;}
-.ck-badge.closed{background:#fee2e2;color:#991b1b;}
-.ck-badge.delivery{background:#fef3c7;color:#92400e;}
-.ck-badge.credit{background:#ede9fe;color:#5b21b6;}
-.ck-badge.cash{background:#f3f4f6;color:#374151;}
+.verified{background:#e0f2fe;color:#0369a1;}
+.open{background:#dcfce7;color:#166534;}
+.closed{background:#fee2e2;color:#991b1b;}
+.delivery{background:#fef3c7;color:#92400e;}
+.credit{background:#ede9fe;color:#5b21b6;}
+.cash{background:#f3f4f6;color:#374151;}
 
-/* Tags */
-.category-row{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;}
-.tag{background:#f1f5f9;padding:6px 10px;border-radius:10px;font-size:12px;font-weight:800;color:#334155;}
-
-/* Footer */
+/* FOOTER */
 .card-footer{
-  display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px;color:#475569;
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px dashed var(--border);margin-top:14px;padding-top:12px;
+  font-size:13px;color:#475569;
 }
 .btn-enquire{
-  background:var(--navy);color:#fff;padding:9px 16px;border-radius:12px;font-size:13px;font-weight:900;
-  text-decoration:none;transition:.2s;border:none;
+  background:linear-gradient(135deg,#f25c05,#fb923c);
+  color:#fff;padding:8px 16px;border-radius:10px;font-weight:800;
+  text-decoration:none;
 }
-.btn-enquire:hover{background:var(--orange);color:#fff;}
-
-/* Small */
-@media(max-width:768px){
-  .supplier-search-page{padding:14px}
-  .supplier-card{padding:16px}
-}
+.btn-enquire:hover{opacity:.9;color:#fff;}
 </style>
+
 
 <div class="supplier-search-page">
 
@@ -192,6 +201,15 @@
             </p>
           </div>
         </div>
+        @if(!empty($supplier->material_category_name))
+          <div class="category-row">
+            <span class="tag material">
+              <i class="bi bi-box-seam"></i>
+              {{ $supplier->material_category_name }}
+            </span>
+          </div>
+        @endif
+
 
         <div class="badge-row">
 
@@ -381,55 +399,55 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // ========= RENDER SUPPLIERS (AJAX RESULT) =========
-  function renderSuppliers(list) {
-    const grid = document.getElementById('supplierGrid');
-    if (!grid) return;
+ function renderSuppliers(list){
+  const grid = document.getElementById('supplierGrid');
+  grid.innerHTML = '';
 
-    grid.innerHTML = '';
-
-    if (!list || !list.length) {
-      grid.innerHTML = `<p class="text-muted text-center mt-5">No suppliers found.</p>`;
-      return;
-    }
-
-    list.forEach(s => {
-      const creditBadge = s.credit_days_value
-        ? `<span class="ck-badge credit"><i class="bi bi-calendar-check"></i> Credit ${s.credit_days_value} Days</span>`
-        : `<span class="ck-badge cash"><i class="bi bi-cash-coin"></i> Cash Only</span>`;
-
-      grid.insertAdjacentHTML('beforeend', `
-        <div class="supplier-card">
-          <div class="card-head">
-            <div class="supplier-info">
-              <h5>${s.shop_name ?? '-'}</h5>
-              <p>Owner: ${s.contact_person ?? '-'}</p>
-              <p class="location"><i class="bi bi-geo-alt-fill"></i>
-                ${(s.area_name ?? '—')}, ${(s.city_name ?? '—')} • ${(s.maximum_distance ?? '—')} km
-              </p>
-            </div>
-          </div>
-
-          <div class="badge-row">
-            ${s.status === 'verified' ? `<span class="ck-badge verified"><i class="bi bi-patch-check-fill"></i> Verified</span>` : ''}
-            ${s.delivery_type ? `<span class="ck-badge delivery"><i class="bi bi-truck"></i> Delivery</span>` : ''}
-            ${creditBadge}
-          </div>
-
-          <div class="card-footer">
-            <span>${(s.delivery_days ?? 'Same / Next day')} • Min: ₹${Number(s.minimum_order_cost ?? 0).toLocaleString()}</span>
-            <a href="javascript:void(0)" class="btn-enquire enquire-btn"
-               data-supplier-id="${s.id}"
-               data-supplier-name="${s.shop_name}"
-               data-credit="${s.credit_days ?? ''}">
-              Enquire
-            </a>
-          </div>
-        </div>
-      `);
-    });
-
-    attachEnquireEvents(); // rebind after ajax render
+  if(!list.length){
+    grid.innerHTML = `<p class="text-muted text-center mt-5">No suppliers found.</p>`;
+    return;
   }
+
+  list.forEach(s=>{
+    grid.insertAdjacentHTML('beforeend',`
+      <div class="supplier-card">
+        <div class="card-head">
+          <h5>${s.shop_name ?? '-'}</h5>
+          <p>Owner: ${s.contact_person ?? '-'}</p>
+          <p class="location">
+            <i class="bi bi-geo-alt-fill"></i>
+            ${(s.area_name ?? '—')}, ${(s.city_name ?? '—')} • ${(s.maximum_distance ?? '—')} km
+          </p>
+        </div>
+
+        ${s.material_category_name ? `
+        <div class="category-row">
+          <span class="tag material"><i class="bi bi-box-seam"></i> ${s.material_category_name}</span>
+        </div>` : ''}
+
+        <div class="badge-row">
+          ${s.status === 'verified' ? `<span class="ck-badge verified">Verified</span>`:''}
+          ${s.delivery_type ? `<span class="ck-badge delivery">Delivery</span>`:''}
+          ${s.credit_days_value
+            ? `<span class="ck-badge credit">Credit ${s.credit_days_value} Days</span>`
+            : `<span class="ck-badge cash">Cash Only</span>`}
+        </div>
+
+        <div class="card-footer">
+          <span>${s.delivery_days ?? 'Same / Next day'} • Min ₹${Number(s.minimum_order_cost ?? 0).toLocaleString()}</span>
+          <a href="javascript:void(0)" class="btn-enquire enquire-btn"
+             data-supplier-id="${s.id}"
+             data-supplier-name="${s.shop_name}"
+             data-credit="${s.credit_days ?? ''}">
+            Enquire
+          </a>
+        </div>
+      </div>
+    `);
+  });
+
+  attachEnquireEvents();
+}
 
   // ========= APPLY FILTERS (AJAX) =========
   window.applyFilters = function () {

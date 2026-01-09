@@ -210,6 +210,18 @@
                     <input type="text" class="form-control mb-3" id="vendor-business-name" placeholder="Business Name">
                     <input type="text" class="form-control mb-3" id="vendor-gst-number" placeholder="GST Number (Optional)">
                 </div>
+                <!-- SUPPLIER EXTRA FIELDS -->
+                <div id="supplier-inline-fields" class="d-none">
+                    <label class="fw-bold mb-1">Material Category</label>
+                    <select class="form-control mb-3" id="supplier-material-category" name="material_category">
+                        <option value="">Select Material Category</option>
+                        @foreach($materialCategories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                  
+
+                </div>
 
                 
 
@@ -220,146 +232,6 @@
     </div>
 </div>
 
-<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-/* TAB SWITCH */
-$("#tab-login").click(() => {
-    $("#tab-login").addClass("active");
-    $("#tab-register").removeClass("active");
-    $("#login-form").removeClass("d-none");
-    $("#register-form").addClass("d-none");
-});
-
-$("#tab-register").click(() => {
-    $("#tab-register").addClass("active");
-    $("#tab-login").removeClass("active");
-    $("#register-form").removeClass("d-none");
-    $("#login-form").addClass("d-none");
-});
-
-/* ROLE SWITCH */
-$(".role-box").click(function () {
-    $(".role-box").removeClass("active");
-    $(this).addClass("active");
-
-    let role = $(this).data("role");
-    $("#selected-role").val(role);
-
-    if (role === "vendor") {
-        $("#vendor-inline-fields").removeClass("d-none");
-        $("#vendor-message").removeClass("d-none");
-    } else {
-        $("#vendor-inline-fields").addClass("d-none");
-        $("#vendor-message").addClass("d-none");
-    }
-});
-
-/* REGISTER */
-$("#btn-send-otp").click(function () {
-    $.post("{{ route('register') }}", {
-        role: $("#selected-role").val(),
-        name: $("#reg-name").val(),
-        mobile: $("#reg-mobile").val(),
-        email: $("#reg-email").val(),
-        password: $("#reg-pass").val(),
-        business_name: $("#vendor-business-name").val(),
-        gst_number: $("#vendor-gst-number").val(),
-        _token: "{{ csrf_token() }}"
-    }, function(res){
-        if(res.status){
-            window.location.href = res.redirect;
-        } else {
-            alert(res.message);
-        }
-    });
-});
-
-/* LOGIN */
-$("#login-btn").click(function(){
-    $.post("{{ route('login') }}", {
-        login: $("#login-input").val(),
-        password: $("#login-pass").val(),
-        role: $("#selected-role").val(),
-        _token: "{{ csrf_token() }}"
-    }, function(res){
-        if(res.status){
-            window.location.href = res.redirect;
-        } else {
-            alert(res.message);
-        }
-    });
-});
-</script>
-<script>
-/* SHOW / HIDE LOGIN PASSWORD */
-$("#toggle-login-password").click(function () {
-    let input = $("#login-pass");
-    let icon = $(this).find("i");
-
-    if (input.attr("type") === "password") {
-        input.attr("type", "text");
-        icon.removeClass("bi-eye").addClass("bi-eye-slash");
-    } else {
-        input.attr("type", "password");
-        icon.removeClass("bi-eye-slash").addClass("bi-eye");
-    }
-});
-</script>
-<script>
-/* PASSWORD MATCH CHECK */
-function checkPasswordMatch() {
-    let pass = $("#reg-pass").val();
-    let confirmPass = $("#reg-confirm-pass").val();
-
-    if (confirmPass.length === 0) {
-        $("#password-match-msg").text("").removeClass("text-danger text-success");
-        return false;
-    }
-
-    if (pass === confirmPass) {
-        $("#password-match-msg")
-            .text("Passwords match ✔")
-            .removeClass("text-danger")
-            .addClass("text-success");
-        return true;
-    } else {
-        $("#password-match-msg")
-            .text("Passwords do not match ✖")
-            .removeClass("text-success")
-            .addClass("text-danger");
-        return false;
-    }
-}
-
-$("#reg-pass, #reg-confirm-pass").on("keyup", checkPasswordMatch);
-
-/* BLOCK REGISTER IF PASSWORD MISMATCH */
-$("#btn-send-otp").click(function () {
-
-    if (!checkPasswordMatch()) {
-        alert("Passwords do not match");
-        return;
-    }
-
-    $.post("{{ route('register') }}", {
-        role: $("#selected-role").val(),
-        name: $("#reg-name").val(),
-        mobile: $("#reg-mobile").val(),
-        email: $("#reg-email").val(),
-        password: $("#reg-pass").val(),
-        business_name: $("#vendor-business-name").val(),
-        gst_number: $("#vendor-gst-number").val(),
-        _token: "{{ csrf_token() }}"
-    }, function(res){
-        if(res.status){
-            window.location.href = res.redirect;
-        } else {
-            alert(res.message);
-        }
-    });
-});
-</script> -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
@@ -386,12 +258,19 @@ $(".role-box").click(function () {
     let role = $(this).data("role");
     $("#selected-role").val(role);
 
+    // Hide all extra fields first
+    $("#vendor-inline-fields").addClass("d-none");
+    $("#supplier-inline-fields").addClass("d-none");
+
     if (role === "vendor") {
         $("#vendor-inline-fields").removeClass("d-none");
-    } else {
-        $("#vendor-inline-fields").addClass("d-none");
+    }
+
+    if (role === "supplier") {
+        $("#supplier-inline-fields").removeClass("d-none");
     }
 });
+
 
 /* ================= PASSWORD MATCH CHECK ================= */
 function checkPasswordMatch() {
@@ -436,6 +315,8 @@ $("#btn-send-otp").click(function () {
         password: $("#reg-pass").val(),
         business_name: $("#vendor-business-name").val(),
         gst_number: $("#vendor-gst-number").val(),
+         // Supplier
+        material_category: $("#supplier-material-category").val(),
         _token: "{{ csrf_token() }}"
     }, function (res) {
         if (res.status) {
