@@ -99,7 +99,7 @@ class LoginRegController extends Controller
         elseif ($request->role === 'supplier') {
             // dd($request);
             $supplierId = DB::table('supplier_reg')->insertGetId([
-                // 'user_id'         => $user->id,
+                'shop_name'         => $request->shop_name,
                 'material_category' => $request->material_category,
                 'contact_person' => $request->name,
                 'mobile'         => $request->mobile,
@@ -245,8 +245,8 @@ class LoginRegController extends Controller
             }
 
             Session::put('supplier_id', $supplier->id);
-            Session::put('user_name', $supplier->contact_person);
-            Session::put('user_role', 'supplier');
+            Session::put('supplier_name', $supplier->contact_person);
+            Session::put('supplier_role', 'supplier');
 
             return response()->json([
                 'status'   => true,

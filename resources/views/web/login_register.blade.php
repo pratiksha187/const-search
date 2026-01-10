@@ -212,6 +212,10 @@
                 </div>
                 <!-- SUPPLIER EXTRA FIELDS -->
                 <div id="supplier-inline-fields" class="d-none">
+                      <input type="text"
+                            class="form-control mb-3"
+                            id="supplier-business-name" name="shop_name"
+                            placeholder="Business Name">
                     <label class="fw-bold mb-1">Material Category</label>
                     <select class="form-control mb-3" id="supplier-material-category" name="material_category">
                         <option value="">Select Material Category</option>
@@ -313,6 +317,7 @@ $("#btn-send-otp").click(function () {
         mobile: $("#reg-mobile").val(),
         email: $("#reg-email").val(),
         password: $("#reg-pass").val(),
+        shop_name:$("#supplier-business-name").val(),
         business_name: $("#vendor-business-name").val(),
         gst_number: $("#vendor-gst-number").val(),
          // Supplier

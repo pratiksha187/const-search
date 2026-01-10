@@ -97,9 +97,10 @@ body{
 <div class="main-card">
 
     {{-- HEADER --}}
-    <div class="dashboard-header">
-        Welcome, {{ Session::get('user_name') ?? 'Supplier' }}
-    </div>
+   <div class="dashboard-header">
+    Welcome, {{ $supplierName }}
+</div>
+
 
     {{-- STATS --}}
     <div class="stats-grid">
