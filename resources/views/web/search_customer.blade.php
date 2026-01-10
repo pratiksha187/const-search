@@ -344,7 +344,7 @@
 
           <div class="row align-items-center border-top pt-3">
             <div class="col-md-7">
-              <div class="contact-info-section small">
+              <!-- <div class="contact-info-section small">
 
                 <div class="mb-1">
                   <i class="bi bi-telephone-fill text-primary me-2"></i>
@@ -357,7 +357,7 @@
                 </div>
 
                 <div>
-                  <i class="bi bi-envelope-fill text-primary me-2"></i>
+                  <i class="bi bi-envelope-fill text-primary me-2" ></i>
                   <strong>Email:</strong>
                   @php
                     $email = $project->email;
@@ -369,7 +369,46 @@
                   {{ $maskedEmail }}
                 </div>
 
-              </div>
+              </div> -->
+              <div class="contact-info-section small">
+
+    {{-- Mobile (XXXX format, NO blur) --}}
+    <div class="mb-1">
+        <i class="bi bi-telephone-fill text-primary me-2"></i>
+        <strong>Mobile:</strong>
+
+        @php
+            $mobile = preg_replace('/\D/', '', $project->mobile);
+            $maskedMobile = $mobile
+                ? substr($mobile, 0, 2) . str_repeat('x', max(strlen($mobile) - 2, 0))
+                : 'xxxxxxxxxx';
+        @endphp
+
+        <span>{{ $maskedMobile }}</span>
+    </div>
+
+    {{-- Email (BLUR only) --}}
+    <div>
+        <i class="bi bi-envelope-fill text-primary me-2"></i>
+        <strong>Email:</strong>
+
+        @php
+            $email = $project->email;
+            if (!empty($email) && str_contains($email, '@')) {
+                [$name, $domain] = explode('@', $email, 2);
+                $maskedEmail = substr($name, 0, 2)
+                    . str_repeat('*', max(strlen($name) - 2, 0))
+                    . '@' . $domain;
+            } else {
+                $maskedEmail = 'xxxx@xxxx.com';
+            }
+        @endphp
+
+        <span class="blur-text">{{ $maskedEmail }}</span>
+    </div>
+
+</div>
+
             </div>
 
             {{-- CTA (onclick version) --}}
