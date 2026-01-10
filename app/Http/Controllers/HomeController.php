@@ -709,40 +709,6 @@ public function vendorinterestcheck(Request $request)
     return redirect()->back()->with('success', 'Post deleted successfully');
     }
 
-    
-// public function saveErpInterest(Request $request)
-// {
-//     $request->validate([
-//         'full_name'          => 'required|string|max:150',
-//         'company_name'       => 'required|string|max:200',
-//         'role_in_org'        => 'required|string|max:100',
-//         'organization_type'  => 'required|string',
-//         'project_size'       => 'required|string',
-//         'looking_for'        => 'required|array',
-//         'current_challenge'  => 'required|string',
-//         'interest_level'     => 'required|string',
-//         'contact_details'    => 'required|string'
-//     ]);
-
-//     DB::table('erp_interest_registrations')->insert([
-//         'full_name'         => $request->full_name,
-//         'company_name'      => $request->company_name,
-//         'role_in_org'       => $request->role_in_org,
-//         'organization_type' => $request->organization_type,
-//         'project_size'      => $request->project_size,
-//         'looking_for'       => json_encode($request->looking_for),
-//         'current_challenge' => $request->current_challenge,
-//         'interest_level'    => $request->interest_level,
-//         'contact_details'   => $request->contact_details,
-//         'created_at'        => now(),
-//         'updated_at'        => now()
-//     ]);
-
-//     return response()->json([
-//         'status' => true,
-//         'message' => 'Interest registered successfully'
-//     ]);
-// }
 public function saveErpInterest(Request $request)
 {
     $request->validate([
@@ -785,6 +751,87 @@ public function saveErpInterest(Request $request)
         'status' => true,
         'message' => 'Interest registered successfully'
     ]);
+}
+
+
+public function projectslist(){
+     $projects = DB::table('posts')
+            ->orderBy('created_at', 'desc')
+            ->get();
+    return view('web.projectslist', compact('projects'));
+}
+
+ public function projectsshow($id)
+    {
+        $project = DB::table('posts')
+            ->where('id', $id)
+            ->first();
+
+        if (!$project) {
+            abort(404);
+        }
+
+        return view('web.projectsshow', compact('project'));
+    }
+
+
+    //  public function vendorslist()
+    // {
+    //     $vendors = DB::table('vendor_reg')
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     return view('web.vendorslist', compact('vendors'));
+    // }
+    public function vendorslist()
+{
+    $vendors = DB::table('vendor_reg as v')
+        ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+        ->select(
+            'v.*',
+            'wt.work_type as work_type_name'
+        )
+        ->orderBy('v.created_at', 'desc')
+        ->get();
+
+    return view('web.vendorslist', compact('vendors'));
+}
+
+
+    // public function vendorsshow($id)
+    // {
+    //     $vendor = DB::table('vendor_reg')->where('id', $id)->first();
+
+    //     if (!$vendor) {
+    //         abort(404);
+    //     }
+
+    //     return view('web.vendorshow', compact('vendor'));
+    // }
+    public function vendorsshow($id)
+{
+    $vendor = DB::table('vendor_reg as v')
+        ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+        ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
+        // ->leftJoin('states as s', 's.id', '=', 'v.state')
+        // ->leftJoin('regions as r', 'r.id', '=', 'v.region')
+        // ->leftJoin('cities as c', 'c.id', '=', 'v.city')
+        ->select(
+            'v.*',
+            'wt.work_type as work_type_name',
+            'wst.work_subtype as work_subtype_name'
+            // 's.name as state_name',
+            // 'r.name as region_name',
+            // 'c.name as city_name'
+        )
+        ->where('v.id', $id)
+        ->first();
+
+    if (!$vendor) {
+        abort(404);
+    }
+
+    return view('web.vendorshow', compact('vendor'));
 }
 
 }

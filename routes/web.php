@@ -242,8 +242,21 @@ Route::post('/standard-update/{id}', [StandardController::class,'update'])
 Route::get('/standard-delete/{id}', [StandardController::class,'destroy'])
     ->name('standard.delete');
 
-    Route::post('/erp-interest/save', [HomeController::class, 'saveErpInterest'])
+Route::post('/erp-interest/save', [HomeController::class, 'saveErpInterest'])
     ->name('erp.interest.save');
+
+// projects-list
+Route::get('/projects-list', [HomeController::class,'projectslist'])
+    ->name('projectslist');
+
+Route::get('/projects/{id}', [HomeController::class, 'projectsshow'])->name('projects.show');
+
+Route::get('/admin/vendors', [HomeController::class, 'vendorslist'])
+    ->name('admin.vendors.index');
+
+Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
+    ->name('admin.vendors.show');
+
 
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

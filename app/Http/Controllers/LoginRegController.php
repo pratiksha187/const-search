@@ -443,12 +443,15 @@ public function supplierDashboard()
 
 
     public function admindashboard(){
-          $post_data = DB::table('posts')->get();
+        $post_data = DB::table('posts')->get();
         //  dd( $post_data);
         $count_post_data = count($post_data);
         $vendor_data = DB::table('vendor_reg')->get();
         $count_vendor_data = count($vendor_data);
-        return view('web.admindashboard',compact('count_post_data','count_vendor_data'));
+
+        $supplier_reg =DB::table('supplier_reg')->get();
+        $count_supplier_reg = count($supplier_reg);
+        return view('web.admindashboard',compact('count_post_data','count_vendor_data','count_supplier_reg'));
     }
   
     // ============================= LOGOUT =============================

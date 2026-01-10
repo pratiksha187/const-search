@@ -176,31 +176,38 @@ body {
         <!-- KPI ROW -->
         <div class="row g-3 mb-4">
             <div class="col-md-3">
-                <div class="kpi-card">
-                    <div class="kpi-icon"><i class="bi bi-folder"></i></div>
-                    <div>
-                        <p class="kpi-value">{{ $count_post_data }}</p>
-                        <p class="kpi-label">Projects</p>
+                <a href="{{ route('projectslist') }}" class="text-decoration-none text-dark">
+                    <div class="kpi-card">
+                        <div class="kpi-icon"><i class="bi bi-folder"></i></div>
+                        <div>
+                            <p class="kpi-value">{{ $count_post_data }}</p>
+                            <p class="kpi-label">Total Projects</p>
+                        </div>
                     </div>
-                </div>
+                </a>
+
             </div>
 
             <div class="col-md-3">
+                  <a href="{{ route('admin.vendors.index') }}" class="text-decoration-none text-dark">
                 <div class="kpi-card">
+                  
                     <div class="kpi-icon"><i class="bi bi-people"></i></div>
                     <div>
                         <p class="kpi-value">{{ $count_vendor_data  }}</p>
                         <p class="kpi-label">Connected Vendors</p>
                     </div>
+                   
                 </div>
+                 </a>
             </div>
 
             <div class="col-md-3">
                 <div class="kpi-card">
                     <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
                     <div>
-                        <p class="kpi-value">{{ $pending_quotes ?? 4 }}</p>
-                        <p class="kpi-label">Pending Quotations</p>
+                        <p class="kpi-value">{{ $count_supplier_reg }}</p>
+                        <p class="kpi-label">Connected Suppliers</p>
                     </div>
                 </div>
             </div>

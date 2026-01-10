@@ -148,13 +148,13 @@
 <!-- ================= HEADER ================= -->
 <div class="main-header">
 
-    <a href="{{ route('dashboard') }}">
+    <a href="{{ route('admindashboard') }}">
         <img src="{{ asset('images/logobg.png') }}" alt="ConstructKaro">
     </a>
 
     <div class="top-menu">
 
-        <a href="{{ route('dashboard') }}">Dashboard</a>
+        <a href="{{ route('admindashboard') }}">Dashboard</a>
 
         <!-- ADD MASTER -->
         <div class="dropdown">
