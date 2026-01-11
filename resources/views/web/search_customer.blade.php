@@ -344,70 +344,45 @@
 
           <div class="row align-items-center border-top pt-3">
             <div class="col-md-7">
-              <!-- <div class="contact-info-section small">
-
-                <div class="mb-1">
-                  <i class="bi bi-telephone-fill text-primary me-2"></i>
-                  <strong>Mobile:</strong>
-                  @php
-                    $mobile = preg_replace('/\D/', '', $project->mobile);
-                    $maskedMobile = $mobile ? substr($mobile,0,2).str_repeat('x', max(strlen($mobile)-2,0)) : 'xxxxxxxxxxxx';
-                  @endphp
-                  {{ $maskedMobile }}
-                </div>
-
-                <div>
-                  <i class="bi bi-envelope-fill text-primary me-2" ></i>
-                  <strong>Email:</strong>
-                  @php
-                    $email = $project->email;
-                    if (!empty($email) && str_contains($email,'@')) {
-                      [$name,$domain] = explode('@',$email,2);
-                      $maskedEmail = substr($name,0,2).str_repeat('*', max(strlen($name)-2,0)).'@'.$domain;
-                    } else { $maskedEmail = 'xxxx@xxxx.com'; }
-                  @endphp
-                  {{ $maskedEmail }}
-                </div>
-
-              </div> -->
+            
               <div class="contact-info-section small">
 
-    {{-- Mobile (XXXX format, NO blur) --}}
-    <div class="mb-1">
-        <i class="bi bi-telephone-fill text-primary me-2"></i>
-        <strong>Mobile:</strong>
+                {{-- Mobile (XXXX format, NO blur) --}}
+                <div class="mb-1">
+                    <i class="bi bi-telephone-fill text-primary me-2"></i>
+                    <strong>Mobile:</strong>
 
-        @php
-            $mobile = preg_replace('/\D/', '', $project->mobile);
-            $maskedMobile = $mobile
-                ? substr($mobile, 0, 2) . str_repeat('x', max(strlen($mobile) - 2, 0))
-                : 'xxxxxxxxxx';
-        @endphp
+                    @php
+                        $mobile = preg_replace('/\D/', '', $project->mobile);
+                        $maskedMobile = $mobile
+                            ? substr($mobile, 0, 2) . str_repeat('x', max(strlen($mobile) - 2, 0))
+                            : 'xxxxxxxxxx';
+                    @endphp
 
-        <span>{{ $maskedMobile }}</span>
-    </div>
+                    <span>{{ $maskedMobile }}</span>
+                </div>
 
-    {{-- Email (BLUR only) --}}
-    <div>
-        <i class="bi bi-envelope-fill text-primary me-2"></i>
-        <strong>Email:</strong>
+                  {{-- Email (BLUR only) --}}
+                  <div>
+                      <i class="bi bi-envelope-fill text-primary me-2"></i>
+                      <strong>Email:</strong>
 
-        @php
-            $email = $project->email;
-            if (!empty($email) && str_contains($email, '@')) {
-                [$name, $domain] = explode('@', $email, 2);
-                $maskedEmail = substr($name, 0, 2)
-                    . str_repeat('*', max(strlen($name) - 2, 0))
-                    . '@' . $domain;
-            } else {
-                $maskedEmail = 'xxxx@xxxx.com';
-            }
-        @endphp
+                      @php
+                          $email = $project->email;
+                          if (!empty($email) && str_contains($email, '@')) {
+                              [$name, $domain] = explode('@', $email, 2);
+                              $maskedEmail = substr($name, 0, 2)
+                                  . str_repeat('*', max(strlen($name) - 2, 0))
+                                  . '@' . $domain;
+                          } else {
+                              $maskedEmail = 'xxxx@xxxx.com';
+                          }
+                      @endphp
 
-        <span class="blur-text">{{ $maskedEmail }}</span>
-    </div>
+                      <span class="blur-text">{{ $maskedEmail }}</span>
+                  </div>
 
-</div>
+              </div>
 
             </div>
 
@@ -775,6 +750,9 @@ function applyFilters() {
     let stateText  = (document.querySelector('#stateSelect option:checked')?.textContent || '').toLowerCase().trim();
     let regionText = (document.querySelector('#regionSelect option:checked')?.textContent || '').toLowerCase().trim();
     let cityText   = (document.querySelector('#citySelect option:checked')?.textContent || '').toLowerCase().trim();
+    let selectedState  = $('#stateSelect').val();
+    let selectedRegion = $('#regionSelect').val();
+    let selectedCity   = $('#citySelect').val();
 
     if (stateText === 'select state') stateText = '';
     if (regionText === 'select region') regionText = '';
@@ -818,6 +796,67 @@ function applyFilters() {
     document.getElementById('vendorCount').innerText = visible;
 }
 
+
+$('#stateSelect').on('change', function () {
+
+    let stateId = this.value;
+
+    $('#regionSelect')
+        .prop('disabled', true)
+        .html('<option value="">Loading regions...</option>');
+
+    $('#citySelect')
+        .prop('disabled', true)
+        .html('<option value="">Select City</option>');
+
+    if (!stateId) {
+        applyFilters();
+        return;
+    }
+
+    $.get(`/locations/regions/${stateId}`, function (regions) {
+
+        let options = '<option value="">Select Region</option>';
+        regions.forEach(r => {
+            options += `<option value="${r.id}">${r.name}</option>`;
+        });
+
+        $('#regionSelect')
+            .html(options)
+            .prop('disabled', false);
+
+        applyFilters();
+    });
+});
+$('#regionSelect').on('change', function () {
+
+    let regionId = this.value;
+
+    $('#citySelect')
+        .prop('disabled', true)
+        .html('<option value="">Loading cities...</option>');
+
+    if (!regionId) {
+        applyFilters();
+        return;
+    }
+
+    $.get(`/locations/cities/${regionId}`, function (cities) {
+
+        let options = '<option value="">Select City</option>';
+        cities.forEach(c => {
+            options += `<option value="${c.id}">${c.name}</option>`;
+        });
+
+        $('#citySelect')
+            .html(options)
+            .prop('disabled', false);
+
+        applyFilters();
+    });
+});
+
+$('#citySelect').on('change', applyFilters);
 /* ================= EVENTS ================= */
 
 // Category toggle + subtype show/hide
