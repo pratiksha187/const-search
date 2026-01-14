@@ -80,22 +80,7 @@
             </select>
         </div>
 
-        <!-- DELIVERY TIME -->
-        <div class="col-md-4">
-            <label class="form-label">Delivery Time (Days)</label>
-            <input type="number" name="delivery_time" class="form-control">
-        </div>
-
-        <!-- PAYMENT TYPE -->
-        <div class="col-md-4">
-            <label class="form-label">Payment Type</label>
-            <select class="form-select" name="payment_type">
-                <option value="">Select payment type</option>
-                @foreach($delivery_type as $type)
-                    <option value="{{ $type->id }}">{{ $type->type }}</option>
-                @endforeach
-            </select>
-        </div>
+       
 
         <div class="col-md-12 text-end">
             <button class="btn btn-warning px-4">Save Product</button>

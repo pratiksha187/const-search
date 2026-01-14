@@ -374,61 +374,91 @@ public function vendorinterestcheck(Request $request)
 }
 
 
+public function customerinterestcheck(Request $request)
+{
+    $vend_id = $request->vend_id;
+    $customer_id = Session::get('customer_id');
 
-    public function customerinterestcheck(Request $request)
-    {
-        $vend_id     = $request->vend_id;
-        // dd($vend_id);
-        $customer_id = Session::get('customer_id');
-        // dd($customer_id);
-        if (!$customer_id) {
-            return response()->json([
-                'authorized' => false
-            ], 401);
-        }
+    if (!$customer_id) {
+        return response()->json([
+            'authorized' => false
+        ], 401);
+    }
 
-        // Check duplicate interest
-        $alreadyInterested = DB::table('customer_interests')
-            ->where('customer_id', $customer_id)
-            ->where('vendor_id', $vend_id)
-            ->exists();
-        // dd( $alreadyInterested );
-        // Total used leads
-        $usedLeads = DB::table('customer_interests')
-            ->where('customer_id', $customer_id)
-            ->count();
+    // Avoid duplicate entry (optional but good)
+    $alreadyInterested = DB::table('customer_interests')
+        ->where('customer_id', $customer_id)
+        ->where('vendor_id', $vend_id)
+        ->exists();
 
-        // If already interested → allow access without payment
-        if ($alreadyInterested) {
-            return response()->json([
-                'authorized'        => true,
-                'payment_required'  => false,
-                'remaining'         => max(0, 5 - $usedLeads)
-            ]);
-        }
-
-        // Free limit reached
-        if ($usedLeads >= 5) {
-            return response()->json([
-                'authorized'       => true,
-                'payment_required' => true,
-                'remaining'        => 0
-            ]);
-        }
-
-        // Insert interest (consume 1 free lead)
+    if (!$alreadyInterested) {
         DB::table('customer_interests')->insert([
             'customer_id' => $customer_id,
             'vendor_id'   => $vend_id,
             'created_at'  => now()
         ]);
-
-        return response()->json([
-            'authorized'        => true,
-            'payment_required' => false,
-            'remaining'        => 5 - ($usedLeads + 1)
-        ]);
     }
+
+    return response()->json([
+        'authorized' => true,
+        'payment_required' => false
+    ]);
+}
+
+    // public function customerinterestcheck(Request $request)
+    // {
+    //     $vend_id     = $request->vend_id;
+    //     // dd($vend_id);
+    //     $customer_id = Session::get('customer_id');
+    //     // dd($customer_id);
+    //     if (!$customer_id) {
+    //         return response()->json([
+    //             'authorized' => false
+    //         ], 401);
+    //     }
+
+    //     // Check duplicate interest
+    //     $alreadyInterested = DB::table('customer_interests')
+    //         ->where('customer_id', $customer_id)
+    //         ->where('vendor_id', $vend_id)
+    //         ->exists();
+    //     // dd( $alreadyInterested );
+    //     // Total used leads
+    //     $usedLeads = DB::table('customer_interests')
+    //         ->where('customer_id', $customer_id)
+    //         ->count();
+
+    //     // If already interested → allow access without payment
+    //     if ($alreadyInterested) {
+    //         return response()->json([
+    //             'authorized'        => true,
+    //             'payment_required'  => false,
+    //             'remaining'         => max(0, 5 - $usedLeads)
+    //         ]);
+    //     }
+
+    //     // Free limit reached
+    //     if ($usedLeads >= 5) {
+    //         return response()->json([
+    //             'authorized'       => true,
+    //             'payment_required' => true,
+    //             'remaining'        => 0
+    //         ]);
+    //     }
+
+    //     // Insert interest (consume 1 free lead)
+    //     DB::table('customer_interests')->insert([
+    //         'customer_id' => $customer_id,
+    //         'vendor_id'   => $vend_id,
+    //         'created_at'  => now()
+    //     ]);
+
+    //     return response()->json([
+    //         'authorized'        => true,
+    //         'payment_required' => false,
+    //         'remaining'        => 5 - ($usedLeads + 1)
+    //     ]);
+    // }
 
     public function projectInterestCheck(Request $request)
     {

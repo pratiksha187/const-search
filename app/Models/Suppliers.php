@@ -10,7 +10,7 @@ class Suppliers extends Model
 
     protected $fillable = [
         // 'user_id', // ✅ REQUIRED
-
+        'shop_logo',
         'shop_name',
         'contact_person',
         'mobile',
@@ -33,7 +33,7 @@ class Suppliers extends Model
         'delivery_days',
         'minimum_order_cost',
         'maximum_distance',
-
+        'material_category',
         'gst_certificate_path',
         'pan_card_path',
         'shop_license_path',

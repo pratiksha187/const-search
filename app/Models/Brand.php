@@ -10,6 +10,7 @@ class Brand extends Model
 
     protected $fillable = [
         'name',
+        'logo',
         'material_product_id'
     ];
 

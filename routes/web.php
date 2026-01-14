@@ -63,18 +63,6 @@ Route::get('/Lead-Marketplace', [HomeController::class, 'leadmarketplace'])->nam
 
 Route::post('/save-site-visit', [HomeController::class, 'saveSiteVisit'])->name('save.site.visit');
 Route::get('/site-visit/pdf/{id}', [HomeController::class, 'downloadPDF'])->name('site.visit.pdf');
-// Vendor Notifications – View All
-Route::get('/vendor/notifications', [HomeController::class, 'vendorNotifications'])
-    ->name('vendor.notifications');
-
-Route::get('/user/notifications', [HomeController::class, 'userNotifications'])
-    ->name('user.notifications');
-
-
-    // Mark Single Notification as Read
-Route::get('/vendor/notification/read/{id}', [HomeController::class, 'readVendorNotification'])
-    ->name('vendor.read.notification');
-
 
 Route::get('/vendor/register', [HomeController::class, 'vendorRegister'])->name('vendor.register');
 Route::get('/supplier/register', [HomeController::class, 'supplierRegister'])->name('supplier.register');
@@ -97,6 +85,7 @@ Route::post('/razorpay/verify', [RazorpayController::class, 'verifyPayment'])
 
 Route::get('/vendor_reg_form', [HomeController::class, 'vendor_reg_form'])->name('vendor_reg_form');
 
+Route::get('/quotes&order', [SuppliersController::class, 'quotesandorder'])->name('quotes.orders');
 
 Route::post('/razorpay/payment', [RazorpayController::class, 'handlePayment'])->name('razorpay.payment');
 
@@ -109,6 +98,9 @@ Route::get('/supplier/profile', [SuppliersController::class, 'suppliersprofile']
     
 Route::post('/supplierstore', [SuppliersController::class, 'supplierstore'])->name('supplier.store');
 Route::get('/addproducts', [SuppliersController::class, 'addproducts'])->name('addproducts');
+Route::get('/mystore', [SuppliersController::class, 'mystore'])->name('mystore');
+
+
 
 Route::get('/myproducts', [SuppliersController::class, 'myproducts'])->name('myproducts');
 Route::get('/products/edit/{id}', [SuppliersController::class, 'editProduct'])
@@ -156,6 +148,8 @@ Route::get('/search-suppliers', [SuppliersController::class, 'supplierserch'])->
 Route::post('/supplier-search/ajax', [SuppliersController::class, 'supplierSearchAjax'])
     ->name('supplier.search.ajax');
 
+Route::get('/supplier-filter', [SuppliersController::class, 'supplierFilter'])
+    ->name('supplier.search.filter');
 
 Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->name('productenquiry');
 
@@ -163,6 +157,8 @@ Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->n
 Route::post('/supplier-enquiry', [SuppliersController::class, 'supplierenquirystore'])
     ->name('supplier.enquiry.store');
 
+Route::get('/supplier/profile/{id}', [SuppliersController::class, 'supplierprofileid'])
+    ->name('supplier.profile');
 
 Route::post('/vendor-interest-check', [HomeController::class, 'vendorinterestcheck'])
     ->name('vendor.interest.check');
@@ -261,7 +257,7 @@ Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "123456789";
+    $password = "8805835135";
     $hash = Hash::make($password);
 
     return $hash; 

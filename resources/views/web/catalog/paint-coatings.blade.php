@@ -86,11 +86,6 @@
                 </select>
             </div>
 
-            {{-- PRICE --}}
-            <div class="col-md-6">
-                <label class="form-label">Price per Unit (₹)</label>
-                <input type="number" name="price" class="form-control" min="0" required>
-            </div>
 
             {{-- GST --}}
             <div class="col-md-4">
@@ -105,23 +100,7 @@
                 </select>
             </div>
 
-            {{-- DELIVERY --}}
-            <div class="col-md-4">
-                <label class="form-label">Delivery Time (Days)</label>
-                <input type="number" name="delivery_time" class="form-control">
-            </div>
-
-            {{-- PAYMENT TYPE --}}
-            <div class="col-md-4">
-                <label class="form-label">💳 Payment Type</label>
-                <select class="form-select" name="payment_type">
-                    <option value="">Select payment type</option>
-                    @foreach($delivery_type as $delivery)
-                        <option value="{{ $delivery->id }}">{{ $delivery->type }}</option>
-                    @endforeach
-                </select>
-            </div>
-
+           
             {{-- IMAGE --}}
             <div class="col-md-6">
                 <label class="form-label">Upload Photo</label>
@@ -138,104 +117,3 @@
 </div>
 
 </form>
-
-<!-- <script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    let subtypeReq, brandReq, profileReq;
-
-    document.addEventListener('change', async (e) => {
-
-        const form = e.target.closest('form');
-        if (!form) return;
-
-        /* PRODUCT TYPE */
-        if (e.target.classList.contains('js-product-type')) {
-
-            const productId = e.target.value;
-            const subtype = form.querySelector('.js-product-subtype');
-            const brand   = form.querySelector('.js-brand');
-
-            subtype.innerHTML = '<option>Loading...</option>';
-            brand.innerHTML   = '<option>Loading...</option>';
-            subtype.disabled = brand.disabled = true;
-
-            if (!productId) return;
-
-            subtypeReq?.abort();
-            brandReq?.abort();
-
-            subtypeReq = new AbortController();
-            brandReq   = new AbortController();
-
-            try {
-                const [subtypes, brands] = await Promise.all([
-                    fetch(`/get-product-subtypes/${productId}`, { signal: subtypeReq.signal }).then(r => r.json()),
-                    fetch(`/get-brands/${productId}`, { signal: brandReq.signal }).then(r => r.json())
-                ]);
-
-                subtype.innerHTML = '<option value="">Select sub type</option>';
-                subtypes.forEach(s =>
-                    subtype.insertAdjacentHTML('beforeend', `<option value="${s.id}">${s.material_subproduct}</option>`)
-                );
-                subtype.disabled = false;
-
-                brand.innerHTML = '<option value="">Select brand</option>';
-                brands.forEach(b =>
-                    brand.insertAdjacentHTML('beforeend', `<option value="${b.id}">${b.name}</option>`)
-                );
-                brand.disabled = false;
-
-            } catch (err) {
-                if (err.name !== 'AbortError') console.error(err);
-            }
-        }
-
-        /* BRAND */
-        if (e.target.classList.contains('js-brand')) {
-
-            const spec = form.querySelector('.js-specification');
-            const other = form.querySelector('.js-other-brand');
-
-            spec.classList.add('d-none');
-            other.classList.add('d-none');
-
-            if (!e.target.value) return;
-
-            spec.classList.remove('d-none');
-
-            if (e.target.options[e.target.selectedIndex].text === 'Others') {
-                other.classList.remove('d-none');
-            }
-        }
-
-        /* PRODUCT SUBTYPE */
-        if (e.target.classList.contains('js-product-subtype')) {
-
-            const profile = form.querySelector('.js-profile-type');
-            const subId = e.target.value;
-
-            profile.innerHTML = '<option>Loading...</option>';
-            profile.disabled = true;
-
-            if (!subId) return;
-
-            profileReq?.abort();
-            profileReq = new AbortController();
-
-            try {
-                const data = await fetch(`/get-profile-types/${subId}`, { signal: profileReq.signal }).then(r => r.json());
-
-                profile.innerHTML = '<option value="">Select profile type</option>';
-                data.forEach(p =>
-                    profile.insertAdjacentHTML('beforeend', `<option value="${p.id}">${p.type}</option>`)
-                );
-                profile.disabled = false;
-
-            } catch (err) {
-                if (err.name !== 'AbortError') console.error(err);
-            }
-        }
-    });
-});
-</script> -->

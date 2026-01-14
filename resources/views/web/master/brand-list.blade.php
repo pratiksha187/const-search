@@ -15,6 +15,7 @@
                 <th>#</th>
                 <th>Product</th>
                 <th>Brand Name</th>
+                <th>Logo</th>
                 <th width="150">Action</th>
             </tr>
         </thead>
@@ -24,6 +25,14 @@
                 <td>{{ $brands->firstItem() + $loop->index }}</td>
                 <td>{{ $brand->product->product_name ?? '-' }}</td>
                 <td>{{ $brand->name }}</td>
+                <td>
+                    @if(!empty($brand->logo))
+                        <img src="{{ asset('storage/brands/'.$brand->logo) }}" height="50" alt="{{ $brand->name }}">
+                    @else
+                        <span>No logo</span>
+                    @endif
+                </td>
+
                 <td>
                     <a href="{{ route('brands.edit',$brand->id) }}"
                        class="btn btn-sm btn-warning">Edit</a>

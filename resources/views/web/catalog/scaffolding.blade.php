@@ -80,11 +80,7 @@
                     <option value="no">No</option>
                 </select>
             </div>
-            
-            <div class="col-md-6">
-                <label class="form-label">Price per Unit (₹)</label>
-                <input type="number" name="price" class="form-control">
-            </div>
+          
             <!-- UPLOAD PHOTO -->
             <div class="col-md-6">
                 <label class="form-label">Upload Photo</label>
@@ -117,27 +113,7 @@
                 </select>
             </div>
 
-            <!-- DELIVERY TIME -->
-            <div class="col-md-4">
-                <label class="form-label">Delivery Time (Days)</label>
-                <input type="number"
-                    name="delivery_time"
-                    class="form-control"
-                    placeholder="e.g. 3">
-            </div>
-
-            <!-- PAYMENT TYPE -->
-            <div class="col-md-4">
-                <label class="form-label">💳 Payment Type</label>
-                <select class="form-select" name="payment_type">
-                    <option value="">Select payment type</option>
-                    @foreach($delivery_type as $delivery_types)
-                    <option value="{{ $delivery_types->id }}">{{ $delivery_types->type }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-
+          
             <div class="col-md-12 text-end">
                 <button class="btn btn-warning px-4">💾 Save Product</button>
             </div>
@@ -147,127 +123,3 @@
     <!-- </div> -->
 </form>
 
-
-
-
-
-{{-- ================== CATEGORY TAB SCRIPT ================== --}}
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-    
-        const tabs  = document.querySelectorAll('#categoryTabs .list-group-item');
-        const pages = document.querySelectorAll('.category-page');
-    
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function () {
-                tabs.forEach(t => t.classList.remove('active'));
-                pages.forEach(p => p.classList.remove('active'));
-    
-                this.classList.add('active');
-    
-                const slug = this.getAttribute('data-category');
-                const target = document.getElementById('category-' + slug);
-                if (target) target.classList.add('active');
-            });
-        });
-    
-    });
-</script>
-
-{{-- ================== COMMON DEPENDENCY JS ================== --}}
-<script>
-    document.addEventListener('change', function (e) {
-    
-        if (!e.target.classList.contains('js-product-type')) return;
-    
-        const form = e.target.closest('form');
-        const subtype = form.querySelector('.js-product-subtype');
-        const brand   = form.querySelector('.js-brand');
-        const productId = e.target.value;
-    
-        subtype.innerHTML = '<option>Loading...</option>';
-        brand.innerHTML   = '<option>Loading...</option>';
-        subtype.disabled = true;
-        brand.disabled   = true;
-    
-        if (!productId) return;
-    
-        fetch(`/get-product-subtypes/${productId}`)
-            .then(res => res.json())
-            .then(data => {
-                subtype.innerHTML = '<option value="">Select sub type</option>';
-                data.forEach(i => {
-                    subtype.innerHTML += `<option value="${i.id}">${i.material_subproduct}</option>`;
-                });
-                subtype.disabled = false;
-            });
-    
-        fetch(`/get-brands/${productId}`)
-            .then(res => res.json())
-            .then(data => {
-                brand.innerHTML = '<option value="">Select brand</option>';
-                data.forEach(b => {
-                    brand.innerHTML += `<option value="${b.id}">${b.name}</option>`;
-                });
-                brand.disabled = false;
-            });
-    
-    });
-</script>
-<script>
-document.addEventListener('change', function (e) {
-
-    if (!e.target.classList.contains('js-brand')) return;
-
-    const form = e.target.closest('form');
-    const specBox = form.querySelector('.js-specification');
-    const otherBrandBox = form.querySelector('.js-other-brand');
-
-    // Reset first
-    specBox.classList.add('d-none');
-    otherBrandBox.classList.add('d-none');
-
-    if (!e.target.value) return;
-
-    // Show specification for any brand
-    specBox.classList.remove('d-none');
-
-    // If "Other" selected
-    if (e.target.value === '25') {
-        otherBrandBox.classList.remove('d-none');
-    }
-});
-</script> -->
-<script>
-// document.addEventListener('change', function (e) {
-
-//     if (!e.target.classList.contains('js-product-subtype')) return;
-
-//     const form = e.target.closest('form');
-//     const profileSelect = form.querySelector('.js-profile-type');
-//     const subTypeId = e.target.value;
-
-//     profileSelect.innerHTML = '<option>Loading...</option>';
-//     profileSelect.disabled = true;
-
-//     if (!subTypeId) return;
-
-//     fetch(`/get-profile-types/${subTypeId}`)
-//         .then(res => res.json())
-//         .then(data => {
-//             profileSelect.innerHTML = '<option value="">Select profile type</option>';
-
-//             data.forEach(p => {
-//                 profileSelect.innerHTML += `
-//                     <option value="${p.id}">
-//                         ${p.type}
-//                     </option>`;
-//             });
-
-//             profileSelect.disabled = false;
-//         })
-//         .catch(() => {
-//             profileSelect.innerHTML = '<option value="">No data found</option>';
-//         });
-// });
-</script>

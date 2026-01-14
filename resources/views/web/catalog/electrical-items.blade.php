@@ -57,12 +57,7 @@
                 </select>
             </div>
 
-            
-
-            <div class="col-md-6">
-                <label class="form-label">Price per Unit (₹)</label>
-                <input type="number" name="price" class="form-control">
-            </div>
+          
             <!-- UPLOAD PHOTO -->
             <div class="col-md-6">
                 <label class="form-label">Upload Photo</label>
@@ -95,26 +90,7 @@
                 </select>
             </div>
 
-            <!-- DELIVERY TIME -->
-            <div class="col-md-4">
-                <label class="form-label">Delivery Time (Days)</label>
-                <input type="number"
-                    name="delivery_time"
-                    class="form-control"
-                    placeholder="e.g. 3">
-            </div>
-
-            <!-- PAYMENT TYPE -->
-            <div class="col-md-4">
-                <label class="form-label">💳 Payment Type</label>
-                <select class="form-select" name="payment_type">
-                    <option value="">Select payment type</option>
-                
-                    @foreach($delivery_type as $delivery_types)
-                                <option value="{{ $delivery_types->id }}">{{ $delivery_types->type }}</option>
-                                @endforeach
-                </select>
-            </div>
+         
 
 
             <div class="col-md-12 text-end">

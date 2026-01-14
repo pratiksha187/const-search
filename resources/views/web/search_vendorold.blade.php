@@ -1,20 +1,14 @@
 @extends('layouts.custapp')
 @section('title', 'Search Vendors')
-
 @section('content')
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
 <meta name="csrf-token" content="{{ csrf_token() }}">
-
 <script>
-    window.CUSTOMERID = @json($customer_id);
+   window.CUSTOMERID = @json($customer_id);
 </script>
-
 {{-- ================= YOUR EXISTING STYLES (UNCHANGED) ================= --}}
-
 <style>
    /* ================= ROOT ================= */
    :root{
@@ -124,7 +118,6 @@
    transform:translateY(-2px);
    box-shadow:0 20px 60px rgba(15,23,42,.15);
    }
-  
    /* ================= AVATAR ================= */
    .vendor-avatar{
    width:64px;height:64px;
@@ -138,8 +131,6 @@
    font-weight:800;
    position:relative;
    }
-  
- 
    /* ================= TEXT ================= */
    .vendor-name{
    font-size:16px;
@@ -160,8 +151,6 @@
    padding:10px;
    border:1px solid #e2e8f0;
    }
-  
- 
    /* ================= ACTION BUTTONS ================= */
    .btn-interested{
    background:linear-gradient(135deg,#f97316,#ea580c);
@@ -171,13 +160,11 @@
    border-radius:12px;
    font-weight:700;
    }
-  
    /* ================= MODAL ================= */
    .modal-content{
    border-radius:24px;
    overflow:hidden;
    }
- 
    .payment-section{
    background:linear-gradient(135deg,var(--success-green),#059669);
    border-radius:16px;
@@ -188,7 +175,6 @@
    font-size:40px;
    font-weight:800;
    }
-
    /* ================= RESPONSIVE ================= */
    @media(max-width:991px){
    .filter-sidebar{position:relative;top:0}
@@ -196,204 +182,175 @@
    @media(max-width:768px){
    .vendor-avatar{width:80px;height:80px}
    }
-
-
    /* ===== PREMIUM MODAL ===== */
-.premium-modal {
-    border-radius: 24px;
-    overflow: hidden;
-}
-
-.premium-header {
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    color: #fff;
-    padding: 24px 28px;
-}
-
-/* LOCKED SECTION */
-.locked-info {
-    padding: 20px;
-    border-radius: 18px;
-    background: #f8fafc;
-    border: 1px dashed #e2e8f0;
-}
-
-.lock-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 28px;
-    margin: auto;
-}
-
-/* PAYMENT BOX */
-.payment-section-modern {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #fff;
-    border-radius: 20px;
-    padding: 24px;
-    margin-top: 20px;
-}
-
-.price-tag {
-    font-size: 36px;
-    font-weight: 800;
-}
-
-.benefits-list {
-    list-style: none;
-    padding: 0;
-    margin: 15px 0 0;
-}
-
-.benefits-list li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    margin-bottom: 8px;
-}
-
-.benefits-list i {
-    color: #d1fae5;
-}
-
-/* PAY BUTTON */
-.pay-btn {
-    background: #065f46;
-    border: none;
-    color: #fff;
-    font-weight: 700;
-    padding: 14px;
-    border-radius: 14px;
-    transition: all 0.3s ease;
-}
-
-.pay-btn:hover {
-    background: #064e3b;
-    transform: translateY(-1px);
-}
-
-/* ===== AUTH MODAL ===== */
-.auth-modal {
-    border-radius: 22px;
-    overflow: hidden;
-}
-
-/* HEADER */
-.auth-header {
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    color: #fff;
-    padding: 32px 24px 28px;
-    text-align: center;
-    position: relative;
-}
-
-.auth-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
-    background: rgba(255,255,255,0.18);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 12px;
-    font-size: 28px;
-}
-
-/* BUTTONS */
-.btn-auth-primary {
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    border: none;
-    color: #fff;
-    font-weight: 700;
-    padding: 14px;
-    border-radius: 14px;
-    transition: all .3s ease;
-}
-/* ===== BLUR SENSITIVE INFO ===== */
-.blur-text {
-    filter: blur(6px);
-    pointer-events: none;
-    user-select: none;
-    transition: all 0.3s ease;
-}
-
-/* Unblur when allowed */
-.unblur {
-    filter: blur(0);
-    pointer-events: auto;
-}
-
-/* Optional: lock hint */
-.blur-text::after {
-    content: ' 🔒';
-    filter: blur(0);
-}
-
-.btn-auth-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 25px rgba(37,99,235,0.4);
-}
-
-.btn-auth-outline {
-    background: #fff;
-    border: 2px solid #e5e7eb;
-    color: #1e293b;
-    font-weight: 600;
-    padding: 14px;
-    border-radius: 14px;
-    transition: all .3s ease;
-}
-
-.btn-auth-outline:hover {
-    background: #f8fafc;
-    border-color: #c7d2fe;
-}
-/* ================= LOCATION FILTER UPGRADE ================= */
-.search-section {
-    background: linear-gradient(135deg,#ffffff,#f8fafc);
-    border-radius: 22px;
-    border: 1px solid #e5e7eb;
-    padding: 22px;
-    box-shadow: 0 10px 40px rgba(15,23,42,.08);
-}
-
-.form-select-custom {
-    height: 54px;
-    font-weight: 600;
-    border-radius: 14px;
-    background-color: #fff;
-    transition: all .25s ease;
-}
-
-.form-select-custom:hover {
-    border-color: #93c5fd;
-}
-
-.form-select-custom:disabled {
-    background: #f1f5f9;
-    cursor: not-allowed;
-}
-
-/* Icon colors */
-.text-indigo { color:#4f46e5 }
-.text-orange { color:#f97316 }
-
-
+   .premium-modal {
+   border-radius: 24px;
+   overflow: hidden;
+   }
+   .premium-header {
+   background: linear-gradient(135deg, #2563eb, #4f46e5);
+   color: #fff;
+   padding: 24px 28px;
+   }
+   /* LOCKED SECTION */
+   .locked-info {
+   padding: 20px;
+   border-radius: 18px;
+   background: #f8fafc;
+   border: 1px dashed #e2e8f0;
+   }
+   .lock-icon {
+   width: 64px;
+   height: 64px;
+   border-radius: 50%;
+   background: linear-gradient(135deg, #ef4444, #dc2626);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   color: #fff;
+   font-size: 28px;
+   margin: auto;
+   }
+   /* PAYMENT BOX */
+   .payment-section-modern {
+   background: linear-gradient(135deg, #10b981, #059669);
+   color: #fff;
+   border-radius: 20px;
+   padding: 24px;
+   margin-top: 20px;
+   }
+   .price-tag {
+   font-size: 36px;
+   font-weight: 800;
+   }
+   .benefits-list {
+   list-style: none;
+   padding: 0;
+   margin: 15px 0 0;
+   }
+   .benefits-list li {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   font-size: 14px;
+   margin-bottom: 8px;
+   }
+   .benefits-list i {
+   color: #d1fae5;
+   }
+   /* PAY BUTTON */
+   .pay-btn {
+   background: #065f46;
+   border: none;
+   color: #fff;
+   font-weight: 700;
+   padding: 14px;
+   border-radius: 14px;
+   transition: all 0.3s ease;
+   }
+   .pay-btn:hover {
+   background: #064e3b;
+   transform: translateY(-1px);
+   }
+   /* ===== AUTH MODAL ===== */
+   .auth-modal {
+   border-radius: 22px;
+   overflow: hidden;
+   }
+   /* HEADER */
+   .auth-header {
+   background: linear-gradient(135deg, #2563eb, #4f46e5);
+   color: #fff;
+   padding: 32px 24px 28px;
+   text-align: center;
+   position: relative;
+   }
+   .auth-icon {
+   width: 64px;
+   height: 64px;
+   border-radius: 16px;
+   background: rgba(255,255,255,0.18);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 0 auto 12px;
+   font-size: 28px;
+   }
+   /* BUTTONS */
+   .btn-auth-primary {
+   background: linear-gradient(135deg, #2563eb, #4f46e5);
+   border: none;
+   color: #fff;
+   font-weight: 700;
+   padding: 14px;
+   border-radius: 14px;
+   transition: all .3s ease;
+   }
+   /* ===== BLUR SENSITIVE INFO ===== */
+   .blur-text {
+   filter: blur(6px);
+   pointer-events: none;
+   user-select: none;
+   transition: all 0.3s ease;
+   }
+   /* Unblur when allowed */
+   .unblur {
+   filter: blur(0);
+   pointer-events: auto;
+   }
+   /* Optional: lock hint */
+   .blur-text::after {
+   content: ' 🔒';
+   filter: blur(0);
+   }
+   .btn-auth-primary:hover {
+   transform: translateY(-1px);
+   box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+   }
+   .btn-auth-outline {
+   background: #fff;
+   border: 2px solid #e5e7eb;
+   color: #1e293b;
+   font-weight: 600;
+   padding: 14px;
+   border-radius: 14px;
+   transition: all .3s ease;
+   }
+   .btn-auth-outline:hover {
+   background: #f8fafc;
+   border-color: #c7d2fe;
+   }
+   /* ================= LOCATION FILTER UPGRADE ================= */
+   .search-section {
+   background: linear-gradient(135deg,#ffffff,#f8fafc);
+   border-radius: 22px;
+   border: 1px solid #e5e7eb;
+   padding: 22px;
+   box-shadow: 0 10px 40px rgba(15,23,42,.08);
+   }
+   .form-select-custom {
+   height: 54px;
+   font-weight: 600;
+   border-radius: 14px;
+   background-color: #fff;
+   transition: all .25s ease;
+   }
+   .form-select-custom:hover {
+   border-color: #93c5fd;
+   }
+   .form-select-custom:disabled {
+   background: #f1f5f9;
+   cursor: not-allowed;
+   }
+   /* Icon colors */
+   .text-indigo { color:#4f46e5 }
+   .text-orange { color:#f97316 }
 </style>
-
 {{-- ================= MAIN CONTENT ================= --}}
 <div class="container-fluid px-4 py-4">
-    <div class="row g-4">
-
-        {{-- ================= SIDEBAR (UNCHANGED) ================= --}}
-        <div class="col-lg-3">
+   <div class="row g-4">
+      {{-- ================= SIDEBAR (UNCHANGED) ================= --}}
+      <div class="col-lg-3">
          <div class="filter-sidebar">
             <div class="filter-header">
                <div class="filter-icon-box">
@@ -441,276 +398,258 @@
                   @endforeach
                </div>
             </div>
-          
          </div>
       </div>
-
-        {{-- ================= MAIN LIST ================= --}}
-        <div class="col-lg-9">
-           
-           
-            {{-- ================= LOCATION FILTER BAR ================= --}}
-            <div class="search-section mb-4">
-                <div class="row g-3 align-items-end">
-
-                    <!-- STATE -->
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold small text-muted">
-                            <i class="bi bi-geo-alt-fill me-1 text-primary"></i>
-                            State
-                        </label>
-                        <select id="stateSelect" class="form-select form-select-custom">
-                            <option value="">Select State</option>
-                            @foreach($states as $state)
-                                <option value="{{ $state->id }}">{{ $state->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- REGION -->
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold small text-muted">
-                            <i class="bi bi-map-fill me-1 text-indigo"></i>
-                            Region / Zone
-                        </label>
-                        <select id="regionSelect" class="form-select form-select-custom" disabled>
-                            <option value="">Select Region</option>
-                        </select>
-                    </div>
-
-                    <!-- CITY -->
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold small text-muted">
-                            <i class="bi bi-buildings-fill me-1 text-orange"></i>
-                            City
-                        </label>
-                        <select id="citySelect" class="form-select form-select-custom" disabled>
-                            <option value="">Select City</option>
-                        </select>
-                    </div>
-
-                </div>
+      {{-- ================= MAIN LIST ================= --}}
+      <div class="col-lg-9">
+         {{-- ================= LOCATION FILTER BAR ================= --}}
+         <div class="search-section mb-4">
+            <div class="row g-3 align-items-end">
+               <!-- STATE -->
+               <div class="col-md-4">
+                  <label class="form-label fw-semibold small text-muted">
+                  <i class="bi bi-geo-alt-fill me-1 text-primary"></i>
+                  State
+                  </label>
+                  <select id="stateSelect" class="form-select form-select-custom">
+                     <option value="">Select State</option>
+                     @foreach($states as $state)
+                     <option value="{{ $state->id }}">{{ $state->name }}</option>
+                     @endforeach
+                  </select>
+               </div>
+               <!-- REGION -->
+               <div class="col-md-4">
+                  <label class="form-label fw-semibold small text-muted">
+                  <i class="bi bi-map-fill me-1 text-indigo"></i>
+                  Region / Zone
+                  </label>
+                  <select id="regionSelect" class="form-select form-select-custom" disabled>
+                     <option value="">Select Region</option>
+                  </select>
+               </div>
+               <!-- CITY -->
+               <div class="col-md-4">
+                  <label class="form-label fw-semibold small text-muted">
+                  <i class="bi bi-buildings-fill me-1 text-orange"></i>
+                  City
+                  </label>
+                  <select id="citySelect" class="form-select form-select-custom" disabled>
+                     <option value="">Select City</option>
+                  </select>
+               </div>
             </div>
-
-            <!-- RESULTS HEADER -->
-            <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h3 class="fw-bold mb-1"><span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vender</h3>
-                    <p class="text-muted mb-0 d-flex align-items-center gap-2">
-                        <span class="badge bg-success rounded-circle p-1 pulse-animation" style="width: 10px; height: 10px;"></span>
-                        Verified and ready to serve
-                    </p>
-                </div>
-                </div>
+         </div>
+         <!-- RESULTS HEADER -->
+         <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+               <div>
+                  <h3 class="fw-bold mb-1"><span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor</h3>
+                  <p class="text-muted mb-0 d-flex align-items-center gap-2">
+                     <span class="badge bg-success rounded-circle p-1 pulse-animation" style="width: 10px; height: 10px;"></span>
+                     Verified and ready to serve
+                  </p>
+               </div>
             </div>
+         </div>
+         {{-- RESULTS --}}
+         @foreach($vendor_reg as $vendor)
+         <div class="vendor-card"
+         data-vendor-id="{{ $vendor->id }}"
+         {{-- BASIC --}}
+         data-business="{{ $vendor->business_name }}"
+         data-fullname="{{ $vendor->name }}"
+         data-contact-name="{{ $vendor->contact_person_name }}"
+         data-mobile="{{ $vendor->mobile }}"
+         data-email="{{ $vendor->email }}"
+         {{-- WORK --}}
+         data-work-type-id="{{ $vendor->work_type_id }}"
+         data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
 
-            {{-- RESULTS --}}
+        data-work-type="{{ strtolower($vendor->work_type) }}"
+        data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
+
+         data-experience="{{ $vendor->experience_years }}"
+         data-team-size="{{ $vendor->team_size_data }}"
+         data-min-project="{{ $vendor->min_project_value }}"
+         {{-- COMPANY --}}
+         data-company-name="{{ $vendor->company_name }}"
+         data-entity-type="{{ $vendor->entity_type }}"
+         data-gst="{{ $vendor->gst_number }}"
+         data-pan="{{ $vendor->pan_number }}"
+         data-msme="{{ $vendor->msme_registered }}"
+         {{-- LOCATION --}}
         
-            @foreach($vendor_reg as $vendor)
-              
-                <div class="vendor-card"
-                data-work-type-id="{{ $vendor->work_type_id }}"
-                data-work-subtype-id="{{ $vendor->work_subtype_id }}"
-                data-work-subtype="{{ strtolower($vendor->work_subtype) }}"
-                data-name="{{ strtolower($vendor->name) }}"
-                data-state-id="{{ $vendor->state_id ?? '' }}"
-                data-region-id="{{ $vendor->region_id ?? '' }}"
-                data-city-id="{{ $vendor->city_id ?? '' }}"
-                data-vendor-id="{{ $vendor->id }}">
-
-
-                <div class="row">
-                    <div class="col-auto">
-                        <div class="vendor-avatar">
-                            {{ strtoupper(substr($vendor->business_name,0,1)) }}
-
-                        </div>
-                    </div>
-
-                    <div class="col">
-
-                        <!-- 🔒 BLURRED NAME -->
-                        <h3 class="vendor-name blur-text blur-name-{{ $vendor->id }}">
-                            {{ strtoupper($vendor->business_name) }}
-                        </h3>
-
-                        <span class="category-badge">
-                            {{ $vendor->work_type }} - {{ $vendor->work_subtype }}
-                        </span>
-                        <!-- 📍 ADDRESS (NOT BLURRED) -->
-                        <div class="mt-2 text-muted small d-flex align-items-center gap-2">
-                            <i class="bi bi-geo-alt-fill text-primary"></i>
-                            <span>
-                                {{ $vendor->cityname ?? '' }},
-                                {{ $vendor->regionname ?? '' }},
-                                {{ $vendor->statename ?? '' }}
-                            </span>
-                        </div>
-                        <div class="row mt-3 align-items-center">
-                            <div class="col-md-6">
-                                <div class="contact-info-section">
-
-                                    <!-- 🔒 BLURRED MOBILE -->
-                                    <div class="blur-text blur-mobile-{{ $vendor->id }}">
-                                        {{ $vendor->mobile }}
-                                    </div>
-
-                                    <!-- 🔒 BLURRED EMAIL -->
-                                    <div class="blur-text blur-email-{{ $vendor->id }}">
-                                        {{ $vendor->email }}
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="col-md-5 text-end">
-                                <button class="btn btn-interested"
-                                    onclick="handleInterested(
-                                        {{ $vendor->id }},
-                                        '{{ addslashes($vendor->business_name) }}',
-                                        '{{ addslashes($vendor->name) }}',
-                                        '{{ addslashes($vendor->work_subtype) }}'
-                                    )">
-                                    ❤️ I'm Interested
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            @endforeach
-
-        </div>
-    </div>
-</div>
-
-{{-- ================= CUSTOMER / PAYMENT MODAL ================= --}}
-<div class="modal fade" id="vendorModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content premium-modal">
-
-            <!-- HEADER -->
-            <div class="modal-header premium-header">
+         data-state-id="{{ $vendor->state }}"
+         data-region-id="{{ $vendor->region }}"
+         data-city-id="{{ $vendor->city }}"
+         
+         {{-- BANK (OPTIONAL) --}}
+         data-bank-name="{{ $vendor->bank_name }}"
+         data-account-type="{{ $vendor->account_type }}"
+         >
+         <div class="row">
+           
+            <div class="d-flex justify-content-between align-items-start mb-2">
                 <div>
-                    <h5 class="fw-bold mb-0">Vendor Details</h5>
-                    <small class="text-white-50">Access protected information</small>
+                <span class="text-muted small">Type of Work</span>
+                <h5 class="fw-bold text-dark mb-0">{{ strtoupper($vendor->business_name) }}</h5>
                 </div>
-                <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <span class="badge bg-primary-subtle text-primary px-3 py-2">
+                {{ $vendor->work_type }} - {{ $vendor->work_subtype_data }}
+                </span>
             </div>
+            <div class="mb-2">
+                <span class="text-muted small">Contact Person</span>
+                <h6 class="vendor-name blur-text mb-0">{{ strtoupper($vendor->name) }}</h6>
+            </div>
+              <div class="text-muted small d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-geo-alt-fill text-primary"></i>
+             {{ $vendor->statename ?? '' }},
+            {{ $vendor->regionname ?? '' }},
+           
+            {{ $vendor->cityname ?? '' }}
+            </div>
+            <div class="row align-items-center border-top pt-3">
+                        <div class="col-md-7">
+                        <div class="contact-info-section small">
 
-            <!-- BODY -->
-            <div class="modal-body p-4">
+                            <div class="mb-1">
+                            <i class="bi bi-telephone-fill text-primary me-2"></i>
+                            <strong>Mobile:</strong>
+                            @php
+                                $mobile = preg_replace('/\D/', '', $vendor->mobile);
+                                $maskedMobile = $mobile ? substr($mobile,0,2).str_repeat('x', max(strlen($mobile)-2,0)) : 'xxxxxxxxxxxx';
+                            @endphp
+                            {{ $maskedMobile }}
+                            </div>
 
-                <!-- REMAINING LEADS -->
-                <div id="remainingLeadsInfo"
-                     class="alert alert-success text-center fw-semibold d-none mb-4"></div>
+                            <div>
+                            <i class="bi bi-envelope-fill text-primary me-2"></i>
+                            <strong>Email:</strong>
+                            @php
+                                $email = $vendor->email;
+                                if (!empty($email) && str_contains($email,'@')) {
+                                [$name,$domain] = explode('@',$email,2);
+                                $maskedEmail = substr($name,0,2).str_repeat('*', max(strlen($name)-2,0)).'@'.$domain;
+                                } else { $maskedEmail = 'xxxx@xxxx.com'; }
+                            @endphp
+                            {{ $maskedEmail }}
+                            </div>
 
-                <!-- LOCKED INFO -->
-                <div class="locked-info text-center mb-4">
-                    <div class="lock-icon">
-                        <i class="bi bi-lock-fill"></i>
-                    </div>
-                    <h4 id="modalName" class="fw-bold mt-3">Locked</h4>
-                    <p id="modalCategory" class="text-muted mb-1">Upgrade Required</p>
-                    <p id="modalBusiness" class="small text-muted">
-                        Unlock full customer contact details
-                    </p>
-                </div>
-
-                <!-- PAYMENT SECTION -->
-                <div class="payment-section-modern d-none" id="paymentSection">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h3 class="price-tag mb-0">₹499</h3>
-                            <small class="text-white-50">One-time access fee</small>
                         </div>
-                        <span class="badge bg-light text-success fw-bold px-3 py-2">
-                            Verified Lead
-                        </span>
+                        </div>
+
+                        {{-- CTA (onclick version) --}}
+                        <div class="col-md-5 text-end mt-3 mt-md-0">
+                        <button class="btn btn-primary px-4 py-2"
+                            onclick="handleInterested(
+                                {{ $vendor->id }},
+                                    '{{ addslashes($vendor->business_name) }}',
+                                    '{{ addslashes($vendor->name) }}',
+                                    '{{ addslashes($vendor->work_subtype_data) }}'
+                            )">
+                            ❤️ I'm Interested
+                        </button>
+                        </div>
+
                     </div>
-
-                    <ul class="benefits-list">
-                        <li><i class="bi bi-check-circle-fill"></i> Full customer contact</li>
-                        <li><i class="bi bi-check-circle-fill"></i> Genuine vendor lead</li>
-                        <li><i class="bi bi-check-circle-fill"></i> No commission</li>
-                    </ul>
-
-                    <button class="btn pay-btn w-100 mt-3" id="payNowBtn">
-                        <i class="bi bi-credit-card me-2"></i> Pay Now
-                    </button>
+                      
+                    </div>
                 </div>
-
+                @endforeach
+            </div>
             </div>
         </div>
-    </div>
-</div>
-
 
 {{-- ================= AUTH MODAL ================= --}}
-
 <div class="modal fade" id="authModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content auth-modal">
-
-            <!-- HEADER -->
-            <div class="auth-header">
-                <div class="auth-icon">
-                    <i class="bi bi-shield-lock-fill"></i>
-                </div>
-                <h5 class="fw-bold mb-1">Login Required</h5>
-                <p class="mb-0 small opacity-75">
-                    Please sign in to continue
-                </p>
-
-                <button type="button"
-                        class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
-                        data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- BODY -->
-            <div class="modal-body text-center p-4">
-
-                <p class="text-muted mb-4">
-                    To view customer contact details and unlock premium leads,
-                    please log in to your vendor account.
-                </p>
-
-                <a href="{{ route('login_register') }}"
-                   class="btn btn-auth-primary w-100 mb-3">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                    Login to Continue
-                </a>
-
-                <a href="{{ route('login_register') }}"
-                   class="btn btn-auth-outline w-100">
-                    <i class="bi bi-person-plus me-2"></i>
-                    Create Free Account
-                </a>
-
-              
-
-            </div>
-        </div>
-    </div>
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content auth-modal">
+         <div class="auth-header">
+            <div class="auth-icon"><i class="bi bi-shield-lock-fill"></i></div>
+            <h5 class="fw-bold mb-1">Login Required</h5>
+            <p class="mb-0 small opacity-75">Please sign in to continue</p>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+         </div>
+         <div class="modal-body text-center p-4">
+            <p class="text-muted mb-4">
+               To view customer contact details and unlock premium leads, please log in to your vendor account.
+            </p>
+            <a href="{{ route('login_register') }}" class="btn btn-auth-primary w-100 mb-3">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Login to Continue
+            </a>
+            <a href="{{ route('login_register') }}" class="btn btn-auth-outline w-100">
+            <i class="bi bi-person-plus me-2"></i> Create Free Account
+            </a>
+         </div>
+      </div>
+   </div>
 </div>
-
-
 {{-- ================= SCRIPTS ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function handleInterested(id, name, business, work) {
+  function resetLeadModalUI() {
+    $('#paymentSection').addClass('d-none');
+    $('#remainingLeadsInfo').addClass('d-none').text('');
+    $('#lockedInfo').addClass('d-none');
+
+    $('#projectDetailsSection').removeClass('d-none');
+    $('#vendorDetailsSection').removeClass('d-none');
+}
+
+   
+   
+function handleInterested(id) {
 
     if (!window.CUSTOMERID) {
-        new bootstrap.Modal(
-            document.getElementById('authModal')
-        ).show();
+        new bootstrap.Modal(document.getElementById('authModal')).show();
         return;
     }
 
+    const card = document.querySelector(`.vendor-card[data-vendor-id="${id}"]`);
+    if (!card) return;
+
+    resetLeadModalUI();
+
+    /* ================= PROJECT ================= */
+    $('#modalTitle').text(card.dataset.business || '—');
+    $('#modalLocation').text('As per requirement');
+    $('#modalContactTime').text('Anytime');
+    $('#modalPosted').text('Just now');
+
+    /* ================= EXTRA ================= */
+    $('#vTeam').text(card.dataset.teamSize || '—');
+    $('#vBudget').text(card.dataset.minProject || '—');
+    $('#vCompanyName').text(card.dataset.companyName || '—');
+    $('#vEntityType').text(card.dataset.entityType || '—');
+    $('#vMSME').text(card.dataset.msme || '—');
+
+    /* ================= BASIC ================= */
+    $('#vFullname').text(card.dataset.fullname || '—');
+    $('#vBusiness').text(card.dataset.business || '—');
+    $('#vWork').text(card.dataset.workType || '—');
+    $('#vName').text(card.dataset.contactName || '—');
+    $('#vMobile').text(card.dataset.mobile || '—');
+    $('#vEmail').text(card.dataset.email || '—');
+
+    /* ================= PROFESSIONAL ================= */
+    $('#vExperience').text(card.dataset.experience || '—');
+    $('#vGST').text(card.dataset.gst || '—');
+    $('#vPAN').text(card.dataset.pan || '—');
+
+    /* ================= LOCATION ================= */
+    const location = [
+        card.dataset.city,
+        card.dataset.region,
+        card.dataset.state
+    ].filter(Boolean).join(', ');
+    $('#vLocation').text(location || '—');
+
+    /* ================= SAVE INTEREST + OPEN ================= */
     $.ajax({
         url: "{{ route('customer.interest.check') }}",
         type: "POST",
@@ -718,118 +657,61 @@ function handleInterested(id, name, business, work) {
             _token: "{{ csrf_token() }}",
             vend_id: id
         },
-        success: function (res) {
-
-            if (res.payment_required === true) {
-
-                // Locked text
-                $('#modalName').text('Locked');
-                $('#modalCategory').text('Upgrade Required');
-                $('#modalBusiness').text('Unlock full customer details');
-
-                // Hide remaining leads
-                $('#remainingLeadsInfo').addClass('d-none');
-
-                // 🔥 SHOW PAYMENT SECTION (FIX)
-                $('#paymentSection').removeClass('d-none');
-
-                // Attach ID for payment
-                $('#payNowBtn').data('id', id);
-
-                new bootstrap.Modal(
-                    document.getElementById('vendorModal')
-                ).show();
-                return;
-            }
-
-            $('#modalName').text(name);
-            $('#modalCategory').text(work);
-            $('#modalBusiness').text(business);
-
-            $('#paymentSection').addClass('d-none');
-
-            $('#remainingLeadsInfo')
-                .removeClass('d-none')
-                .text(`🎯 ${res.remaining} free leads remaining`);
-
+        success: function () {
             new bootstrap.Modal(
                 document.getElementById('vendorModal')
             ).show();
+        },
+        error: function () {
+            Swal.fire('Error', 'Something went wrong', 'error');
         }
     });
 }
 
-/* PAY NOW */
-$('#payNowBtn').on('click', function () {
-    let id = $(this).data('id');
-    window.location.href =
-        "{{ route('razorpay.form') }}?vend_id=" + btoa(id);
-});
+   
 </script>
+
 <script>
+
 function applyFilters() {
 
-    let selectedCategories = [];
-    let selectedSubtypes = [];
+    let selectedCategories = $('.category-check:checked').map(function () {
+        return this.value;
+    }).get();
 
-    let searchText = document.querySelector('.form-control-custom')?.value.toLowerCase().trim() || '';
+    let selectedSubtypes = $('.subtype-check:checked').map(function () {
+        return this.value;
+    }).get();
 
-    let stateId  = document.getElementById('stateSelect')?.value || '';
-    let regionId = document.getElementById('regionSelect')?.value || '';
-    let cityId   = document.getElementById('citySelect')?.value || '';
-
-    // MAIN CATEGORIES
-    document.querySelectorAll('.category-check:checked').forEach(cb => {
-        selectedCategories.push(cb.value.toString());
-    });
-
-    // SUBTYPES
-    document.querySelectorAll('.subtype-check:checked').forEach(cb => {
-        selectedSubtypes.push(cb.value.toString());
-    });
+    let selectedState  = $('#stateSelect').val();
+    let selectedRegion = $('#regionSelect').val();
+    let selectedCity   = $('#citySelect').val();
 
     let visible = 0;
 
-    document.querySelectorAll('.vendor-card').forEach(card => {
+    $('.vendor-card').each(function () {
 
-        let cardTypeId    = card.dataset.workTypeId || '';
-        let cardSubtypeId = card.dataset.workSubtypeId || '';
-        let cardTitle     = card.dataset.name || '';
-        let cardSubtype   = card.dataset.workSubtype || '';
+        let card = this;
+        let cardTypeId = card.dataset.workTypeId;
 
-        let cardStateId  = card.dataset.stateId || '';
-        let cardRegionId = card.dataset.regionId || '';
-        let cardCityId   = card.dataset.cityId || '';
+        let cardSubtypes = [];
+        try {
+            cardSubtypes = JSON.parse(card.dataset.workSubtypeId || '[]');
+        } catch {}
 
-        /* ===============================
-           CATEGORY FILTER
-        ================================*/
-        let categoryMatch = true;
+        let stateMatch  = !selectedState  || selectedState == card.dataset.stateId;
+        let regionMatch = !selectedRegion || selectedRegion == card.dataset.regionId;
+        let cityMatch   = !selectedCity   || selectedCity == card.dataset.cityId;
 
-        if (selectedCategories.length > 0) {
-            if (selectedSubtypes.length > 0) {
-                categoryMatch = selectedSubtypes.includes(cardSubtypeId);
-            } else {
-                categoryMatch = selectedCategories.includes(cardTypeId);
-            }
-        }
+        let categoryMatch =
+            selectedCategories.length === 0 ||
+            selectedCategories.includes(cardTypeId);
 
-        /* ===============================
-           SEARCH FILTER
-        ================================*/
-        let textMatch =
-            searchText === '' ||
-            cardTitle.includes(searchText) ||
-            cardSubtype.includes(searchText);
+        let subtypeMatch =
+            selectedSubtypes.length === 0 ||
+            selectedSubtypes.some(id => cardSubtypes.includes(id));
 
-        /* ===============================
-           LOCATION FILTER (STATE → REGION → CITY)
-        ================================*/
-        let stateMatch  = stateId  === '' || cardStateId  === stateId;
-        let regionMatch = regionId === '' || cardRegionId === regionId;
-        let cityMatch   = cityId   === '' || cardCityId   === cityId;
-
-        if (categoryMatch && textMatch && stateMatch && regionMatch && cityMatch) {
+        if (categoryMatch && subtypeMatch && stateMatch && regionMatch && cityMatch) {
             card.style.display = 'block';
             visible++;
         } else {
@@ -837,93 +719,85 @@ function applyFilters() {
         }
     });
 
-    document.getElementById('vendorCount').innerText = visible;
-
-    document.getElementById('emptyState')
-        ?.classList.toggle('d-none', visible !== 0);
+    $('#vendorCount').text(visible);
 }
 
 
+$('#stateSelect').on('change', function () {
 
-/* ===============================
-   CATEGORY → SHOW SUBTYPES
-================================*/
-document.querySelectorAll('.category-check').forEach(cb => {
-    cb.addEventListener('change', function () {
+    let stateId = this.value;
 
-        let box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
-        if (box) box.classList.toggle('d-none', !this.checked);
+    $('#regionSelect')
+        .prop('disabled', true)
+        .html('<option value="">Loading regions...</option>');
+
+    $('#citySelect')
+        .prop('disabled', true)
+        .html('<option value="">Select City</option>');
+
+    if (!stateId) {
+        applyFilters();
+        return;
+    }
+
+    $.get(`/locations/regions/${stateId}`, function (regions) {
+
+        let options = '<option value="">Select Region</option>';
+        regions.forEach(r => {
+            options += `<option value="${r.id}">${r.name}</option>`;
+        });
+
+        $('#regionSelect')
+            .html(options)
+            .prop('disabled', false);
+
+        applyFilters();
+    });
+});
+$('#regionSelect').on('change', function () {
+
+    let regionId = this.value;
+
+    $('#citySelect')
+        .prop('disabled', true)
+        .html('<option value="">Loading cities...</option>');
+
+    if (!regionId) {
+        applyFilters();
+        return;
+    }
+
+    $.get(`/locations/cities/${regionId}`, function (cities) {
+
+        let options = '<option value="">Select City</option>';
+        cities.forEach(c => {
+            options += `<option value="${c.id}">${c.name}</option>`;
+        });
+
+        $('#citySelect')
+            .html(options)
+            .prop('disabled', false);
 
         applyFilters();
     });
 });
 
-/* ===============================
-   AUTO APPLY ON CHANGE
-================================*/
+$('#citySelect').on('change', applyFilters);
+ 
+ 
+   document.querySelectorAll('.category-check').forEach(cb => {
+    cb.addEventListener('change', function () {
+        let box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
+        if (box) box.classList.toggle('d-none', !this.checked);
+        applyFilters();
+    });
+});
+
 document.querySelectorAll('.subtype-check')
     .forEach(cb => cb.addEventListener('change', applyFilters));
 
-document.querySelector('.form-control-custom')
-    ?.addEventListener('keyup', applyFilters);
+$('#stateSelect, #regionSelect, #citySelect').on('change', applyFilters);
 
-document.getElementById('stateSelect')
-    ?.addEventListener('change', applyFilters);
-
-
-function resetFilters() {
-
-    document.querySelectorAll('.category-check, .subtype-check')
-        .forEach(cb => cb.checked = false);
-
-    document.querySelectorAll('.subtype-box')
-        .forEach(b => b.classList.add('d-none'));
-
-    document.querySelector('.form-control-custom').value = '';
-
-    document.getElementById('stateSelect').value  = '';
-    document.getElementById('regionSelect').value = '';
-    document.getElementById('citySelect').value   = '';
-
-    document.getElementById('regionSelect').disabled = true;
-    document.getElementById('citySelect').disabled   = true;
-
-    applyFilters();
-}
+   document.addEventListener('DOMContentLoaded', applyFilters);
 </script>
-<script>
-$('#stateSelect').on('change', function () {
-    let stateId = $(this).val();
-
-    $('#regionSelect').html('<option>Loading...</option>').prop('disabled', true);
-    $('#citySelect').html('<option>Select City</option>').prop('disabled', true);
-
-    if (stateId) {
-        $.get('/locations/regions/' + stateId, function (regions) {
-            let options = '<option value="">Select Region</option>';
-            regions.forEach(r => {
-                options += `<option value="${r.id}">${r.name}</option>`;
-            });
-            $('#regionSelect').html(options).prop('disabled', false);
-        });
-    }
-});
-
-$('#regionSelect').on('change', function () {
-    let regionId = $(this).val();
-
-    $('#citySelect').html('<option>Loading...</option>').prop('disabled', true);
-
-    if (regionId) {
-        $.get('/locations/cities/' + regionId, function (cities) {
-            let options = '<option value="">Select City</option>';
-            cities.forEach(c => {
-                options += `<option value="${c.id}">${c.name}</option>`;
-            });
-            $('#citySelect').html(options).prop('disabled', false);
-        });
-    }
-});
-</script>
-
 @endsection

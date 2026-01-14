@@ -34,16 +34,7 @@
         </select>
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label">Price per Unit (₹)</label>
-        <input type="number" class="form-control">
-    </div>
-
-    <div class="col-md-6">
-        <label class="form-label">Delivery Time (Days)</label>
-        <input type="number" class="form-control">
-    </div>
-
+    
     <div class="col-md-12 text-end">
         <button type="button" class="btn btn-warning px-4">
             💾 Save Product

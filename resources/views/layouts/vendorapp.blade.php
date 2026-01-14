@@ -141,33 +141,7 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
 
             </div>
 
-            <!-- NOTIFICATION -->
-            <!-- <div class="notification-container">
-                <i class="bi bi-bell" onclick="toggleNotificationMenu(event)"></i>
-
-                @if($unreadCount > 0)
-                    <span class="badge bg-danger position-absolute top-0 start-100 translate-middle rounded-circle">
-                        {{ $unreadCount }}
-                    </span>
-                @endif
-
-                <div class="notification-dropdown" id="notificationDropdown">
-                    <div class="fw-bold p-3 border-bottom text-center">Notifications</div>
-
-                    @forelse($notifications as $note)
-                        <a href="{{ route('vendor.read.notification',$note->id) }}">
-                            <strong>{{ $note->title }}</strong><br>
-                            <small class="text-muted">{{ Str::limit($note->message,45) }}</small><br>
-                            <small class="text-secondary">{{ \Carbon\Carbon::parse($note->created_at)->diffForHumans() }}</small>
-                        </a>
-                    @empty
-                        <div class="text-center text-muted p-3">No notifications</div>
-                    @endforelse
-
-                    <a href="{{ route('vendor.notifications') }}" class="text-primary text-center border-top py-2">View All</a>
-                </div>
-            </div> -->
-
+          
             <!-- PROFILE -->
             <div class="header-profile" onclick="toggleProfileMenu(event)">
                 <div class="profile-avatar">

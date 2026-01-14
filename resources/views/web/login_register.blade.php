@@ -216,13 +216,6 @@
                             class="form-control mb-3"
                             id="supplier-business-name" name="shop_name"
                             placeholder="Business Name">
-                    <label class="fw-bold mb-1">Material Category</label>
-                    <select class="form-control mb-3" id="supplier-material-category" name="material_category">
-                        <option value="">Select Material Category</option>
-                        @foreach($materialCategories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
                   
 
                 </div>
@@ -321,7 +314,7 @@ $("#btn-send-otp").click(function () {
         business_name: $("#vendor-business-name").val(),
         gst_number: $("#vendor-gst-number").val(),
          // Supplier
-        material_category: $("#supplier-material-category").val(),
+        // material_category: $("#supplier-material-category").val(),
         _token: "{{ csrf_token() }}"
     }, function (res) {
         if (res.status) {

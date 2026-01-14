@@ -1,190 +1,283 @@
 @extends('layouts.suppliersapp')
 
-@section('title','Product Enquiries | ConstructKaro')
+@section('title', 'Supplier Dashboard | ConstructKaro')
 
 @section('content')
 
 <style>
-:root{
-  --navy:#0f172a;
-  --orange:#f25c05;
-  --border:#e5e7eb;
-  --bg:#f6f8fb;
-  --card:#ffffff;
-  --muted:#64748b;
+/* ================= ROOT ================= */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --success: #16a34a;
+    --whatsapp: #22c55e;
+    --warning-bg: #fff4e6;
+    --warning-text: #f97316;
+    --page-bg: #f6f8fc;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border: #e5e7eb;
 }
 
-/* Page */
-.enquiry-page{
-  max-width:1300px;
-  margin:auto;
-  padding:24px;
+/* ================= PAGE ================= */
+.page-wrapper {
+    background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+    min-height: 100vh;
+    padding: 32px 0;
 }
 
-/* Card */
-.enquiry-card{
-  background:#fff;
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:18px;
+/* ================= HEADER ================= */
+.page-header h2 {
+    font-size: 26px;
+    font-weight: 700;
 }
 
-/* Header */
-.enquiry-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
+.page-header p {
+    color: var(--text-muted);
 }
 
-.enquiry-head h5{
-  margin:0;
-  font-weight:700;
+/* ================= TABS ================= */
+.tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
-.enquiry-head small{
-  color:var(--muted);
+.tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-/* Badges */
-.badge-pill{
-  padding:6px 14px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:600;
+.tab:hover {
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
-.badge-cash{ background:#fff7ed; color:#9a3412; }
-.badge-online{ background:#ecfeff; color:#155e75; }
-.badge-credit{ background:#ecfdf5; color:#065f46; }
-
-/* Body */
-.enquiry-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:14px;
-  margin-top:16px;
+.tab.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
 }
 
-.info-box{
-  font-size:14px;
+/* ================= CARD ================= */
+.card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    border-top: 4px solid var(--primary);
 }
 
-.info-box label{
-  display:block;
-  font-size:12px;
-  color:var(--muted);
+/* ================= CARD HEADER ================= */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
 }
 
-/* Footer */
-.enquiry-footer{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-top:18px;
-  border-top:1px dashed var(--border);
-  padding-top:14px;
+.card-header h3 {
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.btn-view{
-  background:var(--navy);
-  color:#fff;
-  padding:8px 18px;
-  border-radius:12px;
-  border:none;
-  font-size:14px;
-  font-weight:600;
+.card-header p {
+    font-size: 13px;
+    color: var(--text-muted);
 }
 
-.file-link{
-  display:inline-block;
-  margin-right:10px;
-  font-size:13px;
+/* ================= BADGE ================= */
+.badge {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--warning-bg);
+    color: var(--warning-text);
+}
+
+/* ================= DETAILS ================= */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 48px;
+    margin-bottom: 24px;
+}
+
+.details-grid span {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* ================= NOTES ================= */
+.notes {
+    background: linear-gradient(135deg, #eff6ff, #f8fbff);
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+    padding: 18px;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+/* ================= ACTIONS ================= */
+.actions {
+    display: flex;
+    gap: 14px;
+}
+
+.btn {
+    height: 52px;
+    padding: 0 26px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn.primary {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.btn.success { background: var(--success); }
+.btn.whatsapp { background: var(--whatsapp); }
+
+/* ================= TAB CONTENT ================= */
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .details-grid { grid-template-columns: 1fr; }
+    .actions { flex-direction: column; }
+    .btn { width: 100%; }
 }
 </style>
 
-<div class="enquiry-page">
+<div class="page-wrapper">
+    <div class="max-w-6xl mx-auto px-4">
 
-  <h4 class="mb-4">📩 Product Enquiries</h4>
+        <!-- Header -->
+        <div class="page-header mb-6">
+            <h2>Enquiries Inbox</h2>
+            <p>Manage and respond to customer enquiries</p>
+        </div>
 
-@forelse($enquiries as $enquiry)
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="all">All (24)</button>
+            <button class="tab" data-tab="active">Active (5)</button>
+            <button class="tab" data-tab="quoted">Quoted (12)</button>
+            <button class="tab" data-tab="closed">Closed (7)</button>
+        </div>
 
-@php
-  $attachments = [];
-  if (!empty($enquiry->attachments)) {
-      $decoded = json_decode($enquiry->attachments, true);
-      if (is_array($decoded)) {
-          $attachments = $decoded;
-      }
-  }
-@endphp
+        <!-- TAB CONTENT -->
+        <div class="tab-content">
 
-<div class="enquiry-card">
+          
+            <!-- ACTIVE TAB -->
+            <div class="tab-panel active" data-content="all">
 
-  {{-- HEADER --}}
-  <div class="enquiry-head">
-    <div>
-      <h5>{{ $enquiry->category ?? 'General Enquiry' }}</h5>
-      <small>
-        Supplier ID: {{ $enquiry->supplier_id }}
-        • {{ \Carbon\Carbon::parse($enquiry->created_at)->format('d M Y, h:i A') }}
-      </small>
-    </div>
+                @forelse($enquiries as $enquiry)
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h3>{{ $enquiry->shop_name }}</h3>
+                                <p>Contact: {{ $enquiry->contact_person }} - {{$enquiry->mobile}}</p>
+                            </div>
+                            <span class="badge">New Enquiry</span>
+                        </div>
 
-    <span class="badge-pill 
-      {{ $enquiry->payment_preference === 'credit' ? 'badge-credit' : 
-         ($enquiry->payment_preference === 'online' ? 'badge-online' : 'badge-cash') }}">
-      {{ ucfirst($enquiry->payment_preference) }}
-    </span>
-  </div>
+                        <div class="details-grid">
+                            <div><span>Project Type</span>{{ $enquiry->material_categories_name }}</div>
+                            <div><span>Delivery Location</span>{{ $enquiry->delivery_location }}</div>
+                            <div><span>Material Required</span>{{ $enquiry->quantity }}</div>
+                            <div><span>Payment Preference</span>{{ ucfirst($enquiry->payment_preference) }}</div>
+                            <div><span>Specs</span>{{ $enquiry->specs }}</div>
+                            @if($enquiry->attachments)
+                                @php
+                                    $attachments = json_decode($enquiry->attachments, true);
+                                @endphp
+                                <div>
+                                    <span>Attachments</span>
+                                    @foreach($attachments as $file)
+                                        <a href="{{ asset($file) }}" target="_blank">View File</a>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
 
-  {{-- BODY --}}
-  <div class="enquiry-grid">
-    <div class="info-box">
-      <label>Quantity</label>
-      {{ $enquiry->quantity ?? '-' }}
-    </div>
+                        <div class="notes">
+                <strong>Created At:</strong> {{ \Carbon\Carbon::parse($enquiry->created_at)->format('d M Y H:i') }}
+            </div>
 
-    <div class="info-box">
-      <label>Delivery Location</label>
-      {{ $enquiry->delivery_location ?? '-' }}
-    </div>
 
-    <div class="info-box">
-      <label>Required By</label>
-      {{ $enquiry->required_by ?? '-' }}
-    </div>
-
-    <div class="info-box">
-      <label>Specs</label>
-      {{ $enquiry->specs ?? '-' }}
-    </div>
-  </div>
-
-  {{-- FOOTER --}}
-  <div class="enquiry-footer">
-    <div>
-      @if(count($attachments))
-        @foreach($attachments as $file)
-          <a href="{{ asset('storage/'.$file) }}" target="_blank" class="file-link">
-            📎 Attachment
-          </a>
-        @endforeach
-      @else
-        <span class="text-muted">No attachments</span>
-      @endif
-    </div>
-
-    <button class="btn-view">View / Respond</button>
-  </div>
+            <div class="actions">
+                <button class="btn primary">📄 Send Quote</button>
+            </div>
+        </div>
+    @empty
+        <p class="text-sm text-gray-500">No enquiries available.</p>
+    @endforelse
 
 </div>
 
-@empty
-<p class="text-muted">No enquiries found.</p>
-@endforelse
 
+            <!-- QUOTED TAB -->
+            <div class="tab-panel" data-content="quoted">
+                <p class="text-sm text-gray-500">No quoted enquiries available.</p>
+            </div>
 
+            <!-- CLOSED TAB -->
+            <div class="tab-panel" data-content="closed">
+                <p class="text-sm text-gray-500">No closed enquiries available.</p>
+            </div>
+
+        </div>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tabs = document.querySelectorAll('.tab');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+
+            const selected = this.dataset.tab;
+
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+
+            this.classList.add('active');
+            document
+                .querySelector('.tab-panel[data-content="' + selected + '"]')
+                .classList.add('active');
+        });
+    });
+
+});
+</script>
 
 @endsection
