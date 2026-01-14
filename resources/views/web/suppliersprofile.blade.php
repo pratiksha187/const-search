@@ -1086,5 +1086,85 @@ $(document).on('click', '.category-tabs .list-group-item', function () {
     $('#' + target).addClass('active');
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
 
+    const cache = {}; // 🔥 Prevent multiple calls
+
+    document.querySelectorAll('.js-product-type').forEach(select => {
+
+        select.addEventListener('change', function () {
+
+            const form = this.closest('form');
+            if (!form) return;
+
+            const subtype = form.querySelector('.js-product-subtype');
+            const brand   = form.querySelector('.js-brand');
+
+            const productId = this.value;
+
+            // Reset
+            subtype.innerHTML = '<option value="">Select sub type</option>';
+            brand.innerHTML   = '<option value="">Select brand</option>';
+            subtype.disabled = true;
+            brand.disabled   = true;
+
+            if (!productId) return;
+
+            // ✅ If already fetched → use cache
+            if (cache[productId]) {
+                fillData(cache[productId], subtype, brand);
+                return;
+            }
+
+            // 🔥 SINGLE REQUEST
+            fetch(`/get-product-meta/${productId}`)
+                .then(res => res.json())
+                .then(data => {
+                    cache[productId] = data;
+                    fillData(data, subtype, brand);
+                });
+
+        });
+    });
+
+    function fillData(data, subtype, brand) {
+
+        data.subtypes.forEach(i => {
+            subtype.innerHTML +=
+                `<option value="${i.id}">${i.material_subproduct}</option>`;
+        });
+
+        data.brands.forEach(b => {
+            brand.innerHTML +=
+                `<option value="${b.id}">${b.name}</option>`;
+        });
+
+        subtype.disabled = false;
+        brand.disabled   = false;
+    }
+
+    // BRAND CHANGE LOGIC
+    document.querySelectorAll('.js-brand').forEach(select => {
+        select.addEventListener('change', function () {
+
+            const form = this.closest('form');
+            const spec = form.querySelector('.js-specification');
+            const other = form.querySelector('.js-other-brand');
+
+            spec.classList.add('d-none');
+            other.classList.add('d-none');
+
+            if (!this.value) return;
+
+            spec.classList.remove('d-none');
+
+            if (this.value === '25') { // OTHER brand id
+                other.classList.remove('d-none');
+            }
+        });
+    });
+
+});
+</script>
 @endsection
