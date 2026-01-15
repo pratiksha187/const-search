@@ -177,14 +177,14 @@ $categoryIdMap = [
     13=>'roofing',14=>'pavers',15=>'concreteproducts',16=>'roadsafety',
     17=>'facadecladding',18=>'scaffolding',19=>'hvacutilities',
     20=>'readymix',21=>'paintcoating',22=>'tilesflooring',
-    2=>'steeltmt',1=>'cement-concrete',28=>'aggregates',29=>'roadconstruction'
+    2=>'steel-tmt-bars',1=>'cement-concrete',28=>'aggregates',29=>'roadconstruction'
 ];
 
 @endphp
 @php
 $categoryLabelMap = [
     'cement-concrete'      => 'Cement & Concrete',
-    'steeltmt'             => 'Steel & TMT Bars',
+    'steel-tmt-bars'             => 'Steel & TMT Bars',
     'ConstructionChemicals'=> 'Construction & Chemicals',
     'plumbing'             => 'Plumbing Materials',
     'electrical'           => 'Electrical Items',
@@ -524,21 +524,21 @@ $materialIconMap = [
                         <div class="card-header fw-semibold">
                            Material Categories
                         </div>
-                       <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
-    @foreach($enabledCategoryTabs as $catId)
-        @if(isset($categoryIdMap[$catId]))
-            @php
-                $slug  = $categoryIdMap[$catId];
-                $label = $categoryLabelMap[$slug] ?? ucwords(str_replace('-', ' ', $slug));
-            @endphp
+                        <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
+                           @foreach($enabledCategoryTabs as $catId)
+                              @if(isset($categoryIdMap[$catId]))
+                                    @php
+                                       $slug  = $categoryIdMap[$catId];
+                                       $label = $categoryLabelMap[$slug] ?? ucwords(str_replace('-', ' ', $slug));
+                                    @endphp
 
-            <li class="list-group-item {{ $loop->first ? 'active' : '' }}"
-                data-target="{{ $slug }}">
-                {{ $label }}
-            </li>
-        @endif
-    @endforeach
-</ul>
+                                    <li class="list-group-item {{ $loop->first ? 'active' : '' }}"
+                                       data-target="{{ $slug }}">
+                                       {{ $label }}
+                                    </li>
+                              @endif
+                           @endforeach
+                        </ul>
 
                         
                      </div>
@@ -546,20 +546,20 @@ $materialIconMap = [
                   <!-- RIGHT CONTENT -->
                   <div class="col-md-9">
                      <!-- ConstructionChemicals -->
-                     <div class="category-page active" id="ConstructionChemicals">
+                     <div class="category-page" id="ConstructionChemicals">
                         <div class="card shadow-sm mb-4">
-                           <div class="card-header fw-semibold">Add Product – Cement & Concrete</div>
+                           <div class="card-header fw-semibold">Add Product – Construction Chemicals</div>
                            <div class="card-body">
                               @include('web.catalog.construction-chemicals')
                            </div>
                         </div>
                      </div>
                      <!-- STEEL -->
-                     <div class="category-page" id="steel">
+                     <div class="category-page" id="steel-tmt-bars">
                         <div class="card shadow-sm mb-4">
                            <div class="card-header fw-semibold">Add Product – Steel & TMT Bars</div>
                            <div class="card-body">
-                              @include('web.catalog.static-form')
+                              @include('web.catalog.steeltmt')
                            </div>
                         </div>
                      </div>
@@ -568,7 +568,7 @@ $materialIconMap = [
                         <div class="card shadow-sm mb-4">
                            <div class="card-header fw-semibold">Add Product – Tiles & Flooring</div>
                            <div class="card-body">
-                              @include('web.catalog.static-form')
+                              @include('web.catalog.tilesflooring')
                            </div>
                         </div>
                      </div>
@@ -577,7 +577,7 @@ $materialIconMap = [
                         <div class="card shadow-sm mb-4">
                            <div class="card-header fw-semibold">Add Product – Paint & Coatings</div>
                            <div class="card-body">
-                              @include('web.catalog.static-form')
+                              @include('web.catalog.paint-coatings')
                            </div>
                         </div>
                      </div>
@@ -734,15 +734,7 @@ $materialIconMap = [
                            </div>
                         </div>
                      </div>
-                     <!-- steeltmt -->
-                     <div class="category-page" id="steeltmt">
-                        <div class="card shadow-sm mb-4">
-                           <div class="card-header fw-semibold">Add Product – Steel & TMT Bars</div>
-                           <div class="card-body">
-                              @include('web.catalog.steeltmt')
-                           </div>
-                        </div>
-                     </div>
+                     
                      <!-- cement-concrete -->
                      <div class="category-page" id="cement-concrete">
                         <div class="card shadow-sm mb-4">

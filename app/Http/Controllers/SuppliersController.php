@@ -859,6 +859,7 @@ if ($customer_id || $vendor_id) {
         'vendor' // ✅ PASS TO VIEW
     ));
 }
+
 public function supplierFilter(Request $request)
 {
     $query = DB::table('supplier_reg as s')
@@ -872,6 +873,24 @@ public function supplierFilter(Request $request)
             DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_category_names')
         );
 
+    // ✅ SEARCH FILTER
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        // $query->where(function ($q) use ($search) {
+        //     $q->where('s.shop_name', 'LIKE', "%{$search}%")
+        //       ->orWhere('s.city', 'LIKE', "%{$search}%")
+        //       ->orWhere('s.area', 'LIKE', "%{$search}%")
+        //       ->orWhere('mc.name', 'LIKE', "%{$search}%");
+        // });
+        // ✅ SAFE SEARCH
+        $query->where(function ($q) use ($search) {
+            $q->where('s.shop_name', 'LIKE', "%{$search}%")
+            ->orWhere('mc.name', 'LIKE', "%{$search}%");
+        });
+
+    }
+
     // ✅ CATEGORY FILTER
     if ($request->filled('categories')) {
         $query->whereIn('sp.material_category_id', $request->categories);
@@ -881,14 +900,6 @@ public function supplierFilter(Request $request)
     if ($request->filled('credit_terms')) {
         $query->whereIn('s.credit_days', $request->credit_terms);
     }
-
-    // ⚠️ TEMPORARILY COMMENT DELIVERY FILTER
-    // Enable only if column exists
-    /*
-    if ($request->filled('delivery_payment')) {
-        $query->whereIn('s.delivery_type', $request->delivery_payment);
-    }
-    */
 
     $supplier_data = $query
         ->groupBy('s.id', 'cd.days')
@@ -914,65 +925,120 @@ public function supplierFilter(Request $request)
     return view('web.supplier_cards', compact('supplier_data'))->render();
 }
 
-    public function supplierSearchAjax(Request $request)
-    {
-        $query = DB::table('supplier_reg as s')
-            ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-            ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-            ->select(
-                's.*',
-                'cd.days as credit_days_value',
-                DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
-                DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_categories')
-            )
-            ->groupBy('s.id', 'cd.days');
+// public function supplierFilter(Request $request)
+// {
+//     $query = DB::table('supplier_reg as s')
+//         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+//         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+//         ->select(
+//             's.*',
+//             'cd.days as credit_days_value',
+//             DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
+//             DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_category_names')
+//         );
 
-        /* CREDIT FILTER (ID) */
-        if ($request->credit_days) {
-            $query->where('s.credit_days', $request->credit_days);
-        }
+//     // ✅ CATEGORY FILTER
+//     if ($request->filled('categories')) {
+//         $query->whereIn('sp.material_category_id', $request->categories);
+//     }
 
-        /* DELIVERY TYPE (ID) */
-        if ($request->delivery_type) {
-            $query->where('s.delivery_type', $request->delivery_type);
-        }
+//     // ✅ CREDIT FILTER
+//     if ($request->filled('credit_terms')) {
+//         $query->whereIn('s.credit_days', $request->credit_terms);
+//     }
 
-        /* DISTANCE */
-        if ($request->maximum_distance) {
-            $query->where('s.maximum_distance', '<=', $request->maximum_distance);
-        }
+//     // ⚠️ TEMPORARILY COMMENT DELIVERY FILTER
+//     // Enable only if column exists
+//     /*
+//     if ($request->filled('delivery_payment')) {
+//         $query->whereIn('s.delivery_type', $request->delivery_payment);
+//     }
+//     */
 
-        /* SEARCH */
-        if ($request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('s.shop_name', 'like', "%{$request->search}%")
-                ->orWhere('s.contact_person', 'like', "%{$request->search}%")
-                ->orWhere('mc.name', 'like', "%{$request->search}%");
-            });
-        }
+//     $supplier_data = $query
+//         ->groupBy('s.id', 'cd.days')
+//         ->orderBy('s.id', 'desc')
+//         ->get();
 
-        $suppliers = $query->get();
+//     foreach ($supplier_data as $supplier) {
+//         $supplier->material_categories = [];
 
-        /* FORMAT CATEGORIES */
-        foreach ($suppliers as $s) {
-            $ids   = $s->material_category_ids ? explode(',', $s->material_category_ids) : [];
-            $names = $s->material_categories ? explode(',', $s->material_categories) : [];
+//         if ($supplier->material_category_ids) {
+//             $ids   = explode(',', $supplier->material_category_ids);
+//             $names = explode(',', $supplier->material_category_names);
 
-            $s->material_categories = [];
-            foreach ($ids as $i => $id) {
-                $s->material_categories[] = [
-                    'id' => $id,
-                    'name' => $names[$i] ?? ''
-                ];
-            }
-        }
+//             foreach ($ids as $i => $id) {
+//                 $supplier->material_categories[] = [
+//                     'id' => $id,
+//                     'name' => $names[$i] ?? ''
+//                 ];
+//             }
+//         }
+//     }
 
-        return response()->json([
-            'status' => true,
-            'suppliers' => $suppliers
-        ]);
-    }
+//     return view('web.supplier_cards', compact('supplier_data'))->render();
+// }
+
+    // public function supplierSearchAjax(Request $request)
+    // {
+    //     $query = DB::table('supplier_reg as s')
+    //         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+    //         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+    //         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+    //         ->select(
+    //             's.*',
+    //             'cd.days as credit_days_value',
+    //             DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
+    //             DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_categories')
+    //         )
+    //         ->groupBy('s.id', 'cd.days');
+
+    //     /* CREDIT FILTER (ID) */
+    //     if ($request->credit_days) {
+    //         $query->where('s.credit_days', $request->credit_days);
+    //     }
+
+    //     /* DELIVERY TYPE (ID) */
+    //     if ($request->delivery_type) {
+    //         $query->where('s.delivery_type', $request->delivery_type);
+    //     }
+
+    //     /* DISTANCE */
+    //     if ($request->maximum_distance) {
+    //         $query->where('s.maximum_distance', '<=', $request->maximum_distance);
+    //     }
+
+    //     /* SEARCH */
+    //     if ($request->search) {
+    //         $query->where(function ($q) use ($request) {
+    //             $q->where('s.shop_name', 'like', "%{$request->search}%")
+    //             ->orWhere('s.contact_person', 'like', "%{$request->search}%")
+    //             ->orWhere('mc.name', 'like', "%{$request->search}%");
+    //         });
+    //     }
+
+    //     $suppliers = $query->get();
+
+    //     /* FORMAT CATEGORIES */
+    //     foreach ($suppliers as $s) {
+    //         $ids   = $s->material_category_ids ? explode(',', $s->material_category_ids) : [];
+    //         $names = $s->material_categories ? explode(',', $s->material_categories) : [];
+
+    //         $s->material_categories = [];
+    //         foreach ($ids as $i => $id) {
+    //             $s->material_categories[] = [
+    //                 'id' => $id,
+    //                 'name' => $names[$i] ?? ''
+    //             ];
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'status' => true,
+    //         'suppliers' => $suppliers
+    //     ]);
+    // }
 
     public function supplierenquirystore(Request $request)
 {
@@ -1144,7 +1210,7 @@ public function productenquiry()
         if (!$supplier) {
             abort(404);
         }
-// dd( $supplier );
+        // dd( $supplier );
         // Supplier categories / products
         $materials = DB::table('supplier_products_data as sp')
             ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')

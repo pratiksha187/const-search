@@ -242,79 +242,90 @@
 }
 </style>
 
-<div class="supplier-page">
+    <div class="supplier-page">
 
-{{-- HEADER --}}
-<div class="find-suppliers-header">
-    <div class="header-left">
-        <div class="header-icon"><i class="bi bi-building"></i></div>
-        <div>
-            <h5>Find Suppliers</h5>
-            <p>Construction materials near you</p>
+        {{-- HEADER --}}
+        <div class="find-suppliers-header">
+            <div class="header-left">
+                <div class="header-icon"><i class="bi bi-building"></i></div>
+                <div>
+                    <h5>Find Suppliers</h5>
+                    <p>Construction materials near you</p>
+                </div>
+            </div>
+        
         </div>
-    </div>
-    <!-- <a href="#" class="btn-post">Post Requirement</a> -->
-</div>
 
-{{-- SEARCH --}}
-<div class="find-search-bar">
-    <i class="bi bi-search"></i>
-    <input type="text" placeholder="Search by product, location, or supplier name...">
-    <button class="btn-search">Search</button>
-</div>
-
-<div class="content">
-
-    {{-- FILTERS --}}
-    
-    <div class="filters">
-        <div class="filter-header d-flex justify-content-between align-items-center">
-            <h6 class="mb-0">Filters</h6>
-            <a href="javascript:void(0)" id="clearFilters">Clear All</a>
+        {{-- SEARCH --}}
+        <!-- <div class="find-search-bar">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search by product, location, or supplier name...">
+            <button class="btn-search">Search</button>
+        </div> -->
+        <div class="find-search-bar">
+            <i class="bi bi-search"></i>
+            <input 
+                type="text" 
+                id="searchText"
+                name="search"
+                placeholder="Search by product, location, or supplier name..."
+            >
+            <button class="btn-search" id="searchBtn">Search</button>
         </div>
-  <div class="filter-section">
-        @foreach($material_categories as $category)
-            <label class="d-block">
-                <input 
-                    type="checkbox" 
-                    name="categories[]" 
-                    value="{{ $category->id }}"
-                    data-slug="{{ $category->slug }}"
-                >
-                {{ $category->name }}
-            </label>
-        @endforeach
- </div>
-          <hr>
-        <div class="filter-section">
-            <h6>Delivery & Payment</h6>
 
-            @foreach($delivery_type as $option)
+
+        <div class="content">
+
+            {{-- FILTERS --}}
+            
+            <div class="filters">
+                <div class="filter-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Filters</h6>
+                    <a href="javascript:void(0)" id="clearFilters">Clear All</a>
+                </div>
+                <div class="filter-section">
+                        @foreach($material_categories as $category)
+                            <label class="d-block">
+                                <input 
+                                    type="checkbox" 
+                                    name="categories[]" 
+                                    value="{{ $category->id }}"
+                                    data-slug="{{ $category->slug }}"
+                                >
+                                {{ $category->name }}
+                            </label>
+                        @endforeach
+                </div>
+                <hr>
+                <div class="filter-section">
+                    <h6>Delivery & Payment</h6>
+
+                    @foreach($delivery_type as $option)
+                        <label class="filter-item">
+                            <input 
+                                type="checkbox"
+                                name="delivery_payment[]"
+                                value="{{ $option->id }}"
+                            >
+                            <span>{{ $option->type }}</span>
+                        </label>
+                    @endforeach
+                </div>
+                <hr>
+                <div class="filter-section">
+            <h6>Credit Terms</h6>
+
+            @foreach($credit_days as $term)
                 <label class="filter-item">
                     <input 
                         type="checkbox"
-                        name="delivery_payment[]"
-                        value="{{ $option->id }}"
+                        name="credit_terms[]"
+                        value="{{ $term->id }}"
                     >
-                    <span>{{ $option->type }}</span>
+                    <span>{{ $term->days }}</span>
                 </label>
             @endforeach
         </div>
-         <hr>
-        <div class="filter-section">
-    <h6>Credit Terms</h6>
-
-    @foreach($credit_days as $term)
-        <label class="filter-item">
-            <input 
-                type="checkbox"
-                name="credit_terms[]"
-                value="{{ $term->id }}"
-            >
-            <span>{{ $term->days }}</span>
-        </label>
-    @endforeach
-</div>
 
 
     </div>
@@ -325,8 +336,6 @@
         <div class="supplier-grid">
             @include('web.supplier_cards', ['supplier_data' => $supplier_data])
         </div>
-
-
        
     </div>
 
@@ -342,6 +351,7 @@ $(document).ready(function () {
         let categories = [];
         let delivery   = [];
         let credit     = [];
+        let searchText = $('#searchText').val(); 
 
         $('input[name="categories[]"]:checked').each(function () {
             categories.push($(this).val());
@@ -361,7 +371,8 @@ $(document).ready(function () {
             data: {
                 categories: categories,
                 delivery_payment: delivery,
-                credit_terms: credit
+                credit_terms: credit,
+                search: searchText 
             },
             success: function (res) {
                 $('.supplier-grid').html(res);
@@ -374,6 +385,14 @@ $(document).ready(function () {
         fetchSuppliers();
     });
 
+     // 🔍 Search button click
+    $('#searchBtn').on('click', fetchSuppliers);
+
+       // ⌨️ Search while typing (optional but recommended)
+    $('#searchText').on('keyup', function () {
+        fetchSuppliers();
+    });
+    
     // ❌ Clear filters
     $('#clearFilters').on('click', function () {
         $('input[type="checkbox"]').prop('checked', false);
