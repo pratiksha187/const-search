@@ -235,6 +235,13 @@
                         
                     </div>
                 </li>
+                 <li class="master-tile">
+                    <div class="master-title">whight</div>
+                    <div class="master-actions">
+                        <a href="{{ route('whight.index') }}">Add/View</a>
+                        
+                    </div>
+                </li>
                 
 
 

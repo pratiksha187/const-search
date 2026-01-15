@@ -17,6 +17,7 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\ThicknessSizeController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\StandardController;
+use App\Http\Controllers\whightController;
 
 
 // Route::get('/', function () {
@@ -224,6 +225,21 @@ Route::post('/grade-update/{id}', [GradeController::class,'update'])
 
 Route::get('/grade-delete/{id}', [GradeController::class,'destroy'])
         ->name('grade.delete');
+
+
+Route::get('/whight-master', [whightController::class,'index'])
+    ->name('whight.index');
+
+Route::post('/whight-store', [whightController::class,'store'])
+    ->name('whight.store');
+
+Route::post('/whight-update/{id}', [whightController::class,'update'])
+    ->name('whight.update');
+
+Route::get('/whight-delete/{id}', [whightController::class,'destroy'])
+    ->name('whight.delete');
+
+
 
 
 Route::get('/standard-master', [StandardController::class,'index'])

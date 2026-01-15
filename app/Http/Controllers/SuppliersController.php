@@ -264,6 +264,7 @@ class SuppliersController extends Controller
         //mc_chemicals
         $mc_chemicals = DB::table('material_product')->where('material_id','5')->get();
         $units = DB::table('unit')->get();
+        
         $thickness_size =DB::table('thickness_size')->get();
         $delivery_type = DB::table('delivery_type')->get();
         $designcode= DB::table('designcode')->get();

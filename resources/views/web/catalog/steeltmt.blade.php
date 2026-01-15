@@ -54,7 +54,16 @@
                 @endforeach
             </select>
         </div>
-
+        <!-- Size -->
+        <div class="col-md-6">
+            <label class="form-label">Size *</label>
+            <select class="form-select" name="unit">
+                <option value="">Select Size</option>
+                @foreach($thickness_size as $Size)
+                    <option value="{{ $Size->id }}">{{ $Size->thickness_size }}</option>
+                @endforeach
+            </select>
+        </div>
         <!-- PRICE -->
         <div class="col-md-6">
             <label class="form-label">Price (₹)</label>
