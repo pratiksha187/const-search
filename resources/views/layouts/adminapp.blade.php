@@ -155,9 +155,10 @@
     <div class="top-menu">
 
         <a href="{{ route('admindashboard') }}">Dashboard</a>
+        <a href="{{ route('addmaster') }}">ADD MASTER</a>
 
         <!-- ADD MASTER -->
-        <div class="dropdown">
+        <!-- <div class="dropdown">
             <span id="addMasterDropdown"
                   class="dropdown-toggle"
                   data-bs-toggle="dropdown"
@@ -246,7 +247,7 @@
 
 
             </ul>
-        </div>
+        </div> -->
 
         <div class="profile-avatar">A</div>
     </div>

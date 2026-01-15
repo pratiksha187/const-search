@@ -18,13 +18,18 @@ use App\Http\Controllers\ThicknessSizeController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\StandardController;
 use App\Http\Controllers\whightController;
-
+use App\Http\Controllers\StateController;
+use App\Http\Controllers\RegionController;
+use App\Http\Controllers\CityController;
 
 // Route::get('/', function () {
 //     return view('welcome');
 // });
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
 Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');
+Route::get('addmaster', [MasterController::class, 'addmaster'])->name('addmaster');
+
+
 
 
 Route::get('/login-register', [LoginRegController::class, 'login_register'])->name('login_register');
@@ -269,7 +274,21 @@ Route::get('/admin/vendors', [HomeController::class, 'vendorslist'])
 Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
     ->name('admin.vendors.show');
 
+ // STATE
+    Route::get('/states', [StateController::class, 'index'])->name('states.index');
+    Route::post('/states', [StateController::class, 'store'])->name('states.store');
 
+    // REGION
+    Route::get('/regions', [RegionController::class, 'index'])->name('regions.index');
+    Route::post('/regions', [RegionController::class, 'store'])->name('regions.store');
+    Route::get('/regions/by-state/{state}', 
+            [RegionController::class, 'byState']
+        )->name('regions.byState');
+
+    // CITY
+    Route::get('/cities', [CityController::class, 'index'])->name('cities.index');
+    Route::post('/cities', [CityController::class, 'store'])->name('cities.store');
+    Route::get('/cities/by-region/{region}', [CityController::class, 'byRegion']);
 Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";

@@ -26,4 +26,9 @@ class MasterController extends Controller
             ->orderBy('name')
             ->get();
     }
+
+
+    public function addmaster(){
+        return view('web.master.addmaster');
+    }
 }
