@@ -1,19 +1,16 @@
 @extends('layouts.custapp')
 @section('title', 'Search Vendors')
 @section('content')
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script>
-    window.CUSTOMERID = @json($customer_id);
+   window.CUSTOMERID = @json($customer_id);
 </script>
-
 {{-- ================= YOUR ORIGINAL CSS (UNCHANGED) ================= --}}
 <style>
-  /* ================= ROOT ================= */
+   /* ================= ROOT ================= */
    :root{
    --primary-blue:#2563eb;
    --primary-indigo:#4f46e5;
@@ -348,474 +345,548 @@
    /* Icon colors */
    .text-indigo { color:#4f46e5 }
    .text-orange { color:#f97316 }
-</style>
 
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* body {
+      background: #f4f6fb;
+      padding: 40px;
+    } */
+
+    .card {
+      width: 420px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border-left: 5px solid #5b6cff;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .verified {
+      background: #22c55e;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: #4f46e5;
+      font-weight: 600;
+    }
+
+    .location {
+      margin-top: 6px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .tags {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .details {
+      margin-top: 16px;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .details p {
+      margin: 6px 0;
+    }
+
+    .actions {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-outline {
+      background: #fff;
+      border: 2px solid #5b6cff;
+      color: #5b6cff;
+    }
+
+    .btn-outline:hover {
+      background: #5b6cff;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: #5b6cff;
+      border: none;
+      color: #fff;
+    }
+
+    /* ===== FORCE 2 CARDS PER ROW ===== */
+.vendor-grid{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:24px;
+}
+
+/* Tablet */
+@media (max-width: 1200px){
+    .vendor-grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px){
+    .vendor-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+/* Card should fill grid cell */
+.vendor-card{
+    width:100%;
+    max-width:100%;
+}
+
+    .btn-primary:hover {
+      background: #434eea;
+    }
+
+    .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:10px 0 14px;
+}
+
+.tag-chip{
+    background:#f1f5f9;
+    color:#0f172a;
+    font-size:13px;
+    font-weight:500;
+    padding:6px 10px;
+    border-radius:8px;
+    white-space:nowrap;
+    box-shadow:inset 0 0 0 1px #e5e7eb;
+}
+
+</style>
 {{-- ================= MAIN CONTENT ================= --}}
 <div class="container-fluid px-4 py-4">
-<div class="row g-4">
-
-{{-- ================= SIDEBAR ================= --}}
-<div class="col-lg-3">
-<div class="filter-sidebar">
-<div class="filter-header">
-<div class="filter-icon-box">
-<i class="bi bi-funnel-fill"></i>
-</div>
-<div>
-<h5 class="mb-0 fw-bold">Smart Filters</h5>
-<small class="text-muted">Refine your search</small>
-</div>
-</div>
-
-<div class="mb-4">
-<div class="d-flex justify-content-between align-items-center mb-3">
-<h6 class="fw-bold mb-0">Work Category</h6>
-<span class="badge bg-primary rounded-pill" id="categoryCount">0</span>
-</div>
-
-@foreach($work_types as $work)
-<div class="mb-2">
-<label class="filter-category-item d-flex align-items-center gap-3">
-<input type="checkbox" class="form-check-input m-0 category-check" value="{{ $work->id }}">
-<span class="fw-semibold">{{ $work->work_type }}</span>
-</label>
-
-<div class="ms-5 mt-2 d-none subtype-box" data-type="{{ $work->id }}">
-@foreach(DB::table('work_subtypes')->where('work_type_id',$work->id)->get() as $sub)
-<label class="d-flex align-items-center gap-2 mb-1 small">
-<input type="checkbox" class="form-check-input subtype-check" value="{{ $sub->id }}">
-{{ $sub->work_subtype }}
-</label>
-@endforeach
-</div>
-</div>
-@endforeach
-</div>
-</div>
-</div>
-
-{{-- ================= MAIN LIST ================= --}}
-<div class="col-lg-9">
-
-{{-- ================= LOCATION FILTER ================= --}}
-<div class="search-section mb-4">
-<div class="row g-3">
-<div class="col-md-4">
-<label class="form-label fw-semibold small text-muted">State</label>
-<select id="stateSelect" class="form-select form-select-custom">
-<option value="">Select State</option>
-@foreach($states as $state)
-<option value="{{ $state->id }}">{{ $state->name }}</option>
-@endforeach
-</select>
-</div>
-
-<div class="col-md-4">
-<label class="form-label fw-semibold small text-muted">Region</label>
-<select id="regionSelect" class="form-select form-select-custom" disabled>
-<option value="">Select Region</option>
-</select>
-</div>
-
-<div class="col-md-4">
-<label class="form-label fw-semibold small text-muted">City</label>
-<select id="citySelect" class="form-select form-select-custom" disabled>
-<option value="">Select City</option>
-</select>
-</div>
-</div>
-</div>
-
-<h3 class="fw-bold mb-3">
-<span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
-</h3>
-
-{{-- ================= VENDORS ================= --}}
- @foreach($vendor_reg as $vendor)
-         <div class="vendor-card"
-         data-vendor-id="{{ $vendor->id }}"
-         {{-- BASIC --}}
-         data-business="{{ $vendor->business_name }}"
-         data-fullname="{{ $vendor->name }}"
-         data-contact-name="{{ $vendor->contact_person_name }}"
-         data-mobile="{{ $vendor->mobile }}"
-         data-email="{{ $vendor->email }}"
-         {{-- WORK --}}
-         data-work-type-id="{{ $vendor->work_type_id }}"
-         data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
-
-        data-work-type="{{ strtolower($vendor->work_type) }}"
-        data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
-
-         data-experience="{{ $vendor->experience_years }}"
-         data-team-size="{{ $vendor->team_size_data }}"
-         data-min-project="{{ $vendor->min_project_value }}"
-         {{-- COMPANY --}}
-         data-company-name="{{ $vendor->company_name }}"
-         data-entity-type="{{ $vendor->entity_type }}"
-         data-gst="{{ $vendor->gst_number }}"
-         data-pan="{{ $vendor->pan_number }}"
-         data-msme="{{ $vendor->msme_registered }}"
-         {{-- LOCATION --}}
-        
-         data-state-id="{{ $vendor->state }}"
-         data-region-id="{{ $vendor->region }}"
-         data-city-id="{{ $vendor->city }}"
-         
-         {{-- BANK (OPTIONAL) --}}
-         data-bank-name="{{ $vendor->bank_name }}"
-         data-account-type="{{ $vendor->account_type }}"
-         >
-         <div class="row">
-           
-            <div class="d-flex justify-content-between align-items-start mb-2">
-                <div>
-                <span class="text-muted small">Type of Work</span>
-                <h5 class="fw-bold text-dark mb-0">{{ strtoupper($vendor->business_name) }}</h5>
-                </div>
-                <span class="badge bg-primary-subtle text-primary px-3 py-2">
-                {{ $vendor->work_type }} - {{ $vendor->work_subtype_data }}
-                </span>
+   <div class="row g-4">
+      {{-- ================= SIDEBAR ================= --}}
+      <div class="col-lg-3">
+         <div class="filter-sidebar">
+            <div class="filter-header">
+               <div class="filter-icon-box">
+                  <i class="bi bi-funnel-fill"></i>
+               </div>
+               <div>
+                  <h5 class="mb-0 fw-bold">Smart Filters</h5>
+                  <small class="text-muted">Refine your search</small>
+               </div>
             </div>
-            <div class="mb-2">
-                <span class="text-muted small">Contact Person</span>
-                <h6 class="vendor-name blur-text mb-0">{{ strtoupper($vendor->name) }}</h6>
+            <div class="mb-4">
+               <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="fw-bold mb-0">Work Category</h6>
+                  <span class="badge bg-primary rounded-pill" id="categoryCount">0</span>
+               </div>
+               @foreach($work_types as $work)
+               <div class="mb-2">
+                  <label class="filter-category-item d-flex align-items-center gap-3">
+                  <input type="checkbox" class="form-check-input m-0 category-check" value="{{ $work->id }}">
+                  <span class="fw-semibold">{{ $work->work_type }}</span>
+                  </label>
+                  <div class="ms-5 mt-2 d-none subtype-box" data-type="{{ $work->id }}">
+                     @foreach(DB::table('work_subtypes')->where('work_type_id',$work->id)->get() as $sub)
+                     <label class="d-flex align-items-center gap-2 mb-1 small">
+                     <input type="checkbox" class="form-check-input subtype-check" value="{{ $sub->id }}">
+                     {{ $sub->work_subtype }}
+                     </label>
+                     @endforeach
+                  </div>
+               </div>
+               @endforeach
             </div>
-              <div class="text-muted small d-flex align-items-center gap-2 mb-3">
-            <i class="bi bi-geo-alt-fill text-primary"></i>
-             {{ $vendor->statename ?? '' }},
-            {{ $vendor->regionname ?? '' }},
-           
-            {{ $vendor->cityname ?? '' }}
+         </div>
+      </div>
+      {{-- ================= MAIN LIST ================= --}}
+      <div class="col-lg-9">
+         {{-- ================= LOCATION FILTER ================= --}}
+         <div class="search-section mb-4">
+            <div class="row g-3">
+               <div class="col-md-4">
+                  <label class="form-label fw-semibold small text-muted">State</label>
+                  <select id="stateSelect" class="form-select form-select-custom">
+                     <option value="">Select State</option>
+                     @foreach($states as $state)
+                     <option value="{{ $state->id }}">{{ $state->name }}</option>
+                     @endforeach
+                  </select>
+               </div>
+               <div class="col-md-4">
+                  <label class="form-label fw-semibold small text-muted">Region</label>
+                  <select id="regionSelect" class="form-select form-select-custom" disabled>
+                     <option value="">Select Region</option>
+                  </select>
+               </div>
+               <div class="col-md-4">
+                  <label class="form-label fw-semibold small text-muted">City</label>
+                  <select id="citySelect" class="form-select form-select-custom" disabled>
+                     <option value="">Select City</option>
+                  </select>
+               </div>
             </div>
-            <div class="row align-items-center border-top pt-3">
-                        <div class="col-md-7">
-                        <div class="contact-info-section small">
+         </div>
+         <h3 class="fw-bold mb-3">
+            <span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
+         </h3>
+         {{-- ================= VENDORS ================= --}}
+          <div class="vendor-grid">
+            @foreach($vendor_reg as $vendor)
+            <div class="card vendor-card"
+            data-vendor-id="{{ $vendor->id }}"
+              {{-- BASIC --}}
+              data-business="{{ $vendor->business_name }}"
+              data-fullname="{{ $vendor->name }}"
+              data-contact-name="{{ $vendor->contact_person_name }}"
+              data-mobile="{{ $vendor->mobile }}"
+              data-email="{{ $vendor->email }}"
+              {{-- WORK --}}
+              data-work-type-id="{{ $vendor->work_type_id }}"
+              data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
+              data-work-type="{{ strtolower($vendor->work_type) }}"
+              data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
+              data-experience="{{ $vendor->experience_years }}"
+              data-team-size="{{ $vendor->team_size_data }}"
+              data-min-project="{{ $vendor->min_project_value }}"
+              {{-- COMPANY --}}
+              data-company-name="{{ $vendor->company_name }}"
+              data-entity-type="{{ $vendor->entity_type }}"
+              data-gst="{{ $vendor->gst_number }}"
+              data-pan="{{ $vendor->pan_number }}"
+              data-msme="{{ $vendor->msme_registered }}"
+              {{-- LOCATION --}}
+              data-state-id="{{ $vendor->state }}"
+              data-region-id="{{ $vendor->region }}"
+              data-city-id="{{ $vendor->city }}"
+              {{-- BANK (OPTIONAL) --}}
+              data-bank-name="{{ $vendor->bank_name }}"
+              data-account-type="{{ $vendor->account_type }}">
+              <div class="card-header">
+                <div class="title">{{ strtoupper($vendor->business_name) }}</div>
+                <div class="verified">✔ Verified</div>
+              </div>
 
-                            <div class="mb-1">
-                            <i class="bi bi-telephone-fill text-primary me-2"></i>
-                            <strong>Mobile:</strong>
-                            @php
-                                $mobile = preg_replace('/\D/', '', $vendor->mobile);
-                                $maskedMobile = $mobile ? substr($mobile,0,2).str_repeat('x', max(strlen($mobile)-2,0)) : 'xxxxxxxxxxxx';
-                            @endphp
-                            {{ $maskedMobile }}
-                            </div>
+              <div class="subtitle">{{ $vendor->work_type }}</div>
+              <div class="location">📍  {{ $vendor->statename ?? '' }},
+                    {{ $vendor->regionname ?? '' }},
+                    {{ $vendor->cityname ?? '' }}</div>
 
-                            <div>
-                            <i class="bi bi-envelope-fill text-primary me-2"></i>
-                            <strong>Email:</strong>
-                            @php
-                                $email = $vendor->email;
-                                if (!empty($email) && str_contains($email,'@')) {
-                                [$name,$domain] = explode('@',$email,2);
-                                $maskedEmail = substr($name,0,2).str_repeat('*', max(strlen($name)-2,0)).'@'.$domain;
-                                } else { $maskedEmail = 'xxxx@xxxx.com'; }
-                            @endphp
-                            {{ $maskedEmail }}
-                            </div>
+              <!-- <div class="tags">
+                <div class="tag">✔ {{ $vendor->work_subtype_data }}</div>
+              
+              </div> -->
+              <div class="tags">
+    @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
+        <span class="tag-chip">
+            ✔ {{ trim($subtype) }}
+        </span>
+    @endforeach
+</div>
 
-                        </div>
-                        </div>
 
-                        {{-- CTA (onclick version) --}}
-                        <div class="col-md-5 text-end mt-3 mt-md-0">
-                        <button class="btn btn-primary px-4 py-2"
-                            onclick="handleInterested(
-                                {{ $vendor->id }},
-                                    '{{ addslashes($vendor->business_name) }}',
-                                    '{{ addslashes($vendor->name) }}',
-                                    '{{ addslashes($vendor->work_subtype_data) }}'
-                            )">
-                            ❤️ I'm Interested
-                        </button>
-                        </div>
+              <div class="details">
+                <p>✔ {{ $vendor->experience_years }} years experience</p>
+                <p>✔ Premium {{$vendor->work_type}}</p>
+              </div>
 
-                    </div>
-                      
-                    </div>
-                </div>
-                @endforeach
-
+              <div class="actions">
+                <button class="btn btn-outline" onclick="viewProfile()">View Profile</button>
+                <button class="btn btn-primary" onclick="showInterest()">Show Interest</button>
+              </div>
+            </div>
+            @endforeach
+          </div>
+   </div>
 </div>
 </div>
-</div>
-
 {{-- ================= AUTH MODAL (UNCHANGED) ================= --}}
 <div class="modal fade" id="authModal" tabindex="-1">
-<div class="modal-dialog modal-dialog-centered">
-<div class="modal-content auth-modal">
-<div class="auth-header">
-<h5 class="fw-bold">Login Required</h5>
+   <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content auth-modal">
+         <div class="auth-header">
+            <h5 class="fw-bold">Login Required</h5>
+         </div>
+         <div class="modal-body text-center">
+            <a href="{{ route('login_register') }}" class="btn btn-auth-primary w-100">
+            Login / Register
+            </a>
+         </div>
+      </div>
+   </div>
 </div>
-<div class="modal-body text-center">
-<a href="{{ route('login_register') }}" class="btn btn-auth-primary w-100">
-Login / Register
-</a>
-</div>
-</div>
-</div>
-</div>
-
 {{-- ================= VENDOR MODAL (ADDED – REQUIRED) ================= --}}
-
 <div class="modal fade" id="vendorModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content premium-modal border-0">
-
-      <!-- HEADER -->
-      <div class="premium-header d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center gap-3">
-          <div class="vendor-avatar">
-            <i class="bi bi-person-badge-fill"></i>
-          </div>
-          <div>
-            <h5 class="fw-bold mb-0">Vendor Details</h5>
-            <small class="opacity-75">Verified professional profile</small>
-          </div>
-        </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+   <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content premium-modal border-0">
+         <!-- HEADER -->
+         <div class="premium-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+               <div class="vendor-avatar">
+                  <i class="bi bi-person-badge-fill"></i>
+               </div>
+               <div>
+                  <h5 class="fw-bold mb-0">Vendor Details</h5>
+                  <small class="opacity-75">Verified professional profile</small>
+               </div>
+            </div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+         </div>
+         <!-- BODY -->
+         <div class="modal-body p-4">
+            <!-- BASIC INFO -->
+            <div class="row g-4 mb-4">
+               <div class="col-md-6">
+                  <div class="contact-info-section">
+                     <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-person-fill text-primary"></i>
+                        <strong>Name</strong>
+                     </div>
+                     <div class="fw-bold fs-6" id="vFullname">—</div>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="contact-info-section">
+                     <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-briefcase-fill text-primary"></i>
+                        <strong>Business</strong>
+                     </div>
+                     <div class="fw-bold fs-6" id="vBusiness">—</div>
+                  </div>
+               </div>
+            </div>
+            <!-- CONTACT INFO -->
+            <div class="row g-4 mb-4">
+               <div class="col-md-6">
+                  <div class="contact-info-section">
+                     <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-telephone-fill text-primary"></i>
+                        <strong>Mobile</strong>
+                     </div>
+                     <div class="fw-semibold" id="vMobile">—</div>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="contact-info-section">
+                     <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-envelope-fill text-primary"></i>
+                        <strong>Email</strong>
+                     </div>
+                     <div class="fw-semibold" id="vEmail">—</div>
+                  </div>
+               </div>
+            </div>
+            <!-- LOCATION -->
+            <div class="contact-info-section mb-4">
+               <div class="d-flex align-items-center gap-2 mb-2">
+                  <i class="bi bi-geo-alt-fill text-primary"></i>
+                  <strong>Location</strong>
+               </div>
+               <div class="fw-semibold" id="vLocation">—</div>
+            </div>
+            <!-- ACTIONS -->
+            <div class="d-flex justify-content-end gap-2">
+               <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+               Close
+               </button>
+               <a href="tel:" id="callVendorBtn" class="btn btn-gradient-primary px-4">
+               <i class="bi bi-telephone-outbound-fill me-1"></i> Call Now
+               </a>
+            </div>
+         </div>
       </div>
-
-      <!-- BODY -->
-      <div class="modal-body p-4">
-
-        <!-- BASIC INFO -->
-        <div class="row g-4 mb-4">
-          <div class="col-md-6">
-            <div class="contact-info-section">
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <i class="bi bi-person-fill text-primary"></i>
-                <strong>Name</strong>
-              </div>
-              <div class="fw-bold fs-6" id="vFullname">—</div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="contact-info-section">
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <i class="bi bi-briefcase-fill text-primary"></i>
-                <strong>Business</strong>
-              </div>
-              <div class="fw-bold fs-6" id="vBusiness">—</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CONTACT INFO -->
-        <div class="row g-4 mb-4">
-          <div class="col-md-6">
-            <div class="contact-info-section">
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <i class="bi bi-telephone-fill text-primary"></i>
-                <strong>Mobile</strong>
-              </div>
-              <div class="fw-semibold" id="vMobile">—</div>
-            </div>
-          </div>
-
-          <div class="col-md-6">
-            <div class="contact-info-section">
-              <div class="d-flex align-items-center gap-2 mb-2">
-                <i class="bi bi-envelope-fill text-primary"></i>
-                <strong>Email</strong>
-              </div>
-              <div class="fw-semibold" id="vEmail">—</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- LOCATION -->
-        <div class="contact-info-section mb-4">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="bi bi-geo-alt-fill text-primary"></i>
-            <strong>Location</strong>
-          </div>
-          <div class="fw-semibold" id="vLocation">—</div>
-        </div>
-
-        <!-- ACTIONS -->
-        <div class="d-flex justify-content-end gap-2">
-          <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
-            Close
-          </button>
-          <a href="tel:" id="callVendorBtn" class="btn btn-gradient-primary px-4">
-            <i class="bi bi-telephone-outbound-fill me-1"></i> Call Now
-          </a>
-        </div>
-
-      </div>
-    </div>
-  </div>
+   </div>
 </div>
-
-
 {{-- ================= SCRIPTS ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
-// function handleInterested(id) {
-
-//     if (!window.CUSTOMERID) {
-//         new bootstrap.Modal(document.getElementById('authModal')).show();
-//         return;
-//     }
-
-//     const card = document.querySelector(`.vendor-card[data-vendor-id="${id}"]`);
-
-//     $('#vFullname').text(card.dataset.fullname);
-//     $('#vBusiness').text(card.dataset.business);
-//     $('#vMobile').text(card.dataset.mobile);
-//     $('#vEmail').text(card.dataset.email);
-//     $('#vLocation').text(
-//         [card.dataset.cityName, card.dataset.regionName, card.dataset.stateName].join(', ')
-//     );
-
-//     new bootstrap.Modal(document.getElementById('vendorModal')).show();
-// }
-function handleInterested(id) {
-
-    if (!window.CUSTOMERID) {
-        new bootstrap.Modal(document.getElementById('authModal')).show();
-        return;
-    }
-   const card = document.querySelector(`.vendor-card[data-vendor-id="${id}"]`);
-   $('#vFullname').text(card.dataset.fullname);
-    $('#vBusiness').text(card.dataset.business);
-    $('#vMobile').text(card.dataset.mobile);
-    $('#vEmail').text(card.dataset.email);
-    $('#vLocation').text(
-        [card.dataset.cityName, card.dataset.regionName, card.dataset.stateName].join(', ')
-    );
-
-    new bootstrap.Modal(document.getElementById('vendorModal')).show();
-    $.ajax({
-        url: "{{ route('customer.interest.check') }}",
-        method: "POST",
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        data: {
-            vend_id: id
-        },
-        success: function (res) {
-            alert('Interest sent successfully ✅');
-
-            // Optional: open vendor modal
-            new bootstrap.Modal(document.getElementById('vendorModal')).show();
-        },
-        error: function () {
-            alert('Something went wrong ❌');
-        }
-    });
-}
+   function handleInterested(id) {
+   
+       if (!window.CUSTOMERID) {
+           new bootstrap.Modal(document.getElementById('authModal')).show();
+           return;
+       }
+      const card = document.querySelector(`.vendor-card[data-vendor-id="${id}"]`);
+      $('#vFullname').text(card.dataset.fullname);
+       $('#vBusiness').text(card.dataset.business);
+       $('#vMobile').text(card.dataset.mobile);
+       $('#vEmail').text(card.dataset.email);
+       $('#vLocation').text(
+           [card.dataset.cityName, card.dataset.regionName, card.dataset.stateName].join(', ')
+       );
+   
+       new bootstrap.Modal(document.getElementById('vendorModal')).show();
+       $.ajax({
+           url: "{{ route('customer.interest.check') }}",
+           method: "POST",
+           headers: {
+               'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+           },
+           data: {
+               vend_id: id
+           },
+           success: function (res) {
+               alert('Interest sent successfully ✅');
+   
+               // Optional: open vendor modal
+               new bootstrap.Modal(document.getElementById('vendorModal')).show();
+           },
+           error: function () {
+               alert('Something went wrong ❌');
+           }
+       });
+   }
 </script>
-
 <script>
-function applyFilters() {
-
-    let cats = $('.category-check:checked').map((_,e)=>e.value).get();
-    let subs = $('.subtype-check:checked').map((_,e)=>e.value).get();
-
-    let s = $('#stateSelect').val();
-    let r = $('#regionSelect').val();
-    let c = $('#citySelect').val();
-
-    let count = 0;
-
-    $('.vendor-card').each(function () {
-
-        let card = this;
-        let subtypes = JSON.parse(card.dataset.workSubtypeId || '[]');
-
-        let match =
-            (!cats.length || cats.includes(card.dataset.workTypeId)) &&
-            (!subs.length || subs.some(x => subtypes.includes(x))) &&
-            (!s || s == card.dataset.stateId) &&
-            (!r || r == card.dataset.regionId) &&
-            (!c || c == card.dataset.cityId);
-
-        card.style.display = match ? 'block' : 'none';
-        if (match) count++;
-    });
-
-    $('#vendorCount').text(count);
-    $('#categoryCount').text(cats.length);
-}
-
-$('.category-check').on('change', function () {
-    $(`.subtype-box[data-type="${this.value}"]`).toggleClass('d-none', !this.checked);
-    applyFilters();
-});
-
-$('.subtype-check, #stateSelect, #regionSelect, #citySelect')
-.on('change', applyFilters);
-
-document.addEventListener('DOMContentLoaded', applyFilters);
-
-
-$('#stateSelect').on('change', function () {
-
-    let stateId = this.value;
-
-    $('#regionSelect')
-        .prop('disabled', true)
-        .html('<option value="">Loading regions...</option>');
-
-    $('#citySelect')
-        .prop('disabled', true)
-        .html('<option value="">Select City</option>');
-
-    if (!stateId) {
-        applyFilters();
-        return;
-    }
-
-    $.get(`/locations/regions/${stateId}`, function (regions) {
-
-        let options = '<option value="">Select Region</option>';
-        regions.forEach(r => {
-            options += `<option value="${r.id}">${r.name}</option>`;
-        });
-
-        $('#regionSelect')
-            .html(options)
-            .prop('disabled', false);
-
-        applyFilters();
-    });
-});
-$('#regionSelect').on('change', function () {
-
-    let regionId = this.value;
-
-    $('#citySelect')
-        .prop('disabled', true)
-        .html('<option value="">Loading cities...</option>');
-
-    if (!regionId) {
-        applyFilters();
-        return;
-    }
-
-    $.get(`/locations/cities/${regionId}`, function (cities) {
-
-        let options = '<option value="">Select City</option>';
-        cities.forEach(c => {
-            options += `<option value="${c.id}">${c.name}</option>`;
-        });
-
-        $('#citySelect')
-            .html(options)
-            .prop('disabled', false);
-
-        applyFilters();
-    });
-});
-
-$('#citySelect').on('change', applyFilters);
+   function applyFilters() {
+   
+       let cats = $('.category-check:checked').map((_,e)=>e.value).get();
+       let subs = $('.subtype-check:checked').map((_,e)=>e.value).get();
+   
+       let s = $('#stateSelect').val();
+       let r = $('#regionSelect').val();
+       let c = $('#citySelect').val();
+   
+       let count = 0;
+   
+       $('.vendor-card').each(function () {
+   
+           let card = this;
+           let subtypes = JSON.parse(card.dataset.workSubtypeId || '[]');
+   
+           let match =
+               (!cats.length || cats.includes(card.dataset.workTypeId)) &&
+               (!subs.length || subs.some(x => subtypes.includes(x))) &&
+               (!s || s == card.dataset.stateId) &&
+               (!r || r == card.dataset.regionId) &&
+               (!c || c == card.dataset.cityId);
+   
+           card.style.display = match ? 'block' : 'none';
+           if (match) count++;
+       });
+   
+       $('#vendorCount').text(count);
+       $('#categoryCount').text(cats.length);
+   }
+   
+   $('.category-check').on('change', function () {
+       $(`.subtype-box[data-type="${this.value}"]`).toggleClass('d-none', !this.checked);
+       applyFilters();
+   });
+   
+   $('.subtype-check, #stateSelect, #regionSelect, #citySelect')
+   .on('change', applyFilters);
+   
+   document.addEventListener('DOMContentLoaded', applyFilters);
+   
+   
+   $('#stateSelect').on('change', function () {
+   
+       let stateId = this.value;
+   
+       $('#regionSelect')
+           .prop('disabled', true)
+           .html('<option value="">Loading regions...</option>');
+   
+       $('#citySelect')
+           .prop('disabled', true)
+           .html('<option value="">Select City</option>');
+   
+       if (!stateId) {
+           applyFilters();
+           return;
+       }
+   
+       $.get(`/locations/regions/${stateId}`, function (regions) {
+   
+           let options = '<option value="">Select Region</option>';
+           regions.forEach(r => {
+               options += `<option value="${r.id}">${r.name}</option>`;
+           });
+   
+           $('#regionSelect')
+               .html(options)
+               .prop('disabled', false);
+   
+           applyFilters();
+       });
+   });
+   $('#regionSelect').on('change', function () {
+   
+       let regionId = this.value;
+   
+       $('#citySelect')
+           .prop('disabled', true)
+           .html('<option value="">Loading cities...</option>');
+   
+       if (!regionId) {
+           applyFilters();
+           return;
+       }
+   
+       $.get(`/locations/cities/${regionId}`, function (cities) {
+   
+           let options = '<option value="">Select City</option>';
+           cities.forEach(c => {
+               options += `<option value="${c.id}">${c.name}</option>`;
+           });
+   
+           $('#citySelect')
+               .html(options)
+               .prop('disabled', false);
+   
+           applyFilters();
+       });
+   });
+   
+   $('#citySelect').on('change', applyFilters);
 </script>
-
 @endsection

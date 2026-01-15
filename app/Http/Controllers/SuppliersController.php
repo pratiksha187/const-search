@@ -122,7 +122,7 @@ class SuppliersController extends Controller
             )
             ->orderBy('sp.id', 'desc')
             ->get();
-
+        // dd($products);
         return view('web.myproducts', compact('products','supplierName'));
     }
 
@@ -666,8 +666,11 @@ class SuppliersController extends Controller
             ->orderBy('sort_order')
             ->get();
             // dd($categories->slug);
-
-        return view('web.catalog.addproduct', compact('supplier','supplierName','thickness_size', 'categories','mc_chemicals','units','delivery_type',
+        $supplier_data_id =   DB::table('supplier_reg')
+                        ->where('id', $supplier_id)->first();
+                        // dd($supplier_data_id);
+        $allowedCategories = json_decode($supplier_data_id->material_category, true); 
+        return view('web.catalog.addproduct', compact('supplier','allowedCategories','supplierName','thickness_size', 'categories','mc_chemicals','units','delivery_type',
         'Plumbingmaterials','electricalitems','doorswindows','glassglazing','hardwaretools','machineries','timberwood','roofingmaterials','pavers',
         'concreteproducts','roadsafety','facadecladding','roadconstruction','scaffolding','hvacutilities','readymix','paintcoating','aggregates','tilesflooring','cementconcrete','designcode','steeltmt'));
     }
@@ -926,120 +929,6 @@ public function supplierFilter(Request $request)
     return view('web.supplier_cards', compact('supplier_data'))->render();
 }
 
-// public function supplierFilter(Request $request)
-// {
-//     $query = DB::table('supplier_reg as s')
-//         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-//         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-//         ->select(
-//             's.*',
-//             'cd.days as credit_days_value',
-//             DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
-//             DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_category_names')
-//         );
-
-//     // ✅ CATEGORY FILTER
-//     if ($request->filled('categories')) {
-//         $query->whereIn('sp.material_category_id', $request->categories);
-//     }
-
-//     // ✅ CREDIT FILTER
-//     if ($request->filled('credit_terms')) {
-//         $query->whereIn('s.credit_days', $request->credit_terms);
-//     }
-
-//     // ⚠️ TEMPORARILY COMMENT DELIVERY FILTER
-//     // Enable only if column exists
-//     /*
-//     if ($request->filled('delivery_payment')) {
-//         $query->whereIn('s.delivery_type', $request->delivery_payment);
-//     }
-//     */
-
-//     $supplier_data = $query
-//         ->groupBy('s.id', 'cd.days')
-//         ->orderBy('s.id', 'desc')
-//         ->get();
-
-//     foreach ($supplier_data as $supplier) {
-//         $supplier->material_categories = [];
-
-//         if ($supplier->material_category_ids) {
-//             $ids   = explode(',', $supplier->material_category_ids);
-//             $names = explode(',', $supplier->material_category_names);
-
-//             foreach ($ids as $i => $id) {
-//                 $supplier->material_categories[] = [
-//                     'id' => $id,
-//                     'name' => $names[$i] ?? ''
-//                 ];
-//             }
-//         }
-//     }
-
-//     return view('web.supplier_cards', compact('supplier_data'))->render();
-// }
-
-    // public function supplierSearchAjax(Request $request)
-    // {
-    //     $query = DB::table('supplier_reg as s')
-    //         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-    //         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-    //         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-    //         ->select(
-    //             's.*',
-    //             'cd.days as credit_days_value',
-    //             DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
-    //             DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_categories')
-    //         )
-    //         ->groupBy('s.id', 'cd.days');
-
-    //     /* CREDIT FILTER (ID) */
-    //     if ($request->credit_days) {
-    //         $query->where('s.credit_days', $request->credit_days);
-    //     }
-
-    //     /* DELIVERY TYPE (ID) */
-    //     if ($request->delivery_type) {
-    //         $query->where('s.delivery_type', $request->delivery_type);
-    //     }
-
-    //     /* DISTANCE */
-    //     if ($request->maximum_distance) {
-    //         $query->where('s.maximum_distance', '<=', $request->maximum_distance);
-    //     }
-
-    //     /* SEARCH */
-    //     if ($request->search) {
-    //         $query->where(function ($q) use ($request) {
-    //             $q->where('s.shop_name', 'like', "%{$request->search}%")
-    //             ->orWhere('s.contact_person', 'like', "%{$request->search}%")
-    //             ->orWhere('mc.name', 'like', "%{$request->search}%");
-    //         });
-    //     }
-
-    //     $suppliers = $query->get();
-
-    //     /* FORMAT CATEGORIES */
-    //     foreach ($suppliers as $s) {
-    //         $ids   = $s->material_category_ids ? explode(',', $s->material_category_ids) : [];
-    //         $names = $s->material_categories ? explode(',', $s->material_categories) : [];
-
-    //         $s->material_categories = [];
-    //         foreach ($ids as $i => $id) {
-    //             $s->material_categories[] = [
-    //                 'id' => $id,
-    //                 'name' => $names[$i] ?? ''
-    //             ];
-    //         }
-    //     }
-
-    //     return response()->json([
-    //         'status' => true,
-    //         'suppliers' => $suppliers
-    //     ]);
-    // }
 
     public function supplierenquirystore(Request $request)
 {
@@ -1133,7 +1022,7 @@ public function productenquiry()
     public function storeSupplierProductData(Request $request)
     {
         $supp_id = session('supplier_id'); // keep as-is if working
-        // dd($supp_id );
+        // dd($request );
         // ✅ FIXED VALIDATION (MATCH REQUEST)
         $request->validate([
             'material_category_id' => 'required',

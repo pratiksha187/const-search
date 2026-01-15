@@ -364,12 +364,13 @@ $materialIconMap = [
                <select id="stateSelect" name="state_id" class="form-select">
                   <option value="">Select State</option>
                   @foreach($states as $state)
-                  <option value="{{ $state->id }}"
-                  {{ $supplier->state_id == $state->id ? 'selected' : '' }}>
-                  {{ $state->name }}
-                  </option>
+                     <option value="{{ $state->id }}"
+                           {{ isset($supplier) && $supplier->state_id == $state->id ? 'selected' : '' }}>
+                           {{ $state->name }}
+                     </option>
                   @endforeach
                </select>
+
             </div>
             <div class="col-md-6">
                <label for="region" class="form-label">Region</label>
@@ -984,12 +985,17 @@ $materialIconMap = [
 <script>
 $('.select2').select2();
 </script>
-
 <script>
+const SAVED_STATE = "{{ isset($supplier) ? $supplier->state_id : '' }}";
+const SAVED_REGION = "{{ isset($supplier) ? $supplier->region_id : '' }}";
+const SAVED_CITY = "{{ isset($supplier) ? $supplier->city_id : '' }}";
+</script>
+
+<!-- <script>
 const SAVED_STATE="{{ $supplier->state_id ?? '' }}";
 const SAVED_REGION="{{ $supplier->region_id ?? '' }}";
 const SAVED_CITY="{{ $supplier->city_id ?? '' }}";
-</script>
+</script> -->
 <script>
    $(document).ready(function () {
    

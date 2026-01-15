@@ -39,6 +39,32 @@
     display: block;
 }
 </style>
+@php
+$categories = [
+    ['id'=>5,  'target'=>'ConstructionChemicals', 'name'=>'Construction & Chemicals'],
+    ['id'=>6,  'target'=>'plumbing', 'name'=>'Plumbing Materials'],
+    ['id'=>7,  'target'=>'electrical', 'name'=>'Electrical Items'],
+    ['id'=>8,  'target'=>'doorswindows', 'name'=>'Doors & Windows'],
+    ['id'=>9,  'target'=>'glassglazing', 'name'=>'Glass & Glazing'],
+    ['id'=>10, 'target'=>'hardwaretools', 'name'=>'Hardware & Tools'],
+    ['id'=>11, 'target'=>'machineries', 'name'=>'Machineries & Equipments'],
+    ['id'=>12, 'target'=>'timberwood', 'name'=>'Timber & Wood'],
+    ['id'=>13, 'target'=>'roofing', 'name'=>'Roofing Materials'],
+    ['id'=>14, 'target'=>'pavers', 'name'=>'Pavers & Kerbstones'],
+    ['id'=>15, 'target'=>'concreteproducts', 'name'=>'Concrete Products'],
+    ['id'=>16, 'target'=>'roadsafety', 'name'=>'Road Safety Products'],
+    ['id'=>17, 'target'=>'facadecladding', 'name'=>'Facade & Cladding Materials'],
+    ['id'=>18, 'target'=>'scaffolding', 'name'=>'Scaffolding'],
+    ['id'=>19, 'target'=>'hvacutilities', 'name'=>'HVAC & Utilities'],
+    ['id'=>20, 'target'=>'readymix', 'name'=>'Ready Mix Concrete'],
+    ['id'=>21, 'target'=>'paintcoating', 'name'=>'Paint & Coatings'],
+    ['id'=>22, 'target'=>'tilesflooring', 'name'=>'Tiles & Flooring'],
+    ['id'=>2,  'target'=>'steeltmt', 'name'=>'Steel & TMT Bars'],
+    ['id'=>1,  'target'=>'cement-concrete', 'name'=>'Cement & Concrete'],
+    ['id'=>28, 'target'=>'aggregates', 'name'=>'Aggregates, Sand & Masonry'],
+    ['id'=>29, 'target'=>'roadconstruction', 'name'=>'Road Construction Materials'],
+];
+@endphp
 
 <div class="container-fluid py-4">
 
@@ -61,31 +87,53 @@
                     Material Categories
                 </div>
 
-                <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
-                    <li class="list-group-item active" data-target="ConstructionChemicals">Construction & Chemicals</li>
-                    <li class="list-group-item" data-target="plumbing">Plumbing Materials</li>
-                    <li class="list-group-item" data-target="electrical">Electrical Items</li>
-                    <li class="list-group-item" data-target="doorswindows">Doors & Windows</li>
-                    <li class="list-group-item" data-target="glassglazing">Glass & Glazing</li>
-                    <li class="list-group-item" data-target="hardwaretools">Hardware & Tools</li>
-                    <li class="list-group-item" data-target="machineries">Machineries & Equipments</li>
-                    <li class="list-group-item" data-target="timberwood">Timber & Wood</li>
-                    <li class="list-group-item" data-target="roofing">Roofing Materials </li>
-                    <li class="list-group-item" data-target="pavers">Pavers & Kerbstones </li>
-                    <li class="list-group-item" data-target="concreteproducts">Concrete Products</li>
-                    <li class="list-group-item" data-target="roadsafety">Road Safety Products</li>
-                    <li class="list-group-item" data-target="facadecladding">Facade & Cladding Materials</li>
-                    <li class="list-group-item" data-target="scaffolding">Scaffolding</li>
-                    <li class="list-group-item" data-target="hvacutilities">HVAC & Utilities</li>
-                    <li class="list-group-item" data-target="readymix">Ready Mix Concrete</li>
-                    <li class="list-group-item" data-target="paintcoating">Paint & Coatings</li>
-                    <li class="list-group-item" data-target="tilesflooring">Tiles & Flooring</li>
-                    <li class="list-group-item" data-target="steeltmt">Steel & TMT Bars</li>
-                    <li class="list-group-item" data-target="cement-concrete">Cement & Concrete</li>
-                    <li class="list-group-item" data-target="aggregates">Aggregates, sand, and Masonry Materials</li>
-                    <li class="list-group-item" data-target="roadconstruction">Road Construction Materials & Asphalt Works</li>
+                <!-- <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
+                    <li class="list-group-item active" data-target="ConstructionChemicals" data-category-id="5">Construction & Chemicals</li>
+                    <li class="list-group-item" data-target="plumbing" data-category-id="6">Plumbing Materials</li>
+                    <li class="list-group-item" data-target="electrical" data-category-id="7">Electrical Items</li>
+                    <li class="list-group-item" data-target="doorswindows" data-category-id="8">Doors & Windows</li>
+                    <li class="list-group-item" data-target="glassglazing" data-category-id="9">Glass & Glazing</li>
+                    <li class="list-group-item" data-target="hardwaretools" data-category-id="10">Hardware & Tools</li>
+                    <li class="list-group-item" data-target="machineries" data-category-id="11">Machineries & Equipments</li>
+                    <li class="list-group-item" data-target="timberwood" data-category-id="12">Timber & Wood</li>
+                    <li class="list-group-item" data-target="roofing"  data-category-id="13">Roofing Materials </li>
+                    <li class="list-group-item" data-target="pavers"  data-category-id="14">Pavers & Kerbstones </li>
+                    <li class="list-group-item" data-target="concreteproducts"  data-category-id="15">Concrete Products</li>
+                    <li class="list-group-item" data-target="roadsafety"  data-category-id="16">Road Safety Products</li>
+                    <li class="list-group-item" data-target="facadecladding"  data-category-id="17">Facade & Cladding Materials</li>
+                    <li class="list-group-item" data-target="scaffolding" data-category-id="18">Scaffolding</li>
+                    <li class="list-group-item" data-target="hvacutilities"  data-category-id="19">HVAC & Utilities</li>
+                    <li class="list-group-item" data-target="readymix"  data-category-id="20">Ready Mix Concrete</li>
+                    <li class="list-group-item" data-target="paintcoating"  data-category-id="21">Paint & Coatings</li>
+                    <li class="list-group-item" data-target="tilesflooring"  data-category-id="22">Tiles & Flooring</li>
+                    <li class="list-group-item" data-target="steeltmt"  data-category-id="2">Steel & TMT Bars</li>
+                    <li class="list-group-item" data-target="cement-concrete" data-category-id="1">Cement & Concrete</li>
+                    <li class="list-group-item" data-target="aggregates"  data-category-id="28">Aggregates, sand, and Masonry Materials</li>
+                    <li class="list-group-item" data-target="roadconstruction"  data-category-id="29">Road Construction Materials & Asphalt Works</li>
                     											
-                </ul>
+                </ul> -->
+                <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
+
+@php $first = true; @endphp
+
+@foreach($categories as $cat)
+
+    @if(in_array($cat['id'], $allowedCategories))
+
+        <li class="list-group-item {{ $first ? 'active' : '' }}"
+            data-target="{{ $cat['target'] }}"
+            data-category-id="{{ $cat['id'] }}">
+            {{ $cat['name'] }}
+        </li>
+
+        @php $first = false; @endphp
+
+    @endif
+
+@endforeach
+
+</ul>
+
             </div>
         </div>
 
@@ -95,29 +143,32 @@
             <!-- ConstructionChemicals -->
             <div class="category-page active" id="ConstructionChemicals">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header fw-semibold">Add Product – Cement & Concrete</div>
+                    <div class="card-header fw-semibold">Add Product – Construction & Chemicals</div>
                     <div class="card-body">
                         @include('web.catalog.construction-chemicals')
                     </div>
                 </div>
             </div>
 
-            <!-- STEEL -->
-            <div class="category-page" id="steel">
+             <!-- cement-concrete -->
+            <div class="category-page" id="cement-concrete">
+
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header fw-semibold">Add Product – Steel & TMT Bars</div>
+                    <div class="card-header fw-semibold">Add Product – Cement & Concrete</div>
                     <div class="card-body">
-                        @include('web.catalog.static-form')
+                        @include('web.catalog.cementconcrete')
                     </div>
                 </div>
             </div>
+
+         
 
             <!-- TILES -->
             <div class="category-page" id="tiles">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header fw-semibold">Add Product – Tiles & Flooring</div>
                     <div class="card-body">
-                        @include('web.catalog.static-form')
+                        @include('web.catalog.tilesflooring')
                     </div>
                 </div>
             </div>
@@ -127,7 +178,7 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header fw-semibold">Add Product – Paint & Coatings</div>
                     <div class="card-body">
-                        @include('web.catalog.static-form')
+                        @include('web.catalog.paint-coatings')
                     </div>
                 </div>
             </div>
@@ -285,15 +336,7 @@
                 </div>
             </div>
 
-            <!-- Paint & Coatings									 -->
-            <div class="category-page" id="paintcoating">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header fw-semibold">Add Product – Paint & Coatings</div>
-                    <div class="card-body">
-                        @include('web.catalog.paint-coatings')
-                    </div>
-                </div>
-            </div>
+          
 
             <!-- tilesflooring -->
             <div class="category-page" id="tilesflooring">
@@ -347,70 +390,68 @@
         </div>
     </div>
 </div>
+<!-- <script>
+document.addEventListener('DOMContentLoaded', function () {
 
-{{-- TAB SCRIPT --}}
-<script>
-document.querySelectorAll('#categoryTabs .list-group-item').forEach(tab => {
-    tab.addEventListener('click', function () {
+    const tabs = document.querySelectorAll('#categoryTabs .list-group-item');
 
-        document.querySelectorAll('#categoryTabs .list-group-item')
-            .forEach(t => t.classList.remove('active'));
+    function activateTab(tab){
 
+        // UI
+        tabs.forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.category-page')
             .forEach(p => p.classList.remove('active'));
 
-        this.classList.add('active');
-        document.getElementById(this.dataset.target).classList.add('active');
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.target).classList.add('active');
+
+        // ✅ SET CATEGORY ID IN ALL FORMS
+        document.querySelectorAll('.materialCategoryInput')
+            .forEach(input => input.value = tab.dataset.categoryId);
+
+        console.log('material_category_id:', tab.dataset.categoryId);
+    }
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => activateTab(tab));
     });
+
+    // default
+    activateTab(tabs[0]);
 });
-</script>
+</script> -->
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    const tabs  = document.querySelectorAll('#categoryTabs .list-group-item');
+    const tabs = document.querySelectorAll('#categoryTabs .list-group-item');
     const pages = document.querySelectorAll('.category-page');
+    const categoryInput = document.getElementById('materialCategoryInput');
 
-    function activateTab(target) {
-
-        // Remove active states
+    function activate(tab){
         tabs.forEach(t => t.classList.remove('active'));
         pages.forEach(p => p.classList.remove('active'));
 
-        // Activate tab
-        const activeTab = document.querySelector(
-            '#categoryTabs .list-group-item[data-target="' + target + '"]'
-        );
-        const activePage = document.getElementById(target);
+        tab.classList.add('active');
 
-        if (activeTab && activePage) {
-            activeTab.classList.add('active');
-            activePage.classList.add('active');
+        const page = document.getElementById(tab.dataset.target);
+        if(page) page.classList.add('active');
+
+        if(categoryInput){
+            categoryInput.value = tab.dataset.categoryId;
         }
     }
 
-    // 👉 On tab click
     tabs.forEach(tab => {
-        tab.addEventListener('click', function () {
-            const target = this.dataset.target;
-
-            // Update URL hash
-            window.location.hash = target;
-
-            activateTab(target);
-        });
+        tab.addEventListener('click', () => activate(tab));
     });
 
-    // 👉 On page load (refresh / back)
-    const hash = window.location.hash.replace('#', '');
-
-    if (hash) {
-        activateTab(hash);
-    } else {
-        activateTab('cement'); // default
+    if(tabs.length){
+        activate(tabs[0]); // auto select first allowed
     }
-
 });
 </script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -484,14 +525,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
             spec.classList.remove('d-none');
 
-            if (this.value === '25') { // OTHER brand id
-                other.classList.remove('d-none');
-            }
+            
         });
     });
 
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.querySelectorAll('.category-page').forEach(page => {
+
+        page.addEventListener('click', function () {
+
+            // remove active from all
+            document.querySelectorAll('.category-page')
+                .forEach(p => p.classList.remove('active'));
+
+            // add active to clicked
+            this.classList.add('active');
+
+            // get category id
+            const categoryId = this.dataset.categoryId;
+
+            // set input value
+            document.getElementById('materialCategoryInput').value = categoryId;
+
+            console.log('Selected material_category_id:', categoryId);
+        });
+
+    });
+
+});
+</script>
 
 @endsection

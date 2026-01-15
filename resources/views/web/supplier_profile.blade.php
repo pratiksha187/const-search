@@ -383,7 +383,7 @@
                   <span>MOQ: {{ $supplier->minimum_order_qty ?? 'N/A' }}</span>
                   <span class="green">{{ $supplier->dispatch_time ?? 'Same / Next Day' }}</span>
                </div>
-               <button class="btn-quote">Request Quote</button>
+               <!-- <button class="btn-quote">Request Quote</button> -->
             </div>
             @endforeach
          </div>
@@ -409,7 +409,7 @@
       <div class="card-box">
          <h4 class="section-title"><i class="bi bi-map"></i>Supply Coverage</h4>
          <div class="location-tags">
-            <span>Pune</span><span>Raigad</span><span>Panvel</span>
+            <!-- <span>Pune</span><span>Raigad</span><span>Panvel</span> -->
          </div>
       </div>
    </div>
@@ -418,11 +418,11 @@
 <div class="dpc-card">
    <h4 class="section-title"><i class="bi bi-check-circle-fill"></i>Delivery, Payment & Credit</h4>
    <div class="dpc-grid">
-      <div>
+      <!-- <div>
          <div class="dpc-item"><span class="check">✔</span>Own vehicles available</div>
          <div class="dpc-item"><span class="check">✔</span>Third-party logistics</div>
          <div class="dpc-item"><span class="check">✔</span>50 km delivery radius</div>
-      </div>
+      </div> -->
       <div>
          <div class="dpc-item"><span class="check">✔</span>Cash / Online / Bank</div>
          @if($supplier->credit_days_value)
@@ -432,7 +432,7 @@
          </div>
          @endif
          <div class="min-value">
-            ₹{{ number_format($supplier->minimum_order_value ?? 10000) }}
+            ₹{{ number_format($supplier->minimum_order_value ?? 00) }}
          </div>
       </div>
    </div>

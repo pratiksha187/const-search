@@ -1,7 +1,7 @@
 <form action="{{ route('supplier-products.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
-<input type="hidden" name="material_category_id" value="6">
+<input type="hidden" name="material_category_id" id="materialCategoryInput">
 
     <div class="card-body">
         <div class="row g-3">
