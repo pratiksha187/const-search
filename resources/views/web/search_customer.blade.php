@@ -407,6 +407,27 @@
    padding:10px;
    font-weight:600;
    }
+   /* ===== GRID STABILITY FIX ===== */
+.vendor-col {
+    display: flex;
+}
+
+.vendor-col.hidden {
+    display: none !important;
+}
+
+.lead-card.vendor-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ensure actions always stay bottom */
+.lead-actions {
+    margin-top: auto;
+}
+
 </style>
 {{-- ================= MAIN CONTENT ================= --}}
 <div class="container-fluid px-4 py-4">
@@ -495,7 +516,9 @@
          {{-- RESULTS --}}
          <div class="row g-4">
             @foreach($projects as $project)
-            <div class="col-xl-6 col-lg-6 col-md-12">
+            <!-- <div class="col-xl-6 col-lg-6 col-md-12"> -->
+               <div class="col-xl-6 col-lg-6 col-md-12 vendor-col">
+
                <div class="lead-card vendor-card"
                   data-work-type-id="{{ $project->work_type_id }}"
                   data-work-subtype-id="{{ $project->work_subtype_id }}"
@@ -741,9 +764,7 @@
                         <li>✔ Maximum savings</li>
                         <li>✔ Business growth pack</li>
                      </ul>
-                     <!-- <button class="btn btn-outline w-100" id="payNowBtn">
-                        Buy Grow Pack
-                        </button> -->
+                     
                      <button
                         class="btn btn-outline w-100 buy-plan-btn"
                         data-plan="grow"
@@ -789,9 +810,6 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-   /* =====================================================
-      GLOBAL CLICK HANDLER (SHOW INTEREST BUTTON)
-   ===================================================== */
    document.addEventListener('click', function (e) {
        const btn = e.target.closest('.show-interest-btn');
        if (!btn) return;
@@ -820,9 +838,6 @@
    }
    
    
-   /* =====================================================
-      MAIN INTEREST HANDLER
-   ===================================================== */
    function handleInterested(
        id,
        username,
@@ -921,9 +936,7 @@
    }
 </script>
 <script>
-   /* =====================================================
-      RAZORPAY – BUY PLAN HANDLER
-   ===================================================== */
+
    $(document).on('click', '.buy-plan-btn', function () {
    
        const plan   = $(this).data('plan');
@@ -999,24 +1012,82 @@
 </script>
 <script>
 
+// function applyFilters() {
+
+//     let selectedCategories = [];
+//     let selectedSubtypes   = [];
+
+//     document.querySelectorAll('.category-check:checked')
+//         .forEach(cb => selectedCategories.push(cb.value));
+
+//     document.querySelectorAll('.subtype-check:checked')
+//         .forEach(cb => selectedSubtypes.push(cb.value));
+
+//     // 🔑 IMPORTANT: use TEXT, not ID
+//     let stateText  = (document.querySelector('#stateSelect option:checked')?.textContent || '').toLowerCase().trim();
+//     let regionText = (document.querySelector('#regionSelect option:checked')?.textContent || '').toLowerCase().trim();
+//     let cityText   = (document.querySelector('#citySelect option:checked')?.textContent || '').toLowerCase().trim();
+//     let selectedState  = $('#stateSelect').val();
+//     let selectedRegion = $('#regionSelect').val();
+//     let selectedCity   = $('#citySelect').val();
+
+//     if (stateText === 'select state') stateText = '';
+//     if (regionText === 'select region') regionText = '';
+//     if (cityText === 'select city') cityText = '';
+
+//     let visible = 0;
+
+//     document.querySelectorAll('.vendor-card').forEach(card => {
+
+//         let cardTypeId    = card.dataset.workTypeId || '';
+//         let cardSubtypeId = card.dataset.workSubtypeId || '';
+
+//         let cardState  = (card.dataset.state  || '').toLowerCase();
+//         let cardRegion = (card.dataset.region || '').toLowerCase();
+//         let cardCity   = (card.dataset.city   || '').toLowerCase();
+
+//         /* ---------- CATEGORY MATCH ---------- */
+//         let categoryMatch = true;
+
+//         if (selectedCategories.length > 0) {
+//             categoryMatch = selectedCategories.includes(cardTypeId);
+//         }
+
+//         if (selectedSubtypes.length > 0) {
+//             categoryMatch = selectedSubtypes.includes(cardSubtypeId);
+//         }
+
+//         /* ---------- LOCATION MATCH ---------- */
+//         let stateMatch  = !stateText  || cardState.includes(stateText);
+//         let regionMatch = !regionText || cardRegion.includes(regionText);
+//         let cityMatch   = !cityText   || cardCity.includes(cityText);
+
+//         if (categoryMatch && stateMatch && regionMatch && cityMatch) {
+//             card.style.display = 'block';
+//             visible++;
+//         } else {
+//             card.style.display = 'none';
+//         }
+//     });
+
+//     document.getElementById('vendorCount').innerText = visible;
+// }
 function applyFilters() {
 
     let selectedCategories = [];
     let selectedSubtypes   = [];
 
-    document.querySelectorAll('.category-check:checked')
-        .forEach(cb => selectedCategories.push(cb.value));
+    $('.category-check:checked').each(function () {
+        selectedCategories.push(this.value);
+    });
 
-    document.querySelectorAll('.subtype-check:checked')
-        .forEach(cb => selectedSubtypes.push(cb.value));
+    $('.subtype-check:checked').each(function () {
+        selectedSubtypes.push(this.value);
+    });
 
-    // 🔑 IMPORTANT: use TEXT, not ID
-    let stateText  = (document.querySelector('#stateSelect option:checked')?.textContent || '').toLowerCase().trim();
-    let regionText = (document.querySelector('#regionSelect option:checked')?.textContent || '').toLowerCase().trim();
-    let cityText   = (document.querySelector('#citySelect option:checked')?.textContent || '').toLowerCase().trim();
-    let selectedState  = $('#stateSelect').val();
-    let selectedRegion = $('#regionSelect').val();
-    let selectedCity   = $('#citySelect').val();
+    let stateText  = $('#stateSelect option:selected').text().toLowerCase().trim();
+    let regionText = $('#regionSelect option:selected').text().toLowerCase().trim();
+    let cityText   = $('#citySelect option:selected').text().toLowerCase().trim();
 
     if (stateText === 'select state') stateText = '';
     if (regionText === 'select region') regionText = '';
@@ -1024,16 +1095,18 @@ function applyFilters() {
 
     let visible = 0;
 
-    document.querySelectorAll('.vendor-card').forEach(card => {
+    $('.vendor-col').each(function () {
+
+        let card = this.querySelector('.vendor-card');
 
         let cardTypeId    = card.dataset.workTypeId || '';
         let cardSubtypeId = card.dataset.workSubtypeId || '';
 
-        let cardState  = (card.dataset.state  || '').toLowerCase();
+        let cardState  = (card.dataset.state || '').toLowerCase();
         let cardRegion = (card.dataset.region || '').toLowerCase();
-        let cardCity   = (card.dataset.city   || '').toLowerCase();
+        let cardCity   = (card.dataset.city || '').toLowerCase();
 
-        /* ---------- CATEGORY MATCH ---------- */
+        /* ===== CATEGORY MATCH ===== */
         let categoryMatch = true;
 
         if (selectedCategories.length > 0) {
@@ -1044,20 +1117,20 @@ function applyFilters() {
             categoryMatch = selectedSubtypes.includes(cardSubtypeId);
         }
 
-        /* ---------- LOCATION MATCH ---------- */
+        /* ===== LOCATION MATCH ===== */
         let stateMatch  = !stateText  || cardState.includes(stateText);
         let regionMatch = !regionText || cardRegion.includes(regionText);
         let cityMatch   = !cityText   || cardCity.includes(cityText);
 
         if (categoryMatch && stateMatch && regionMatch && cityMatch) {
-            card.style.display = 'block';
+            this.classList.remove('hidden');
             visible++;
         } else {
-            card.style.display = 'none';
+            this.classList.add('hidden');
         }
     });
 
-    document.getElementById('vendorCount').innerText = visible;
+    $('#vendorCount').text(visible);
 }
 
 
@@ -1144,149 +1217,5 @@ document.getElementById('citySelect')?.addEventListener('change', applyFilters);
 // Run once on load
 document.addEventListener('DOMContentLoaded', applyFilters);
 </script>
-<!-- <script>
-   /* =====================================================
-      FILTERS (CLEAN & SAFE)
-   ===================================================== */
-   document.addEventListener('DOMContentLoaded', function () {
-   
-       function applyFilters() {
-   
-           let selectedCategories = [];
-           let selectedSubtypes = [];
-   
-           document.querySelectorAll('.category-check:checked')
-               .forEach(cb => selectedCategories.push(cb.value));
-   
-           document.querySelectorAll('.subtype-check:checked')
-               .forEach(cb => selectedSubtypes.push(cb.value));
-   
-           let stateText  = ($('#stateSelect option:selected').text() || '').toLowerCase();
-           let regionText = ($('#regionSelect option:selected').text() || '').toLowerCase();
-           let cityText   = ($('#citySelect option:selected').text() || '').toLowerCase();
-   
-           if (stateText === 'select state') stateText = '';
-           if (regionText === 'select region') regionText = '';
-           if (cityText === 'select city') cityText = '';
-   
-           let visible = 0;
-   
-           document.querySelectorAll('.vendor-card').forEach(card => {
-   
-               let cardTypeId = card.dataset.workTypeId || '';
-               let cardSubtypeId = card.dataset.workSubtypeId || '';
-   
-               let cardState  = (card.dataset.state || '').toLowerCase();
-               let cardRegion = (card.dataset.region || '').toLowerCase();
-               let cardCity   = (card.dataset.city || '').toLowerCase();
-   
-               let categoryMatch = true;
-   
-               if (selectedCategories.length > 0) {
-                   categoryMatch = selectedCategories.includes(cardTypeId);
-               }
-               if (selectedSubtypes.length > 0) {
-                   categoryMatch = selectedSubtypes.includes(cardSubtypeId);
-               }
-   
-               let locationMatch =
-                   (!stateText || cardState.includes(stateText)) &&
-                   (!regionText || cardRegion.includes(regionText)) &&
-                   (!cityText || cardCity.includes(cityText));
-   
-               if (categoryMatch && locationMatch) {
-                   card.style.display = 'block';
-                   visible++;
-               } else {
-                   card.style.display = 'none';
-               }
-           });
-   
-           document.getElementById('vendorCount').innerText = visible;
-       }
-   
-       // Category toggle
-       document.querySelectorAll('.category-check').forEach(cb => {
-           cb.addEventListener('change', function () {
-               const box = document.querySelector(
-                   `.subtype-box[data-type="${this.value}"]`
-               );
-               if (box) box.classList.toggle('d-none', !this.checked);
-               applyFilters();
-           });
-       });
-   
-       document.querySelectorAll('.subtype-check')
-           .forEach(cb => cb.addEventListener('change', applyFilters));
-   
-       ['stateSelect','regionSelect','citySelect'].forEach(id => {
-           const el = document.getElementById(id);
-           if (el) el.addEventListener('change', applyFilters);
-       });
-   
-       applyFilters();
-   });
 
-      
-   $('#stateSelect').on('change', function () {
-   
-       let stateId = this.value;
-   
-       $('#regionSelect')
-           .prop('disabled', true)
-           .html('<option value="">Loading regions...</option>');
-   
-       $('#citySelect')
-           .prop('disabled', true)
-           .html('<option value="">Select City</option>');
-   
-       if (!stateId) {
-           applyFilters();
-           return;
-       }
-   
-       $.get(`/locations/regions/${stateId}`, function (regions) {
-   
-           let options = '<option value="">Select Region</option>';
-           regions.forEach(r => {
-               options += `<option value="${r.id}">${r.name}</option>`;
-           });
-   
-           $('#regionSelect')
-               .html(options)
-               .prop('disabled', false);
-   
-           applyFilters();
-       });
-   });
-   $('#regionSelect').on('change', function () {
-   
-       let regionId = this.value;
-   
-       $('#citySelect')
-           .prop('disabled', true)
-           .html('<option value="">Loading cities...</option>');
-   
-       if (!regionId) {
-           applyFilters();
-           return;
-       }
-   
-       $.get(`/locations/cities/${regionId}`, function (cities) {
-   
-           let options = '<option value="">Select City</option>';
-           cities.forEach(c => {
-               options += `<option value="${c.id}">${c.name}</option>`;
-           });
-   
-           $('#citySelect')
-               .html(options)
-               .prop('disabled', false);
-   
-           applyFilters();
-       });
-   });
-   
-   $('#citySelect').on('change', applyFilters);
-</script> -->
 @endsection
