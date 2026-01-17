@@ -178,12 +178,8 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
     © {{ date('Y') }} ConstructKaro — Designed with ❤️ in India
 </div>
 
-<script>
-function toggleProfileMenu(e){
-    e.stopPropagation();
-    profileDropdown.classList.toggle("show");
-    notificationDropdown.classList.remove("show");
-}
+<!-- <script>
+
 function toggleNotificationMenu(e){
     e.stopPropagation();
     notificationDropdown.classList.toggle("show");
@@ -193,7 +189,13 @@ document.addEventListener("click",()=>{
     profileDropdown?.classList.remove("show");
     notificationDropdown?.classList.remove("show");
 });
+</script> -->
+<script>
+function toggleProfileMenu(e){
+    e.stopPropagation();
+    profileDropdown.classList.toggle("show");
+    // notificationDropdown.classList.remove("show");
+}
 </script>
-
 </body>
 </html>

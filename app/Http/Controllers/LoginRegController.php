@@ -273,6 +273,10 @@ class LoginRegController extends Controller
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
         //  dd( $cust_data);
         $post_data = DB::table('posts')->where('user_id',$customer_id)->get();
+
+        $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
         // dd( $post_data);
         $count_post_data = count($post_data);
         //  dd( $post_data);
@@ -285,9 +289,62 @@ class LoginRegController extends Controller
         
         $customer_interests_data = DB::table('customer_interests')->where('customer_id',$customer_id)->get();
         $count_customer_interests_data = count($customer_interests_data);
+
+        $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
+      
         //  dd($post_data);
-        return view('web.customerdashboard',compact('post_data','count_post_data','count_vendor_data','vendor_data','cust_data','count_suppliers','count_customer_interests_data')); 
+        return view('web.customerdashboard',compact('post_data','notifications','notificationCount','count_post_data','count_vendor_data','vendor_data','cust_data','count_suppliers','count_customer_interests_data')); 
     }
+
+   
+    public function customerNotificationsPage()
+    {
+        $customer_id = Session::get('customer_id');
+         $cust_data = DB::table('users')->where('id',$customer_id)->first();
+        // $post_id = DB::table('posts')->where('user_id',$customer_id )->get();
+    
+        $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+
+        $notifications = DB::table('vendor_interests as vi')
+                ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+                ->select('v.*','vi.*')
+                ->get();
+                 $notificationCount = $notifications->count();
+
+        return view('web.customernotifications', compact('notifications','cust_data','notificationCount'));
+    }
+
+
+
+
+    public function handleNotificationAction(Request $request)
+    {
+        $customer_id = Session::get('customer_id');
+        $cust_data = DB::table('users')->where('id',$customer_id)->first();
+        $request->validate([
+            'notification_id' => 'required',
+            'action' => 'required|in:accepted,rejected'
+        ]);
+
+        DB::table('vendor_interests')
+            ->where('id', $request->notification_id)
+            ->update([
+                'action_status' => $request->action,
+                'is_read' => 1,
+                'updated_at' => now()
+            ]);
+
+        return response()->json(['success' => true]);
+    }
+
 
     // ============================= Vender DASHBOARD =============================
 
@@ -311,70 +368,6 @@ class LoginRegController extends Controller
     }
 
  
-
-//     public function supplierDashboard()
-// {
-//     $supplier_id = Session::get('supplier_id');
-//     // dd($supplier_id);
-//     /* ===============================
-//        PRODUCTS STATS
-//     =============================== */
-
-//     $productCount = DB::table('supplier_products_data')
-//         ->where('supp_id', $supplier_id)
-//         ->count();
-
-//     $avgPrice = DB::table('supplier_products_data')
-//         ->where('supp_id', $supplier_id)
-//         ->avg('price');
-
-//     $latestProduct = DB::table('supplier_products_data')
-//         ->where('supp_id', $supplier_id)
-//         ->latest()
-//         ->value('price');
-
-//     /* ===============================
-//        PRODUCTS ADDED – LAST 7 DAYS
-//     =============================== */
-//     $productsByDay = DB::table('supplier_products_data')
-//         ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
-//         ->where('supp_id', $supplier_id)
-//         ->whereDate('created_at', '>=', now()->subDays(6))
-//         ->groupBy('date')
-//         ->orderBy('date')
-//         ->get();
-
-//     $labels = [];
-//     $values = [];
-
-//     foreach ($productsByDay as $row) {
-//         $labels[] = date('D', strtotime($row->date));
-//         $values[] = $row->total;
-//     }
-
-//     /* ===============================
-//        PRODUCT CATEGORY DISTRIBUTION
-//     =============================== */
-//     $categoryData = DB::table('supplier_products_data as sp')
-//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-//         ->where('sp.supp_id', $supplier_id)
-//         ->select('mc.name', DB::raw('COUNT(sp.id) as total'))
-//         ->groupBy('mc.name')
-//         ->get();
-
-//     $categoryLabels = $categoryData->pluck('name');
-//     $categoryCounts = $categoryData->pluck('total');
-
-//     return view('web.supplierdashboard', compact(
-//         'productCount',
-//         'avgPrice',
-//         'latestProduct',
-//         'labels',
-//         'values',
-//         'categoryLabels',
-//         'categoryCounts'
-//     ));
-// }
     public function supplierDashboard()
     {
         $supplier_id = Session::get('supplier_id');

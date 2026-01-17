@@ -507,143 +507,146 @@
 }
 
 </style>
-{{-- ================= MAIN CONTENT ================= --}}
-<div class="container-fluid px-4 py-4">
-   <div class="row g-4">
-      {{-- ================= SIDEBAR ================= --}}
-      <div class="col-lg-3">
-         <div class="filter-sidebar">
-            <div class="filter-header">
-               <div class="filter-icon-box">
-                  <i class="bi bi-funnel-fill"></i>
-               </div>
-               <div>
-                  <h5 class="mb-0 fw-bold">Smart Filters</h5>
-                  <small class="text-muted">Refine your search</small>
-               </div>
-            </div>
-            <div class="mb-4">
-               <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h6 class="fw-bold mb-0">Work Category</h6>
-                  <span class="badge bg-primary rounded-pill" id="categoryCount">0</span>
-               </div>
-               @foreach($work_types as $work)
-               <div class="mb-2">
-                  <label class="filter-category-item d-flex align-items-center gap-3">
-                  <input type="checkbox" class="form-check-input m-0 category-check" value="{{ $work->id }}">
-                  <span class="fw-semibold">{{ $work->work_type }}</span>
-                  </label>
-                  <div class="ms-5 mt-2 d-none subtype-box" data-type="{{ $work->id }}">
-                     @foreach(DB::table('work_subtypes')->where('work_type_id',$work->id)->get() as $sub)
-                     <label class="d-flex align-items-center gap-2 mb-1 small">
-                     <input type="checkbox" class="form-check-input subtype-check" value="{{ $sub->id }}">
-                     {{ $sub->work_subtype }}
-                     </label>
+      {{-- ================= MAIN CONTENT ================= --}}
+      <div class="container-fluid px-4 py-4">
+         <div class="row g-4">
+            {{-- ================= SIDEBAR ================= --}}
+            <div class="col-lg-3">
+               <div class="filter-sidebar">
+                  <div class="filter-header">
+                     <div class="filter-icon-box">
+                        <i class="bi bi-funnel-fill"></i>
+                     </div>
+                     <div>
+                        <h5 class="mb-0 fw-bold">Smart Filters</h5>
+                        <small class="text-muted">Refine your search</small>
+                     </div>
+                  </div>
+                  <div class="mb-4">
+                     <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">Work Category</h6>
+                        <span class="badge bg-primary rounded-pill" id="categoryCount">0</span>
+                     </div>
+                     @foreach($work_types as $work)
+                     <div class="mb-2">
+                        <label class="filter-category-item d-flex align-items-center gap-3">
+                        <input type="checkbox" class="form-check-input m-0 category-check" value="{{ $work->id }}">
+                        <span class="fw-semibold">{{ $work->work_type }}</span>
+                        </label>
+                        <div class="ms-5 mt-2 d-none subtype-box" data-type="{{ $work->id }}">
+                           @foreach(DB::table('work_subtypes')->where('work_type_id',$work->id)->get() as $sub)
+                           <label class="d-flex align-items-center gap-2 mb-1 small">
+                           <input type="checkbox" class="form-check-input subtype-check" value="{{ $sub->id }}">
+                           {{ $sub->work_subtype }}
+                           </label>
+                           @endforeach
+                        </div>
+                     </div>
                      @endforeach
                   </div>
                </div>
-               @endforeach
             </div>
-         </div>
+            {{-- ================= MAIN LIST ================= --}}
+            <div class="col-lg-9">
+               {{-- ================= LOCATION FILTER ================= --}}
+               <div class="search-section mb-4">
+                  <div class="row g-3">
+                     <div class="col-md-4">
+                        <label class="form-label fw-semibold small text-muted">State</label>
+                        <select id="stateSelect" class="form-select form-select-custom">
+                           <option value="">Select State</option>
+                           @foreach($states as $state)
+                           <option value="{{ $state->id }}">{{ $state->name }}</option>
+                           @endforeach
+                        </select>
+                     </div>
+                     <div class="col-md-4">
+                        <label class="form-label fw-semibold small text-muted">Region</label>
+                        <select id="regionSelect" class="form-select form-select-custom" disabled>
+                           <option value="">Select Region</option>
+                        </select>
+                     </div>
+                     <div class="col-md-4">
+                        <label class="form-label fw-semibold small text-muted">City</label>
+                        <select id="citySelect" class="form-select form-select-custom" disabled>
+                           <option value="">Select City</option>
+                        </select>
+                     </div>
+                  </div>
+               </div>
+               <h3 class="fw-bold mb-3">
+                  <span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
+               </h3>
+               {{-- ================= VENDORS ================= --}}
+               <div class="vendor-grid">
+                  @foreach($vendor_reg as $vendor)
+                  <div class="card vendor-card"
+                  data-vendor-id="{{ $vendor->id }}"
+                  {{-- BASIC --}}
+                  data-business="{{ $vendor->business_name }}"
+                  data-fullname="{{ $vendor->name }}"
+                  data-contact-name="{{ $vendor->contact_person_name }}"
+                  data-mobile="{{ $vendor->mobile }}"
+                  data-email="{{ $vendor->email }}"
+                  {{-- WORK --}}
+                  data-work-type-id="{{ $vendor->work_type_id }}"
+                  data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
+                  data-work-type="{{ strtolower($vendor->work_type) }}"
+                  data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
+                  data-experience="{{ $vendor->experience_years }}"
+                  data-team-size="{{ $vendor->team_size_data }}"
+                  data-min-project="{{ $vendor->min_project_value }}"
+                  {{-- COMPANY --}}
+                  data-company-name="{{ $vendor->company_name }}"
+                  data-entity-type="{{ $vendor->entity_type }}"
+                  data-gst="{{ $vendor->gst_number }}"
+                  data-pan="{{ $vendor->pan_number }}"
+                  data-msme="{{ $vendor->msme_registered }}"
+                  {{-- LOCATION --}}
+                  data-state-id="{{ $vendor->state }}"
+                  data-region-id="{{ $vendor->region }}"
+                  data-city-id="{{ $vendor->city }}"
+                  {{-- BANK (OPTIONAL) --}}
+                  data-bank-name="{{ $vendor->bank_name }}"
+                  data-account-type="{{ $vendor->account_type }}">
+                  <div class="card-header">
+                     <div class="title">{{ strtoupper($vendor->business_name) }}</div>
+                     <div class="verified">✔ Verified</div>
+                  </div>
+
+                  <div class="subtitle">{{ $vendor->work_type }}</div>
+                  <div class="location">📍  {{ $vendor->statename ?? '' }},
+                        {{ $vendor->regionname ?? '' }},
+                        {{ $vendor->cityname ?? '' }}</div>
+
+                  <!-- <div class="tags">
+                     <div class="tag">✔ {{ $vendor->work_subtype_data }}</div>
+                  
+                  </div> -->
+                  <div class="tags">
+         @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
+            <span class="tag-chip">
+                  ✔ {{ trim($subtype) }}
+            </span>
+         @endforeach
       </div>
-      {{-- ================= MAIN LIST ================= --}}
-      <div class="col-lg-9">
-         {{-- ================= LOCATION FILTER ================= --}}
-         <div class="search-section mb-4">
-            <div class="row g-3">
-               <div class="col-md-4">
-                  <label class="form-label fw-semibold small text-muted">State</label>
-                  <select id="stateSelect" class="form-select form-select-custom">
-                     <option value="">Select State</option>
-                     @foreach($states as $state)
-                     <option value="{{ $state->id }}">{{ $state->name }}</option>
-                     @endforeach
-                  </select>
-               </div>
-               <div class="col-md-4">
-                  <label class="form-label fw-semibold small text-muted">Region</label>
-                  <select id="regionSelect" class="form-select form-select-custom" disabled>
-                     <option value="">Select Region</option>
-                  </select>
-               </div>
-               <div class="col-md-4">
-                  <label class="form-label fw-semibold small text-muted">City</label>
-                  <select id="citySelect" class="form-select form-select-custom" disabled>
-                     <option value="">Select City</option>
-                  </select>
-               </div>
-            </div>
-         </div>
-         <h3 class="fw-bold mb-3">
-            <span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
-         </h3>
-         {{-- ================= VENDORS ================= --}}
-          <div class="vendor-grid">
-            @foreach($vendor_reg as $vendor)
-            <div class="card vendor-card"
-            data-vendor-id="{{ $vendor->id }}"
-              {{-- BASIC --}}
-              data-business="{{ $vendor->business_name }}"
-              data-fullname="{{ $vendor->name }}"
-              data-contact-name="{{ $vendor->contact_person_name }}"
-              data-mobile="{{ $vendor->mobile }}"
-              data-email="{{ $vendor->email }}"
-              {{-- WORK --}}
-              data-work-type-id="{{ $vendor->work_type_id }}"
-              data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
-              data-work-type="{{ strtolower($vendor->work_type) }}"
-              data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
-              data-experience="{{ $vendor->experience_years }}"
-              data-team-size="{{ $vendor->team_size_data }}"
-              data-min-project="{{ $vendor->min_project_value }}"
-              {{-- COMPANY --}}
-              data-company-name="{{ $vendor->company_name }}"
-              data-entity-type="{{ $vendor->entity_type }}"
-              data-gst="{{ $vendor->gst_number }}"
-              data-pan="{{ $vendor->pan_number }}"
-              data-msme="{{ $vendor->msme_registered }}"
-              {{-- LOCATION --}}
-              data-state-id="{{ $vendor->state }}"
-              data-region-id="{{ $vendor->region }}"
-              data-city-id="{{ $vendor->city }}"
-              {{-- BANK (OPTIONAL) --}}
-              data-bank-name="{{ $vendor->bank_name }}"
-              data-account-type="{{ $vendor->account_type }}">
-              <div class="card-header">
-                <div class="title">{{ strtoupper($vendor->business_name) }}</div>
-                <div class="verified">✔ Verified</div>
-              </div>
-
-              <div class="subtitle">{{ $vendor->work_type }}</div>
-              <div class="location">📍  {{ $vendor->statename ?? '' }},
-                    {{ $vendor->regionname ?? '' }},
-                    {{ $vendor->cityname ?? '' }}</div>
-
-              <!-- <div class="tags">
-                <div class="tag">✔ {{ $vendor->work_subtype_data }}</div>
-              
-              </div> -->
-              <div class="tags">
-    @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
-        <span class="tag-chip">
-            ✔ {{ trim($subtype) }}
-        </span>
-    @endforeach
-</div>
 
 
-              <div class="details">
-                <p>✔ {{ $vendor->experience_years }} years experience</p>
-                <p>✔ Premium {{$vendor->work_type}}</p>
-              </div>
+      <div class="details">
+         <p>✔ {{ $vendor->experience_years }} years experience</p>
+         <p>✔ Premium {{$vendor->work_type}}</p>
+      </div>
 
-              <div class="actions">
-                <button class="btn btn-outline" onclick="viewProfile()">View Profile</button>
-                <button class="btn btn-primary" onclick="showInterest()">Show Interest</button>
-              </div>
-            </div>
-            @endforeach
-          </div>
+      <div class="actions">
+        
+         <button class="btn btn-outline" onclick="viewProfile({{ $vendor->id }})">
+            View Profile
+         </button>
+
+      </div>
+   </div>
+   @endforeach
+   </div>
    </div>
 </div>
 </div>
@@ -662,88 +665,7 @@
       </div>
    </div>
 </div>
-{{-- ================= VENDOR MODAL (ADDED – REQUIRED) ================= --}}
-<div class="modal fade" id="vendorModal" tabindex="-1">
-   <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content premium-modal border-0">
-         <!-- HEADER -->
-         <div class="premium-header d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-               <div class="vendor-avatar">
-                  <i class="bi bi-person-badge-fill"></i>
-               </div>
-               <div>
-                  <h5 class="fw-bold mb-0">Vendor Details</h5>
-                  <small class="opacity-75">Verified professional profile</small>
-               </div>
-            </div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-         </div>
-         <!-- BODY -->
-         <div class="modal-body p-4">
-            <!-- BASIC INFO -->
-            <div class="row g-4 mb-4">
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-person-fill text-primary"></i>
-                        <strong>Name</strong>
-                     </div>
-                     <div class="fw-bold fs-6" id="vFullname">—</div>
-                  </div>
-               </div>
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-briefcase-fill text-primary"></i>
-                        <strong>Business</strong>
-                     </div>
-                     <div class="fw-bold fs-6" id="vBusiness">—</div>
-                  </div>
-               </div>
-            </div>
-            <!-- CONTACT INFO -->
-            <div class="row g-4 mb-4">
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-telephone-fill text-primary"></i>
-                        <strong>Mobile</strong>
-                     </div>
-                     <div class="fw-semibold" id="vMobile">—</div>
-                  </div>
-               </div>
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-envelope-fill text-primary"></i>
-                        <strong>Email</strong>
-                     </div>
-                     <div class="fw-semibold" id="vEmail">—</div>
-                  </div>
-               </div>
-            </div>
-            <!-- LOCATION -->
-            <div class="contact-info-section mb-4">
-               <div class="d-flex align-items-center gap-2 mb-2">
-                  <i class="bi bi-geo-alt-fill text-primary"></i>
-                  <strong>Location</strong>
-               </div>
-               <div class="fw-semibold" id="vLocation">—</div>
-            </div>
-            <!-- ACTIONS -->
-            <div class="d-flex justify-content-end gap-2">
-               <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
-               Close
-               </button>
-               <a href="tel:" id="callVendorBtn" class="btn btn-gradient-primary px-4">
-               <i class="bi bi-telephone-outbound-fill me-1"></i> Call Now
-               </a>
-            </div>
-         </div>
-      </div>
-   </div>
-</div>
+
 {{-- ================= SCRIPTS ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -889,4 +811,11 @@
    
    $('#citySelect').on('change', applyFilters);
 </script>
+<script>
+function viewProfile(id) {
+    window.location.href = "{{ url('vendor/profile/id') }}/" + id;
+}
+</script>
+
+
 @endsection

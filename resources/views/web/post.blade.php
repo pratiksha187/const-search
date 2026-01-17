@@ -16,11 +16,7 @@
     padding: 24px 0 80px;
 }
 
-/* WRAPPER (ONLY ONE) */
-/* .page-wrapper {
-    max-width: 1200px;
-    margin: auto;
-} */
+
 .page-wrapper {
     max-width: 1650px;
     margin: auto;
@@ -224,42 +220,28 @@ textarea.form-control-lg {
                 </div>
             </div>
 
+          
             <!-- REGION -->
-            <!-- <div class="col-md-4">
+            <div class="col-md-4">
                 <label class="form-label-custom">Region</label>
-                 <select id="regionSelect" class="form-select form-select-custom" disabled>
-                            <option value="">Select Region</option>
-                        </select>
-            </div> -->
+                <select id="regionSelect"
+                        name="region_id"
+                        class="form-select form-select-lg"
+                        disabled>
+                    <option value="">Select Region</option>
+                </select>
+            </div>
 
             <!-- CITY -->
-            <!-- <div class="col-md-4">
+            <div class="col-md-4">
                 <label class="form-label-custom">City</label>
-                <select id="citySelect" class="form-select form-select-custom" disabled>
-                            <option value="">Select City</option>
-                        </select>
-            </div> -->
-<!-- REGION -->
-<div class="col-md-4">
-    <label class="form-label-custom">Region</label>
-    <select id="regionSelect"
-            name="region_id"
-            class="form-select form-select-lg"
-            disabled>
-        <option value="">Select Region</option>
-    </select>
-</div>
-
-<!-- CITY -->
-<div class="col-md-4">
-    <label class="form-label-custom">City</label>
-    <select id="citySelect"
-            name="city_id"
-            class="form-select form-select-lg"
-            disabled>
-        <option value="">Select City</option>
-    </select>
-</div>
+                <select id="citySelect"
+                        name="city_id"
+                        class="form-select form-select-lg"
+                        disabled>
+                    <option value="">Select City</option>
+                </select>
+            </div>
 
             <!-- BUDGET -->
             <div class="col-md-4">
@@ -321,32 +303,7 @@ textarea.form-control-lg {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-// $("#stateDropdown").change(function () {
-//     let id = $(this).val();
-//     $("#regionDropdown").html('<option>Loading...</option>');
-//     $("#cityDropdown").html('');
 
-//     $.get("/get-regions/" + id, function (data) {
-//         $("#regionDropdown").html('<option value="">Select Region</option>');
-//         data.forEach(item => {
-//             $("#regionDropdown").append(`<option value="${item.id}">${item.name}</option>`);
-//         });
-//     });
-// });
-
-// $("#regionDropdown").change(function () {
-//     let id = $(this).val();
-//     $("#cityDropdown").html('<option>Loading...</option>');
-
-//     $.get("/get-cities/" + id, function (data) {
-//         $("#cityDropdown").html('<option value="">Select City</option>');
-//         data.forEach(item => {
-//             $("#cityDropdown").append(`<option value="${item.id}">${item.name}</option>`);
-//         });
-//     });
-// });
-</script>
 <script>
 $(document).ready(function () {
     // Initialize Select2

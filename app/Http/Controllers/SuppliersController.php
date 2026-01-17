@@ -762,6 +762,7 @@ class SuppliersController extends Controller
 public function supplierserch()
 {
     $customer_id = Session::get('customer_id');
+    $cust_data = DB::table('users')->where('id',$customer_id)->first();
     $vendor_id   = Session::get('vendor_id');
     $supplier_id = Session::get('supplier_id');
 
@@ -854,7 +855,7 @@ if ($customer_id || $vendor_id) {
         'delivery_type',
         'maximum_distances',
         'supplier_data',
-        'layout',
+        'layout','cust_data',
         'customer_id',
         'brands',
         'vendor_id',

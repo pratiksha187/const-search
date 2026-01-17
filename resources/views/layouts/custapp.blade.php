@@ -30,7 +30,7 @@
             position: fixed;
             width: 100%;
             top: 0;
-            z-index: 20;
+            z-index: 1000;
             box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
 
@@ -62,16 +62,9 @@
             color: var(--orange);
         }
 
-        .top-menu a.active {
-            background: var(--orange);
-            color: #fff;
-            box-shadow: 0 6px 14px rgba(242, 92, 5, 0.35);
-        }
-
         /* ================= NOTIFICATION ================= */
         .notification-container {
             position: relative;
-            margin-left: 18px;
         }
 
         .notification-container i {
@@ -89,7 +82,7 @@
             border-radius: 14px;
             box-shadow: 0 18px 40px rgba(0,0,0,0.18);
             display: none;
-            z-index: 300;
+            z-index: 9999;
             overflow: hidden;
         }
 
@@ -136,11 +129,10 @@
             padding: 30px;
         }
 
-        /* Dropdown */
         .profile-dropdown {
-            position: absolute;
-            top: 70px;
-            right: 20px;
+            position: fixed;
+            top: 78px;
+            right: 32px;
             width: 240px;
             background: #ffffff;
             border-radius: 18px;
@@ -148,12 +140,6 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.12);
             display: none;
             z-index: 9999;
-            animation: fadeSlide 0.25s ease;
-        }
-
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(-10px); }
-            to   { opacity: 1; transform: translateY(0); }
         }
 
         .profile-dropdown .dropdown-item {
@@ -161,11 +147,10 @@
             align-items: center;
             gap: 14px;
             padding: 14px 22px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 500;
             color: #0f172a;
             text-decoration: none;
-            transition: background 0.2s ease;
         }
 
         .profile-dropdown .dropdown-item:hover {
@@ -188,34 +173,6 @@
     </style>
 </head>
 
-<!-- @php
-    // ✅ Safe Customer Session Logic
-    $cust_data = null;
-    $customer_id = session('customer_id');
-
-    if ($customer_id) {
-        // change table name if your customer table is different
-        $cust_data = DB::table('users')->where('id', $customer_id)->first();
-
-        // ✅ If you have is_read column use it, else remove where('is_read',0)
-        $unreadCountQuery = DB::table('customer_notifications')->where('customer_id', $customer_id);
-
-        // If column exists in your table then keep, otherwise comment this line
-        // $unreadCountQuery->where('is_read', 0);
-
-        $unreadCount = $unreadCountQuery->count();
-
-        $usernotifications = DB::table('customer_notifications')
-            ->where('customer_id', $customer_id)
-            ->latest()
-            ->limit(5)
-            ->get();
-    } else {
-        $unreadCount = 0;
-        $usernotifications = collect();
-    }
-@endphp -->
-
 <body>
 
 <div class="main-header">
@@ -225,31 +182,45 @@
         <img src="{{ asset('images/logobg.png') }}" alt="ConstructKaro">
     </a>
 
-    <!-- MENU -->
     <div class="top-menu">
-        @if($cust_data)
 
-            <a href="{{route('dashboard')}}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-            <a href="{{ route('myposts') }}" class="{{ request()->routeIs('myposts') ? 'active' : '' }}">My Posts</a>
-            <a href="{{ route('post') }}" class="{{ request()->routeIs('post') ? 'active' : '' }}">Add Post</a>
-            <a href="{{ route('search_vendor') }}" class="{{ request()->routeIs('search_vendor') ? 'active' : '' }}">Search Vendors</a>
-            <a href="{{ route('supplierserch') }}" class="{{ request()->routeIs('supplierserch') ? 'active' : '' }}">Search Suppliers</a>
+        <a href="{{ route('dashboard') }}">Dashboard</a>
+        <a href="{{ route('myposts') }}">My Posts</a>
+        <a href="{{ route('post') }}">Add Post</a>
 
-           
-            <!-- PROFILE -->
-            <div class="header-profile" onclick="toggleProfileMenu(event)">
-                <div class="profile-trigger-avatar">
-                    {{ strtoupper(substr($cust_data->name ?? 'U', 0, 1)) }}
-                </div>
-                <span>{{ $cust_data->name ?? 'User' }}</span>
-                <i class="bi bi-chevron-down"></i>
+        <!-- 🔔 Notification -->
+        <div class="notification-container" onclick="toggleNotification(event)">
+            <i class="bi bi-bell"></i>
+
+            @if(($notificationCount) > 0)
+            <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle">
+                {{ $notificationCount }}
+            </span>
+            @endif
+
+            <div class="notification-dropdown" id="notificationDropdown" onclick="event.stopPropagation()">
+                @forelse($notifications  as $note)
+                    <a href="{{ route('customer.notifications') }}">
+                        <strong>{{ $note->vendor_name ?? 'Vendor #'.$note->vendor_id }}</strong><br>
+                        <small class="text-muted">Interested in your project</small><br>
+                        <small>{{ \Carbon\Carbon::parse($note->created_at)->diffForHumans() }}</small>
+                    </a>
+                @empty
+                    <div class="text-center p-3 text-muted">No notifications</div>
+                @endforelse
             </div>
+        </div>
 
-        @else
-            <!-- ✅ GUEST MENU -->
-            <a href="{{ route('login_register') }}">Customer Login</a>
-            <a href="{{ route('login_register') }}">Customer Register</a>
-        @endif
+
+        <!-- 👤 Profile -->
+        <div class="header-profile" onclick="toggleProfileMenu(event)">
+            <div class="profile-trigger-avatar">
+                {{ strtoupper(substr($cust_data->name ?? 'U', 0, 1)) }}
+            </div>
+            <span>{{ $cust_data->name ?? 'User' }}</span>
+            <i class="bi bi-chevron-down"></i>
+        </div>
+
     </div>
 </div>
 
@@ -257,12 +228,12 @@
 <div class="profile-dropdown" id="profileDropdown">
     <a href="{{ route('cutomerprofile') }}" class="dropdown-item">
         <span class="icon"><i data-lucide="user"></i></span>
-        <span>Profile</span>
+        Profile
     </a>
 
     <a href="{{ route('logout') }}" class="dropdown-item logout">
         <span class="icon"><i data-lucide="log-out"></i></span>
-        <span>Logout</span>
+        Logout
     </a>
 </div>
 @endif
@@ -271,38 +242,45 @@
     @yield('content')
 </div>
 
-<script>
-function toggleProfileMenu(event){
-    event.stopPropagation();
-    const menu = document.getElementById('profileDropdown');
-    if(!menu) return;
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-
-    const notify = document.getElementById('notificationDropdown');
-    if(notify) notify.style.display = 'none';
-}
-
-function toggleNotificationMenu(event){
-    event.stopPropagation();
-    const menu = document.getElementById('notificationDropdown');
-    if(!menu) return;
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-
-    const profile = document.getElementById('profileDropdown');
-    if(profile) profile.style.display = 'none';
-}
-
-document.addEventListener('click', function(){
-    const profile = document.getElementById('profileDropdown');
-    const notify  = document.getElementById('notificationDropdown');
-    if(profile) profile.style.display = 'none';
-    if(notify) notify.style.display = 'none';
-});
-</script>
-
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();
+
+
+function closeAll() {
+    const notif = document.getElementById('notificationDropdown');
+    const profile = document.getElementById('profileDropdown');
+    if (notif) notif.style.display = 'none';
+    if (profile) profile.style.display = 'none';
+}
+
+
+function toggleProfileMenu(e) {
+    e.stopPropagation();
+    closeAll();
+
+    const profile = document.getElementById('profileDropdown');
+    if (profile) profile.style.display = 'block';
+}
+
+document.addEventListener('click', closeAll);
+
+
+   function toggleNotification(e) {
+    e.stopPropagation();
+    closeAll();
+
+    const notif = document.getElementById('notificationDropdown');
+    if (notif) notif.style.display = 'block';
+}
+
+    function toggleProfileMenu(e) {
+        e.stopPropagation();
+        closeAll();
+        document.getElementById('profileDropdown').style.display = 'block';
+    }
+
+    document.addEventListener('click', closeAll);
 </script>
 
 </body>

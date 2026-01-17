@@ -25,34 +25,89 @@ class HomeController extends Controller
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
         $work_types = DB::table('work_types')->get();
         $work_subtypes = DB::table('work_subtypes')->get();
+        $states = DB::table('state')->orderBy('name')->get();
+        $budget_range = DB::table('budget_range')->get();
         $posts = DB::table('posts')
-            // ->leftJoin('projecttype', 'posts.project_type_id', '=', 'projecttype.id')
             ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
             ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
             ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
-           
+            ->leftJoin('region', 'region.id', '=', 'posts.region')
+            ->leftJoin('city', 'city.id', '=', 'posts.city')
+            ->leftJoin('state', 'state.id', '=', 'posts.state')
             ->select(
-                'posts.*',
-                'work_types.work_type as work_type_name',
-                'work_subtypes.work_subtype',
-                'budget_range.budget_range as budget_range'
-               
-            )
+                    'posts.*',
 
-            ->where('posts.user_id', $customer_id)
-            ->groupBy(
-                'posts.id',
-                'work_subtypes.work_subtype',
-                'budget_range.budget_range'
-            )
-            ->orderBy('posts.id', 'DESC')
-            ->paginate(10);   // ✅ Pagination
+                    // ✅ IMPORTANT: SEND IDS TO FRONTEND
+                    'posts.state as state_id',
+                    'posts.region as region_id',
+                    'posts.city as city_id',
+
+                    // Names (for table display)
+                    'state.name as statename',
+                    'region.name as regionname',
+                    'city.name as cityname',
+
+                    'work_types.work_type as work_type_name',
+                    'work_subtypes.work_subtype as work_subtype_name',
+
+                    // ✅ IMPORTANT FOR EDIT BUDGET
+                    'posts.budget_id as budget_id',
+                    'budget_range.budget_range as budget_range'
+                )
+                ->where('posts.user_id', $customer_id)
+                ->orderBy('posts.id', 'DESC')
+                ->paginate(10);
+
+        // $posts = DB::table('posts')
+        //     // ->leftJoin('projecttype', 'posts.project_type_id', '=', 'projecttype.id')
+        //     ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
+        //     ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
+        //     ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
+        //     ->leftJoin('region', 'region.id', '=', 'posts.region')
+        //     ->leftJoin('city', 'city.id', '=', 'posts.city')
+        //     ->leftJoin('state', 'state.id', '=', 'posts.state')
+           
+        //     ->select(
+        //         'posts.*',
+        //         'region.name as regionname','state.name as statename','city.name as cityname',
+        //         'work_types.work_type as work_type_name',
+        //         'work_subtypes.work_subtype as work_subtype_name',
+        //         'budget_range.budget_range as budget_range'
+               
+        //     )
+
+        //     ->where('posts.user_id', $customer_id)
+        //     ->groupBy(
+        //         'posts.id',
+        //         'work_subtypes.work_subtype',
+        //         'budget_range.budget_range'
+        //     )
+        //     ->orderBy('posts.id', 'DESC')
+        //     ->paginate(10);   // ✅ Pagination
         // dd($posts);
-        return view('web.my-posts', compact('posts','work_types','cust_data'));
+         $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+         $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
+        return view('web.my-posts', compact('posts','work_types','cust_data','notifications','budget_range','notificationCount','states'));
     }
 
     public function post(){
         $customer_id = Session::get('customer_id');
+        $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+        $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
         $work_types = DB::table('work_types')->get();
         $states = DB::table('state')->orderBy('name')->get();
@@ -60,7 +115,7 @@ class HomeController extends Controller
         $work_subtypes = DB::table('work_subtypes')->get();
         $budget_range = DB::table('budget_range')->get();
         // $states = DB::connection('mysql2')->table('states')->get();
-        return view('web.post',compact('work_subtypes','budget_range','work_types','states','cust_data'));
+        return view('web.post',compact('work_subtypes','budget_range','work_types','states','cust_data','notifications','notificationCount'));
     }
 
     public function getProjectTypes($workTypeId)
@@ -93,12 +148,20 @@ class HomeController extends Controller
     public function cutomerprofile()
     {
         $customer_id = Session::get('customer_id');
-
+        $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+        $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
       
+//   $cust_data = DB::table('users')->where('id',$customer_id)->first();
+        $cust_data = DB::table('users')->where('id', $customer_id)->first();
 
-        $user = DB::table('users')->where('id', $customer_id)->first();
-
-        return view('web.cutomerprofile', compact('user'));
+        return view('web.cutomerprofile', compact('cust_data','notifications','notificationCount'));
     }
     
    
@@ -136,7 +199,7 @@ class HomeController extends Controller
         SESSION
         ====================== */
         $customer_id = Session::get('customer_id');
-
+        $cust_data = DB::table('users')->where('id',$customer_id)->first();
         /* ======================
         MASTER DATA
         ====================== */
@@ -201,6 +264,7 @@ class HomeController extends Controller
         RETURN VIEW
         ====================== */
         return view('web.search_vendor', [
+            'cust_data' =>$cust_data,
             'work_types'  => $work_types,
             'states'      => $states,
             'vendor_reg'  => $vendor_reg,
@@ -261,204 +325,116 @@ class HomeController extends Controller
     }
 
 
-    // public function vendorinterestcheck(Request $request)
-    // {
-    //     $cust_id   = $request->cust_id;
-    //     // dd($cust_id );
-    //     $vendor_id = Session::get('vendor_id');
-          
-    //     if (!$vendor_id) {
-    //         return response()->json([
-    //             'error' => 'Unauthorized'
-    //         ], 401);
-    //     }
+    public function vendorinterestcheck(Request $request)
+    {
+        $cust_id   = $request->cust_id;
+        $vendor_id = Session::get('vendor_id');
 
-    //     // 🔢 TOTAL USED LEADS (IMPORTANT)
-    //     $usedLeads = DB::table('vendor_interests')
-    //         ->where('vendor_id', $vendor_id)
-    //         ->count();
-    //     // dd( $usedLeads );
-    //     // 🚫 LIMIT REACHED → PAYMENT REQUIRED
-    //     if ($usedLeads >= 5) {
-    //         return response()->json([
-    //             'payment_required' => true,
-    //             'remaining' => 0
-    //         ]);
-    //     }
+        if (!$vendor_id) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
-    //     // 🔁 Prevent duplicate interest for same customer
-    //     $already = DB::table('vendor_interests')
-    //         ->where('customer_id', $cust_id)
-    //         ->where('vendor_id', $vendor_id)
-    //         ->exists();
+        /* ===============================
+        1️⃣ ALREADY UNLOCKED
+        ================================ */
+        $already = DB::table('vendor_interests')
+            ->where('customer_id', $cust_id)
+            ->where('vendor_id', $vendor_id)
+            ->exists();
 
-    //     if (!$already) {
-    //         DB::table('vendor_interests')->insert([
-    //             'customer_id' => $cust_id,
-    //             'vendor_id'   => $vendor_id,
-    //             'created_at'  => now()
-    //         ]);
-    //     }
+        if ($already) {
+            return response()->json([
+                'success' => true,
+                'already_exists' => true,
+                'payment_required' => false,
+                'remaining' => null
+            ]);
+        }
 
-    //     $remaining = 5 - ($usedLeads + 1);
-    
+        /* ===============================
+        2️⃣ CHECK LEAD BALANCE
+        ================================ */
+        $leadBalance = DB::table('vendor_reg')
+            ->where('id', $vendor_id)
+            ->value('lead_balance');
 
-    //     return response()->json([
-    //         'success' => true,
-    //         'payment_required' => false,
-    //         'remaining' => max(0, $remaining)
-    //     ]);
-    // }
-public function vendorinterestcheck(Request $request)
-{
-    $cust_id   = $request->cust_id;
-    $vendor_id = Session::get('vendor_id');
+        if ($leadBalance <= 0) {
+            return response()->json([
+                'success' => false,
+                'already_exists' => false,
+                'payment_required' => true,
+                'remaining' => 0
+            ]);
+        }
 
-    if (!$vendor_id) {
-        return response()->json([
-            'error' => 'Unauthorized'
-        ], 401);
-    }
+        /* ===============================
+        3️⃣ CONSUME 1 LEAD
+        ================================ */
+        DB::beginTransaction();
 
-    /* ===============================
-       1️⃣ CHECK ALREADY UNLOCKED FIRST
-    ================================ */
-    $already = DB::table('vendor_interests')
-        ->where('customer_id', $cust_id)
-        ->where('vendor_id', $vendor_id)
-        ->exists();
-
-    if ($already) {
-        return response()->json([
-            'success' => true,
-            'already_exists' => true,      // ⭐ KEY FLAG
-            'payment_required' => false,
-            'remaining' => null
-        ]);
-    }
-
-    /* ===============================
-       2️⃣ COUNT USED LEADS
-    ================================ */
-    $usedLeads = DB::table('vendor_interests')
-        ->where('vendor_id', $vendor_id)
-        ->count();
-
-    /* ===============================
-       3️⃣ LIMIT REACHED → PAYMENT
-    ================================ */
-    if ($usedLeads >= 5) {
-        return response()->json([
-            'success' => false,
-            'already_exists' => false,
-            'payment_required' => true,
-            'remaining' => 0
-        ]);
-    }
-
-    /* ===============================
-       4️⃣ INSERT NEW INTEREST
-    ================================ */
-    DB::table('vendor_interests')->insert([
-        'customer_id' => $cust_id,
-        'vendor_id'   => $vendor_id,
-        'created_at'  => now()
-    ]);
-
-    return response()->json([
-        'success' => true,
-        'already_exists' => false,
-        'payment_required' => false,
-        'remaining' => 5 - ($usedLeads + 1)
-    ]);
-}
-
-
-public function customerinterestcheck(Request $request)
-{
-    $vend_id = $request->vend_id;
-    $customer_id = Session::get('customer_id');
-
-    if (!$customer_id) {
-        return response()->json([
-            'authorized' => false
-        ], 401);
-    }
-
-    // Avoid duplicate entry (optional but good)
-    $alreadyInterested = DB::table('customer_interests')
-        ->where('customer_id', $customer_id)
-        ->where('vendor_id', $vend_id)
-        ->exists();
-
-    if (!$alreadyInterested) {
-        DB::table('customer_interests')->insert([
-            'customer_id' => $customer_id,
-            'vendor_id'   => $vend_id,
+        DB::table('vendor_interests')->insert([
+            'customer_id' => $cust_id,
+            'vendor_id'   => $vendor_id,
             'created_at'  => now()
         ]);
+
+        DB::table('vendor_reg')
+            ->where('id', $vendor_id)
+            ->decrement('lead_balance', 1);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'already_exists' => false,
+            'payment_required' => false,
+            'remaining' => $leadBalance - 1
+        ]);
     }
 
-    return response()->json([
-        'authorized' => true,
-        'payment_required' => false
-    ]);
-}
 
-    // public function customerinterestcheck(Request $request)
-    // {
-    //     $vend_id     = $request->vend_id;
-    //     // dd($vend_id);
-    //     $customer_id = Session::get('customer_id');
-    //     // dd($customer_id);
-    //     if (!$customer_id) {
-    //         return response()->json([
-    //             'authorized' => false
-    //         ], 401);
-    //     }
 
-    //     // Check duplicate interest
-    //     $alreadyInterested = DB::table('customer_interests')
-    //         ->where('customer_id', $customer_id)
-    //         ->where('vendor_id', $vend_id)
-    //         ->exists();
-    //     // dd( $alreadyInterested );
-    //     // Total used leads
-    //     $usedLeads = DB::table('customer_interests')
-    //         ->where('customer_id', $customer_id)
-    //         ->count();
+    public function customerinterestcheck(Request $request)
+    {
+        $customer_id = Session::get('customer_id');
 
-    //     // If already interested → allow access without payment
-    //     if ($alreadyInterested) {
-    //         return response()->json([
-    //             'authorized'        => true,
-    //             'payment_required'  => false,
-    //             'remaining'         => max(0, 5 - $usedLeads)
-    //         ]);
-    //     }
+        if (!$customer_id) {
+            return response()->json([
+                'authorized' => false
+            ], 401);
+        }
 
-    //     // Free limit reached
-    //     if ($usedLeads >= 5) {
-    //         return response()->json([
-    //             'authorized'       => true,
-    //             'payment_required' => true,
-    //             'remaining'        => 0
-    //         ]);
-    //     }
+        // Prevent duplicate interest
+        $alreadyInterested = DB::table('customer_interests')
+            ->where('customer_id', $customer_id)
+            ->where('vendor_id', $request->vend_id)
+            ->exists();
 
-    //     // Insert interest (consume 1 free lead)
-    //     DB::table('customer_interests')->insert([
-    //         'customer_id' => $customer_id,
-    //         'vendor_id'   => $vend_id,
-    //         'created_at'  => now()
-    //     ]);
+        if ($alreadyInterested) {
+            return response()->json([
+                'authorized' => true,
+                'message' => 'Already submitted'
+            ]);
+        }
 
-    //     return response()->json([
-    //         'authorized'        => true,
-    //         'payment_required' => false,
-    //         'remaining'        => 5 - ($usedLeads + 1)
-    //     ]);
-    // }
+        DB::table('customer_interests')->insert([
+            'customer_id'   => $customer_id,
+            'vendor_id'     => $request->vend_id,
+            'customer_name' => $request->customer_name,
+            'work_type'     => $request->work_type,
+            'location'      => $request->location,
+            'project_size'  => $request->project_size,
+            'timeline'      => $request->timeline,
+            'created_at'    => now()
+        ]);
+
+        return response()->json([
+            'authorized' => true,
+            'payment_required' => false
+        ]);
+    }
+
+
 
     public function projectInterestCheck(Request $request)
     {
@@ -507,14 +483,14 @@ public function customerinterestcheck(Request $request)
     public function store(Request $request)
     {
         $customer_id = Session::get('customer_id');
-        // dd($customer_id);
+        // dd($request);
         $request->validate([
             'title'           => 'required|string|max:255',
             'work_type_id'    => 'required|integer',
             'work_subtype_id' => 'required|integer',
             'state'           => 'nullable|string',
-            'region'          => 'nullable|string',
-            'city'            => 'nullable|string',
+            'region_id'          => 'nullable|string',
+            'city_id'            => 'nullable|string',
             'budget'          => 'required|integer',
             'contact_name'    => 'required|string|max:255',
             'mobile'          => 'required|string|max:20',
@@ -538,8 +514,8 @@ public function customerinterestcheck(Request $request)
             'work_type_id'    => $request->work_type_id,
             'work_subtype_id' => $request->work_subtype_id,
             'state'           => $request->state,
-            'region'          => $request->region,
-            'city'            => $request->city,
+            'region'          => $request->region_id,
+            'city'            => $request->city_id,
             'budget_id'       => $request->budget,
             'contact_name'    => $request->contact_name,
             'mobile'          => $request->mobile,
@@ -683,46 +659,92 @@ public function customerinterestcheck(Request $request)
     }
 
 
+    // public function updateposts(Request $request, $id)
+    // {
+    //     // dd($request);
+    //     // $vendor_id = Session::get('user_id'); // your logged-in user id
+    //     $customer_id = Session::get('customer_id');
+    //     $request->validate([
+    //         'title'       => 'required',
+    //         'budget'      => 'nullable',
+    //         'description' => 'nullable',
+    //     ]);
+
+    //     // ✅ update only the user's own post
+    //     $updated = DB::table('posts')
+    //         ->where('id', $id)               // ✅ post id
+    //         // ->where('user_id', $customer_id)   // ✅ owner check
+    //         ->update([
+    //             'title'        => $request->title,
+    //             'work_type_id' =>$request->work_type_id,
+    //             'work_subtype_id'=>$request->work_subtype_id,
+    //             'state'=> $request->state_id,
+    //             'region'=>$request->region_id,
+    //             'city' => $request->city_id,
+    //             'budget_id' =>$request->budget,
+    //             'contact_name' => $request->contact_name,
+    //             'mobile' => $request->mobile,
+
+    //             'description'  => $request->description,
+    //             'updated_at'   => now(),
+    //         ]);
+
+    //     if (!$updated) {
+    //         return redirect()->back()->with('error', 'Post not found or you are not allowed to update it.');
+    //     }
+
+    //     return redirect()->back()->with('success', 'Post updated successfully');
+    // }
     public function updateposts(Request $request, $id)
     {
-        // dd($request);
-        // $vendor_id = Session::get('user_id'); // your logged-in user id
         $customer_id = Session::get('customer_id');
+
         $request->validate([
-            'title'       => 'required',
-            'budget'      => 'nullable',
-            'description' => 'nullable',
+            'title'         => 'required|string|max:255',
+            'work_type_id'  => 'required',
+            'state_id'      => 'required',
+            'region_id'     => 'required',
+            'city_id'       => 'required',
+            'budget'        => 'nullable|string',
+            'description'   => 'nullable|string',
         ]);
 
-        // ✅ update only the user's own post
         $updated = DB::table('posts')
-            ->where('id', $id)               // ✅ post id
-            ->where('user_id', $customer_id)   // ✅ owner check
+            ->where('id', $id)
+            // ->where('user_id', $customer_id) // enable later
             ->update([
-                'title'        => $request->title,
-                'work_type_id' =>$request->work_type_id,
-                'state'=> $request->state,
-                'region'=>$request->region,
-                'city' => $request->city,
-                'budget_id' =>$request->budget,
-                'contact_name' => $request->contact_name,
-                'mobile' => $request->mobile,
+                'title'            => $request->title,
+                'work_type_id'     => $request->work_type_id,
+                'work_subtype_id'  => $request->work_subtype_id ?? null,
 
-                'description'  => $request->description,
-                'updated_at'   => now(),
+                // ✅ SAVE IDS CORRECTLY
+                'state'            => $request->state_id,
+                'region'           => $request->region_id,
+                'city'             => $request->city_id,
+
+                // ✅ FIXED: store string budget
+                'budget_id'     => $request->budget,
+
+                'contact_name'     => $request->contact_name,
+                'mobile'           => $request->mobile,
+                'email'            => $request->email,
+                'description'      => $request->description,
+                'updated_at'       => now(),
             ]);
 
         if (!$updated) {
-            return redirect()->back()->with('error', 'Post not found or you are not allowed to update it.');
+            return redirect()->back()
+                ->with('error', 'Post not found or update failed.');
         }
 
-        return redirect()->back()->with('success', 'Post updated successfully');
+        return redirect()->back()
+            ->with('success', 'Post updated successfully');
     }
 
     /* =========================
        DELETE POST
     ========================== */
-   public function destroy($id)
+    public function destroy($id)
     {
     $vendor_id = Session::get('user_id');
 
@@ -739,59 +761,59 @@ public function customerinterestcheck(Request $request)
     return redirect()->back()->with('success', 'Post deleted successfully');
     }
 
-public function saveErpInterest(Request $request)
-{
-    $request->validate([
-        'full_name'          => 'required|string|max:150',
-        'company_name'       => 'required|string|max:200',
-        'role_in_org'        => 'required|string|max:100',
-        'organization_type'  => 'required|string',
-        'project_size'       => 'required|string',
-        'looking_for'        => 'required|array',
-        'current_challenge'  => 'required|string',
-        'interest_level'     => 'required|string',
-        'contact_details'    => 'required|string'
-    ]);
+    public function saveErpInterest(Request $request)
+    {
+        $request->validate([
+            'full_name'          => 'required|string|max:150',
+            'company_name'       => 'required|string|max:200',
+            'role_in_org'        => 'required|string|max:100',
+            'organization_type'  => 'required|string',
+            'project_size'       => 'required|string',
+            'looking_for'        => 'required|array',
+            'current_challenge'  => 'required|string',
+            'interest_level'     => 'required|string',
+            'contact_details'    => 'required|string'
+        ]);
 
-    // ✅ HANDLE ROLE "OTHER"
-    $role = $request->role_in_org === 'Other'
-        ? $request->role_in_org_other
-        : $request->role_in_org;
+        // ✅ HANDLE ROLE "OTHER"
+        $role = $request->role_in_org === 'Other'
+            ? $request->role_in_org_other
+            : $request->role_in_org;
 
-    // ✅ HANDLE ORG TYPE "OTHER"
-    $organizationType = $request->organization_type === 'Other'
-        ? $request->organization_type_other
-        : $request->organization_type;
+        // ✅ HANDLE ORG TYPE "OTHER"
+        $organizationType = $request->organization_type === 'Other'
+            ? $request->organization_type_other
+            : $request->organization_type;
 
-    DB::table('erp_interest_registrations')->insert([
-        'full_name'         => $request->full_name,
-        'company_name'      => $request->company_name,
-        'role_in_org'       => $role,
-        'organization_type' => $organizationType,
-        'project_size'      => $request->project_size,
-        'looking_for'       => json_encode($request->looking_for),
-        'current_challenge' => $request->current_challenge,
-        'interest_level'    => $request->interest_level,
-        'contact_details'   => $request->contact_details,
-        'created_at'        => now(),
-        'updated_at'        => now()
-    ]);
+        DB::table('erp_interest_registrations')->insert([
+            'full_name'         => $request->full_name,
+            'company_name'      => $request->company_name,
+            'role_in_org'       => $role,
+            'organization_type' => $organizationType,
+            'project_size'      => $request->project_size,
+            'looking_for'       => json_encode($request->looking_for),
+            'current_challenge' => $request->current_challenge,
+            'interest_level'    => $request->interest_level,
+            'contact_details'   => $request->contact_details,
+            'created_at'        => now(),
+            'updated_at'        => now()
+        ]);
 
-    return response()->json([
-        'status' => true,
-        'message' => 'Interest registered successfully'
-    ]);
-}
+        return response()->json([
+            'status' => true,
+            'message' => 'Interest registered successfully'
+        ]);
+    }
 
 
-public function projectslist(){
-     $projects = DB::table('posts')
-            ->orderBy('created_at', 'desc')
-            ->get();
-    return view('web.projectslist', compact('projects'));
-}
+    public function projectslist(){
+        $projects = DB::table('posts')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        return view('web.projectslist', compact('projects'));
+    }
 
- public function projectsshow($id)
+    public function projectsshow($id)
     {
         $project = DB::table('posts')
             ->where('id', $id)
@@ -804,64 +826,44 @@ public function projectslist(){
         return view('web.projectsshow', compact('project'));
     }
 
-
-    //  public function vendorslist()
-    // {
-    //     $vendors = DB::table('vendor_reg')
-    //         ->orderBy('created_at', 'desc')
-    //         ->get();
-
-    //     return view('web.vendorslist', compact('vendors'));
-    // }
     public function vendorslist()
-{
-    $vendors = DB::table('vendor_reg as v')
-        ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
-        ->select(
-            'v.*',
-            'wt.work_type as work_type_name'
-        )
-        ->orderBy('v.created_at', 'desc')
-        ->get();
+    {
+        $vendors = DB::table('vendor_reg as v')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+            ->select(
+                'v.*',
+                'wt.work_type as work_type_name'
+            )
+            ->orderBy('v.created_at', 'desc')
+            ->get();
 
-    return view('web.vendorslist', compact('vendors'));
-}
-
-
-    // public function vendorsshow($id)
-    // {
-    //     $vendor = DB::table('vendor_reg')->where('id', $id)->first();
-
-    //     if (!$vendor) {
-    //         abort(404);
-    //     }
-
-    //     return view('web.vendorshow', compact('vendor'));
-    // }
-    public function vendorsshow($id)
-{
-    $vendor = DB::table('vendor_reg as v')
-        ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
-        ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
-        // ->leftJoin('states as s', 's.id', '=', 'v.state')
-        // ->leftJoin('regions as r', 'r.id', '=', 'v.region')
-        // ->leftJoin('cities as c', 'c.id', '=', 'v.city')
-        ->select(
-            'v.*',
-            'wt.work_type as work_type_name',
-            'wst.work_subtype as work_subtype_name'
-            // 's.name as state_name',
-            // 'r.name as region_name',
-            // 'c.name as city_name'
-        )
-        ->where('v.id', $id)
-        ->first();
-
-    if (!$vendor) {
-        abort(404);
+        return view('web.vendorslist', compact('vendors'));
     }
 
-    return view('web.vendorshow', compact('vendor'));
-}
+    public function vendorsshow($id)
+    {
+        $vendor = DB::table('vendor_reg as v')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+            ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
+            // ->leftJoin('states as s', 's.id', '=', 'v.state')
+            // ->leftJoin('regions as r', 'r.id', '=', 'v.region')
+            // ->leftJoin('cities as c', 'c.id', '=', 'v.city')
+            ->select(
+                'v.*',
+                'wt.work_type as work_type_name',
+                'wst.work_subtype as work_subtype_name'
+                // 's.name as state_name',
+                // 'r.name as region_name',
+                // 'c.name as city_name'
+            )
+            ->where('v.id', $id)
+            ->first();
+
+        if (!$vendor) {
+            abort(404);
+        }
+
+        return view('web.vendorshow', compact('vendor'));
+    }
 
 }

@@ -248,16 +248,16 @@ function toggleProfileMenu(event){
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 }
 
-function toggleNotificationMenu(event){
-    event.stopPropagation();
-    const menu = document.getElementById('notificationDropdown');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
+// function toggleNotificationMenu(event){
+//     event.stopPropagation();
+//     const menu = document.getElementById('notificationDropdown');
+//     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+// }
 
-document.addEventListener('click', function(){
-    document.getElementById('profileDropdown').style.display = 'none';
-    document.getElementById('notificationDropdown').style.display = 'none';
-});
+// document.addEventListener('click', function(){
+//     document.getElementById('profileDropdown').style.display = 'none';
+//     document.getElementById('notificationDropdown').style.display = 'none';
+// });
 </script>
 
 <script src="https://unpkg.com/lucide@latest"></script>

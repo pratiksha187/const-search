@@ -29,7 +29,7 @@ class VenderController extends Controller
 
 
 
-  public function getSubtypes($workTypeId)
+    public function getSubtypes($workTypeId)
     {
        
         $subtypes = DB::table('work_subtypes')
@@ -133,5 +133,56 @@ class VenderController extends Controller
 
         return back()->with('success', 'Profile updated successfully ✅');
     }
+
+    public function vendorprofileid($id)
+    {
+        $customer_id = Session::get('customer_id');
+        $cust_data = DB::table('users')->where('id',$customer_id)->first();
+        // 1️⃣ Fetch vendor basic data
+        $vendor_data_byid = DB::table('vendor_reg as v')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+            ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
+            ->leftJoin('state as s', 's.id', '=', 'v.state')
+            ->leftJoin('region as r', 'r.id', '=', 'v.region')
+            ->leftJoin('city as c', 'c.id', '=', 'v.city')
+            ->select(
+                'v.*',
+
+                // work
+                'wt.work_type as work_typename',
+                'ts.team_size as team_size_data',
+
+                // location
+                's.name as statename',
+                'r.name as regionname',
+                'c.name as cityname'
+            )
+            ->where('v.id', $id)
+            ->first();
+
+        // 2️⃣ Safety check
+        if (!$vendor_data_byid) {
+            abort(404, 'Vendor not found');
+        }
+
+        // 3️⃣ Decode work subtype IDs & fetch names
+        $workSubtypes = [];
+
+        if (!empty($vendor_data_byid->work_subtype_id)) {
+            $subtypeIds = json_decode($vendor_data_byid->work_subtype_id, true);
+
+            if (is_array($subtypeIds) && count($subtypeIds)) {
+                $workSubtypes = DB::table('work_subtypes')
+                    ->whereIn('id', $subtypeIds)
+                    ->pluck('work_subtype')
+                    ->toArray();
+            }
+        }
+
+        // 4️⃣ Send data to view
+        return view('web.vendor-profile', compact('vendor_data_byid', 'workSubtypes','cust_data'));
+    }
+
+    
 
 }

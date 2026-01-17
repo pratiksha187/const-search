@@ -139,7 +139,7 @@ Route::get('/get-product-meta/{id}', [SuppliersController::class, 'getProductMet
 Route::post('/supplier/products/save', [SuppliersController::class, 'saveProducts'])
      ->name('supplier.products.save');
 
-     Route::get('/locations/regions/{stateId}', [MasterController::class, 'getRegions']);
+Route::get('/locations/regions/{stateId}', [MasterController::class, 'getRegions']);
 Route::get('/locations/cities/{regionId}', [MasterController::class, 'getCities']);
 // Route::post('/vendor/profile/update-field', [VenderController::class, 'updateVendorField'])
 //     ->name('vendor.profile.update.field');
@@ -165,6 +165,11 @@ Route::post('/supplier-enquiry', [SuppliersController::class, 'supplierenquiryst
 
 Route::get('/supplier/profile/{id}', [SuppliersController::class, 'supplierprofileid'])
     ->name('supplier.profile');
+
+    
+Route::get('/vendor/profile/id/{id}', [VenderController::class, 'vendorprofileid'])
+    ->name('vendor.profile.id');
+    
 
 Route::post('/vendor-interest-check', [HomeController::class, 'vendorinterestcheck'])
     ->name('vendor.interest.check');
@@ -289,7 +294,15 @@ Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
     Route::get('/cities', [CityController::class, 'index'])->name('cities.index');
     Route::post('/cities', [CityController::class, 'store'])->name('cities.store');
     Route::get('/cities/by-region/{region}', [CityController::class, 'byRegion']);
-Route::get('/make-hash', function () {
+
+    // Route::get('/customer/notifications', [LoginRegController::class, 'getCustomerNotifications'])->name('customer.notifications');
+    Route::get('/customer/notifications', [LoginRegController::class, 'customerNotificationsPage'])->name('customer.notifications');
+    Route::post(
+        '/customer/notification/action',
+        [LoginRegController::class, 'handleNotificationAction']
+    )->name('customer.notification.action');
+
+    Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
     $password = "8805835135";
