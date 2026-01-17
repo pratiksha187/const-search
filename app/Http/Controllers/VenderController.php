@@ -27,8 +27,6 @@ class VenderController extends Controller
         return view('web.venderprofile', compact('vendor','states','workTypes','entity_type','account_type','experience_years','team_size'));
     }
 
-
-
     public function getSubtypes($workTypeId)
     {
        
@@ -179,10 +177,10 @@ class VenderController extends Controller
             }
         }
 
-         $postIds = DB::table('posts')
+        $postIds = DB::table('posts')
                     ->where('user_id', $customer_id)
                     ->pluck('id');
-         $notifications = DB::table('vendor_interests as vi')
+        $notifications = DB::table('vendor_interests as vi')
                 // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
                 ->whereIn('vi.customer_id', $postIds)
             

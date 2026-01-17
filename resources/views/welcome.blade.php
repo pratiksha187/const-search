@@ -95,12 +95,13 @@ body {
 
 /* Lead form */
 .lead-card { background: #0f172a; color: #e5e7eb; border-radius: 24px; padding: 30px; }
+
 .lead-input {
     background: #e6ebf4;
     border: 1px solid #334155;
     padding: 10px 16px;
     border-radius: 999px;
-    color: white;
+    color: #020202;
 }
 .lead-card button {
     background: var(--blue) !important;
