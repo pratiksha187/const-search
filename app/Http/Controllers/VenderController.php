@@ -179,8 +179,18 @@ class VenderController extends Controller
             }
         }
 
+         $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+         $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
+
         // 4️⃣ Send data to view
-        return view('web.vendor-profile', compact('vendor_data_byid', 'workSubtypes','cust_data'));
+        return view('web.vendor-profile', compact('vendor_data_byid', 'workSubtypes','cust_data','notificationCount','notifications'));
     }
 
     

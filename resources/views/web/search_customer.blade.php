@@ -595,7 +595,7 @@
                   </div>
                   {{-- ACTIONS (SAME handleInterested) --}}
                   <div class="lead-actions">
-                     <a href="{{ route('vendor.profile', $project->id) }}"
+                     <a href="{{ route('vendor.profile.id', $project->id) }}"
                         class="btn-outline-lead">
                      View Profile
                      </a>
