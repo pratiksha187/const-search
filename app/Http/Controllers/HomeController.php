@@ -249,7 +249,18 @@ class HomeController extends Controller
                     ->where('id', $vendor_id)
                     ->first();
             // dd($vendor);
-            
+         $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+    //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count();    
         $states = DB::table('state')->orderBy('name')->get();
       
         $work_types = DB::table('work_types')->get();
@@ -284,6 +295,8 @@ class HomeController extends Controller
             ->get();
         //    dd($projects);
         return view('web.search_customer', [
+            'notifications'=>$notifications,
+            'notificationCount' => $notificationCount,
             'work_types' => $work_types,
             'states' => $states,
             'projects' => $projects, 
@@ -296,7 +309,7 @@ class HomeController extends Controller
 
     public function vendorinterestcheck(Request $request)
     {
-        // dd($request);
+       
         $cust_id   = $request->cust_id;
         $vendor_id = Session::get('vendor_id');
 
@@ -308,7 +321,7 @@ class HomeController extends Controller
             ->where('customer_id', $cust_id)
             ->where('vendor_id', $vendor_id)
             ->exists();
-
+            //  dd($already);
         if ($already) {
             return response()->json([
                 'success' => true,
@@ -448,18 +461,32 @@ class HomeController extends Controller
         ]);
     }
 
-   
+    
     public function store(Request $request)
     {
         $customer_id = Session::get('customer_id');
-        // dd($request);
+
+        $check_post_count = DB::table('posts')
+            ->where('user_id', $customer_id)
+            ->count(); // direct count
+
+        // If user has posted 3 or more, return JSON so JS can handle
+        if ($check_post_count >= 3) {
+            return response()->json([
+                'status' => 'payment_required',
+                'message' => 'You have reached the free post limit. Payment required.',
+                'post_count' => $check_post_count,
+            ]);
+        }
+
+        // Validate
         $request->validate([
             'title'           => 'required|string|max:255',
             'work_type_id'    => 'required|integer',
             'work_subtype_id' => 'required|integer',
             'state'           => 'nullable|string',
-            'region_id'          => 'nullable|string',
-            'city_id'            => 'nullable|string',
+            'region_id'       => 'nullable|string',
+            'city_id'         => 'nullable|string',
             'budget'          => 'required|integer',
             'contact_name'    => 'required|string|max:255',
             'mobile'          => 'required|string|max:20',
@@ -467,8 +494,8 @@ class HomeController extends Controller
             'description'     => 'required|string',
         ]);
 
+        // Upload files
         $uploadedFiles = [];
-
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
@@ -495,9 +522,10 @@ class HomeController extends Controller
             'updated_at'      => now(),
         ]);
 
-        return redirect()
-            ->route('myposts')
-            ->with('success', 'Project Posted Successfully!');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Project Posted Successfully!',
+        ]);
     }
 
    
@@ -717,10 +745,24 @@ class HomeController extends Controller
 
     public function customerprofileid($id)
     {
-        $vendorId  = session('vendor_id');
+        
+        $vendor_id  = session('vendor_id');
+     
         $vendor = DB::table('vendor_reg')
-                    ->where('id', $vendorId)
+                    ->where('id', $vendor_id)
                     ->first();
+        $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+    //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count();
         $customer_data = DB::table('posts as p')
                         ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
                         ->leftJoin('work_types as wt', 'wt.id', '=', 'p.work_type_id')
@@ -728,12 +770,19 @@ class HomeController extends Controller
                         ->leftJoin('region as r', 'r.id', '=', 'p.region')
                         ->leftJoin('city as c', 'c.id', '=', 'p.city')
                         ->where('p.id', $id)
-                        ->select('p.*', 'u.*',  'wt.work_type as work_typename',  // location
-                                's.name as statename',
-                                'r.name as regionname',
-                                'c.name as cityname')
+                        ->select(
+                            'p.*',
+                            'u.name as user_name',      // pick only needed user columns
+                            'u.email as user_email',    // example
+                            'u.id as cust_id',          // alias user id
+                            'wt.work_type as work_typename',
+                            's.name as statename',
+                            'r.name as regionname',
+                            'c.name as cityname'
+                        )
                         ->first();
 
+    //  dd($customer_data);
         $workSubtypes = [];
         if (!empty($customer_data->work_subtype_id)) {
             $subtypeIds = json_decode($customer_data->work_subtype_id, true);
@@ -746,7 +795,7 @@ class HomeController extends Controller
             }
         }
             //  dd($customer_data);           
-        return view('web.customer-profile', compact('customer_data','workSubtypes','vendor'));
+        return view('web.customer-profile', compact('customer_data','workSubtypes','vendor','vendor_id','notifications','notificationCount'));
         // dd($customer_data);
       
     }

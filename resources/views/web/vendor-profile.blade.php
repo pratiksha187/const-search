@@ -216,13 +216,9 @@ body{
                 </div>
             </div>
 
-            <!-- <button class="btn-interest mb-3"
-                onclick="handleInterested({{ $vendor_data_byid->id }})">
-                Show Interest
-            </button> -->
             <button class="btn-interest" onclick="handleInterested()">
-    Show Interest
-</button>
+                Show Interest
+            </button>
 
 
             <div class="note-box">

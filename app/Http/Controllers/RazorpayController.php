@@ -29,7 +29,7 @@ class RazorpayController extends Controller
         );
 
         $amount = $request->amount * 100;
-//   $amount =0;
+        //   $amount =0;
         $order = $api->order->create([
             'amount'   => $amount,
             'currency' => 'INR',
@@ -50,101 +50,63 @@ class RazorpayController extends Controller
 
 
     /* ================= VERIFY PAYMENT ================= */
-    // public function verifyPayment(Request $request)
-    // {
-    //     $api = new Api(
-    //         config('services.razorpay.key'),
-    //         config('services.razorpay.secret')
-    //     );
+  
+    public function verifyPayment(Request $request)
+    {
+        $api = new Api(
+            config('services.razorpay.key'),
+            config('services.razorpay.secret')
+        );
 
-    //     try {
-    //         $api->utility->verifyPaymentSignature([
-    //             'razorpay_order_id'   => $request->razorpay_order_id,
-    //             'razorpay_payment_id' => $request->razorpay_payment_id,
-    //             'razorpay_signature'  => $request->razorpay_signature,
-    //         ]);
+        try {
+            $api->utility->verifyPaymentSignature([
+                'razorpay_order_id'   => $request->razorpay_order_id,
+                'razorpay_payment_id' => $request->razorpay_payment_id,
+                'razorpay_signature'  => $request->razorpay_signature,
+            ]);
 
-         
-    //         Payment::create([
-    //             'payment_id' => $request->razorpay_payment_id,
-    //             'order_id'   => $request->razorpay_order_id,
-    //             'amount'     => $request->amount,
-    //             'currency'   => 'INR',
-    //             'status'     => 'success',
-    //             'login_id'   => Session::get('user_id'),
-    //             'user_id'    => base64_decode($request->cust_id),
-    //             'response'   => json_encode($request->all())
-    //         ]);
+            DB::beginTransaction();
 
+            // 1️⃣ Save payment
+            Payment::create([
+                'payment_id' => $request->razorpay_payment_id,
+                'order_id'   => $request->razorpay_order_id,
+                'amount'     => $request->amount,
+                'currency'   => 'INR',
+                'status'     => 'success',
+                'login_id'   => Session::get('user_id'),
+                'user_id'    => base64_decode($request->cust_id),
+                'response'   => json_encode($request->all())
+            ]);
 
-    //         return response()->json(['success' => true]);
+            // 2️⃣ Calculate leads to add
+            $planLeads = [
+                'single'  => 1,
+                'starter' => 10,
+                'grow'    => 25
+            ];
 
-    //     } catch (\Exception $e) {
+            $leadsToAdd = $planLeads[$request->plan] ?? 0;
 
-    //         Log::error($e->getMessage());
+            // 3️⃣ ADD LEADS TO VENDOR
+            DB::table('vendors')
+                ->where('id', Session::get('vendor_id'))
+                ->increment('lead_balance', $leadsToAdd);
 
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Payment verification failed'
-    //         ], 400);
-    //     }
-    // }
- public function verifyPayment(Request $request)
-{
-    $api = new Api(
-        config('services.razorpay.key'),
-        config('services.razorpay.secret')
-    );
+            DB::commit();
 
-    try {
-        $api->utility->verifyPaymentSignature([
-            'razorpay_order_id'   => $request->razorpay_order_id,
-            'razorpay_payment_id' => $request->razorpay_payment_id,
-            'razorpay_signature'  => $request->razorpay_signature,
-        ]);
+            return response()->json(['success' => true]);
 
-        DB::beginTransaction();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
 
-        // 1️⃣ Save payment
-        Payment::create([
-            'payment_id' => $request->razorpay_payment_id,
-            'order_id'   => $request->razorpay_order_id,
-            'amount'     => $request->amount,
-            'currency'   => 'INR',
-            'status'     => 'success',
-            'login_id'   => Session::get('user_id'),
-            'user_id'    => base64_decode($request->cust_id),
-            'response'   => json_encode($request->all())
-        ]);
-
-        // 2️⃣ Calculate leads to add
-        $planLeads = [
-            'single'  => 1,
-            'starter' => 10,
-            'grow'    => 25
-        ];
-
-        $leadsToAdd = $planLeads[$request->plan] ?? 0;
-
-        // 3️⃣ ADD LEADS TO VENDOR
-        DB::table('vendors')
-            ->where('id', Session::get('vendor_id'))
-            ->increment('lead_balance', $leadsToAdd);
-
-        DB::commit();
-
-        return response()->json(['success' => true]);
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error($e->getMessage());
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Payment verification failed'
-        ], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment verification failed'
+            ], 400);
+        }
     }
-}
 
 
 

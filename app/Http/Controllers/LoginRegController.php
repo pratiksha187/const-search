@@ -324,6 +324,27 @@ class LoginRegController extends Controller
         return view('web.customernotifications', compact('notifications','cust_data','notificationCount'));
     }
 
+    public function vendorNotificationsPage()
+    {
+        $vendor_id   = Session::get('vendor_id');
+        $vendor = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->first();
+        $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+    //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count();
+
+        return view('web.vendornotifications', compact('notifications','notificationCount','vendor','vendor_id'));
+    }
 
 
 
@@ -361,12 +382,24 @@ class LoginRegController extends Controller
         $vendor = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->first();
+        $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+    //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count();
             //  dd($vendor_details);        
         $ActiveLeads  = DB::connection('mysql')->table('posts')->count();   
         $projects  = DB::connection('mysql')->table('posts')->get();       
         // dd( $ActiveLeads_data );
 
-        return view('web.vendordashboard',compact('ActiveLeads','projects','vendor','vendor_id')); 
+        return view('web.vendordashboard',compact('ActiveLeads','projects','vendor','vendor_id','notifications','notificationCount')); 
     }
 
  

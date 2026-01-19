@@ -5,6 +5,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
 :root{
@@ -100,7 +101,102 @@
     background:#f8fafc;
 }
 
-
+ /* PRICING SECTION */
+   .pricing-section{
+   background:#ffffff;
+   border:1px solid #e5e7eb;
+   border-radius:18px;
+   padding:32px;
+   }
+   .pricing-header{
+   text-align:center;
+   margin-bottom:28px;
+   }
+   .pricing-header h4{
+   font-weight:700;
+   }
+   .pricing-header p{
+   color:#6b7280;
+   margin-bottom:0;
+   }
+   /* PLAN CARDS */
+   .plan-card{
+   background:#ffffff;
+   border:1px solid #e5e7eb;
+   border-radius:16px;
+   padding:24px;
+   height:100%;
+   position:relative;
+   }
+   .plan-card.recommended{
+   border:2px solid #f25c05;
+   box-shadow:0 10px 25px rgba(0,0,0,0.08);
+   }
+   /* BADGE */
+   .recommended-badge{
+   position:absolute;
+   top:-12px;
+   left:50%;
+   transform:translateX(-50%);
+   background:#f25c05;
+   color:#fff;
+   padding:5px 14px;
+   font-size:12px;
+   border-radius:20px;
+   font-weight:600;
+   }
+   /* TEXT */
+   .plan-title{
+   font-size:13px;
+   font-weight:600;
+   text-transform:uppercase;
+   color:#374151;
+   }
+   .plan-price{
+   font-size:34px;
+   font-weight:700;
+   margin:12px 0 6px;
+   }
+   .gst{
+   font-size:14px;
+   color:#6b7280;
+   }
+   .plan-meta{
+   font-size:14px;
+   color:#6b7280;
+   margin-bottom:16px;
+   }
+   /* FEATURES */
+   .plan-features{
+   list-style:none;
+   padding:0;
+   margin-bottom:20px;
+   }
+   .plan-features li{
+   margin-bottom:8px;
+   font-size:14px;
+   }
+   /* BUTTONS */
+   .btn-primary{
+   background:#f25c05;
+   border:none;
+   border-radius:10px;
+   padding:10px;
+   font-weight:600;
+   }
+   .btn-outline{
+   background:#ffffff;
+   border:1px solid #d1d5db;
+   border-radius:10px;
+   padding:10px;
+   font-weight:600;
+   }
+   @media (min-width: 576px) {
+    .modal {
+        --bs-modal-margin: 7.75rem;
+        --bs-modal-box-shadow: var(--bs-box-shadow);
+    }
+}
 </style>
 
 @section('content')
@@ -136,12 +232,10 @@
 
             {{-- ABOUT --}}
             <div class="profile-card">
-                <h4>About</h4>
+                <h4>About Project Description:</h4>
                 <p class="mb-0">
-                    We are a {{ $customer_data->work_typename ?? 'construction' }} firm
-                    with experience in
-                    {{ count($workSubtypes) ? implode(', ', $workSubtypes) : 'multiple construction works' }}
-                    for private and government projects.
+                    {{ $customer_data->description }}
+                 
                 </p>
             </div>
 
@@ -197,13 +291,9 @@
                 </div>
             </div>
 
-            <!-- <button class="btn-interest mb-3"
-                onclick="handleInterested({{ $customer_data->id }})">
-                Show Interest
-            </button> -->
             <button class="btn-interest" onclick="handleInterested()">
-    Show Interest
-</button>
+                Show Interest
+            </button>
 
 
             <div class="note-box">
@@ -214,7 +304,7 @@
     </div>
 </div>
 
-{{-- ===================== MODAL ===================== --}}
+{{-- ===================== request MODAL ===================== --}}
 <div class="modal fade" id="vendorModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content border-0">
@@ -234,7 +324,7 @@
 
         <form id="interestForm">
           @csrf
-          <input type="hidden" name="cust_id" value="{{ $customer_data->id }}">
+          <input type="hidden" name="cust_id" value="{{ $customer_data->cust_id }}">
 
           <div class="mb-3">
             <label class="form-label">Your Name *</label>
@@ -270,10 +360,141 @@
   </div>
 </div>
 
+{{-- ===================== payment MODAL ===================== --}}
+{{-- ===================== PAYMENT MODAL ===================== --}}
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0">
 
+      <div class="modal-header">
+        <h5 class="modal-title">Show Interest in {{ $customer_data->title }}</h5>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Social sharing incentive section -->
+        <div class="alert alert-info mb-4">
+          <h6>🎁 Earn Free Leads!</h6>
+          <p>Share your interest on social media to get free leads:</p>
+
+          <div class="row g-3">
+            <!-- Instagram -->
+            <div class="col-md-6">
+              <div class="social-card instagram-card p-3 border rounded text-center">
+                <div class="social-icon mb-2">📸</div>
+                <div class="social-title mb-1"><strong>Instagram</strong></div>
+                <div class="social-desc mb-2">Add a story and tag us to earn 1 free lead.</div>
+                <button
+                  class="btn btn-outline-primary claim-lead-btn"
+                  data-platform="instagram"
+                  data-cust="{{ $customer_data->id }}">
+                  Claim Free Lead
+                </button>
+              </div>
+            </div>
+
+            <!-- Facebook -->
+            <div class="col-md-6">
+              <div class="social-card facebook-card p-3 border rounded text-center">
+                <div class="social-icon mb-2">👍</div>
+                <div class="social-title mb-1"><strong>Facebook</strong></div>
+                <div class="social-desc mb-2">Share on Facebook to earn 1 free lead.</div>
+                <button
+                  class="btn btn-outline-primary claim-lead-btn"
+                  data-platform="facebook"
+                  data-cust="{{ $customer_data->id }}">
+                  Claim Free Lead
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pricing section -->
+        <div class="pricing-header">
+          <h4>Choose Your Lead Package</h4>
+          <p>Pay once • No commission • Verified leads only</p>
+        </div>
+
+        <div class="payment-section-modern " id="paymentSection">
+          <div class="row g-4">
+            <!-- SINGLE LEAD -->
+            <div class="col-12 col-md-4">
+              <div class="plan-card">
+                <div class="plan-title">Single Lead</div>
+                <div class="plan-price">₹499</div>
+                <p class="plan-meta">1 verified lead</p>
+                <ul class="plan-features">
+                  <li>✔ Full customer contact</li>
+                  <li>✔ Genuine requirement</li>
+                  <li>✔ No commission</li>
+                </ul>
+                <button
+                  class="btn btn-outline w-100 buy-plan-btn"
+                  data-plan="single"
+                  data-amount="499"
+                  data-cust="{{ $customer_data->id }}">
+                  Pay & Unlock
+                </button>
+              </div>
+            </div>
+
+            <!-- STARTER PACKAGE (RECOMMENDED) -->
+            <div class="col-12 col-md-4">
+              <div class="plan-card recommended">
+                <div class="recommended-badge">Best Value</div>
+                <div class="plan-title">Starter Package</div>
+                <div class="plan-price">₹1,999 <span class="gst">+ GST</span></div>
+                <p class="plan-meta">10 verified leads • <strong>You save ₹2,991</strong></p>
+                <ul class="plan-features">
+                  <li>✔ ₹199 per lead</li>
+                  <li>✔ Priority access</li>
+                  <li>✔ No middleman</li>
+                </ul>
+                <button
+                  class="btn btn-primary w-100 buy-plan-btn"
+                  data-plan="starter"
+                  data-amount="1999"
+                  data-cust="{{ $customer_data->id }}">
+                  Buy Starter Pack
+                </button>
+              </div>
+            </div>
+
+            <!-- GROW PACKAGE -->
+            <div class="col-12 col-md-4">
+              <div class="plan-card">
+                <div class="plan-title">Grow Package</div>
+                <div class="plan-price">₹2,999 <span class="gst">+ GST</span></div>
+                <p class="plan-meta">25 verified leads • <strong>You save ₹9,476</strong></p>
+                <ul class="plan-features">
+                  <li>✔ ₹120 per lead</li>
+                  <li>✔ Maximum savings</li>
+                  <li>✔ Business growth pack</li>
+                </ul>
+                <button
+                  class="btn btn-outline w-100 buy-plan-btn"
+                  data-plan="grow"
+                  data-amount="2999"
+                  data-cust="{{ $customer_data->id }}">
+                  Buy Grow Pack
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 {{-- ===================== JS ===================== --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
 <script>
@@ -291,6 +512,57 @@ function handleInterested() {
     ).show();
 }
 </script>
+
+<script>
+function handleInterested() {
+
+    if (window.CUSTOMERID === null) {
+        bootstrap.Modal.getOrCreateInstance(
+            document.getElementById('authModal')
+        ).show();
+        return;
+    }
+
+    // Call the checkLeadBalance function before showing the vendor modal
+    checkLeadBalance().then((hasBalance) => {
+        if (hasBalance) {
+            bootstrap.Modal.getOrCreateInstance(
+                document.getElementById('vendorModal')
+            ).show();
+        } else {
+            alert('❌ You do not have enough lead balance.');
+            bootstrap.Modal.getOrCreateInstance(
+                document.getElementById('paymentModal')
+            ).show();
+            // Optionally, redirect or take another action
+        }
+    });
+}
+
+// Function to check lead balance via AJAX
+function checkLeadBalance() {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "{{ route('vendor.check_lead_balance') }}", // your backend route
+            method: "GET", // or POST if needed
+            data: { customer_id: window.CUSTOMERID },
+            success: function(res) {
+                // Assuming your backend returns { balance: number }
+                if (res.balance > 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            },
+            error: function() {
+                alert('❌ Failed to check lead balance');
+                resolve(false);
+            }
+        });
+    });
+}
+</script>
+
 <script>
 function submitInterest() {
 
@@ -303,12 +575,148 @@ function submitInterest() {
             bootstrap.Modal.getInstance(
                 document.getElementById('vendorModal')
             ).hide();
+             window.location.href = "{{route('search_customer')}}";
         },
         error: function () {
             alert('❌ Something went wrong');
         }
     });
 }
+
+
+const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+const csrfToken = csrfMeta ? csrfMeta.content : '';
+
+document.querySelectorAll('.claim-lead-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const { platform, cust } = btn.dataset;
+
+        btn.disabled = true;
+        btn.textContent = 'Claiming...';
+
+        fetch("{{ route('claim_free_lead') }}", {
+            method: "POST",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ platform })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status) {
+                alert(`✅ 1 free lead added for ${platform}`);
+                btn.textContent = 'Claimed';
+            } else {
+                alert(data.message || '❌ Could not claim lead');
+                btn.disabled = false;
+                btn.textContent = 'Claim Free Lead';
+            }
+        })
+        .catch(() => {
+            alert('❌ Server error. Please try again.');
+            btn.disabled = false;
+            btn.textContent = 'Claim Free Lead';
+        });
+    });
+});
+
+
+</script>
+<script>
+$(document).ready(function () {
+
+    // ----- FUNCTION: Show Payment Modal -----
+    function showPaymentModal(custId) {
+        $('#paymentModal').data('cust', custId);
+        // show modal
+        new bootstrap.Modal(document.getElementById('paymentModal')).show();
+        // show payment section
+        $('#paymentSection').removeClass('d-none');
+    }
+
+    // ----- CLAIM FREE LEAD -----
+    $(document).on('click', '.claim-lead-btn', function() {
+        const platform = $(this).data('platform');
+        const custId = $(this).data('cust');
+
+        $.post("/claim-lead", {
+            _token: "{{ csrf_token() }}",
+            platform: platform,
+            cust_id: custId
+        }, function(res){
+            if(res.success) {
+                Swal.fire('Success', 'Your free lead has been added!', 'success');
+            } else {
+                Swal.fire('Oops!', res.message || 'Failed to claim lead.', 'error');
+            }
+        });
+    });
+
+    // ----- BUY PLAN / PAYMENT -----
+    $(document).on('click', '.buy-plan-btn', function() {
+        const custId = $(this).data('cust');
+        const amount = $(this).data('amount');
+        const plan   = $(this).data('plan');
+
+        $.post("{{ route('razorpay.createOrder') }}", {
+            _token: "{{ csrf_token() }}",
+            cust_id: custId,
+            plan: plan,
+            amount: amount
+        }, function(res) {
+            if(!res.success){
+                Swal.fire('Error', 'Order creation failed', 'error');
+                return;
+            }
+
+            const options = {
+                key: res.key,
+                amount: res.amount,
+                currency: "INR",
+                name: "ConstructKaro",
+                description: `₹${amount} Lead Unlock`,
+                order_id: res.order_id,
+                prefill: {
+                    name: "ConstructKaro",
+                    email: "connect@constructkaro.com",
+                    contact: "8806561819"
+                },
+                handler: function(response) {
+                    $.post("{{ route('razorpay.verify') }}", {
+                        _token: "{{ csrf_token() }}",
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        cust_id: btoa(custId),
+                        plan: plan,
+                        amount: amount
+                    }, function(verifyRes) {
+                        if(verifyRes.success) {
+                            bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Payment Successful',
+                                text: `₹${amount} payment completed. Lead unlocked!`,
+                                confirmButtonColor: '#10b981'
+                            }).then(() => location.reload());
+                        } else {
+                            Swal.fire('Error', 'Verification failed', 'error');
+                        }
+                    });
+                },
+                theme: { color: "#2563eb" }
+            };
+
+            new Razorpay(options).open();
+        });
+    });
+
+    // ----- OPTIONAL: Show modal automatically if payment required -----
+    if(typeof res !== 'undefined' && (res.payment_required === true || res.remaining <= 0)){
+        showPaymentModal(res.cust_id);
+    }
+});
 </script>
 
 @endsection

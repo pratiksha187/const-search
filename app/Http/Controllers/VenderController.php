@@ -191,6 +191,53 @@ class VenderController extends Controller
         return view('web.vendor-profile', compact('vendor_data_byid', 'workSubtypes','cust_data','notificationCount','notifications'));
     }
 
-    
+
+    public function checkLeadBalance(Request $request)
+    {
+       
+        $vendorId  = session('vendor_id');
+       
+        // Assuming you have a 'customers' table with 'lead_balance' column
+        $vendor_lead_check = DB::table('vendor_reg')
+                    ->where('id', $vendorId)->first();
+
+        if (!$vendor_lead_check) {
+            return response()->json(['balance' => 0]);
+        }
+
+        return response()->json(['balance' => $vendor_lead_check->lead_balance]);
+    }
+
+
+    public function claimFreeLead(Request $request)
+    {
+       
+        $vendorId  = session('vendor_id');
+        // dd($vendorId);
+        $request->validate([
+            'platform' => 'required|in:instagram,facebook'
+        ]);
+
+        // Get vendor record
+        $vendor = DB::table('vendor_reg')->where('id', $vendorId)->first();
+        // dd($vendor);
+        if (!$vendor) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Vendor not found'
+            ]);
+        }
+
+        // Increment the lead balance by 1
+        DB::table('vendor_reg')
+            ->where('id', $vendorId)
+            ->increment('lead_balance', 1);
+
+        return response()->json([
+            'status' => true,
+            'message' => "1 free lead added for {$request->platform}"
+        ]);
+    }
+
 
 }

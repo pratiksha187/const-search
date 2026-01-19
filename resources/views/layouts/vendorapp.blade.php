@@ -95,28 +95,7 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
 }
 </style>
 </head>
-<!-- 
-@php
-    /* ================= SAFE VENDOR LOGIC ================= */
-    $vendor_id = session('vendor_id');
-    $vendor_name = session('user_name'); // stored during login
 
-    if ($vendor_id) {
-        $unreadCount = DB::table('vendor_notifications')
-            ->where('vendor_id', $vendor_id)
-            ->where('is_read', 0)
-            ->count();
-
-        $notifications = DB::table('vendor_notifications')
-            ->where('vendor_id', $vendor_id)
-            ->latest()
-            ->limit(5)
-            ->get();
-    } else {
-        $unreadCount = 0;
-        $notifications = collect();
-    }
-@endphp -->
 
 <body>
 
@@ -138,7 +117,28 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
                 <a href="{{ route('vendordashboard') }}" class="{{ request()->is('vendordashboard') ? 'active' : '' }}">Dashboard</a>
                 <a href="{{ route('search_customer') }}" class="{{ request()->is('search-customer*') ? 'active' : '' }}">Lead Marketplace</a>
                 <a href="{{ route('supplierserch') }}" class="{{ request()->routeIs('supplierserch') ? 'active' : '' }}">Search Suppliers</a>
+        <!-- 🔔 Notification -->
+                <div class="notification-container" onclick="toggleNotification(event)">
+                    <i class="bi bi-bell"></i>
 
+                    @if(($notificationCount) > 0)
+                    <span class="badge bg-danger rounded-circle position-absolute top-0 start-100 translate-middle">
+                        {{ $notificationCount }}
+                    </span>
+                    @endif
+
+                    <div class="notification-dropdown" id="notificationDropdown" onclick="event.stopPropagation()">
+                        @forelse($notifications  as $note)
+                            <a href="{{ route('vendor.notifications') }}">
+                                <strong>{{ $note->name ?? 'Customer #'.$note->customer_id }}</strong><br>
+                                <small class="text-muted">Interested in your project</small><br>
+                                <small>{{ \Carbon\Carbon::parse($note->created_at)->diffForHumans() }}</small>
+                            </a>
+                        @empty
+                            <div class="text-center p-3 text-muted">No notifications</div>
+                        @endforelse
+                    </div>
+                </div>
             </div>
 
           
@@ -178,24 +178,29 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
     © {{ date('Y') }} ConstructKaro — Designed with ❤️ in India
 </div>
 
-<!-- <script>
-
-function toggleNotificationMenu(e){
-    e.stopPropagation();
-    notificationDropdown.classList.toggle("show");
-    profileDropdown.classList.remove("show");
-}
-document.addEventListener("click",()=>{
-    profileDropdown?.classList.remove("show");
-    notificationDropdown?.classList.remove("show");
-});
-</script> -->
 <script>
+
+    function closeAll() {
+    const notif = document.getElementById('notificationDropdown');
+    const profile = document.getElementById('profileDropdown');
+    if (notif) notif.style.display = 'none';
+    if (profile) profile.style.display = 'none';
+}
 function toggleProfileMenu(e){
     e.stopPropagation();
     profileDropdown.classList.toggle("show");
     // notificationDropdown.classList.remove("show");
 }
+
+ function toggleNotification(e) {
+    e.stopPropagation();
+    closeAll();
+
+    const notif = document.getElementById('notificationDropdown');
+    if (notif) notif.style.display = 'block';
+}
+
+ document.addEventListener('click', closeAll);
 </script>
 </body>
 </html>

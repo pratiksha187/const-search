@@ -438,10 +438,6 @@
    </div>
 </div>
 
-
-
-
-
 <div class="modal fade" id="enquiryModal" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -521,6 +517,26 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Balance / Payment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Your payment form here -->
+        <form id="paymentForm">
+          <label>Amount</label>
+          <input type="number" name="amount" class="form-control" required>
+          <button type="submit" class="btn btn-primary mt-3">Pay Now</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Bootstrap CSS (usually already present) -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -603,7 +619,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script> -->
-<script>
+<!-- <script>
 document.addEventListener('DOMContentLoaded', function () {
 
     if (typeof bootstrap === 'undefined') {
@@ -654,6 +670,87 @@ document.addEventListener('DOMContentLoaded', function () {
                 form.reset();
             } else {
                 alert(data.message || '❌ Something went wrong');
+                bootstrap.Modal.getOrCreateInstance(
+                        document.getElementById('paymentModal')
+                  ).show();
+            }
+        })
+        .catch(() => {
+            alert('❌ Server error. Please try again.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Send enquiry';
+        });
+    });
+
+});
+</script> -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap not loaded');
+        return;
+    }
+
+    const enquiryModalEl = document.getElementById('enquiryModal');
+    const paymentModalEl = document.getElementById('paymentModal'); // Payment modal
+    const form           = document.getElementById('enquiryForm');
+    const csrfToken      = document.querySelector('meta[name="csrf-token"]');
+
+    if (!enquiryModalEl || !form) {
+        console.error('Enquiry modal or form not found');
+        return;
+    }
+
+    const enquiryModal = new bootstrap.Modal(enquiryModalEl);
+    const paymentModal = paymentModalEl ? new bootstrap.Modal(paymentModalEl) : null;
+
+    // Open enquiry modal when CTA button is clicked
+    document.querySelectorAll('.cta-quote').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            form.reset();
+            enquiryModal.show();
+        });
+    });
+
+    // Form submission
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Sending...';
+
+        const formData = new FormData(form);
+
+        fetch("{{ route('productenquirystore') }}", {
+            method: "POST",
+            headers: csrfToken ? {
+                'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+            } : {},
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === true) {
+                // Success: enquiry submitted
+                alert('✅ Enquiry sent successfully');
+                enquiryModal.hide();
+                form.reset();
+            } else {
+                // Failure: check if due to insufficient balance
+                if (data.error_code === 'INSUFFICIENT_BALANCE') {
+                    alert('❌ You do not have enough lead balance.');
+                    if (paymentModal) {
+                        paymentModal.show(); // Show payment modal
+                    }
+                } else {
+                    // Other errors
+                    alert(data.message || '❌ Something went wrong');
+                }
             }
         })
         .catch(() => {

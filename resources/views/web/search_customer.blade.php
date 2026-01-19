@@ -429,6 +429,7 @@
 }
 
 </style>
+
 {{-- ================= MAIN CONTENT ================= --}}
 <div class="container-fluid px-4 py-4">
    <div class="row g-4">
@@ -595,24 +596,17 @@
                   </div>
                   {{-- ACTIONS (SAME handleInterested) --}}
                   <div class="lead-actions">
-                     <a href="{{ route('customer.profile.id', $project->id) }}"
+                     <!-- <a href="{{ route('customer.profile.id', $project->id) }}"
                         class="btn-outline-lead">
                      View Profile
+                     </a> -->
+                     <a href="javascript:void(0)"
+                        class="btn-outline-lead view-profile-btn"
+                        data-id="{{ $project->id }}">
+                        View Profile
                      </a>
-                     <!-- <button
-                        class="btn-primary-lead show-interest-btn"
-                        data-id="{{ $project->id }}"
-                        data-username="{{ $project->username }}"
-                        data-usersmobile="{{ $project->usersmobile }}"
-                        data-useremail="{{ $project->useremail }}"
-                        data-title="{{ $project->title }}"
-                        data-work="{{ $project->work_subtype }}"
-                        data-location="{{ $project->statename }}, {{ $project->regionname }}, {{ $project->cityname }}"
-                        data-budget="{{ $project->budget_range_name ?? 'Flexible' }}"
-                        data-description="{{ $project->description }}"
-                        data-contact-time="{{ $project->contact_time }}">
-                     Show Interest
-                     </button> -->
+
+                     
                   </div>
                </div>
             </div>
@@ -690,92 +684,7 @@
                </small>
             </div>
          </div>
-         <!-- PRICING SECTION -->
-         <!-- <div class="pricing-section"> -->
-         <div id="pricingSection" class="pricing-section d-none">
-            <div class="pricing-header">
-               <h4>Choose Your Lead Package</h4>
-               <p>Pay once • No commission • Verified leads only</p>
-            </div>
-            <div class="row g-4">
-               <!-- SINGLE LEAD -->
-               <div class="col-md-4">
-                  <div class="plan-card">
-                     <div class="plan-title">Single Lead</div>
-                     <div class="plan-price">₹499</div>
-                     <p class="plan-meta">1 verified lead</p>
-                     <ul class="plan-features">
-                        <li>✔ Full customer contact</li>
-                        <li>✔ Genuine requirement</li>
-                        <li>✔ No commission</li>
-                     </ul>
-                     <!-- <button class="btn btn-outline w-100" id="payNowBtn">
-                        Pay & Unlock
-                        </button> -->
-                     <button
-                        class="btn btn-outline w-100 buy-plan-btn"
-                        data-plan="single"
-                        data-amount="499"
-                        data-cust="{{ $project->id }}">
-                     Pay & Unlock
-                     </button>
-                  </div>
-               </div>
-               <!-- STARTER PACKAGE (RECOMMENDED) -->
-               <div class="col-md-4">
-                  <div class="plan-card recommended">
-                     <div class="recommended-badge">Best Value</div>
-                     <div class="plan-title">Starter Package</div>
-                     <div class="plan-price">
-                        ₹1,999 <span class="gst">+ GST</span>
-                     </div>
-                     <p class="plan-meta">
-                        10 verified leads • <strong>You save ₹2,991</strong>
-                     </p>
-                     <ul class="plan-features">
-                        <li>✔ ₹199 per lead</li>
-                        <li>✔ Priority access</li>
-                        <li>✔ No middleman</li>
-                     </ul>
-                     <!-- <button class="btn btn-primary w-100" id="payNowBtn">
-                        Buy Starter Pack
-                        </button> -->
-                     <button
-                        class="btn btn-primary w-100 buy-plan-btn"
-                        data-plan="starter"
-                        data-amount="1999"
-                        data-cust="{{ $project->id }}">
-                     Buy Starter Pack
-                     </button>
-                  </div>
-               </div>
-               <!-- GROW PACKAGE -->
-               <div class="col-md-4">
-                  <div class="plan-card">
-                     <div class="plan-title">Grow Package</div>
-                     <div class="plan-price">
-                        ₹2,999 <span class="gst">+ GST</span>
-                     </div>
-                     <p class="plan-meta">
-                        25 verified leads • <strong>You save ₹9,476</strong>
-                     </p>
-                     <ul class="plan-features">
-                        <li>✔ ₹120 per lead</li>
-                        <li>✔ Maximum savings</li>
-                        <li>✔ Business growth pack</li>
-                     </ul>
-                     
-                     <button
-                        class="btn btn-outline w-100 buy-plan-btn"
-                        data-plan="grow"
-                        data-amount="2999"
-                        data-cust="{{ $project->id }}">
-                     Buy Grow Pack
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>
+       
       </div>
    </div>
 </div>
@@ -809,6 +718,27 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('click', function (e) {
+
+    const btn = e.target.closest('.view-profile-btn');
+    if (!btn) return;
+
+    e.preventDefault(); // ⛔ STOP default navigation
+
+    const projectId = btn.dataset.id;
+
+    // 🔐 LOGIN CHECK
+    if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
+
+    // ✅ Logged in → redirect
+    window.location.href = "{{ url('customer/profile/id') }}/" + projectId;
+});
+</script>
+
 <script>
    document.addEventListener('click', function (e) {
        const btn = e.target.closest('.show-interest-btn');
@@ -1156,6 +1086,24 @@ document.getElementById('citySelect')?.addEventListener('change', applyFilters);
 
 // Run once on load
 document.addEventListener('DOMContentLoaded', applyFilters);
+</script>
+
+<script>
+   function requireLogin(callback) {
+    if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return false;
+    }
+    callback();
+}
+
+function viewProfile(id) {
+   if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
+    window.location.href = "{{ url('vendor/profile/id') }}/" + id;
+}
 </script>
 
 @endsection

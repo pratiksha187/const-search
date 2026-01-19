@@ -846,6 +846,22 @@ public function supplierserch()
         $notificationCount = $notifications->count();
         $layout = 'layouts.custapp';
     } elseif ($vendor_id) {
+        // $vendor = DB::table('vendor_reg')
+        //             ->where('id', $vendor_id)
+        //             ->first();
+        $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+    //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count();
+        // dd('tsest');
         $layout = 'layouts.vendorapp';
     }
 
@@ -1107,8 +1123,25 @@ public function supplierFilter(Request $request)
             $notificationCount = $notifications->count();
             $layout = 'layouts.custapp';
         } elseif ($vendor_id) {
+            $cust_data = DB::table('vendor_reg')->where('id',$vendor_id)->first();
+            $vendor = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->first();
+            $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+        //    dd( $vendIds );
+            $notifications = DB::table('customer_interests as ci')
+                    ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                    ->whereIn('ci.vendor_id', $vendIds)
+                    // ->select('v.*','vi.*')
+                    ->select('ci.*','u.*')
+                    ->get();
+            //    dd( $notifications );     
+            $notificationCount = $notifications->count();
             $layout = 'layouts.vendorapp';
         }
+
 
         // dd( $layout );
         $supplier = DB::table('supplier_reg as s')
@@ -1134,7 +1167,7 @@ public function supplierFilter(Request $request)
             ->where('sp.supp_id', $id)
             ->pluck('mc.name');
         // dd( $materials);
-        return view('web.supplier_profile', compact('supplier', 'materials','layout','cust_data' ,'notifications','notificationCount'));
+        return view('web.supplier_profile', compact('supplier', 'materials','layout','cust_data','vendor' ,'vendor_id','notifications','notificationCount'));
     }
 
 }

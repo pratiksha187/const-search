@@ -156,6 +156,8 @@ Route::get('/supplier-filter', [SuppliersController::class, 'supplierFilter'])
     ->name('supplier.search.filter');
 
 Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->name('productenquiry');
+Route::get('/check_lead_balance', [VenderController::class, 'checkLeadBalance'])->name('vendor.check_lead_balance');
+
 
 Route::post('/productenquirystore', [HomeController::class, 'productenquirystore'])->name('productenquirystore');
 
@@ -176,7 +178,8 @@ Route::get('/customer/profile/id/{id}', [HomeController::class, 'customerprofile
 
 Route::post('/vendor-interest-check', [HomeController::class, 'vendorinterestcheck'])
     ->name('vendor.interest.check');
-
+Route::post('/claim-free-lead', [VenderController::class, 'claimFreeLead'])
+    ->name('claim_free_lead');
 Route::post('/customer-interest-check', [HomeController::class, 'customerinterestcheck'])
     ->name('customer.interest.check');
 
@@ -300,6 +303,9 @@ Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
 
     // Route::get('/customer/notifications', [LoginRegController::class, 'getCustomerNotifications'])->name('customer.notifications');
     Route::get('/customer/notifications', [LoginRegController::class, 'customerNotificationsPage'])->name('customer.notifications');
+
+    Route::get('/vendor/notifications', [LoginRegController::class, 'vendorNotificationsPage'])->name('vendor.notifications');
+
     Route::post(
         '/customer/notification/action',
         [LoginRegController::class, 'handleNotificationAction']
