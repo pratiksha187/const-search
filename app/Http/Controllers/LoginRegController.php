@@ -305,19 +305,21 @@ class LoginRegController extends Controller
     public function customerNotificationsPage()
     {
         $customer_id = Session::get('customer_id');
-         $cust_data = DB::table('users')->where('id',$customer_id)->first();
+       
+        $cust_data = DB::table('users')->where('id',$customer_id)->first();
         // $post_id = DB::table('posts')->where('user_id',$customer_id )->get();
-    
+            // dd($cust_data);
         $postIds = DB::table('posts')
                     ->where('user_id', $customer_id)
                     ->pluck('id');
-
+       
         $notifications = DB::table('vendor_interests as vi')
                 ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
                 ->whereIn('vi.customer_id', $postIds)
                 ->select('v.*','vi.*')
                 ->get();
-                 $notificationCount = $notifications->count();
+                //  dd($notifications);
+        $notificationCount = $notifications->count();
 
         return view('web.customernotifications', compact('notifications','cust_data','notificationCount'));
     }

@@ -183,11 +183,15 @@
     </a>
 
     <div class="top-menu">
-
+        @if($cust_data)
         <a href="{{ route('dashboard') }}">Dashboard</a>
         <a href="{{ route('myposts') }}">My Posts</a>
         <a href="{{ route('post') }}">Add Post</a>
+        <a href="{{ route('search_vendor') }}">Find Vendor</a>
+        <a href="{{ route('supplierserch') }}">Find Supplier</a>
 
+        @endif
+        @if($cust_data)
         <!-- 🔔 Notification -->
         <div class="notification-container" onclick="toggleNotification(event)">
             <i class="bi bi-bell"></i>
@@ -210,8 +214,8 @@
                 @endforelse
             </div>
         </div>
-
-
+        @endif
+        @if($cust_data)
         <!-- 👤 Profile -->
         <div class="header-profile" onclick="toggleProfileMenu(event)">
             <div class="profile-trigger-avatar">
@@ -220,7 +224,7 @@
             <span>{{ $cust_data->name ?? 'User' }}</span>
             <i class="bi bi-chevron-down"></i>
         </div>
-
+        @endif
     </div>
 </div>
 

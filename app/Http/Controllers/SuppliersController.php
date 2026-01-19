@@ -761,11 +761,13 @@ class SuppliersController extends Controller
 
 public function supplierserch()
 {
+    $notificationCount =0;
+    $notifications =0;
     $customer_id = Session::get('customer_id');
     $cust_data = DB::table('users')->where('id',$customer_id)->first();
     $vendor_id   = Session::get('vendor_id');
     $supplier_id = Session::get('supplier_id');
-
+    // dd($customer_id);
     /* ===============================
        MASTER DATA
     =============================== */
@@ -832,6 +834,16 @@ public function supplierserch()
     =============================== */
     $layout = 'layouts.guest';
     if ($customer_id) {
+       
+        $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+        $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
         $layout = 'layouts.custapp';
     } elseif ($vendor_id) {
         $layout = 'layouts.vendorapp';
@@ -841,17 +853,17 @@ public function supplierserch()
           
             ->orderBy('name')
             ->get();
-// ✅ LOGIN CHECK FLAG
-$isLoggedIn = false;
+    // ✅ LOGIN CHECK FLAG
+    $isLoggedIn = false;
 
-if ($customer_id || $vendor_id) {
-    $isLoggedIn = true;
-}
+    if ($customer_id || $vendor_id) {
+        $isLoggedIn = true;
+    }
 
 
     // dd($supplier_data);
     return view('web.supplierserch', compact(
-        'credit_days','material_categories',
+        'credit_days','material_categories','notificationCount','notifications',
         'delivery_type',
         'maximum_distances',
         'supplier_data',
@@ -861,7 +873,7 @@ if ($customer_id || $vendor_id) {
         'vendor_id',
         'supplier_id',
         'isLoggedIn',
-        'vendor' // ✅ PASS TO VIEW
+        'vendor' 
     ));
 }
 
@@ -993,32 +1005,33 @@ public function supplierFilter(Request $request)
 }
 
 
-public function productenquiry()
-{
-    $supplier_id = Session::get('supplier_id');
-    $supplierName = DB::table('supplier_reg')
-                        ->where('id', $supplier_id)
-                       ->value('contact_person'); 
-    $enquiries = DB::table('supplier_enquiries as se')
-        ->join('supplier_reg as sr', 'se.supplier_id', '=', 'sr.id')
-        ->join('material_categories as mc', 'se.category', '=', 'mc.id')
+    public function productenquiry()
+    {
+        $supplier_id = Session::get('supplier_id');
+        $supplierName = DB::table('supplier_reg')
+                            ->where('id', $supplier_id)
+                        ->value('contact_person'); 
+        $enquiries = DB::table('supplier_enquiries as se')
+            ->join('supplier_reg as sr', 'se.supplier_id', '=', 'sr.id')
+            ->join('material_categories as mc', 'se.category', '=', 'mc.id')
 
-        
-        ->where('se.supplier_id', $supplier_id)
-        ->select(
-            'se.*',
-            'sr.contact_person',
-            'sr.shop_name', // Add any other supplier columns you need
-            'sr.mobile',
-            'sr.email',
-            'mc.name as material_categories_name'
-        )
-        ->get();
+            
+            ->where('se.supplier_id', $supplier_id)
+            ->select(
+                'se.*',
+                'sr.contact_person',
+                'sr.shop_name', // Add any other supplier columns you need
+                'sr.mobile',
+                'sr.email',
+                'mc.name as material_categories_name'
+            )
+            ->get();
 
-    // dd($enquiries); // Check the result
-    return view('web.productenquiry', compact('enquiries','supplierName'));
-}
+        // dd($enquiries); // Check the result
+        return view('web.productenquiry', compact('enquiries','supplierName'));
+    }
 
+   
    
     public function storeSupplierProductData(Request $request)
     {
@@ -1073,12 +1086,25 @@ public function productenquiry()
 
     public function supplierprofileid($id)
     {
+        $notificationCount =0;
+        $notifications =0;
         $customer_id = Session::get('customer_id');
         $vendor_id   = Session::get('vendor_id');
         $supplier_id = Session::get('supplier_id');
 
+       
         $layout = 'layouts.guest';
         if ($customer_id) {
+            $cust_data = DB::table('users')->where('id',$customer_id)->first();
+            $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+            $notifications = DB::table('vendor_interests as vi')
+                    // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                    ->whereIn('vi.customer_id', $postIds)
+                
+                    ->get();
+            $notificationCount = $notifications->count();
             $layout = 'layouts.custapp';
         } elseif ($vendor_id) {
             $layout = 'layouts.vendorapp';
@@ -1107,8 +1133,8 @@ public function productenquiry()
             ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
             ->where('sp.supp_id', $id)
             ->pluck('mc.name');
-
-        return view('web.supplier_profile', compact('supplier', 'materials','layout' ));
+        // dd( $materials);
+        return view('web.supplier_profile', compact('supplier', 'materials','layout','cust_data' ,'notifications','notificationCount'));
     }
 
 }

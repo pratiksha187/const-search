@@ -42,17 +42,14 @@
     </div>
 
     <div class="card-actions">
-        <a href="{{ url('/supplier/profile/'.$supplier->id) }}" class="btn-outline">
-            View Profile
-        </a>
+      <a href="javascript:void(0)"
+   class="btn-outline btn-view-profile"
+   data-url="{{ url('/supplier/profile/'.$supplier->id) }}">
+    View Profile
+</a>
 
-        <a href="javascript:void(0)"
-           class="btn-primary btn-enquire"
-           data-supplier-id="{{ $supplier->id }}"
-           data-supplier-name="{{ $supplier->shop_name }}"
-           data-categories='@json($supplier->material_categories)'>
-            Enquire Now
-        </a>
+
+       
     </div>
 
 </div>
@@ -65,80 +62,6 @@
 @endforelse
 
 
-
-
-<div class="modal fade" id="enquiryModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div>
-          <h5 class="modal-title">Send Enquiry</h5>
-          <small class="text-muted">To: <span id="modalSupplierName"></span></small>
-        </div>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <form id="enquiryForm">
-        <div class="modal-body">
-
-          <input type="hidden" name="supplier_id" id="modalSupplierId">
-
-          <div class="row g-3">
-
-            <div class="col-md-6">
-              <label class="form-label">Category</label>
-              <select class="form-select" name="category" id="modalCategory">
-                <option value="">Select Category</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Quantity</label>
-              <input type="text" class="form-control" name="quantity" placeholder="200 bags">
-            </div>
-
-            <div class="col-12">
-              <label class="form-label">Specs (type freely)</label>
-              <textarea class="form-control" name="specs" rows="3"
-                        placeholder="Brand, grade, size, approx qty..."></textarea>
-              <small class="text-muted">Tip: Add brand preference, grade, pack size, usage, site urgency.</small>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Delivery location</label>
-              <input type="text" class="form-control" name="delivery_location" placeholder="Khopoli site">
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Required by</label>
-              <input type="text" class="form-control" name="required_by" placeholder="Tomorrow">
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Payment preference</label>
-              <select class="form-select" name="payment_preference" id="modalPayment">
-                <option value="cash">Cash</option>
-                <option value="online">Online</option>
-                <option value="credit">Credit (if available)</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Attachments</label>
-              <input type="file" class="form-control" name="attachments[]" multiple>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-dark px-4">Send enquiry</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 
 <!-- LOGIN MODAL -->
 <div class="modal fade" id="loginModal" tabindex="-1">

@@ -507,6 +507,10 @@
 }
 
 </style>
+<script>
+    window.CUSTOMERID = @json($cust_data->id ?? null);
+</script>
+
       {{-- ================= MAIN CONTENT ================= --}}
       <div class="container-fluid px-4 py-4">
          <div class="row g-4">
@@ -651,15 +655,25 @@
 </div>
 </div>
 {{-- ================= AUTH MODAL (UNCHANGED) ================= --}}
+
 <div class="modal fade" id="authModal" tabindex="-1">
    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content auth-modal">
          <div class="auth-header">
-            <h5 class="fw-bold">Login Required</h5>
+            <div class="auth-icon"><i class="bi bi-shield-lock-fill"></i></div>
+            <h5 class="fw-bold mb-1">Login Required</h5>
+            <p class="mb-0 small opacity-75">Please sign in to continue</p>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
          </div>
-         <div class="modal-body text-center">
-            <a href="{{ route('login_register') }}" class="btn btn-auth-primary w-100">
-            Login / Register
+         <div class="modal-body text-center p-4">
+            <p class="text-muted mb-4">
+               To view Vendor contact details and unlock premium leads, please log in to your Customer account.
+            </p>
+            <a href="{{ route('login_register') }}" class="btn btn-auth-primary w-100 mb-3">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Login to Continue
+            </a>
+            <a href="{{ route('login_register') }}" class="btn btn-auth-outline w-100">
+            <i class="bi bi-person-plus me-2"></i> Create Free Account
             </a>
          </div>
       </div>
@@ -812,7 +826,19 @@
    $('#citySelect').on('change', applyFilters);
 </script>
 <script>
+   function requireLogin(callback) {
+    if (!window.CUSTOMERID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return false;
+    }
+    callback();
+}
+
 function viewProfile(id) {
+   if (!window.CUSTOMERID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
     window.location.href = "{{ url('vendor/profile/id') }}/" + id;
 }
 </script>

@@ -67,14 +67,12 @@ Route::post('/save-post', [HomeController::class, 'store'])->name('save.post');
 
 Route::get('/Lead-Marketplace', [HomeController::class, 'leadmarketplace'])->name('leadmarketplace');
 
-Route::post('/save-site-visit', [HomeController::class, 'saveSiteVisit'])->name('save.site.visit');
-Route::get('/site-visit/pdf/{id}', [HomeController::class, 'downloadPDF'])->name('site.visit.pdf');
+
 
 Route::get('/vendor/register', [HomeController::class, 'vendorRegister'])->name('vendor.register');
 Route::get('/supplier/register', [HomeController::class, 'supplierRegister'])->name('supplier.register');
 
-Route::get('/project-details-ajax', [HomeController::class, 'getProjectDetails'])
-    ->name('project.details.ajax');
+
 
 Route::post('/save-leadform', [HomeController::class, 'storeleadform'])->name('save.leadform');
 
@@ -159,6 +157,8 @@ Route::get('/supplier-filter', [SuppliersController::class, 'supplierFilter'])
 
 Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->name('productenquiry');
 
+Route::post('/productenquirystore', [HomeController::class, 'productenquirystore'])->name('productenquirystore');
+
 
 Route::post('/supplier-enquiry', [SuppliersController::class, 'supplierenquirystore'])
     ->name('supplier.enquiry.store');
@@ -169,7 +169,10 @@ Route::get('/supplier/profile/{id}', [SuppliersController::class, 'supplierprofi
     
 Route::get('/vendor/profile/id/{id}', [VenderController::class, 'vendorprofileid'])
     ->name('vendor.profile.id');
+ 
     
+Route::get('/customer/profile/id/{id}', [HomeController::class, 'customerprofileid'])
+    ->name('customer.profile.id');    
 
 Route::post('/vendor-interest-check', [HomeController::class, 'vendorinterestcheck'])
     ->name('vendor.interest.check');

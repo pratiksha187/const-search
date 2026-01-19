@@ -58,33 +58,7 @@ class HomeController extends Controller
                 ->orderBy('posts.id', 'DESC')
                 ->paginate(10);
 
-        // $posts = DB::table('posts')
-        //     // ->leftJoin('projecttype', 'posts.project_type_id', '=', 'projecttype.id')
-        //     ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
-        //     ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
-        //     ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
-        //     ->leftJoin('region', 'region.id', '=', 'posts.region')
-        //     ->leftJoin('city', 'city.id', '=', 'posts.city')
-        //     ->leftJoin('state', 'state.id', '=', 'posts.state')
-           
-        //     ->select(
-        //         'posts.*',
-        //         'region.name as regionname','state.name as statename','city.name as cityname',
-        //         'work_types.work_type as work_type_name',
-        //         'work_subtypes.work_subtype as work_subtype_name',
-        //         'budget_range.budget_range as budget_range'
-               
-        //     )
-
-        //     ->where('posts.user_id', $customer_id)
-        //     ->groupBy(
-        //         'posts.id',
-        //         'work_subtypes.work_subtype',
-        //         'budget_range.budget_range'
-        //     )
-        //     ->orderBy('posts.id', 'DESC')
-        //     ->paginate(10);   // ✅ Pagination
-        // dd($posts);
+       
          $postIds = DB::table('posts')
                     ->where('user_id', $customer_id)
                     ->pluck('id');
@@ -195,27 +169,25 @@ class HomeController extends Controller
 
     public function search_vendor(Request $request)
     {
-        /* ======================
-        SESSION
-        ====================== */
+       
         $customer_id = Session::get('customer_id');
+        $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+        $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
-        /* ======================
-        MASTER DATA
-        ====================== */
+        
         $work_types = DB::table('work_types')->orderBy('work_type')->get();
         $states     = DB::table('state')->orderBy('name')->get();
 
-        /* ======================
-        LOAD ALL SUBTYPES (ONCE)
-        id => name
-        ====================== */
         $allSubtypes = DB::table('work_subtypes')
             ->pluck('work_subtype', 'id');
 
-        /* ======================
-        VENDOR LIST
-        ====================== */
         $vendor_reg = DB::table('vendor_reg as v')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
             ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
@@ -234,13 +206,11 @@ class HomeController extends Controller
                 'r.name as regionname',
                 'c.name as cityname'
             )
-            // ->where('v.status', 'approved')   // optional but recommended
+           
             ->orderBy('v.id', 'desc')
             ->get();
 
-        /* ======================
-        MAP JSON SUBTYPES
-        ====================== */
+        
         $vendor_reg->transform(function ($vendor) use ($allSubtypes) {
 
             // decode JSON ["16","17","19"]
@@ -259,12 +229,11 @@ class HomeController extends Controller
 
             return $vendor;
         });
-        // dd($vendor_reg);
-        /* ======================
-        RETURN VIEW
-        ====================== */
+       
         return view('web.search_vendor', [
             'cust_data' =>$cust_data,
+            'notifications'=>$notifications,
+            'notificationCount'=>$notificationCount,
             'work_types'  => $work_types,
             'states'      => $states,
             'vendor_reg'  => $vendor_reg,
@@ -327,6 +296,7 @@ class HomeController extends Controller
 
     public function vendorinterestcheck(Request $request)
     {
+        // dd($request);
         $cust_id   = $request->cust_id;
         $vendor_id = Session::get('vendor_id');
 
@@ -334,9 +304,6 @@ class HomeController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        /* ===============================
-        1️⃣ ALREADY UNLOCKED
-        ================================ */
         $already = DB::table('vendor_interests')
             ->where('customer_id', $cust_id)
             ->where('vendor_id', $vendor_id)
@@ -375,8 +342,10 @@ class HomeController extends Controller
         DB::table('vendor_interests')->insert([
             'customer_id' => $cust_id,
             'vendor_id'   => $vendor_id,
+            'vendor_name' => $request->vendor_name,
             'created_at'  => now()
         ]);
+        
 
         DB::table('vendor_reg')
             ->where('id', $vendor_id)
@@ -537,31 +506,6 @@ class HomeController extends Controller
     }
 
 
-    public function saveSiteVisit(Request $request)
-    {
-        DB::table('site_visits')->insert([
-            'customer_id' => Session::get('user_id'),
-            'vendor_id'   => $request->vendor_id,
-            'visit_date'  => $request->visit_date,
-            'visit_time'  => $request->visit_time,
-            'created_at'  => now(),
-        ]);
-
-        // Create notification
-        DB::table('vendor_notifications')->insert([
-            'vendor_id' => $request->vendor_id,
-            'title'     => 'New Site Visit Booked',
-            'message'   => 'A customer has booked a site visit on ' . $request->visit_date . ' at ' . $request->visit_time,
-            'created_at'=> now()
-        ]);
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Slot booked successfully!'
-        ]);
-    }
-
-   
     public function vendorNotifications()
     {
         // $vendor_id = Session::get('user_id');
@@ -576,68 +520,7 @@ class HomeController extends Controller
     }
 
 
-    public function userNotifications()
-    {
-        // $vendor_id = Session::get('user_id');
-        $user_id = Session::get('user_id');
-        // dd($user_id);
-        $usernotifications = DB::table('customer_notifications')
-            ->where('customer_id', $user_id)
-            ->orderBy('id', 'DESC')
-            ->get();
-            // dd( $notifications);
-        return view('web.usernotifications', compact('usernotifications'));
-    }
-
-    public function readVendorNotification($id)
-    {
-        $vendor_id = Session::get('user_id');
-
-        DB::table('vendor_notifications')
-            ->where('id', $id)
-            ->where('vendor_id', $vendor_id)
-            ->update(['is_read' => 1]);
-
-        return redirect()->back()->with('success', 'Notification marked as read.');
-    }
-
-    public function getProjectDetails(Request $request)
-    {
-        $id = $request->id;
-
-        $project = DB::connection('mysql')
-            ->table('posts')
-            ->leftJoin('projecttype', 'projecttype.id', '=', 'posts.project_type_id')
-            ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            // ->leftJoin(DB::raw('buildxo_web.states'), 'posts.state', '=', 'states.id')
-            // ->leftJoin(DB::raw('buildxo_web.regions'), 'posts.region', '=', 'regions.id')
-            // ->leftJoin(DB::raw('buildxo_web.cities'), 'posts.city', '=', 'cities.id')
-            ->select(
-                'posts.*',
-                'projecttype.projecttype_name as type',
-                'budget_range.budget_range as budget'
-                // 'states.name as state',
-                // 'regions.name as region',
-                // 'cities.name as city'
-            )
-            ->where('posts.id', $id)
-            ->first();
-
-        return response()->json([
-            'title' => $project->title,
-            'type' => $project->type,
-            'budget' => $project->budget,
-            'contact' => $project->contact_name,
-            'mobile' => $project->mobile,
-            'email' => $project->email,
-            'description' => $project->description,
-            'state' => $project->state,
-            'region' => $project->region,
-            'city' => $project->city,
-            'files' => json_decode($project->files, true) ?? []
-        ]);
-    }
-
+ 
     public function storeleadform(Request $request)
     {
 
@@ -659,42 +542,6 @@ class HomeController extends Controller
     }
 
 
-    // public function updateposts(Request $request, $id)
-    // {
-    //     // dd($request);
-    //     // $vendor_id = Session::get('user_id'); // your logged-in user id
-    //     $customer_id = Session::get('customer_id');
-    //     $request->validate([
-    //         'title'       => 'required',
-    //         'budget'      => 'nullable',
-    //         'description' => 'nullable',
-    //     ]);
-
-    //     // ✅ update only the user's own post
-    //     $updated = DB::table('posts')
-    //         ->where('id', $id)               // ✅ post id
-    //         // ->where('user_id', $customer_id)   // ✅ owner check
-    //         ->update([
-    //             'title'        => $request->title,
-    //             'work_type_id' =>$request->work_type_id,
-    //             'work_subtype_id'=>$request->work_subtype_id,
-    //             'state'=> $request->state_id,
-    //             'region'=>$request->region_id,
-    //             'city' => $request->city_id,
-    //             'budget_id' =>$request->budget,
-    //             'contact_name' => $request->contact_name,
-    //             'mobile' => $request->mobile,
-
-    //             'description'  => $request->description,
-    //             'updated_at'   => now(),
-    //         ]);
-
-    //     if (!$updated) {
-    //         return redirect()->back()->with('error', 'Post not found or you are not allowed to update it.');
-    //     }
-
-    //     return redirect()->back()->with('success', 'Post updated successfully');
-    // }
     public function updateposts(Request $request, $id)
     {
         $customer_id = Session::get('customer_id');
@@ -865,5 +712,56 @@ class HomeController extends Controller
 
         return view('web.vendorshow', compact('vendor'));
     }
+
+
+
+    public function customerprofileid($id)
+    {
+        $vendorId  = session('vendor_id');
+        $vendor = DB::table('vendor_reg')
+                    ->where('id', $vendorId)
+                    ->first();
+        $customer_data = DB::table('posts as p')
+                        ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
+                        ->leftJoin('work_types as wt', 'wt.id', '=', 'p.work_type_id')
+                        ->leftJoin('state as s', 's.id', '=', 'p.state')
+                        ->leftJoin('region as r', 'r.id', '=', 'p.region')
+                        ->leftJoin('city as c', 'c.id', '=', 'p.city')
+                        ->where('p.id', $id)
+                        ->select('p.*', 'u.*',  'wt.work_type as work_typename',  // location
+                                's.name as statename',
+                                'r.name as regionname',
+                                'c.name as cityname')
+                        ->first();
+
+        $workSubtypes = [];
+        if (!empty($customer_data->work_subtype_id)) {
+            $subtypeIds = json_decode($customer_data->work_subtype_id, true);
+
+            if (is_array($subtypeIds) && count($subtypeIds)) {
+                $workSubtypes = DB::table('work_subtypes')
+                    ->whereIn('id', $subtypeIds)
+                    ->pluck('work_subtype')
+                    ->toArray();
+            }
+        }
+            //  dd($customer_data);           
+        return view('web.customer-profile', compact('customer_data','workSubtypes','vendor'));
+        // dd($customer_data);
+      
+    }
+
+
+    public function productenquirystore(Request $request){
+        $customer_id = Session::get('customer_id');
+        $vendor_id   = Session::get('vendor_id');
+        $supplier_id = Session::get('supplier_id');
+
+        $store_productenquirystore = 
+
+
+        dd($supplier_id);
+    }
+
 
 }

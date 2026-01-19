@@ -1,7 +1,6 @@
 @extends($layout)
 @section('title', $supplier->shop_name.' | Supplier Profile')
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <style>
    /* ================= GLOBAL ================= */
    body{
@@ -307,6 +306,8 @@
    }
    }
 </style>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 {{-- ================= PROFILE HEADER ================= --}}
 <div class="profile-card">
    <div class="profile-header">
@@ -353,7 +354,10 @@
 {{-- ================= CTA ================= --}}
 <div class="supplier-cta-wrapper">
    <div class="supplier-cta">
-      <a href="#" class="cta-btn cta-quote"><i class="bi bi-file-earmark-text"></i>Request Quote</a>
+      <a href="javascript:void(0)" class="cta-btn cta-quote">
+         <i class="bi bi-file-earmark-text"></i> Request Quote
+      </a>
+
       <a href="tel:{{ $supplier->mobile }}" class="cta-btn cta-call"><i class="bi bi-telephone"></i>Call Supplier</a>
       <a href="https://wa.me/91{{ $supplier->whatsapp ?? $supplier->mobile }}"
          target="_blank"
@@ -418,11 +422,7 @@
 <div class="dpc-card">
    <h4 class="section-title"><i class="bi bi-check-circle-fill"></i>Delivery, Payment & Credit</h4>
    <div class="dpc-grid">
-      <!-- <div>
-         <div class="dpc-item"><span class="check">✔</span>Own vehicles available</div>
-         <div class="dpc-item"><span class="check">✔</span>Third-party logistics</div>
-         <div class="dpc-item"><span class="check">✔</span>50 km delivery radius</div>
-      </div> -->
+     
       <div>
          <div class="dpc-item"><span class="check">✔</span>Cash / Online / Bank</div>
          @if($supplier->credit_days_value)
@@ -437,4 +437,236 @@
       </div>
    </div>
 </div>
+
+
+
+
+
+<div class="modal fade" id="enquiryModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title">Send Enquiry</h5>
+          <!-- <small class="text-muted">To: <span id="modalSupplierName"></span></small> -->
+          <small class="text-muted">
+            To: <span id="modalSupplierName">{{ $supplier->shop_name }}</span>
+         </small>
+
+        </div>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form id="enquiryForm" method="POST" enctype="multipart/form-data">
+      @csrf
+        <div class="modal-body">
+
+          <!-- <input type="hidden" name="supplier_id" id="modalSupplierId"> -->
+          <input type="hidden" name="supplier_id" id="modalSupplierId" value="{{ $supplier->id }}">
+
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label class="form-label">Category</label>
+              
+               <select class="form-select" name="category" id="modalCategory">
+                  <option value="">Select Category</option>
+
+                  @foreach ($materials as $category)
+                     <option value="{{ $category }}">
+                           {{ $category }}
+                     </option>
+                  @endforeach
+               </select>
+
+              
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Quantity</label>
+              <input type="text" class="form-control" name="quantity" placeholder="200 bags">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Specs (type freely)</label>
+              <textarea class="form-control" name="specs" rows="3"
+                        placeholder="Brand, grade, size, approx qty..."></textarea>
+              <small class="text-muted">Tip: Add brand preference, grade, pack size, usage, site urgency.</small>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Delivery location</label>
+              <input type="text" class="form-control" name="delivery_location" placeholder="Khopoli site">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Required by</label>
+              <input type="text" class="form-control" name="required_by" placeholder="Tomorrow">
+            </div>
+
+            
+            <div class="col-md-6">
+              <label class="form-label">Attachments</label>
+              <input type="file" class="form-control" name="attachments[]" multiple>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-dark px-4">Send enquiry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- Bootstrap CSS (usually already present) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS (REQUIRED) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- <script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const enquiryModalEl = document.getElementById('enquiryModal');
+    const enquiryModal   = enquiryModalEl
+        ? new bootstrap.Modal(enquiryModalEl)
+        : null;
+
+    document.querySelectorAll('.cta-quote').forEach(btn => {
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Optional: reset form each time
+            const form = document.getElementById('enquiryForm');
+            if (form) form.reset();
+
+            enquiryModal?.show();
+        });
+
+    });
+
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const form = document.getElementById('enquiryForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Sending...';
+
+        const formData = new FormData(form);
+
+        fetch("{{ route('productenquiry') }}", {
+            method: "POST",
+            headers: {
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute('content')
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.status === true) {
+                alert('✅ Enquiry sent successfully');
+
+                bootstrap.Modal
+                    .getInstance(document.getElementById('enquiryModal'))
+                    .hide();
+
+                form.reset();
+            } else {
+                alert(data.message || '❌ Something went wrong');
+            }
+
+        })
+        .catch(() => {
+            alert('❌ Server error. Please try again.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Send enquiry';
+        });
+    });
+
+});
+</script> -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap not loaded');
+        return;
+    }
+
+    const enquiryModalEl = document.getElementById('enquiryModal');
+    const form           = document.getElementById('enquiryForm');
+    const csrfToken      = document.querySelector('meta[name="csrf-token"]');
+
+    if (!enquiryModalEl || !form) {
+        console.error('Modal or form not found');
+        return;
+    }
+
+    const enquiryModal = new bootstrap.Modal(enquiryModalEl);
+
+    document.querySelectorAll('.cta-quote').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            form.reset();
+            enquiryModal.show();
+        });
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Sending...';
+
+        const formData = new FormData(form);
+
+        fetch("{{ route('productenquirystore') }}", {
+            method: "POST",
+            headers: csrfToken ? {
+                'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+            } : {},
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === true) {
+                alert('✅ Enquiry sent successfully');
+                enquiryModal.hide();
+                form.reset();
+            } else {
+                alert(data.message || '❌ Something went wrong');
+            }
+        })
+        .catch(() => {
+            alert('❌ Server error. Please try again.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Send enquiry';
+        });
+    });
+
+});
+</script>
+
+
 @endsection

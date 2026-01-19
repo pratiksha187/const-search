@@ -595,11 +595,11 @@
                   </div>
                   {{-- ACTIONS (SAME handleInterested) --}}
                   <div class="lead-actions">
-                     <a href="{{ route('vendor.profile.id', $project->id) }}"
+                     <a href="{{ route('customer.profile.id', $project->id) }}"
                         class="btn-outline-lead">
                      View Profile
                      </a>
-                     <button
+                     <!-- <button
                         class="btn-primary-lead show-interest-btn"
                         data-id="{{ $project->id }}"
                         data-username="{{ $project->username }}"
@@ -612,7 +612,7 @@
                         data-description="{{ $project->description }}"
                         data-contact-time="{{ $project->contact_time }}">
                      Show Interest
-                     </button>
+                     </button> -->
                   </div>
                </div>
             </div>
@@ -873,7 +873,7 @@
        $('#modalPosted').text('Just now');
    
        $.ajax({
-           url: "{{ route('vendor.interest.check') }}",
+           url: "{{ route('customer.interest.check') }}",
            type: "POST",
            data: {
                _token: "{{ csrf_token() }}",
@@ -1012,66 +1012,6 @@
 </script>
 <script>
 
-// function applyFilters() {
-
-//     let selectedCategories = [];
-//     let selectedSubtypes   = [];
-
-//     document.querySelectorAll('.category-check:checked')
-//         .forEach(cb => selectedCategories.push(cb.value));
-
-//     document.querySelectorAll('.subtype-check:checked')
-//         .forEach(cb => selectedSubtypes.push(cb.value));
-
-//     // 🔑 IMPORTANT: use TEXT, not ID
-//     let stateText  = (document.querySelector('#stateSelect option:checked')?.textContent || '').toLowerCase().trim();
-//     let regionText = (document.querySelector('#regionSelect option:checked')?.textContent || '').toLowerCase().trim();
-//     let cityText   = (document.querySelector('#citySelect option:checked')?.textContent || '').toLowerCase().trim();
-//     let selectedState  = $('#stateSelect').val();
-//     let selectedRegion = $('#regionSelect').val();
-//     let selectedCity   = $('#citySelect').val();
-
-//     if (stateText === 'select state') stateText = '';
-//     if (regionText === 'select region') regionText = '';
-//     if (cityText === 'select city') cityText = '';
-
-//     let visible = 0;
-
-//     document.querySelectorAll('.vendor-card').forEach(card => {
-
-//         let cardTypeId    = card.dataset.workTypeId || '';
-//         let cardSubtypeId = card.dataset.workSubtypeId || '';
-
-//         let cardState  = (card.dataset.state  || '').toLowerCase();
-//         let cardRegion = (card.dataset.region || '').toLowerCase();
-//         let cardCity   = (card.dataset.city   || '').toLowerCase();
-
-//         /* ---------- CATEGORY MATCH ---------- */
-//         let categoryMatch = true;
-
-//         if (selectedCategories.length > 0) {
-//             categoryMatch = selectedCategories.includes(cardTypeId);
-//         }
-
-//         if (selectedSubtypes.length > 0) {
-//             categoryMatch = selectedSubtypes.includes(cardSubtypeId);
-//         }
-
-//         /* ---------- LOCATION MATCH ---------- */
-//         let stateMatch  = !stateText  || cardState.includes(stateText);
-//         let regionMatch = !regionText || cardRegion.includes(regionText);
-//         let cityMatch   = !cityText   || cardCity.includes(cityText);
-
-//         if (categoryMatch && stateMatch && regionMatch && cityMatch) {
-//             card.style.display = 'block';
-//             visible++;
-//         } else {
-//             card.style.display = 'none';
-//         }
-//     });
-
-//     document.getElementById('vendorCount').innerText = visible;
-// }
 function applyFilters() {
 
     let selectedCategories = [];

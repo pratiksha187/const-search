@@ -257,11 +257,7 @@
         </div>
 
         {{-- SEARCH --}}
-        <!-- <div class="find-search-bar">
-            <i class="bi bi-search"></i>
-            <input type="text" placeholder="Search by product, location, or supplier name...">
-            <button class="btn-search">Search</button>
-        </div> -->
+      
         <div class="find-search-bar">
             <i class="bi bi-search"></i>
             <input 
@@ -341,6 +337,7 @@
 
 </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
@@ -401,6 +398,35 @@ $(document).ready(function () {
 
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const isLoggedIn = @json($isLoggedIn);
+    const loginModalEl = document.getElementById('loginModal');
+    const loginModal = loginModalEl ? new bootstrap.Modal(loginModalEl) : null;
+
+    document.querySelectorAll('.btn-view-profile').forEach(btn => {
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const profileUrl = this.dataset.url;
+
+            // 🔐 Not logged in → show login modal
+            if (!isLoggedIn) {
+                loginModal?.show();
+                return;
+            }
+
+            // ✅ Logged in → go to profile
+            window.location.href = profileUrl;
+        });
+
+    });
+
+});
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
