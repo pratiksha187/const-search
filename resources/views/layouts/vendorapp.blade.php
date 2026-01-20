@@ -179,6 +179,37 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
 </div>
 
 <script>
+const profileDropdown = document.getElementById('profileDropdown');
+const notificationDropdown = document.getElementById('notificationDropdown');
+
+function closeAll() {
+    profileDropdown?.classList.remove('show');
+    notificationDropdown?.classList.remove('show');
+}
+
+function toggleProfileMenu(e){
+    e.stopPropagation();
+    const isOpen = profileDropdown.classList.contains('show');
+    closeAll();
+    if (!isOpen) {
+        profileDropdown.classList.add('show');
+    }
+}
+
+function toggleNotification(e) {
+    e.stopPropagation();
+    const isOpen = notificationDropdown.classList.contains('show');
+    closeAll();
+    if (!isOpen) {
+        notificationDropdown.classList.add('show');
+    }
+}
+
+document.addEventListener('click', closeAll);
+</script>
+
+<!-- 
+<script>
 
     function closeAll() {
     const notif = document.getElementById('notificationDropdown');
@@ -201,6 +232,6 @@ function toggleProfileMenu(e){
 }
 
  document.addEventListener('click', closeAll);
-</script>
+</script> -->
 </body>
 </html>

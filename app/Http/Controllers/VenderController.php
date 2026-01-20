@@ -9,6 +9,23 @@ class VenderController extends Controller
 {
     public function venderprofile()
     {
+        $vendor_id = Session::get('vendor_id');
+         $vendor = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->first();
+            // dd($vendor);
+         $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+    //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count();   
         // $states = DB::table('states')->where('is_active',1)->get(); 
         $entity_type = DB::table('entity_type')->get(); 
         $states = DB::table('state')->orderBy('name')->get();
@@ -18,13 +35,12 @@ class VenderController extends Controller
         $team_size =DB::table('team_size')->get(); 
         $workTypes = DB::table('work_types')->get();
         // dd($workTypes);
-        $vendor_id = Session::get('vendor_id');
         // dd($vendor_id);
         $vendor = DB::table('vendor_reg')
             ->where('id', $vendor_id)
             ->first();
         // dd($vendor);
-        return view('web.venderprofile', compact('vendor','states','workTypes','entity_type','account_type','experience_years','team_size'));
+        return view('web.venderprofile', compact('vendor','vendor_id','notifications','notificationCount','states','workTypes','entity_type','account_type','experience_years','team_size'));
     }
 
     public function getSubtypes($workTypeId)
