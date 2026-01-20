@@ -5,19 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Helpers\ProfileCompletionHelper;
 class VenderController extends Controller
 {
     public function venderprofile()
     {
         $vendor_id = Session::get('vendor_id');
-         $vendor = DB::table('vendor_reg')
+        
+        $vendor = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->first();
+        $profilePercent = ProfileCompletionHelper::vendor($vendor);
+
             // dd($vendor);
-         $vendIds = DB::table('vendor_reg')
+        $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');
-    //    dd( $vendIds );
+        //    dd( $vendIds );
         $notifications = DB::table('customer_interests as ci')
                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
                 ->whereIn('ci.vendor_id', $vendIds)
@@ -40,7 +44,7 @@ class VenderController extends Controller
             ->where('id', $vendor_id)
             ->first();
         // dd($vendor);
-        return view('web.venderprofile', compact('vendor','vendor_id','notifications','notificationCount','states','workTypes','entity_type','account_type','experience_years','team_size'));
+        return view('web.venderprofile', compact('vendor','vendor_id','profilePercent','notifications','notificationCount','states','workTypes','entity_type','account_type','experience_years','team_size'));
     }
 
     public function getSubtypes($workTypeId)
@@ -77,7 +81,7 @@ class VenderController extends Controller
             'state'  => 'nullable|integer',
             'region' => 'nullable|integer',
             'city'   => 'nullable|integer',
-
+            'company_logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             // Files
             'pan_card_file'                     => 'nullable|file|mimes:pdf|max:20480',
             'gst_certificate_file'              => 'nullable|file|mimes:pdf|max:20480',
@@ -100,13 +104,32 @@ class VenderController extends Controller
             'pf_documents_file',
             'esic_documents_file',
             'cancelled_cheque_file',
-            'msme_file'
+            'msme_file',
+             'company_logo'
         ]);
 
         /* ================= WORK SUBTYPE (CHECKBOX ARRAY) ================= */
         if ($request->has('work_subtype_id')) {
             $data['work_subtype_id'] = json_encode($request->work_subtype_id);
         }
+
+
+        /* ================= COMPANY LOGO ================= */
+        if ($request->hasFile('company_logo')) {
+
+            // delete old logo if exists
+            $oldLogo = DB::table('vendor_reg')
+                ->where('id', $vendor_id)
+                ->value('company_logo');
+
+            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
+                Storage::disk('public')->delete($oldLogo);
+            }
+
+            $data['company_logo'] = $request->file('company_logo')
+                ->store("vendor_logos/{$vendor_id}", 'public');
+        }
+
 
         /* ================= FILE UPLOAD HANDLER ================= */
         $fileFields = [
@@ -255,5 +278,76 @@ class VenderController extends Controller
         ]);
     }
 
+    // vendorleadhistory
+    public function vendorleadhistory(Request $request){
+        $vendor_id  = session('vendor_id');
+        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+        // $get_lead_data = DB::table('vendor_interests')
+        //                 ->where('vendor_id', $vendorId)->get();
+        // // dd($get_lead_data );
+        // return view('web.vendorleadhistory');
+        $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+        //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count();   
+        $search = $request->search;
 
+        $leads = DB::table('vendor_interests as vi')
+                    ->leftJoin('users as u', 'u.id', '=', 'vi.customer_id')
+                    ->where('vi.vendor_id', $vendor_id)
+
+                    ->when($search, function ($q) use ($search) {
+                        $q->where(function ($sub) use ($search) {
+                            $sub->where('u.name', 'like', "%{$search}%")
+                                ->orWhere('vi.action_status', 'like', "%{$search}%");
+                        });
+                    })
+
+                    ->select([
+                        'vi.id',
+                        'vi.customer_id',
+                        'vi.vendor_id',
+                        'vi.vendor_name',
+                        'vi.action_status',
+                        'vi.is_read',
+                        'u.name as customer_name',
+                        'u.email as customer_email',
+                        'u.mobile as customer_mobile',
+                    ])
+
+                    ->orderBy('vi.created_at', 'desc')
+                    ->paginate(10)
+                    ->withQueryString();
+
+
+    return view('web.vendorleadhistory', compact('leads', 'search','vendor_id','vendor','notifications','notificationCount'));
+        
+    }
+
+    public function vendorsubscription(){
+        $vendor_id  = session('vendor_id');
+        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+       
+        $vendIds = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->pluck('id');
+        //    dd( $vendIds );
+        $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                // ->select('v.*','vi.*')
+                 ->select('ci.*','u.*')
+                ->get();
+        //    dd( $notifications );     
+        $notificationCount = $notifications->count(); 
+         return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount'));
+    }
 }

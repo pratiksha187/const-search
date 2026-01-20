@@ -240,6 +240,36 @@
     border:none;
     font-weight:700;
 }
+.card-actions{
+    margin-top:auto;
+    padding-top:12px;
+    border-top:1px dashed #e5e7eb;
+    display:flex;
+    justify-content:center;   /* ✅ center horizontally */
+}
+
+.btn-outline{
+    display:flex;             /* ✅ center text vertically */
+    align-items:center;
+    justify-content:center;
+    padding:10px 24px;
+    min-width:160px;          /* ✅ nice balanced width */
+    border-radius:12px;
+    background:#2563eb;       /* ✅ blue background */
+    color:#ffffff;            /* ✅ white text */
+    font-weight:800;
+    font-size:14px;
+    text-decoration:none;
+    transition:all .25s ease;
+}
+
+.btn-outline:hover{
+    background:#1d4ed8;
+    color:#ffffff;
+    transform:translateY(-1px);
+    box-shadow:0 6px 18px rgba(37,99,235,.35);
+}
+
 </style>
 
     <div class="supplier-page">

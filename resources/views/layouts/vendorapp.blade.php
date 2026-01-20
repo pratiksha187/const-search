@@ -117,6 +117,8 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
                 <a href="{{ route('vendordashboard') }}" class="{{ request()->is('vendordashboard') ? 'active' : '' }}">Dashboard</a>
                 <a href="{{ route('search_customer') }}" class="{{ request()->is('search-customer*') ? 'active' : '' }}">Lead Marketplace</a>
                 <a href="{{ route('supplierserch') }}" class="{{ request()->routeIs('supplierserch') ? 'active' : '' }}">Search Suppliers</a>
+                <a href="{{ route('vendorsubscription') }}" class="{{ request()->routeIs('vendorsubscription') ? 'active' : '' }}">Subscription</a>
+
         <!-- 🔔 Notification -->
                 <div class="notification-container" onclick="toggleNotification(event)">
                     <i class="bi bi-bell"></i>
@@ -208,30 +210,5 @@ function toggleNotification(e) {
 document.addEventListener('click', closeAll);
 </script>
 
-<!-- 
-<script>
-
-    function closeAll() {
-    const notif = document.getElementById('notificationDropdown');
-    const profile = document.getElementById('profileDropdown');
-    if (notif) notif.style.display = 'none';
-    if (profile) profile.style.display = 'none';
-}
-function toggleProfileMenu(e){
-    e.stopPropagation();
-    profileDropdown.classList.toggle("show");
-    // notificationDropdown.classList.remove("show");
-}
-
- function toggleNotification(e) {
-    e.stopPropagation();
-    closeAll();
-
-    const notif = document.getElementById('notificationDropdown');
-    if (notif) notif.style.display = 'block';
-}
-
- document.addEventListener('click', closeAll);
-</script> -->
 </body>
 </html>

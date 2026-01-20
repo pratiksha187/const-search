@@ -41,16 +41,14 @@
         <span class="distance">📍 {{ $supplier->maximum_distance ?? 0 }} km</span>
     </div>
 
-    <div class="card-actions">
-      <a href="javascript:void(0)"
-   class="btn-outline btn-view-profile"
-   data-url="{{ url('/supplier/profile/'.$supplier->id) }}">
-    View Profile
-</a>
+   <div class="card-actions">
+    <a href="javascript:void(0)"
+       class="btn-outline btn-view-profile"
+       data-url="{{ url('/supplier/profile/'.$supplier->id) }}">
+        View Profile
+    </a>
+</div>
 
-
-       
-    </div>
 
 </div>
 

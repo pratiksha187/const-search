@@ -33,6 +33,7 @@ Route::get('addmaster', [MasterController::class, 'addmaster'])->name('addmaster
 
 
 Route::get('/login-register', [LoginRegController::class, 'login_register'])->name('login_register');
+Route::post('/change-password', [LoginRegController::class, 'changePassword'])->name('change-password');
 
 // Page load (GET)
 Route::get('/search-vendor', [HomeController::class, 'search_vendor'])->name('search_vendor');
@@ -80,6 +81,10 @@ Route::post('/save-leadform', [HomeController::class, 'storeleadform'])->name('s
 Route::get('/pay', [RazorpayController::class, 'showPaymentForm'])->name('razorpay.form');
 Route::post('/razorpay/handle', [RazorpayController::class, 'handlePayment'])
     ->name('razorpay.handle');
+
+Route::post('vendor.razorpay.verify', [RazorpayController::class, 'handlePayment'])
+    ->name('razorpay.handle');
+    
 
 Route::post('/razorpay/create-order', [RazorpayController::class, 'createOrder'])
     ->name('razorpay.createOrder');
@@ -146,6 +151,8 @@ Route::post('/vendor/profile/update', [VenderController::class, 'updateProfile']
 
 Route::get('/get-subtypes/{id}', [VenderController::class, 'getSubtypes']);
 Route::get('/search-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
+Route::get('vendor-lead-history', [VenderController::class, 'vendorleadhistory'])->name('vendorleadhistory');
+
 // Route::get('/supplier-search', [HomeController::class, 'supplierserch'])
 //     ->name('supplier.search');
 
@@ -183,6 +190,7 @@ Route::post('/claim-free-lead', [VenderController::class, 'claimFreeLead'])
 Route::post('/customer-interest-check', [HomeController::class, 'customerinterestcheck'])
     ->name('customer.interest.check');
 
+Route::get('/vendorsubscription', [VenderController::class, 'vendorsubscription'])->name('vendorsubscription');
 
 Route::get('/test', [ImportController::class, 'test'])->name('test');
 

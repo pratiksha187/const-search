@@ -258,524 +258,685 @@
     border-color: #f25c05;
     background: #fff7f1;
 }
+
+.profile-tabs .nav-link.completed {
+    background: #e6f4ea;
+    color: #198754;
+    border: 1px solid #198754;
+    font-weight: 600;
+}
+
+.profile-tabs .nav-link.completed::after {
+    content: " ✔";
+}
+.logo-upload-wrapper{
+    margin-top:6px;
+}
+
+.logo-upload-box{
+    cursor:pointer;
+    display:block;
+}
+
+.logo-preview{
+    border:2px dashed #cbd5e1;
+    border-radius:12px;
+    height:110px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:6px;
+    background:#f8fafc;
+    text-align:center;
+    transition:all .25s ease;
+}
+
+.logo-preview:hover{
+    background:#fff7ed;
+    border-color:var(--orange);
+}
+
+.logo-preview i{
+    font-size:28px;
+    color:#94a3b8;
+}
+
+.logo-preview strong{
+    font-size:13px;
+    font-weight:800;
+    color:#334155;
+}
+
+.logo-preview span{
+    font-size:11px;
+    color:#64748b;
+}
+
+.logo-preview img{
+    max-height:80px;
+    max-width:100%;
+    object-fit:contain;
+}
+/* FIX input height consistency */
+.profile-card .form-control,
+.profile-card .form-select {
+    height: 40px;          /* 🔥 key fix */
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 10px;
+}
+.info-label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;   /* 🔥 tighter spacing */
+    color: #475569;
+}
+.logo-preview {
+    min-height: 96px;   /* instead of very tall */
+}
+
+
 </style>
 
 <form method="POST"
       action="{{ route('vendor.profile.update') }}"
       enctype="multipart/form-data">
-@csrf
+    @csrf
 
-@php
-  // ✅ if you store region as JSON in DB
-  $savedRegions = [];
-  if(!empty($vendor->region)){
-      $decoded = json_decode($vendor->region, true);
-      $savedRegions = is_array($decoded) ? $decoded : [];
-  }
+    @php
+    $savedRegions = [];
+    if(!empty($vendor->region)){
+        $decoded = json_decode($vendor->region, true);
+        $savedRegions = is_array($decoded) ? $decoded : [];
+    }
 
-  // ✅ if you store selected subtypes somewhere (example: JSON or comma)
-  // Adjust this according to your DB structure:
-  $savedSubtypes = [];
-  if(!empty($vendor->work_subtype_id)){
-      $decodedSub = json_decode($vendor->work_subtype_id, true);
-      $savedSubtypes = is_array($decodedSub) ? $decodedSub : (is_string($vendor->work_subtype_id) ? explode(',', $vendor->work_subtype_id) : []);
-  }
-@endphp
+    $savedSubtypes = [];
+    if(!empty($vendor->work_subtype_id)){
+        $decodedSub = json_decode($vendor->work_subtype_id, true);
+        $savedSubtypes = is_array($decodedSub) ? $decodedSub : (is_string($vendor->work_subtype_id) ? explode(',', $vendor->work_subtype_id) : []);
+    }
+    @endphp
 
-<div class="profile-wrapper">
-   {{-- TABS --}}
-  <ul class="nav nav-pills profile-tabs" role="tablist">
-    <li class="nav-item">
-        <button type="button" class="nav-link active"
-                data-bs-toggle="pill"
-                data-bs-target="#basicTab">
-            Basic Information
-        </button>
-    </li>
+    <div class="profile-wrapper">
+        <!-- <div class="mb-3">
+            <div class="d-flex justify-content-between mb-1">
+                <small class="fw-semibold">Profile Completion</small>
+                <small id="profilePercent">0%</small>
+            </div>
 
-    <li class="nav-item">
-        <button type="button" class="nav-link"
-                data-bs-toggle="pill"
-                data-bs-target="#businessTab">
-            Business Details
-        </button>
-    </li>
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-success"
+                    id="profileProgress"
+                    style="width:0%">
+                </div>
+            </div>
+        </div> -->
 
-    <li class="nav-item">
-        <button type="button" class="nav-link"
-                data-bs-toggle="pill"
-                data-bs-target="#completionTab">
-            Profile Completion
-        </button>
-    </li>
-
-    <li class="nav-item">
-        <button type="button" class="nav-link"
-                data-bs-toggle="pill"
-                data-bs-target="#bankdetailsTab">
-            Bank Details
-        </button>
-    </li>
-
-    <li class="nav-item">
-        <button type="button" class="nav-link"
-                data-bs-toggle="pill"
-                data-bs-target="#requireddocumentsTab">
-            Required Documents
-        </button>
-    </li>
-</ul>
-
-
-   {{-- TAB CONTENT --}}
-   <div class="tab-content">
-
-      {{-- BASIC INFO --}}
-      <div class="tab-pane fade show active form-section" id="basicTab">
-          <div class="profile-card">
-              <div class="row g-4">
-
-                  {{-- FULL NAME --}}
-                  <div class="col-md-4">
-                      <div class="info-box">
-                          <div class="info-label">Full Name</div>
-                          <div class="info-value">{{ $vendor->name }}</div>
-                      </div>
-                  </div>
-
-                  {{-- ✅ MOBILE (FIXED: single-form field) --}}
-                  <div class="col-md-4">
-                      <div class="info-box">
-                          <div class="info-label">Mobile</div>
-                          <input type="text"
-                                 name="mobile"
-                                 class="form-control form-control-sm"
-                                 value="{{ $vendor->mobile }}"
-                                 placeholder="Add mobile">
-                      </div>
-                  </div>
-
-                  {{-- ✅ EMAIL (FIXED) --}}
-                  <div class="col-md-4">
-                      <div class="info-box">
-                          <div class="info-label">Email</div>
-                          <input type="email"
-                                 name="email"
-                                 class="form-control form-control-sm"
-                                 value="{{ $vendor->email }}"
-                                 placeholder="Add email">
-                      </div>
-                  </div>
-
-                  {{-- ✅ BUSINESS NAME (FIXED) --}}
-                  <div class="col-md-4">
-                      <div class="info-box">
-                          <div class="info-label">Business Name</div>
-                          <input type="text"
-                                 name="business_name"
-                                 class="form-control form-control-sm"
-                                 value="{{ $vendor->business_name }}"
-                                 placeholder="Business name">
-                      </div>
-                  </div>
-
-                  {{-- ✅ GST NUMBER (FIXED) --}}
-                  <div class="col-md-4">
-                      <div class="info-box">
-                          <div class="info-label">GST Number</div>
-                          <input type="text"
-                                 id="gst_number"
-                                 name="gst_number"
-                                 class="form-control form-control-sm"
-                                 value="{{ $vendor->gst_number }}"
-                                 placeholder="GST number">
-                          <div id="gst_error" style="color:red;display:none;">GST must be 15 characters.</div>
-                      </div>
-                  </div>
-
-              </div>
-          </div>
-      </div>
-
-      {{-- BUSINESS INFO --}}
-      <div class="tab-pane fade" id="businessTab">
-          <div class="profile-card form-section">
-
-              <div class="mb-4">
-                  <h5 class="fw-bold text-dark mb-1">Business & Work Details</h5>
-                  <small class="text-muted">
-                      Select your construction category and project expertise
-                  </small>
-              </div>
-
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">
-                        Find Your Construction Vendor <span class="text-danger">*</span>
-                    </label>
-
-                    {{-- ✅ preselect work_type --}}
-                    <select id="work_type" name="work_type_id" class="form-select select2">
-                        <option value="">Select Construction Type</option>
-                        @foreach($workTypes as $type)
-                            <option value="{{ $type->id }}" {{ (string)$vendor->work_type_id === (string)$type->id ? 'selected' : '' }}>
-                                {{ $type->work_type }}
-                            </option>
-                        @endforeach
-                    </select>
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-1">
+                    <strong>Profile Completion</strong>
+                    <span>{{ $profilePercent }}%</span>
                 </div>
 
-              <hr class="my-4">
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-success"
+                        style="width: {{ $profilePercent }}%">
+                    </div>
+                </div>
 
-              <div class="mb-3">
-                  <label class="form-label fw-semibold">
-                      Project Type <span class="text-danger">*</span>
-                  </label>
-                  <small class="text-muted d-block mb-3">
-                      Select all project types you have experience in
-                  </small>
+                @if($profilePercent < 100)
+                    <small class="text-danger d-block mt-2">
+                        Complete your profile to receive more project leads.
+                    </small>
+                @endif
+            </div>
+        </div>
 
-                  <div id="workSubtypeCheckboxes" class="row g-3">
-                      <!-- Dynamically injected checkboxes -->
-                  </div>
-              </div>
+    {{-- TABS --}}
+        <ul class="nav nav-pills profile-tabs" role="tablist">
+            <li class="nav-item">
+                <button type="button" class="nav-link active"
+                        data-bs-toggle="pill"
+                        data-bs-target="#basicTab">
+                    Basic Information
+                </button>
+            </li>
 
-          </div>
-      </div>
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="pill"
+                        data-bs-target="#businessTab">
+                    Business Details
+                </button>
+            </li>
 
-      {{-- PROFILE COMPLETION --}}
-      <div class="tab-pane fade" id="completionTab">
-          <div class="profile-card">
-              <div class="form-wrapper">
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="pill"
+                        data-bs-target="#completionTab">
+                    Profile Completion
+                </button>
+            </li>
 
-                  <div class="form-section">
-                      <h5>Basic Business Information</h5>
 
-                      <div class="row mb-3">
-                          <div class="col-md-6">
-                              <label class="form-label">Years of Experience *</label>
-                              <select id="experience_years" name="experience_years" class="form-select">
-                                  <option value="">-- Select --</option>
-                                  @foreach ($experience_years as $years)
-                                      <option value="{{ $years->id }}" {{ (string)$vendor->experience_years === (string)$years->id ? 'selected' : '' }}>
-                                          {{ $years->experiance }}
-                                      </option>
-                                  @endforeach
-                              </select>
-                          </div>
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="pill"
+                        data-bs-target="#requireddocumentsTab">
+                    Required Documents
+                </button>
+            </li>
 
-                          <div class="col-md-6">
-                              <label class="form-label">Team Size *</label>
-                              <select id="team_size" name="team_size" class="form-select">
-                                  <option value="">-- Select --</option>
-                                  @foreach ($team_size as $size)
-                                      <option value="{{ $size->id }}" {{ (string)$vendor->team_size === (string)$size->id ? 'selected' : '' }}>
-                                          {{ $size->team_size }}
-                                      </option>
-                                  @endforeach
-                              </select>
-                          </div>
-                      </div>
+            <li class="nav-item">
+                <button type="button" class="nav-link"
+                        data-bs-toggle="pill"
+                        data-bs-target="#bankdetailsTab">
+                    Bank Details
+                </button>
+            </li>
+        </ul>
+
+
+    {{-- TAB CONTENT --}}
+    <div class="tab-content">
+
+       {{-- BASIC INFO --}}
+<div class="tab-pane fade show active form-section" id="basicTab">
+    <div class="profile-card">
+
+        <div class="row g-4">
+
+            {{-- ✅ COMPANY LOGO --}}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <div class="info-label">Company Logo</div>
+
+                    <div class="logo-upload-wrapper">
+                        <label class="logo-upload-box">
+                            <input type="file"
+                                   name="company_logo"
+                                   id="company_logo"
+                                   accept="image/*"
+                                   hidden
+                                   onchange="previewCompanyLogo(event)">
+
+                            <div class="logo-preview">
+                                @if(!empty($vendor->company_logo))
+                                    <img src="{{ asset('storage/'.$vendor->company_logo) }}"
+                                         alt="Company Logo"
+                                         id="companyLogoPreview">
+                                @else
+                                    <i class="bi bi-cloud-upload"></i>
+                                    <strong>Upload Company Logo</strong>
+                                    <span>PNG / JPG • Max 2MB</span>
+                                @endif
+                            </div>
+                        </label>
+                    </div>
+
+                    <small class="text-muted">
+                        JPG / PNG • Max 2MB
+                    </small>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row g-4">
+            {{-- FULL NAME --}}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <div class="info-label">Full Name</div>
+                    <input type="text"
+                           id="name"
+                           name="name"
+                           class="form-control form-control-sm"
+                           value="{{ $vendor->name }}"
+                           placeholder="Add name">
+                </div>
+            </div>
+
+            {{-- MOBILE --}}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <div class="info-label">Mobile</div>
+                    <input type="text"
+                           id="mobile"
+                           name="mobile"
+                           class="form-control form-control-sm"
+                           value="{{ $vendor->mobile }}"
+                           placeholder="Add mobile">
+                </div>
+            </div>
+
+            {{-- EMAIL --}}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <div class="info-label">Email</div>
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           class="form-control form-control-sm"
+                           value="{{ $vendor->email }}"
+                           placeholder="Add email">
+                </div>
+            </div>
+
+            {{-- BUSINESS NAME --}}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <div class="info-label">Business Name</div>
+                    <input type="text"
+                           id="business_name"
+                           name="business_name"
+                           class="form-control form-control-sm"
+                           value="{{ $vendor->business_name }}"
+                           placeholder="Business name">
+                </div>
+            </div>
+
+            {{-- GST NUMBER --}}
+            <div class="col-md-4">
+                <div class="info-box">
+                    <div class="info-label">GST Number</div>
+                    <input type="text"
+                           id="gst_number"
+                           name="gst_number"
+                           class="form-control form-control-sm"
+                           value="{{ $vendor->gst_number }}"
+                           placeholder="GST number">
+                    <div id="gst_error" class="text-danger small d-none">
+                        GST must be 15 characters.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+        {{-- BUSINESS INFO --}}
+        <div class="tab-pane fade" id="businessTab">
+            <div class="profile-card form-section">
+
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark mb-1">Business & Work Details</h5>
+                    <small class="text-muted">
+                        Select your construction category and project expertise
+                    </small>
+                </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            Find Your Construction Vendor <span class="text-danger">*</span>
+                        </label>
+
+                        {{-- ✅ preselect work_type --}}
+                        <select id="work_type" name="work_type_id" class="form-select select2">
+                            <option value="">Select Construction Type</option>
+                            @foreach($workTypes as $type)
+                                <option value="{{ $type->id }}" {{ (string)$vendor->work_type_id === (string)$type->id ? 'selected' : '' }}>
+                                    {{ $type->work_type }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                <hr class="my-4">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        Project Type <span class="text-danger">*</span>
+                    </label>
+                    <small class="text-muted d-block mb-3">
+                        Select all project types you have experience in
+                    </small>
+
+                    <div id="workSubtypeCheckboxes" class="row g-3">
+                        <!-- Dynamically injected checkboxes -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {{-- PROFILE COMPLETION --}}
+        <div class="tab-pane fade" id="completionTab">
+            <div class="profile-card">
+                <div class="form-wrapper">
+
+                    <div class="form-section">
+                        <h5>Basic Business Information</h5>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
-                              <label for="state" class="form-label">State</label>
-                                <select id="stateSelect" name="state" class="form-select form-select-custom">
-                                    <option value="">Select State</option>
-                                    @foreach($states as $state)
-                                        <option value="{{ $state->id }}"
-                                            {{ isset($vendor->state) && $vendor->state == $state->id ? 'selected' : '' }}>
-                                            {{ $state->name }}
+                                <label class="form-label">Years of Experience *</label>
+                                <select id="experience_years" name="experience_years" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach ($experience_years as $years)
+                                        <option value="{{ $years->id }}" {{ (string)$vendor->experience_years === (string)$years->id ? 'selected' : '' }}>
+                                            {{ $years->experiance }}
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                              <label for="region" class="form-label">Region</label>
-                               <select id="regionSelect" name="region" class="form-select form-select-custom" disabled>
-                                <option value="">Select Region</option>
+                                <label class="form-label">Team Size *</label>
+                                <select id="team_size" name="team_size" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach ($team_size as $size)
+                                        <option value="{{ $size->id }}" {{ (string)$vendor->team_size === (string)$size->id ? 'selected' : '' }}>
+                                            {{ $size->team_size }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
+                        </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                <label for="state" class="form-label">State *</label>
+                                    <select id="stateSelect" name="state" class="form-select form-select-custom">
+                                        <option value="">Select State</option>
+                                        @foreach($states as $state)
+                                            <option value="{{ $state->id }}"
+                                                {{ isset($vendor->state) && $vendor->state == $state->id ? 'selected' : '' }}>
+                                                {{ $state->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                <label for="region" class="form-label">Region *</label>
+                                <select id="regionSelect" name="region" class="form-select form-select-custom" disabled>
+                                    <option value="">Select Region</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="region" class="form-label">City *</label>
+                                        <select id="citySelect" name="city" class="form-select form-select-custom" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+
                             <div class="col-md-6">
-                                <label for="region" class="form-label">City</label>
-                                    <select id="citySelect" name="city" class="form-select form-select-custom" disabled>
-                                <option value="">Select City</option>
-                            </select>
-                          </div>
+                                <label class="form-label">Accepting projects of minimum value (₹) *</label>
+                                <input type="number"
+                                        id="min_project_value"
+                                        name="min_project_value"
+                                        class="form-control"
+                                        placeholder="₹ Minimum project value"
+                                        value="{{ $vendor->min_project_value }}">
+                                <div id="valueInWords" class="mt-2 text-muted"></div>
+                            </div>
+                        </div>
+                    </div>
 
-                          <div class="col-md-6">
-                              <label class="form-label">Accepting projects of minimum value (₹) *</label>
-                              <input type="number"
-                                     id="min_project_value"
-                                     name="min_project_value"
-                                     class="form-control"
-                                     placeholder="₹ Minimum project value"
-                                     value="{{ $vendor->min_project_value }}">
-                              <div id="valueInWords" class="mt-2 text-muted"></div>
-                          </div>
-                      </div>
-                  </div>
+                    <hr>
 
-                  <hr>
+                    <div class="form-section">
+                        <h5>Company Details</h5>
 
-                  <div class="form-section">
-                      <h5>Company Details</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Company Name *</label>
+                                <input type="text" class="form-control" id="company_name" name="company_name" value="{{ $vendor->company_name }}">
+                            </div>
 
-                      <div class="row mb-3">
-                          <div class="col-md-6">
-                              <label class="form-label">Company Name *</label>
-                              <input type="text" class="form-control" id="company_name" name="company_name" value="{{ $vendor->company_name }}">
-                          </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Type of Entity *</label>
+                                <select id="entity_type" name="entity_type" class="form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach ($entity_type as $entity)
+                                        <option value="{{ $entity->id }}" {{ (string)$vendor->entity_type === (string)$entity->id ? 'selected' : '' }}>
+                                            {{ $entity->entity_type }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                          <div class="col-md-6">
-                              <label class="form-label">Type of Entity *</label>
-                              <select id="entity_type" name="entity_type" class="form-select">
-                                  <option value="">-- Select --</option>
-                                  @foreach ($entity_type as $entity)
-                                      <option value="{{ $entity->id }}" {{ (string)$vendor->entity_type === (string)$entity->id ? 'selected' : '' }}>
-                                          {{ $entity->entity_type }}
-                                      </option>
-                                  @endforeach
-                              </select>
-                          </div>
+                            <div class="col-md-6 mt-3" id="aadhar_section" style="display: none;">
+                                <label class="form-label">Aadhar Card No</label>
+                                <input type="text" name="aadhar_card_no" id="aadhar_card_no" class="form-control" maxlength="12" placeholder="Enter Aadhar number" value="{{ $vendor->aadhar_card_no }}">
+                                <div id="aadhar_error" style="color: red; display: none;">Please enter a valid 12-digit Aadhar number.</div>
+                            </div>
 
-                          <div class="col-md-6 mt-3" id="aadhar_section" style="display: none;">
-                              <label class="form-label">Aadhar Card No</label>
-                              <input type="text" name="aadhar_card_no" id="aadhar_card_no" class="form-control" maxlength="12" placeholder="Enter Aadhar number" value="{{ $vendor->aadhar_card_no }}">
-                              <div id="aadhar_error" style="color: red; display: none;">Please enter a valid 12-digit Aadhar number.</div>
-                          </div>
+                            <div class="col-md-6 mt-3" id="cin_section" style="display: none;">
+                                <label class="form-label">CIN No</label>
+                                <input type="text" name="cin_no" id="cin_no" class="form-control" placeholder="Enter CIN number" maxlength="21" style="text-transform: uppercase;" value="{{ $vendor->cin_no }}">
+                                <div id="cin_error" style="color: red; display: none;">Please enter a valid 21-character CIN number.</div>
+                            </div>
 
-                          <div class="col-md-6 mt-3" id="cin_section" style="display: none;">
-                              <label class="form-label">CIN No</label>
-                              <input type="text" name="cin_no" id="cin_no" class="form-control" placeholder="Enter CIN number" maxlength="21" style="text-transform: uppercase;" value="{{ $vendor->cin_no }}">
-                              <div id="cin_error" style="color: red; display: none;">Please enter a valid 21-character CIN number.</div>
-                          </div>
+                            <div class="col-md-6 mt-3" id="llpin" style="display: none;">
+                                <label class="form-label">LLPIN No</label>
+                                <input type="text" name="llpin_no" id="llpin_no" class="form-control" placeholder="Enter LLPIN number" value="{{ $vendor->llpin_no }}">
+                            </div>
 
-                          <div class="col-md-6 mt-3" id="llpin" style="display: none;">
-                              <label class="form-label">LLPIN No</label>
-                              <input type="text" name="llpin_no" id="llpin_no" class="form-control" placeholder="Enter LLPIN number" value="{{ $vendor->llpin_no }}">
-                          </div>
+                            <div class="col-md-6 mt-3" id="partnershipdeed" style="display: none;">
+                                <label class="form-label">Partnership deed</label>
+                                <input type="text" name="partnershipdeed_no" id="partnershipdeed_no" class="form-control" placeholder="Enter Partnership deed number" value="{{ $vendor->partnershipdeed_no }}">
+                            </div>
+                        </div>
 
-                          <div class="col-md-6 mt-3" id="partnershipdeed" style="display: none;">
-                              <label class="form-label">Partnership deed</label>
-                              <input type="text" name="partnershipdeed_no" id="partnershipdeed_no" class="form-control" placeholder="Enter Partnership deed number" value="{{ $vendor->partnershipdeed_no }}">
-                          </div>
-                      </div>
+                        <div class="mb-3">
+                            <label class="form-label">Registered Office Address *</label>
+                            <textarea class="form-control" id="registered_address" name="registered_address">{{ $vendor->registered_address }}</textarea>
+                        </div>
 
-                      <div class="mb-3">
-                          <label class="form-label">Registered Office Address *</label>
-                          <textarea class="form-control" id="registered_address" name="registered_address">{{ $vendor->registered_address }}</textarea>
-                      </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Contact Person Designation *</label>
+                                <input type="text" id="contact_person_designation" name="contact_person_designation" class="form-control" value="{{ $vendor->contact_person_designation }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Contact Person Name </label>
+                                <input type="text" id="contact_person_name" name="contact_person_name" class="form-control" value="{{ $vendor->contact_person_name }}">
+                            </div>
+                        </div>
 
-                      <div class="row mb-3">
-                          <div class="col-md-6">
-                              <label class="form-label">Contact Person Designation *</label>
-                              <input type="text" id="contact_person_designation" name="contact_person_designation" class="form-control" value="{{ $vendor->contact_person_designation }}">
-                          </div>
-                          <div class="col-md-6">
-                              <label class="form-label">Contact Person Name </label>
-                              <input type="text" id="contact_person_name" name="contact_person_name" class="form-control" value="{{ $vendor->contact_person_name }}">
-                          </div>
-                      </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">PAN Number</label>
+                                <input type="text" id="pan_number" name="pan_number" class="form-control" maxlength="10" style="text-transform: uppercase;" value="{{ $vendor->pan_number }}">
+                                <div id="pan_error" style="color: red; display: none;">Please enter a valid PAN number.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">TAN Number</label>
+                                <input type="text" id="tan_number" name="tan_number" class="form-control" maxlength="10" style="text-transform: uppercase;" value="{{ $vendor->tan_number }}">
+                                <div id="tan_error" style="color: red; display: none;">Please enter a valid TAN number (format: AAAA99999A).</div>
+                            </div>
+                        </div>
 
-                      <div class="row mb-3">
-                          <div class="col-md-6">
-                              <label class="form-label">PAN Number</label>
-                              <input type="text" id="pan_number" name="pan_number" class="form-control" maxlength="10" style="text-transform: uppercase;" value="{{ $vendor->pan_number }}">
-                              <div id="pan_error" style="color: red; display: none;">Please enter a valid PAN number.</div>
-                          </div>
-                          <div class="col-md-6">
-                              <label class="form-label">TAN Number</label>
-                              <input type="text" id="tan_number" name="tan_number" class="form-control" maxlength="10" style="text-transform: uppercase;" value="{{ $vendor->tan_number }}">
-                              <div id="tan_error" style="color: red; display: none;">Please enter a valid TAN number (format: AAAA99999A).</div>
-                          </div>
-                      </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">ESIC Number </label>
+                                <input type="text" id="esic_number" name="esic_number" class="form-control" maxlength="17" style="text-transform: uppercase;" value="{{ $vendor->esic_number }}">
+                                <div id="esic_error" style="color: red; display: none;">Please enter a valid 17-digit ESIC number.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">PF No</label>
+                                <input type="text" id="pf_code" name="pf_code" class="form-control" style="text-transform: uppercase;" value="{{ $vendor->pf_code }}">
+                            </div>
+                        </div>
 
-                      <div class="row mb-3">
-                          <div class="col-md-6">
-                              <label class="form-label">ESIC Number </label>
-                              <input type="text" id="esic_number" name="esic_number" class="form-control" maxlength="17" style="text-transform: uppercase;" value="{{ $vendor->esic_number }}">
-                              <div id="esic_error" style="color: red; display: none;">Please enter a valid 17-digit ESIC number.</div>
-                          </div>
-                          <div class="col-md-6">
-                              <label class="form-label">PF No</label>
-                              <input type="text" id="pf_code" name="pf_code" class="form-control" style="text-transform: uppercase;" value="{{ $vendor->pf_code }}">
-                          </div>
-                      </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">MSME/Udyam Registered *</label>
+                                <br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="msme_registered" value="yes" onclick="toggleMsmeUpload()" {{ $vendor->msme_registered === 'yes' ? 'checked' : '' }}>
+                                    <label class="form-check-label">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="msme_registered" value="no" onclick="toggleMsmeUpload()" {{ $vendor->msme_registered === 'no' ? 'checked' : '' }}>
+                                    <label class="form-check-label">No</label>
+                                </div>
+                                <div id="msmeUploadSection" style="display: none; margin-top: 10px;">
+                                    <label for="msme_file" class="form-label">Upload MSME/Udyam Certificate:</label>
+                                    <input type="file" id="msme_file" name="msme_file" class="form-control" accept="application/pdf">
+                                    @if(!empty($vendor->msme_file))
+                                        <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->msme_file) }}">View Uploaded MSME</a>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                      <div class="row mb-3">
-                          <div class="col-md-6">
-                              <label class="form-label">MSME/Udyam Registered *</label>
-                              <br>
-                              <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="radio" name="msme_registered" value="yes" onclick="toggleMsmeUpload()" {{ $vendor->msme_registered === 'yes' ? 'checked' : '' }}>
-                                  <label class="form-check-label">Yes</label>
-                              </div>
-                              <div class="form-check form-check-inline">
-                                  <input class="form-check-input" type="radio" name="msme_registered" value="no" onclick="toggleMsmeUpload()" {{ $vendor->msme_registered === 'no' ? 'checked' : '' }}>
-                                  <label class="form-check-label">No</label>
-                              </div>
-                              <div id="msmeUploadSection" style="display: none; margin-top: 10px;">
-                                  <label for="msme_file" class="form-label">Upload MSME/Udyam Certificate:</label>
-                                  <input type="file" id="msme_file" name="msme_file" class="form-control" accept="application/pdf">
-                                  @if(!empty($vendor->msme_file))
-                                      <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->msme_file) }}">View Uploaded MSME</a>
-                                  @endif
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
 
-                  <hr>
-              </div>
-          </div>
-      </div>
+        {{-- BANK DETAILS --}}
+        <div class="tab-pane fade" id="bankdetailsTab">
+            <div class="form-section">
+                <h5>Bank Details</h5>
 
-      {{-- BANK DETAILS --}}
-      <div class="tab-pane fade" id="bankdetailsTab">
-          <div class="form-section">
-              <h5>Bank Details</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Bank Name </label>
+                        <input type="text" id="bank_name" name="bank_name" class="form-control" style="text-transform: uppercase;" value="{{ $vendor->bank_name }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Account Number </label>
+                        <input type="text" id="account_number" name="account_number" class="form-control" value="{{ $vendor->account_number }}">
+                    </div>
+                </div>
 
-              <div class="row mb-3">
-                  <div class="col-md-6">
-                      <label class="form-label">Bank Name </label>
-                      <input type="text" id="bank_name" name="bank_name" class="form-control" style="text-transform: uppercase;" value="{{ $vendor->bank_name }}">
-                  </div>
-                  <div class="col-md-6">
-                      <label class="form-label">Account Number </label>
-                      <input type="text" id="account_number" name="account_number" class="form-control" value="{{ $vendor->account_number }}">
-                  </div>
-              </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">IFSC Code </label>
+                        <input type="text" id="ifsc_code" name="ifsc_code" class="form-control" style="text-transform: uppercase;" value="{{ $vendor->ifsc_code }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Type of Account </label>
+                        <select class="form-select" id="account_type" name="account_type">
+                            <option value="">Select account type</option>
+                            @foreach($account_type as $type)
+                                <option value="{{ $type->id }}" {{ (string)$vendor->account_type === (string)$type->id ? 'selected' : '' }}>
+                                    {{ $type->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
 
-              <div class="row mb-3">
-                  <div class="col-md-6">
-                      <label class="form-label">IFSC Code </label>
-                      <input type="text" id="ifsc_code" name="ifsc_code" class="form-control" style="text-transform: uppercase;" value="{{ $vendor->ifsc_code }}">
-                  </div>
-                  <div class="col-md-6">
-                      <label class="form-label">Type of Account </label>
-                      <select class="form-select" id="account_type" name="account_type">
-                          <option value="">Select account type</option>
-                          @foreach($account_type as $type)
-                              <option value="{{ $type->id }}" {{ (string)$vendor->account_type === (string)$type->id ? 'selected' : '' }}>
-                                  {{ $type->name }}
-                              </option>
-                          @endforeach
-                      </select>
-                  </div>
-              </div>
+                <div class="mb-3">
+                    <label class="form-label">Upload Cancelled Cheque or Bank Passbook Copy <small class="text-muted">(PDF, max 20 MB)</small></label>
+                    <input type="file" id="cancelled_cheque_file" name="cancelled_cheque_file" class="form-control" accept="application/pdf">
+                    @if(!empty($vendor->cancelled_cheque_file))
+                        <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->cancelled_cheque_file) }}">View Uploaded Cheque/Passbook</a>
+                    @endif
+                </div>
+            </div>
+        </div>
 
-              <div class="mb-3">
-                  <label class="form-label">Upload Cancelled Cheque or Bank Passbook Copy <small class="text-muted">(PDF, max 20 MB)</small></label>
-                  <input type="file" id="cancelled_cheque_file" name="cancelled_cheque_file" class="form-control" accept="application/pdf">
-                  @if(!empty($vendor->cancelled_cheque_file))
-                      <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->cancelled_cheque_file) }}">View Uploaded Cheque/Passbook</a>
-                  @endif
-              </div>
-          </div>
-      </div>
+        {{-- REQUIRED DOCUMENTS --}}
+        <div class="tab-pane fade" id="requireddocumentsTab">
+            <div class="form-section">
+                <h5>Required Documents</h5>
 
-      {{-- REQUIRED DOCUMENTS --}}
-      <div class="tab-pane fade" id="requireddocumentsTab">
-          <div class="form-section">
-              <h5>Required Documents</h5>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required">PAN Card<small class="text-muted">(PDF, max 20 MB)</small></label>
+                        <input accept="application/pdf" type="file" id="pan_card_file" name="pan_card_file" class="form-control">
+                        @if(!empty($vendor->pan_card_file))
+                            <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->pan_card_file) }}">View PAN</a>
+                        @endif
+                    </div>
 
-              <div class="row g-3">
-                  <div class="col-md-6">
-                      <label class="form-label required">PAN Card<small class="text-muted">(PDF, max 20 MB)</small></label>
-                      <input accept="application/pdf" type="file" id="pan_card_file" name="pan_card_file" class="form-control">
-                      @if(!empty($vendor->pan_card_file))
-                          <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->pan_card_file) }}">View PAN</a>
-                      @endif
-                  </div>
+                    <div class="col-md-6">
+                        <label class="form-label required">GST Certificate<small class="text-muted">(PDF, max 20 MB)</small></label>
+                        <input accept="application/pdf" type="file" id="gst_certificate_file" name="gst_certificate_file" class="form-control">
+                        @if(!empty($vendor->gst_certificate_file))
+                            <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->gst_certificate_file) }}">View GST</a>
+                        @endif
+                    </div>
 
-                  <div class="col-md-6">
-                      <label class="form-label required">GST Certificate<small class="text-muted">(PDF, max 20 MB)</small></label>
-                      <input accept="application/pdf" type="file" id="gst_certificate_file" name="gst_certificate_file" class="form-control">
-                      @if(!empty($vendor->gst_certificate_file))
-                          <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->gst_certificate_file) }}">View GST</a>
-                      @endif
-                  </div>
+                    <div class="col-md-6">
+                        <label class="form-label required">Aadhaar Card (Authorised Person)<small class="text-muted">(PDF, max 20 MB)</small></label>
+                        <input accept="application/pdf" type="file" id="aadhaar_card_file" name="aadhaar_card_file" class="form-control">
+                        @if(!empty($vendor->aadhaar_card_file))
+                            <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->aadhaar_card_file) }}">View Aadhaar</a>
+                        @endif
+                    </div>
 
-                  <div class="col-md-6">
-                      <label class="form-label required">Aadhaar Card (Authorised Person)<small class="text-muted">(PDF, max 20 MB)</small></label>
-                      <input accept="application/pdf" type="file" id="aadhaar_card_file" name="aadhaar_card_file" class="form-control">
-                      @if(!empty($vendor->aadhaar_card_file))
-                          <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->aadhaar_card_file) }}">View Aadhaar</a>
-                      @endif
-                  </div>
+                    <div class="col-md-6">
+                        <label id="certificate_label" class="form-label required">
+                        Company Profile<small class="text-muted">(PDF, max 20 MB)</small>
+                        </label>
+                        <input accept="application/pdf" type="file" id="certificate_of_incorporation_file" name="certificate_of_incorporation_file" class="form-control" multiple>
+                        <ul id="file_list" class="file-list"></ul>
+                        @if(!empty($vendor->certificate_of_incorporation_file))
+                            <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->certificate_of_incorporation_file) }}">View Certificate</a>
+                        @endif
+                    </div>
 
-                  <div class="col-md-6">
-                      <label id="certificate_label" class="form-label required">
-                      Certificate of Incorporation / LLPIN / SHOP ACT (For Proprietor)<small class="text-muted">(PDF, max 20 MB)</small>
-                      </label>
-                      <input accept="application/pdf" type="file" id="certificate_of_incorporation_file" name="certificate_of_incorporation_file" class="form-control" multiple>
-                      <ul id="file_list" class="file-list"></ul>
-                      @if(!empty($vendor->certificate_of_incorporation_file))
-                          <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->certificate_of_incorporation_file) }}">View Certificate</a>
-                      @endif
-                  </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">
+                            Work Completion Photos 
+                            <small class="text-muted">(max 20 MB each)</small>
+                            </label>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-semibold">Img 1</span>
+                                <input type="file" id="work_completion_certificates_file1" name="work_completion_certificates_file1" class="form-control" >
+                            </div>
+                            <div id="file-error1" class="text-danger small mt-1" style="display:none;"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-semibold">Img 2</span>
+                                <input type="file" id="work_completion_certificates_file2" name="work_completion_certificates_file2" class="form-control" >
+                            </div>
+                            <div id="file-error2" class="text-danger small mt-1" style="display:none;"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-semibold">Img 3</span>
+                                <input type="file" id="work_completion_certificates_file3" name="work_completion_certificates_file3" class="form-control" >
+                            </div>
+                            <div id="file-error3" class="text-danger small mt-1" style="display:none;"></div>
+                        </div>
+                    </div>
 
-                  <div class="row">
-                      <div class="col-12">
-                          <label class="form-label fw-semibold">
-                          Work Completion Certificate <span class="text-danger">(Add 3 Documents)</span>
-                          <small class="text-muted">(PDF only, max 20 MB each)</small>
-                          </label>
-                      </div>
-                      <div class="col-md-4">
-                          <div class="input-group">
-                              <span class="input-group-text bg-light fw-semibold">File 1</span>
-                              <input type="file" id="work_completion_certificates_file1" name="work_completion_certificates_file1" class="form-control" accept="application/pdf">
-                          </div>
-                          <div id="file-error1" class="text-danger small mt-1" style="display:none;"></div>
-                      </div>
-                      <div class="col-md-4">
-                          <div class="input-group">
-                              <span class="input-group-text bg-light fw-semibold">File 2</span>
-                              <input type="file" id="work_completion_certificates_file2" name="work_completion_certificates_file2" class="form-control" accept="application/pdf">
-                          </div>
-                          <div id="file-error2" class="text-danger small mt-1" style="display:none;"></div>
-                      </div>
-                      <div class="col-md-4">
-                          <div class="input-group">
-                              <span class="input-group-text bg-light fw-semibold">File 3</span>
-                              <input type="file" id="work_completion_certificates_file3" name="work_completion_certificates_file3" class="form-control" accept="application/pdf">
-                          </div>
-                          <div id="file-error3" class="text-danger small mt-1" style="display:none;"></div>
-                      </div>
-                  </div>
+                    <div class="col-md-6">
+                        <label class="form-label">PF Registration Documents<small class="text-muted">(PDF, max 20 MB)</small></label>
+                        <input accept="application/pdf" type="file" id="pf_documents_file" name="pf_documents_file" class="form-control">
+                        @if(!empty($vendor->pf_documents_file))
+                            <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->pf_documents_file) }}">View PF Doc</a>
+                        @endif
+                    </div>
 
-                  <div class="col-md-6">
-                      <label class="form-label">PF Registration Documents<small class="text-muted">(PDF, max 20 MB)</small></label>
-                      <input accept="application/pdf" type="file" id="pf_documents_file" name="pf_documents_file" class="form-control">
-                      @if(!empty($vendor->pf_documents_file))
-                          <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->pf_documents_file) }}">View PF Doc</a>
-                      @endif
-                  </div>
+                    <div class="col-md-6">
+                        <label class="form-label">ESIC Registration Documents<small class="text-muted">(PDF, max 20 MB)</small></label>
+                        <input accept="application/pdf" type="file" id="esic_documents_file" name="esic_documents_file" class="form-control">
+                        @if(!empty($vendor->esic_documents_file))
+                            <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->esic_documents_file) }}">View ESIC Doc</a>
+                        @endif
+                    </div>
 
-                  <div class="col-md-6">
-                      <label class="form-label">ESIC Registration Documents<small class="text-muted">(PDF, max 20 MB)</small></label>
-                      <input accept="application/pdf" type="file" id="esic_documents_file" name="esic_documents_file" class="form-control">
-                      @if(!empty($vendor->esic_documents_file))
-                          <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->esic_documents_file) }}">View ESIC Doc</a>
-                      @endif
-                  </div>
+                </div>
+            </div>
+        </div>
 
-              </div>
-          </div>
-      </div>
+    </div>
 
-   </div>
+    {{-- ================== SAVE BUTTON ================== --}}
+    <div class="text-end mt-4">
+        <button class="btn btn-lg btn-success px-5">
+            ✅ Update Profile
+        </button>
+    </div>
 
-   {{-- ================== SAVE BUTTON ================== --}}
-   <div class="text-end mt-4">
-      <button class="btn btn-lg btn-success px-5">
-         ✅ Update Profile
-      </button>
-   </div>
-
-</div>
+    </div>
 </form>
 
 <!-- Bootstrap JS (REQUIRED FOR TABS) -->
@@ -783,11 +944,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<!-- <script>
-    const EXISTING_STATE  = "{{ $vendor->state ?? '' }}";
-    const EXISTING_REGION = "{{ $vendor->region ?? '' }}";
-    const EXISTING_CITY   = "{{ $vendor->city ?? '' }}";
-</script> -->
 
 <script>
     const SAVED_STATE  = "{{ $vendor->state ?? '' }}";
@@ -812,82 +968,82 @@
 </script>
 
 <script>
-   $('#entity_type').on('change', function () {
-       const selectedOption = $(this).find("option:selected");
-       const text = selectedOption.text();
-       const value = selectedOption.val();
+//    $('#entity_type').on('change', function () {
+//        const selectedOption = $(this).find("option:selected");
+//        const text = selectedOption.text();
+//        const value = selectedOption.val();
 
-       if (text === "Proprietorship") {
-              $("#certificate_label").text("PAN Of Proprietorship*");
-          } else if (text === "Private Limited") {
-              $("#certificate_label").text("Certificate Of Incopration*");
-          } else  if (text === "Partnership") {
-              $("#certificate_label").text("Partnership Deed*");
-          } else if (text === "LLP") {
-              $("#certificate_label").text("LLP Agreement*");
-          } else if (text === "Public Limited") {
-              $("#certificate_label").text("Certificate Of Incopration*");
-          } else if (text === "OPC") {
-              $("#certificate_label").text("Certificate Of Incopration*");
-          } else if (text === "HUF") {
-              $("#certificate_label").text("HUF PAN Card*");
-          } else{
-              $("#certificate_label").text("Relevant Document *");
-          }
+//        if (text === "Proprietorship") {
+//               $("#certificate_label").text("PAN Of Proprietorship*");
+//           } else if (text === "Private Limited") {
+//               $("#certificate_label").text("Certificate Of Incopration*");
+//           } else  if (text === "Partnership") {
+//               $("#certificate_label").text("Partnership Deed*");
+//           } else if (text === "LLP") {
+//               $("#certificate_label").text("LLP Agreement*");
+//           } else if (text === "Public Limited") {
+//               $("#certificate_label").text("Certificate Of Incopration*");
+//           } else if (text === "OPC") {
+//               $("#certificate_label").text("Certificate Of Incopration*");
+//           } else if (text === "HUF") {
+//               $("#certificate_label").text("HUF PAN Card*");
+//           } else{
+//               $("#certificate_label").text("Relevant Document *");
+//           }
 
-       // --- Show/hide sections ---
-       if (value === '1') {
-           $('#aadhar_pan_link_section').hide();
-           $('#aadhar_section').hide();
-           $('#partnershipdeed').hide();
+//        // --- Show/hide sections ---
+//        if (value === '1') {
+//            $('#aadhar_pan_link_section').hide();
+//            $('#aadhar_section').hide();
+//            $('#partnershipdeed').hide();
 
-           $('#cin_section').show();
-           $('#llpin').hide();
-       } else if (value === '2') {
-           $('#aadhar_pan_link_section').hide();
-           $('#aadhar_section').hide();
-           $('#partnershipdeed').show();
+//            $('#cin_section').show();
+//            $('#llpin').hide();
+//        } else if (value === '2') {
+//            $('#aadhar_pan_link_section').hide();
+//            $('#aadhar_section').hide();
+//            $('#partnershipdeed').show();
 
-           $('#cin_section').hide();
-           $('#llpin').hide();
-       } else if (value === '3') {
-           $('#aadhar_pan_link_section').show();
-           $('#aadhar_section').show();
-           $('#partnershipdeed').hide();
+//            $('#cin_section').hide();
+//            $('#llpin').hide();
+//        } else if (value === '3') {
+//            $('#aadhar_pan_link_section').show();
+//            $('#aadhar_section').show();
+//            $('#partnershipdeed').hide();
 
-           $('#cin_section').hide();
-           $('#llpin').hide();
-       } else if (value === '6') {
-           $('#aadhar_pan_link_section').hide();
-           $('#cin_section').hide();
-           $('#partnershipdeed').hide();
-           $('#aadhar_section').hide();
-           $('#llpin').show();
-       } else if (value === '7') {
-           $('#aadhar_pan_link_section').hide();
-           $('#cin_section').show();
-           $('#partnershipdeed').hide();
+//            $('#cin_section').hide();
+//            $('#llpin').hide();
+//        } else if (value === '6') {
+//            $('#aadhar_pan_link_section').hide();
+//            $('#cin_section').hide();
+//            $('#partnershipdeed').hide();
+//            $('#aadhar_section').hide();
+//            $('#llpin').show();
+//        } else if (value === '7') {
+//            $('#aadhar_pan_link_section').hide();
+//            $('#cin_section').show();
+//            $('#partnershipdeed').hide();
 
-           $('#aadhar_section').hide();
-           $('#llpin').hide();
-       } else if (value === '8') {
-           $('#aadhar_pan_link_section').hide();
-           $('#cin_section').show();
-           $('#partnershipdeed').hide();
+//            $('#aadhar_section').hide();
+//            $('#llpin').hide();
+//        } else if (value === '8') {
+//            $('#aadhar_pan_link_section').hide();
+//            $('#cin_section').show();
+//            $('#partnershipdeed').hide();
 
-           $('#aadhar_section').hide();
-           $('#llpin').hide();
-       } else if (value === '9') {
-           $('#aadhar_pan_link_section').hide();
-           $('#cin_section').show();
-           $('#partnershipdeed').hide();
+//            $('#aadhar_section').hide();
+//            $('#llpin').hide();
+//        } else if (value === '9') {
+//            $('#aadhar_pan_link_section').hide();
+//            $('#cin_section').show();
+//            $('#partnershipdeed').hide();
 
-           $('#aadhar_section').hide();
-           $('#llpin').hide();
-       } else {
-           $('#llpin, #aadhar_pan_link_section, #aadhar_section, #cin_section').hide();
-       }
-   });
+//            $('#aadhar_section').hide();
+//            $('#llpin').hide();
+//        } else {
+//            $('#llpin, #aadhar_pan_link_section, #aadhar_section, #cin_section').hide();
+//        }
+//    });
 
    // ✅ run once on page load to show correct sections based on saved entity type
    $(document).ready(function(){
@@ -1257,6 +1413,23 @@ $(document).ready(function () {
     }
 
 });
+</script>
+
+<script>
+function previewCompanyLogo(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const preview = document.getElementById('companyLogoPreview');
+
+    if (!preview) {
+        const container = event.target.closest('.logo-preview');
+        container.innerHTML = `<img id="companyLogoPreview" />`;
+    }
+
+    document.getElementById('companyLogoPreview').src =
+        URL.createObjectURL(file);
+}
 </script>
 
 

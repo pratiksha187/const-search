@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+
+use App\Helpers\ProfileCompletionHelper;
 use Illuminate\Support\Facades\DB;
 
 class LoginRegController extends Controller
@@ -15,6 +17,53 @@ class LoginRegController extends Controller
         // $materialCategories = DB::table('material_categories')->get();
 
         return view('web.login_register');
+    }
+
+  
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'login'    => 'required',
+            'password' => 'required|min:6',
+            'role'     => 'required|in:customer,vendor,supplier'
+        ]);
+
+        $hashedPassword = Hash::make($request->password);
+
+        if ($request->role === 'customer') {
+
+            $updated = DB::table('users')
+                ->where('email', $request->login)
+                ->orWhere('mobile', $request->login)
+                ->update(['password' => $hashedPassword]);
+
+        } elseif ($request->role === 'vendor') {
+
+            $updated = DB::table('vendor_reg')
+                ->where('email', $request->login)
+                ->orWhere('mobile', $request->login)
+                ->update(['password' => $hashedPassword]);
+
+        } elseif ($request->role === 'supplier')  { // 
+
+            $updated = DB::table('supplier_reg')
+                ->where('email', $request->login)
+                ->orWhere('mobile', $request->login)
+                ->update(['password' => $hashedPassword]);
+        }
+
+        if (!$updated) {
+            return response()->json([
+                'status' => false,
+                'message' => ucfirst($request->role) . ' account not found'
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password changed successfully'
+        ]);
     }
 
      // ============================= REGISTER ============================
@@ -378,10 +427,12 @@ class LoginRegController extends Controller
             return redirect('/'); 
         }
         $vendor_id = Session::get('vendor_id');
+
         //   dd($vendor_id);
         $vendor = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->first();
+        $profilePercent = ProfileCompletionHelper::vendor($vendor);
         $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');
@@ -399,7 +450,7 @@ class LoginRegController extends Controller
         $projects  = DB::connection('mysql')->table('posts')->get();       
         // dd( $ActiveLeads_data );
 
-        return view('web.vendordashboard',compact('ActiveLeads','projects','vendor','vendor_id','notifications','notificationCount')); 
+        return view('web.vendordashboard',compact('ActiveLeads','profilePercent','projects','vendor','vendor_id','notifications','notificationCount')); 
     }
 
  

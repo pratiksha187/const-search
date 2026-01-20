@@ -3,6 +3,7 @@
 @section('title', 'Login | ConstructKaro')
 
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
 .auth-wrapper {
@@ -159,6 +160,12 @@
                 </div>
 
                 <button class="btn-blue w-100" id="login-btn">Login</button>
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="javascript:void(0)" class="text-decoration-none text-primary fw-semibold"
+                    id="forgot-password-link">
+                        Forgot Password?
+                    </a>
+                </div>
             </div>
 
             <!-- ================= REGISTER FORM ================= -->
@@ -223,6 +230,35 @@
                 
 
                 <button class="btn-blue w-100" id="btn-send-otp">Register</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Change Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <label class="fw-bold mb-1">Registered Mobile / Email</label>
+                <input type="text" class="form-control mb-3" id="fp-login">
+
+                <label class="fw-bold mb-1">New Password</label>
+                <input type="password" class="form-control mb-3" id="fp-password">
+
+                <label class="fw-bold mb-1">Confirm Password</label>
+                <input type="password" class="form-control mb-3" id="fp-confirm">
+
+                <button class="btn btn-primary w-100" id="change-password-btn">
+                    Change Password
+                </button>
+
             </div>
 
         </div>
@@ -313,8 +349,7 @@ $("#btn-send-otp").click(function () {
         shop_name:$("#supplier-business-name").val(),
         business_name: $("#vendor-business-name").val(),
         gst_number: $("#vendor-gst-number").val(),
-         // Supplier
-        // material_category: $("#supplier-material-category").val(),
+        
         _token: "{{ csrf_token() }}"
     }, function (res) {
         if (res.status) {
@@ -355,5 +390,59 @@ $("#toggle-login-password").click(function () {
     }
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const forgotModal = new bootstrap.Modal(
+        document.getElementById('forgotPasswordModal')
+    );
+
+    document.getElementById('forgot-password-link')
+        .addEventListener('click', () => forgotModal.show());
+
+    document.getElementById('change-password-btn')
+        .addEventListener('click', function () {
+
+        const login    = document.getElementById('fp-login').value.trim();
+        const password = document.getElementById('fp-password').value;
+        const confirm  = document.getElementById('fp-confirm').value;
+        const role     = document.getElementById('selected-role').value;
+
+        if (!login || !password || !confirm) {
+            alert('All fields are required');
+            return;
+        }
+
+        if (password !== confirm) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        fetch('/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+            },
+            body: JSON.stringify({
+                login: login,
+                password: password,
+                role: role
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            if (data.status) {
+                forgotModal.hide();
+            }
+        })
+        .catch(() => alert('Something went wrong'));
+    });
+
+});
+</script>
+
+
 
 @endsection

@@ -4,8 +4,6 @@
 
 @section('content')
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
 :root{
     --orange:#f25c05;
@@ -28,28 +26,68 @@ body{ background:var(--bg); }
 }
 
 /* HEADER */
-.dashboard-header{
-    margin-bottom:24px;
+.dashboard-header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    margin-bottom:28px;
 }
-.dashboard-header h2{
-    font-size:26px;
-    font-weight:800;
+
+.dashboard-header-left h2{
+    font-size:28px;
+    font-weight:900;
+    margin-bottom:4px;
 }
-.dashboard-header p{
+
+.dashboard-header-left p{
     font-size:14px;
     color:var(--muted);
+    margin-bottom:6px;
+}
+
+.how-it-works-link{
+    font-size:16px;
+    font-weight:700;
+    color:var(--blue);
+    text-decoration:none;
+}
+.how-it-works-link:hover{
+    text-decoration:underline;
+}
+
+.dashboard-header-right{
+    display:flex;
+    align-items:center;
+}
+
+.header-badge{
+    background:#ecfeff;
+    color:#0369a1;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 16px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 /* KPI */
 .kpi-card{
     background:#fff;
     border:1px solid var(--border);
-    border-radius:14px;
+    border-radius:16px;
     padding:18px;
     display:flex;
     justify-content:space-between;
     align-items:center;
     height:100%;
+    transition:all .25s ease;
+}
+.kpi-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 28px rgba(15,23,42,0.06);
 }
 .kpi-title{
     font-size:12px;
@@ -57,17 +95,17 @@ body{ background:var(--bg); }
     color:var(--muted);
 }
 .kpi-value{
-    font-size:24px;
-    font-weight:800;
+    font-size:26px;
+    font-weight:900;
 }
 .kpi-sub{
     font-size:12px;
     color:var(--muted);
 }
 .kpi-icon{
-    width:42px;
-    height:42px;
-    border-radius:50%;
+    width:44px;
+    height:44px;
+    border-radius:14px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -78,11 +116,99 @@ body{ background:var(--bg); }
 .green{background:#16a34a;}
 .gold{background:#f59e0b;}
 
+/* PROFILE COMPLETION */
+.profile-complete-card{
+    background:linear-gradient(135deg,#fff7ed,#ffffff);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:22px 26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:28px;
+    margin-bottom:28px;
+    box-shadow:0 8px 24px rgba(15,23,42,0.04);
+}
+
+.pc-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+}
+
+.pc-icon{
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    background:linear-gradient(135deg,#ff9a3c,#f25c05);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+}
+
+.pc-left h4{
+    font-weight:800;
+    margin-bottom:4px;
+}
+.pc-left p{
+    font-size:14px;
+    color:var(--muted);
+    margin:0;
+}
+
+.pc-right{
+    min-width:260px;
+    text-align:right;
+}
+
+.pc-percent{
+    font-size:30px;
+    font-weight:900;
+    color:var(--orange);
+    margin-bottom:6px;
+}
+
+.progress{
+    height:8px;
+    background:#eef2f7;
+    border-radius:10px;
+    overflow:hidden;
+    width: 880px;
+}
+.progress-bar{
+    background:linear-gradient(135deg,#ff9a3c,#f25c05);
+}
+
+.pc-btn{
+    display:inline-block;
+    margin-top:10px;
+    padding:8px 18px;
+    border-radius:22px;
+    background:var(--orange);
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+}
+.pc-btn:hover{
+    background:#e45703;
+    color:#fff;
+}
+
+.pc-done{
+    margin-top:10px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--green);
+}
+
 /* CARD */
 .card{
     background:#fff;
     border:1px solid var(--border);
-    border-radius:14px;
+    border-radius:16px;
     padding:20px;
     margin-bottom:20px;
 }
@@ -101,73 +227,43 @@ body{ background:var(--bg); }
     text-transform:uppercase;
     color:var(--muted);
 }
-.btn-interest{
-    background:var(--orange);
-    color:#fff;
-    padding:6px 16px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:700;
-    text-decoration:none;
+
+.kpi-link:hover{
+    border-color:#2563eb;
+    box-shadow:0 12px 30px rgba(37,99,235,.15);
+    transform: translateY(-2px);
+    transition:.25s;
 }
 
-/* QUICK */
-.quick-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-}
-.quick-btn{
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:12px;
-    text-align:center;
-    font-size:13px;
-    font-weight:700;
-    background:#f9fafb;
-}
-
-/* ACTIVITY */
-.activity{
-    font-size:13px;
-    color:var(--muted);
-    margin-bottom:8px;
-}
-.dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    display:inline-block;
-    margin-right:8px;
-}
-.dot-blue{background:#2563eb;}
-.dot-green{background:#16a34a;}
-.dot-orange{background:#f97316;}
-
-/* PROGRESS */
-.progress{
-    height:8px;
-    background:#e5e7eb;
-    border-radius:10px;
-}
-.progress-bar{
-    width:65%;
-    height:100%;
-    background:linear-gradient(135deg,#ff9a3c,#f25c05);
-}
 </style>
 
 <div class="dashboard-wrap">
 
     <!-- HEADER -->
-    <div class="dashboard-header">
-        <h2>Hi {{ $vendor->name }} 👋</h2>
-        <p>Track your leads, bids and projects at a glance</p>
+    <div class="dashboard-header-row">
+        <div class="dashboard-header-left">
+            <h2>Hi {{ $vendor->name }} 👋</h2>
+            <p>Track your leads, bids and projects at a glance</p>
+
+            <a href="javascript:void(0)"
+               class="how-it-works-link"
+               data-bs-toggle="modal"
+               data-bs-target="#howItWorksModal">
+                How it works?
+            </a>
+        </div>
+
+        <div class="dashboard-header-right">
+            <div class="header-badge">
+                <i class="bi bi-shield-check"></i>
+                Verified vendors get more leads
+            </div>
+        </div>
     </div>
 
     <!-- KPI ROW -->
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="kpi-card">
                 <div>
                     <div class="kpi-title">Active Leads</div>
@@ -178,29 +274,21 @@ body{ background:var(--bg); }
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="kpi-card">
-                <div>
-                    <div class="kpi-title">Bids Submitted</div>
-                    <div class="kpi-value">{{ $BidsSubmitted ?? 0 }}</div>
-                    <div class="kpi-sub">Under review</div>
+        <div class="col-md-4">
+            <a href="{{ route('vendorleadhistory') }}" class="text-decoration-none text-dark">
+                <div class="kpi-card">
+                    <div>
+                        <div class="kpi-title">Lead History</div>
+                        <div class="kpi-value">{{ $BidsSubmitted ?? 0 }}</div>
+                        <div class="kpi-sub">Under review</div>
+                    </div>
+                    <div class="kpi-icon blue"><i class="bi bi-file-earmark-text"></i></div>
                 </div>
-                <div class="kpi-icon blue"><i class="bi bi-file-earmark-text"></i></div>
-            </div>
+            </a>
         </div>
 
-        <div class="col-md-3">
-            <div class="kpi-card">
-                <div>
-                    <div class="kpi-title">Projects Won</div>
-                    <div class="kpi-value">{{ $ProjectsWon ?? 0 }}</div>
-                    <div class="kpi-sub">Converted</div>
-                </div>
-                <div class="kpi-icon green"><i class="bi bi-check-circle-fill"></i></div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
+    
+        <div class="col-md-4">
             <div class="kpi-card">
                 <div>
                     <div class="kpi-title">Rating</div>
@@ -212,86 +300,72 @@ body{ background:var(--bg); }
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="row">
-
-        <!-- LEFT -->
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-title">
-                    <span>New Opportunities</span>
-                    <a href="{{ route('search_customer') }}" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Project</th>
-                                <th>Location</th>
-                                <th>Posted</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @forelse($projects->take(6) as $project)
-                            <tr>
-                                <td><strong>{{ $project->title }}</strong></td>
-                                <td>{{ $project->city }}, {{ $project->state }}</td>
-                                <td>{{ \Carbon\Carbon::parse($project->created_at)->diffForHumans() }}</td>
-                                <td class="text-end">
-                                    <a href="#" class="btn-interest">Interested</a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">No opportunities available</td>
-                            </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
-                </div>
+    <!-- PROFILE COMPLETION -->
+    <div class="profile-complete-card">
+        <div class="pc-left">
+            <div class="pc-icon">
+                <i class="bi bi-person-check-fill"></i>
             </div>
-              <div class="card">
-                <div class="card-title">Quick Actions</div>
-                <div class="quick-grid">
-                    <a href="{{route('vendor.profile')}}" class="quick-btn">Complete Profile</a>
-                    <a href="{{ route('search_customer') }}" class="quick-btn">View Leads</a>
-
-                </div>
+            <div>
+                <h4>Complete Your Profile</h4>
+                <p>Higher profile completion increases trust & visibility</p>
             </div>
         </div>
 
-        <!-- RIGHT -->
-        <div class="col-lg-4">
+        <div class="pc-right">
+            <div class="pc-percent">{{ $profilePercent }}%</div>
 
-            <div class="card">
-                <div class="card-title">Leads Overview</div>
-                <canvas id="leadsPieChart" height="220"></canvas>
+            <div class="progress">
+                <div class="progress-bar" style="width: {{ $profilePercent }}%"></div>
             </div>
 
+            @if($profilePercent < 100)
+                <a href="{{ route('vendor.profile') }}" class="pc-btn">
+                    Complete Now →
+                </a>
+            @else
+                <div class="pc-done">✅ Profile Fully Completed</div>
+            @endif
+        </div>
+    </div>
+
+    <!-- OPPORTUNITIES -->
+    <div class="card">
+        <div class="card-title">
+            <span>New Opportunities</span>
+            <a href="{{ route('search_customer') }}" class="btn btn-sm btn-outline-primary">
+                View All Projects
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Location</th>
+                        <th>Posted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($projects->take(6) as $project)
+                    <tr>
+                        <td><strong>{{ $project->title }}</strong></td>
+                        <td>{{ $project->city }}, {{ $project->state }}</td>
+                        <td>{{ \Carbon\Carbon::parse($project->created_at)->diffForHumans() }}</td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            No opportunities available
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 
 </div>
-
-<script>
-new Chart(document.getElementById('leadsPieChart'),{
-    type:'doughnut',
-    data:{
-        labels:['Active Leads','Bids Submitted','Projects Won'],
-        datasets:[{
-            data:[{{ $ActiveLeads }},{{ $BidsSubmitted ?? 0 }},{{ $ProjectsWon ?? 0 }}],
-            backgroundColor:['#f97316','#2563eb','#16a34a'],
-            borderWidth:2,
-            borderColor:'#fff'
-        }]
-    },
-    options:{
-        cutout:'60%',
-        plugins:{legend:{position:'bottom'}}
-    }
-});
-</script>
 
 @endsection
