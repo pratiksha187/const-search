@@ -117,64 +117,78 @@
     <div class="section-title">Uploaded Documents</div>
 
     <div class="row g-3">
-        @if($vendor->pan_card_file)
-        <div class="col-md-4">
-            <a href="{{ asset($vendor->pan_card_file) }}" target="_blank" class="doc-link">
-                <i class="bi bi-file-earmark-pdf"></i> PAN Card
-            </a>
-        </div>
-        @endif
 
-        @if($vendor->gst_certificate_file)
-        <div class="col-md-4">
-            <a href="{{ asset($vendor->gst_certificate_file) }}" target="_blank" class="doc-link">
-                <i class="bi bi-file-earmark-pdf"></i> GST Certificate
-            </a>
-        </div>
-        @endif
+        @foreach([
+            'pan_card_file' => 'PAN Card',
+            'gst_certificate_file' => 'GST Certificate',
+            'aadhaar_card_file' => 'Aadhaar Card',
+            'certificate_of_incorporation_file' => 'Company Profile',
+            'msme_file' => 'MSME Certificate',
+            'cancelled_cheque_file' => 'Cancelled Cheque',
+            'pf_documents_file' => 'PF Document',
+            'esic_documents_file' => 'ESIC Document'
+        ] as $field => $label)
 
-        @if($vendor->aadhaar_card_file)
-        <div class="col-md-4">
-            <a href="{{ asset($vendor->aadhaar_card_file) }}" target="_blank" class="doc-link">
-                <i class="bi bi-file-earmark-pdf"></i> Aadhaar Card
-            </a>
-        </div>
-        @endif
+            @if(!empty($vendor->$field))
+            <div class="col-md-4">
+                <a href="{{ asset('storage/'.$vendor->$field) }}"
+                   target="_blank"
+                   class="doc-link">
+                    <i class="bi bi-file-earmark-pdf"></i> {{ $label }}
+                </a>
+            </div>
+            @endif
 
-        @if($vendor->certificate_of_incorporation_file)
-        <div class="col-md-4">
-            <a href="{{ asset($vendor->certificate_of_incorporation_file) }}" target="_blank" class="doc-link">
-                <i class="bi bi-file-earmark-pdf"></i> Incorporation Certificate
-            </a>
-        </div>
-        @endif
+        @endforeach
 
-        @if($vendor->msme_file)
-        <div class="col-md-4">
-            <a href="{{ asset($vendor->msme_file) }}" target="_blank" class="doc-link">
-                <i class="bi bi-file-earmark-pdf"></i> MSME Certificate
-            </a>
-        </div>
-        @endif
-
-
-        @if($vendor->cancelled_cheque_file)
-        <div class="col-md-4">
-            <a href="{{ asset($vendor->cancelled_cheque_file) }}" target="_blank" class="doc-link">
-                <i class="bi bi-file-earmark-pdf"></i> Cancelled_Cheque
-            </a>
-        </div>
-        @endif
-        
-        
     </div>
 </div>
+
+{{-- ================= Work Complited Photo ================= --}}
+@if(
+    $vendor->work_completion_certificates_file1 ||
+    $vendor->work_completion_certificates_file2 ||
+    $vendor->work_completion_certificates_file3
+)
+<div class="profile-card">
+    <div class="section-title">Work Completion Certificates</div>
+
+    <div class="row g-3">
+
+        @if($vendor->work_completion_certificates_file1)
+        <div class="col-md-4">
+            <img src="{{ asset('storage/'.$vendor->work_completion_certificates_file1) }}"
+                 class="img-fluid rounded border"
+                 style="height:180px;object-fit:cover;width:100%;">
+        </div>
+        @endif
+
+        @if($vendor->work_completion_certificates_file2)
+        <div class="col-md-4">
+            <img src="{{ asset('storage/'.$vendor->work_completion_certificates_file2) }}"
+                 class="img-fluid rounded border"
+                 style="height:180px;object-fit:cover;width:100%;">
+        </div>
+        @endif
+
+        @if($vendor->work_completion_certificates_file3)
+        <div class="col-md-4">
+            <img src="{{ asset('storage/'.$vendor->work_completion_certificates_file3) }}"
+                 class="img-fluid rounded border"
+                 style="height:180px;object-fit:cover;width:100%;">
+        </div>
+        @endif
+
+    </div>
+</div>
+@endif
+
 
 {{-- ================= COMPANY LOGO ================= --}}
 @if($vendor->company_logo)
 <div class="profile-card">
     <div class="section-title">Company Logo</div>
-    <img src="{{ asset($vendor->company_logo) }}" class="logo-preview">
+    <img src="{{ asset('storage/'.$vendor->company_logo) }}" class="logo-preview">
 </div>
 @endif
 
