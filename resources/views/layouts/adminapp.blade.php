@@ -163,6 +163,10 @@
                 <i class="bi bi-shield-check"></i>
                 Vendor Verification
             </a>
+            <a href="{{ route('admin.freeleads') }}" class="menu-item">
+                <i class="bi bi-award"></i>
+                Free Leads Verification
+            </a>
 
         </nav>
 

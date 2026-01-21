@@ -43,6 +43,7 @@ Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name(
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
 
 
+
 Route::get('/get-regions/{state_id}', [HomeController::class, 'getRegions']);
 Route::get('/get-cities/{region_id}', [HomeController::class, 'getCities']);
 
@@ -188,7 +189,12 @@ Route::get('/vendorsubscription', [VenderController::class, 'vendorsubscription'
 
 Route::get('/test', [ImportController::class, 'test'])->name('test');
 
-    
+Route::get('/admin/free-leads', [AdminController::class, 'freeLeadList'])
+    ->name('admin.freeleads');
+
+Route::post('/admin/free-leads/{id}/action',
+    [AdminController::class, 'freeLeadAction']
+)->name('admin.freeleads.action');
 
 Route::post('/project-interest-check', 
     [HomeController::class, 'projectInterestCheck']
@@ -321,7 +327,11 @@ Route::post('/admin/vendors/{id}/status',
    
     Route::get('vendor_verification', [AdminController::class, 'vendor_verification'])->name('vendor_verification');
 
-    
+    // Route::post('freeleadupload', [AdminController::class, 'freeleadupload'])->name('vendor.freelead.upload');
+    Route::post('/vendor/free-lead/upload', 
+        [AdminController::class, 'uploadFreeLead']
+    )->name('vendor.freelead.upload');
+
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";

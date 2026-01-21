@@ -381,8 +381,14 @@ class VenderController extends Controller
                 // ->select('v.*','vi.*')
                  ->select('ci.*','u.*')
                 ->get();
+
+        $freeLeadPlatforms = DB::table('free_lead_requests')
+                            ->where('vendor_id', $vendor_id)
+                            ->whereIn('platform', ['instagram','facebook'])
+                            ->pluck('platform')
+                            ->toArray();
         //    dd( $notifications );     
         $notificationCount = $notifications->count(); 
-         return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount'));
+         return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount','freeLeadPlatforms'));
     }
 }

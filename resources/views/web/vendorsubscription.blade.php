@@ -76,20 +76,12 @@ body{ background:var(--bg); }
     font-weight:800;
     font-size:13px;
     text-decoration:none;
+    cursor:pointer;
 }
 
-/* ================= SECTION TITLE ================= */
-.section-title{
-    text-align:center;
-    margin-bottom:42px;
-}
-.section-title h3{
-    font-weight:900;
-    color:var(--dark);
-}
-.section-title p{
-    color:var(--muted);
-    font-size:15px;
+.upload-box{
+    margin-top:14px;
+    text-align:left;
 }
 
 /* ================= PLAN CARDS ================= */
@@ -127,13 +119,10 @@ body{ background:var(--bg); }
     font-weight:900;
 }
 
-/* TEXT */
 .plan-title{
     font-size:14px;
     font-weight:800;
-    letter-spacing:.5px;
     color:#334155;
-    margin-bottom:6px;
 }
 
 .plan-price{
@@ -143,15 +132,9 @@ body{ background:var(--bg); }
     margin:8px 0;
 }
 
-.plan-price .gst{
-    font-size:13px;
-    color:var(--muted);
-}
-
 .plan-meta{
     font-size:14px;
     color:var(--muted);
-    margin-bottom:18px;
 }
 
 .plan-features{
@@ -164,71 +147,179 @@ body{ background:var(--bg); }
 .plan-features li{
     font-size:14px;
     margin-bottom:10px;
-    color:#334155;
 }
 
-/* BUTTONS */
-.plan-card .btn{
-    margin-top:16px;
-    padding:12px 0;
-    font-weight:800;
-    border-radius:12px;
-}
-
-.btn-outline{
-    border:2px solid var(--blue);
-    color:var(--blue);
-    background:#fff;
-}
-
-.btn-outline:hover{
-    background:#eff6ff;
-}
-
-.btn-primary{
-    background:var(--blue);
-    border:none;
-}
-
-.btn-primary:hover{
-    background:#1d4ed8;
-}
-
-/* MOBILE */
 @media(max-width:768px){
-    .plan-price{ font-size:32px; }
-    .lead-page{ margin:20px auto 60px; }
+    .plan-price{ font-size:30px; }
+}
+
+.free-btn.disabled{
+    background:#cbd5f5;
+    color:#64748b;
+    cursor:not-allowed;
 }
 
 </style>
 
 <div class="lead-page">
 
-{{-- FREE LEADS --}}
+{{-- ================= FREE LEADS ================= --}}
 <div class="free-leads-box">
     <h5>🎁 Earn Free Leads!</h5>
-    <p>Share on social media to get 1 free verified lead.</p>
+    <p>Share on social media & upload screenshot to get 1 free verified lead.</p>
 
     <div class="row g-3">
+
+        {{-- INSTAGRAM --}}
+        <!-- <div class="col-md-6">
+            <div class="free-card">
+                <h6>📸 Instagram</h6>
+                <p>Add a story & tag us</p>
+
+                <button class="free-btn" onclick="toggleUpload('instagram')">
+                    Claim Free Lead
+                </button>
+
+                <form class="upload-box d-none"
+                      id="upload-instagram"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      action="{{ route('vendor.freelead.upload') }}">
+                    @csrf
+                    <input type="hidden" name="platform" value="instagram">
+
+                    <label class="form-label small fw-semibold mt-2">
+                        Upload Screenshot
+                    </label>
+                    <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
+
+                    <button class="btn btn-success btn-sm w-100">
+                        Submit Screenshot
+                    </button>
+                </form>
+            </div>
+        </div> -->
         <div class="col-md-6">
             <div class="free-card">
                 <h6>📸 Instagram</h6>
                 <p>Add a story & tag us</p>
-                <a href="#" class="free-btn">Claim Free Lead</a>
+
+                @if(in_array('instagram', $freeLeadPlatforms))
+                    {{-- ALREADY APPLIED --}}
+                    <button class="free-btn disabled" disabled>
+                        Already Applied
+                    </button>
+
+                    <div class="text-success small fw-semibold mt-2">
+                        ✔ Screenshot already submitted
+                    </div>
+                @else
+                    {{-- NOT APPLIED --}}
+                    <button class="free-btn" onclick="toggleUpload('instagram')">
+                        Claim Free Lead
+                    </button>
+
+                    <form class="upload-box d-none"
+                        id="upload-instagram"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        action="{{ route('vendor.freelead.upload') }}">
+                        @csrf
+                        <input type="hidden" name="platform" value="instagram">
+
+                        <label class="form-label small fw-semibold mt-2">
+                            Upload Screenshot
+                        </label>
+                        <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
+
+                        <button class="btn btn-success btn-sm w-100">
+                            Submit Screenshot
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
 
+
+        {{-- FACEBOOK --}}
+        <!-- <div class="col-md-6">
+            <div class="free-card">
+                <h6>👍 Facebook</h6>
+                <p>Share on Facebook</p>
+
+                <button class="free-btn" onclick="toggleUpload('facebook')">
+                    Claim Free Lead
+                </button>
+
+                <form class="upload-box d-none"
+                      id="upload-facebook"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      action="{{ route('vendor.freelead.upload') }}">
+                    @csrf
+                    <input type="hidden" name="platform" value="facebook">
+
+                    <label class="form-label small fw-semibold mt-2">
+                        Upload Screenshot
+                    </label>
+                    <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
+
+                    <button class="btn btn-success btn-sm w-100">
+                        Submit Screenshot
+                    </button>
+                </form>
+            </div>
+        </div> -->
         <div class="col-md-6">
             <div class="free-card">
                 <h6>👍 Facebook</h6>
                 <p>Share on Facebook</p>
-                <a href="#" class="free-btn">Claim Free Lead</a>
+
+                @if(in_array('facebook', $freeLeadPlatforms))
+                    {{-- ALREADY APPLIED --}}
+                    <button class="free-btn disabled" disabled>
+                        Already Applied
+                    </button>
+
+                    <div class="text-success small fw-semibold mt-2">
+                        ✔ Screenshot already submitted
+                    </div>
+                @else
+                    {{-- NOT APPLIED --}}
+                    <button class="free-btn" onclick="toggleUpload('facebook')">
+                        Claim Free Lead
+                    </button>
+
+                    <form class="upload-box d-none"
+                        id="upload-facebook"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        action="{{ route('vendor.freelead.upload') }}">
+                        @csrf
+                        <input type="hidden" name="platform" value="facebook">
+
+                        <label class="form-label small fw-semibold mt-2">
+                            Upload Screenshot
+                        </label>
+                        <input type="file"
+                            name="screenshot"
+                            class="form-control mb-2"
+                            required
+                            accept="image/*">
+
+                        <button class="btn btn-success btn-sm w-100">
+                            Submit Screenshot
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
+
+
     </div>
 </div>
 
-{{-- PACKAGES --}}
+{{-- ================= PAID PACKAGES ================= --}}
 <div class="text-center mb-4">
     <h3 class="fw-bold">Choose Your Lead Package</h3>
     <p class="text-muted">Pay once • No commission • Verified leads only</p>
@@ -236,72 +327,86 @@ body{ background:var(--bg); }
 
 <div class="row g-4">
 
- <!-- SINGLE LEAD -->
-            <div class="col-12 col-md-4">
-              <div class="plan-card">
-                <div class="plan-title">Single Lead</div>
-                <div class="plan-price">₹499</div>
-                <p class="plan-meta">1 verified lead</p>
-                <ul class="plan-features">
-                  <li>✔ Full customer contact</li>
-                  <li>✔ Genuine requirement</li>
-                  <li>✔ No commission</li>
-                </ul>
-                <button
-                  class="btn btn-outline w-100 buy-plan-btn"
-                  data-plan="single"
-                  data-amount="499"
-                  data-cust="{{ $vendor_id }}">
-                  Pay & Unlock
-                </button>
-              </div>
-            </div>
+    {{-- SINGLE --}}
+    <div class="col-md-4">
+        <div class="plan-card">
+            <div class="plan-title">Single Lead</div>
+            <div class="plan-price">₹499</div>
+            <p class="plan-meta">1 verified lead</p>
 
-            <!-- STARTER PACKAGE (RECOMMENDED) -->
-            <div class="col-12 col-md-4">
-              <div class="plan-card recommended">
-                <div class="recommended-badge">Best Value</div>
-                <div class="plan-title">Starter Package</div>
-                <div class="plan-price">₹1,999 <span class="gst">+ GST</span></div>
-                <p class="plan-meta">10 verified leads • <strong>You save ₹2,991</strong></p>
-                <ul class="plan-features">
-                  <li>✔ ₹199 per lead</li>
-                  <li>✔ Priority access</li>
-                  <li>✔ No middleman</li>
-                </ul>
-                <button
-                  class="btn btn-primary w-100 buy-plan-btn"
-                  data-plan="starter"
-                  data-amount="1999"
-                  data-cust="{{ $vendor_id }}">
-                  Buy Starter Pack
-                </button>
-              </div>
-            </div>
+            <ul class="plan-features">
+                <li>✔ Full customer contact</li>
+                <li>✔ Genuine requirement</li>
+                <li>✔ No commission</li>
+            </ul>
 
-            <!-- GROW PACKAGE -->
-            <div class="col-12 col-md-4">
-              <div class="plan-card">
-                <div class="plan-title">Grow Package</div>
-                <div class="plan-price">₹2,999 <span class="gst">+ GST</span></div>
-                <p class="plan-meta">25 verified leads • <strong>You save ₹9,476</strong></p>
-                <ul class="plan-features">
-                  <li>✔ ₹120 per lead</li>
-                  <li>✔ Maximum savings</li>
-                  <li>✔ Business growth pack</li>
-                </ul>
-                <button
-                  class="btn btn-outline w-100 buy-plan-btn"
-                  data-plan="grow"
-                  data-amount="2999"
-                  data-cust="{{ $vendor_id }}">
-                  Buy Grow Pack
-                </button>
-              </div>
-            </div>
+            <button class="btn btn-outline w-100 buy-plan-btn"
+                    data-plan="single"
+                    data-amount="499"
+                    data-cust="{{ $vendor_id }}">
+                Pay & Unlock
+            </button>
+        </div>
+    </div>
+
+    {{-- STARTER --}}
+    <div class="col-md-4">
+        <div class="plan-card recommended">
+            <div class="recommended-badge">Best Value</div>
+            <div class="plan-title">Starter Package</div>
+            <div class="plan-price">₹1,999</div>
+            <p class="plan-meta">10 verified leads</p>
+
+            <ul class="plan-features">
+                <li>✔ ₹199 per lead</li>
+                <li>✔ Priority access</li>
+                <li>✔ No middleman</li>
+            </ul>
+
+            <button class="btn btn-primary w-100 buy-plan-btn"
+                    data-plan="starter"
+                    data-amount="1999"
+                    data-cust="{{ $vendor_id }}">
+                Buy Starter Pack
+            </button>
+        </div>
+    </div>
+
+    {{-- GROW --}}
+    <div class="col-md-4">
+        <div class="plan-card">
+            <div class="plan-title">Grow Package</div>
+            <div class="plan-price">₹2,999</div>
+            <p class="plan-meta">25 verified leads</p>
+
+            <ul class="plan-features">
+                <li>✔ ₹120 per lead</li>
+                <li>✔ Maximum savings</li>
+                <li>✔ Business growth</li>
+            </ul>
+
+            <button class="btn btn-outline w-100 buy-plan-btn"
+                    data-plan="grow"
+                    data-amount="2999"
+                    data-cust="{{ $vendor_id }}">
+                Buy Grow Pack
+            </button>
+        </div>
+    </div>
 
 </div>
 </div>
+
+{{-- ================= JS ================= --}}
+<script>
+function toggleUpload(platform){
+    document.querySelectorAll('.upload-box').forEach(el => el.classList.add('d-none'));
+    document.getElementById('upload-'+platform).classList.remove('d-none');
+}
+</script>
+
+
+
 
 {{-- PAYMENT SCRIPT --}}
 <script>
@@ -346,6 +451,21 @@ $(document).on('click','.buy-plan-btn',function(){
         }).open();
     });
 });
+</script>
+<script>
+function showUpload(platform) {
+
+    // Hide all upload boxes first
+    document.querySelectorAll('.upload-box').forEach(box => {
+        box.classList.add('d-none');
+    });
+
+    // Show selected platform upload box
+    const box = document.getElementById('upload-' + platform);
+    if (box) {
+        box.classList.remove('d-none');
+    }
+}
 </script>
 
 @endsection

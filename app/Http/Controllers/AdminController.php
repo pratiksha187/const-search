@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
@@ -75,4 +75,90 @@ class AdminController extends Controller
         );
     }
 
+    public function uploadFreeLead(Request $request)
+    {
+        $vendor_id = session('vendor_id');
+
+        if (!$vendor_id) {
+            return back()->with('error', 'Session expired. Please login again.');
+        }
+
+        /* ================= VALIDATION ================= */
+        $request->validate([
+            'platform'   => 'required|in:instagram,facebook',
+            'screenshot' => 'required|image|mimes:jpg,jpeg,png|max:20480', // 20MB
+        ]);
+
+        /* ================= STORE FILE ================= */
+        $path = $request->file('screenshot')
+            ->store("free_leads/{$vendor_id}", 'public');
+
+        /* ================= SAVE REQUEST ================= */
+        DB::table('free_lead_requests')->insert([
+            'vendor_id'  => $vendor_id,
+            'platform'   => $request->platform,
+            'screenshot' => $path,
+            'status'     => 'pending',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', 'Screenshot uploaded successfully. Free lead will be added after verification ✅');
+    }
+
+
+    public function freeLeadList()
+    {
+        $requests = DB::table('free_lead_requests as fl')
+            ->join('vendor_reg as v', 'v.id', '=', 'fl.vendor_id')
+            ->select(
+                'fl.*',
+                'v.company_name',
+                'v.mobile'
+            )
+            ->orderBy('fl.id', 'desc')
+            ->get();
+
+        return view('web.free_leads', compact('requests'));
+    }
+
+    
+    public function freeLeadAction(Request $request, $id)
+    {
+        $request->validate([
+            'action' => 'required|in:approve,reject'
+        ]);
+
+        $freeLead = DB::table('free_lead_requests')->where('id', $id)->first();
+
+        if (!$freeLead || $freeLead->status !== 'pending') {
+            return back()->with('error', 'Invalid or already processed request');
+        }
+
+        if ($request->action === 'approve') {
+
+            // Credit 1 lead
+            DB::table('vendor_reg')
+                ->where('id', $freeLead->vendor_id)
+                ->increment('lead_balance', 1);
+
+            $status = 'approved';
+
+        } else {
+            $status = 'rejected';
+        }
+
+        // Update free lead request status
+        DB::table('free_lead_requests')
+            ->where('id', $id)
+            ->update([
+                'status' => $status,
+                'updated_at' => now()
+            ]);
+
+        return back()->with(
+            'success',
+            'Free lead request '.$status.' successfully ✅'
+        );
+    }
 }
