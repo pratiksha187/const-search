@@ -877,7 +877,7 @@
                         @endif
                     </div>
 
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-12">
                             <label class="form-label fw-semibold">
                             Work Completion Photos *
@@ -903,6 +903,107 @@
                                 <span class="input-group-text bg-light fw-semibold">Img 3</span>
                                 <input type="file" id="work_completion_certificates_file3" name="work_completion_certificates_file3" class="form-control" >
                             </div>
+                            <div id="file-error3" class="text-danger small mt-1" style="display:none;"></div>
+                        </div>
+                    </div> -->
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold">
+                                Work Completion Photos *
+                                <small class="text-muted">(max 20 MB each)</small>
+                            </label>
+                        </div>
+
+                        {{-- ================= IMAGE 1 ================= --}}
+                        <div class="col-md-4">
+                            @if(!empty($vendor->work_completion_certificates_file1))
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/'.$vendor->work_completion_certificates_file1) }}"
+                                        class="img-fluid rounded border"
+                                        style="max-height:160px;object-fit:cover;">
+                                </div>
+                                <a href="{{ asset('storage/'.$vendor->work_completion_certificates_file1) }}"
+                                target="_blank"
+                                class="small text-primary fw-semibold">
+                                    View Full Image
+                                </a>
+
+                                <div class="input-group mt-2">
+                                    <span class="input-group-text bg-light fw-semibold">Replace</span>
+                                    <input type="file"
+                                        name="work_completion_certificates_file1"
+                                        class="form-control">
+                                </div>
+                            @else
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light fw-semibold">Img 1</span>
+                                    <input type="file"
+                                        name="work_completion_certificates_file1"
+                                        class="form-control">
+                                </div>
+                            @endif
+                            <div id="file-error1" class="text-danger small mt-1" style="display:none;"></div>
+                        </div>
+
+                        {{-- ================= IMAGE 2 ================= --}}
+                        <div class="col-md-4">
+                            @if(!empty($vendor->work_completion_certificates_file2))
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage/'.$vendor->work_completion_certificates_file2) }}"
+                                        class="img-fluid rounded border"
+                                        style="max-height:160px;object-fit:cover;">
+                                </div>
+                                <a href="{{ asset('storage/'.$vendor->work_completion_certificates_file2) }}"
+                                target="_blank"
+                                class="small text-primary fw-semibold">
+                                    View Full Image
+                                </a>
+
+                                <div class="input-group mt-2">
+                                    <span class="input-group-text bg-light fw-semibold">Replace</span>
+                                    <input type="file"
+                                        name="work_completion_certificates_file2"
+                                        class="form-control">
+                                </div>
+                            @else
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light fw-semibold">Img 2</span>
+                                    <input type="file"
+                                        name="work_completion_certificates_file2"
+                                        class="form-control">
+                                </div>
+                            @endif
+                            <div id="file-error2" class="text-danger small mt-1" style="display:none;"></div>
+                        </div>
+
+                        {{-- ================= IMAGE 3 ================= --}}
+                        <div class="col-md-4">
+                            @if(!empty($vendor->work_completion_certificates_file3))
+                                <div class="mb-2">
+                                    <img src="{{asset('storage/'.$vendor->work_completion_certificates_file3) }}"
+                                        class="img-fluid rounded border"
+                                        style="max-height:160px;object-fit:cover;">
+                                </div>
+                                <a href="{{asset('storage/'.$vendor->work_completion_certificates_file3) }}"
+                                target="_blank"
+                                class="small text-primary fw-semibold">
+                                    View Full Image
+                                </a>
+
+                                <div class="input-group mt-2">
+                                    <span class="input-group-text bg-light fw-semibold">Replace</span>
+                                    <input type="file"
+                                        name="work_completion_certificates_file3"
+                                        class="form-control">
+                                </div>
+                            @else
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light fw-semibold">Img 3</span>
+                                    <input type="file"
+                                        name="work_completion_certificates_file3"
+                                        class="form-control">
+                                </div>
+                            @endif
                             <div id="file-error3" class="text-danger small mt-1" style="display:none;"></div>
                         </div>
                     </div>

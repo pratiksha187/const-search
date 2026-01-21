@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+
 use App\Helpers\ProfileCompletionHelper;
 class VenderController extends Controller
 {
@@ -91,6 +93,10 @@ class VenderController extends Controller
             'esic_documents_file'               => 'nullable|file|mimes:pdf|max:20480',
             'cancelled_cheque_file'             => 'nullable|file|mimes:pdf|max:20480',
             'msme_file'                          => 'nullable|file|mimes:pdf|max:20480',
+            'work_completion_certificates_file1' => 'nullable|image|mimes:jpg,jpeg,png|max:20480',
+            'work_completion_certificates_file2' => 'nullable|image|mimes:jpg,jpeg,png|max:20480',
+            'work_completion_certificates_file3' => 'nullable|image|mimes:jpg,jpeg,png|max:20480',
+
         ]);
 
         /* ================= BASE DATA ================= */
@@ -105,7 +111,11 @@ class VenderController extends Controller
             'esic_documents_file',
             'cancelled_cheque_file',
             'msme_file',
-             'company_logo'
+            'company_logo',
+            'work_completion_certificates_file1',
+            'work_completion_certificates_file2',
+            'work_completion_certificates_file3',
+
         ]);
 
         /* ================= WORK SUBTYPE (CHECKBOX ARRAY) ================= */
@@ -142,6 +152,31 @@ class VenderController extends Controller
             'cancelled_cheque_file',
             'msme_file'
         ];
+
+        /* ================= WORK COMPLETION PHOTOS ================= */
+        $workImages = [
+            'work_completion_certificates_file1',
+            'work_completion_certificates_file2',
+            'work_completion_certificates_file3',
+        ];
+
+        foreach ($workImages as $field) {
+            if ($request->hasFile($field)) {
+
+                // delete old image if exists
+                $oldFile = DB::table('vendor_reg')
+                    ->where('id', $vendor_id)
+                    ->value($field);
+
+                if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+                    Storage::disk('public')->delete($oldFile);
+                }
+
+                $data[$field] = $request->file($field)
+                    ->store("vendor_work_photos/{$vendor_id}", 'public');
+            }
+        }
+
 
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
