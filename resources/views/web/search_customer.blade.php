@@ -487,15 +487,15 @@
                </div>
                <div class="col-lg-4 col-md-6">
                   <label class="form-label fw-semibold small text-muted">
-                  <i class="bi bi-map-fill me-1 text-indigo"></i> Region / Zone
+                  <i class="bi bi-map-fill me-1 text-indigo"></i> District
                   </label>
                   <select id="regionSelect" class="form-select form-select-custom" disabled>
-                     <option value="">Select Region</option>
+                     <option value="">Select District</option>
                   </select>
                </div>
                <div class="col-lg-4 col-md-12">
                   <label class="form-label fw-semibold small text-muted">
-                  <i class="bi bi-buildings-fill me-1 text-orange"></i> City
+                  <i class="bi bi-buildings-fill me-1 text-orange"></i> Region
                   </label>
                   <select id="citySelect" class="form-select form-select-custom" disabled>
                      <option value="">Select City</option>
@@ -942,6 +942,66 @@ document.addEventListener('click', function (e) {
 </script>
 <script>
 
+// function applyFilters() {
+
+//     let selectedCategories = [];
+//     let selectedSubtypes   = [];
+
+//     $('.category-check:checked').each(function () {
+//         selectedCategories.push(this.value);
+//     });
+
+//     $('.subtype-check:checked').each(function () {
+//         selectedSubtypes.push(this.value);
+//     });
+
+//     let stateText  = $('#stateSelect option:selected').text().toLowerCase().trim();
+//     let regionText = $('#regionSelect option:selected').text().toLowerCase().trim();
+//     let cityText   = $('#citySelect option:selected').text().toLowerCase().trim();
+
+//     if (stateText === 'select state') stateText = '';
+//     if (regionText === 'select region') regionText = '';
+//     if (cityText === 'select city') cityText = '';
+
+//     let visible = 0;
+
+//     $('.vendor-col').each(function () {
+
+//         let card = this.querySelector('.vendor-card');
+
+//         let cardTypeId    = card.dataset.workTypeId || '';
+//         let cardSubtypeId = card.dataset.workSubtypeId || '';
+
+//         let cardState  = (card.dataset.state || '').toLowerCase();
+//         let cardRegion = (card.dataset.region || '').toLowerCase();
+//         let cardCity   = (card.dataset.city || '').toLowerCase();
+
+//         /* ===== CATEGORY MATCH ===== */
+//         let categoryMatch = true;
+
+//         if (selectedCategories.length > 0) {
+//             categoryMatch = selectedCategories.includes(cardTypeId);
+//         }
+
+//         if (selectedSubtypes.length > 0) {
+//             categoryMatch = selectedSubtypes.includes(cardSubtypeId);
+//         }
+
+//         /* ===== LOCATION MATCH ===== */
+//         let stateMatch  = !stateText  || cardState.includes(stateText);
+//         let regionMatch = !regionText || cardRegion.includes(regionText);
+//         let cityMatch   = !cityText   || cardCity.includes(cityText);
+
+//         if (categoryMatch && stateMatch && regionMatch && cityMatch) {
+//             this.classList.remove('hidden');
+//             visible++;
+//         } else {
+//             this.classList.add('hidden');
+//         }
+//     });
+
+//     $('#vendorCount').text(visible);
+// }
 function applyFilters() {
 
     let selectedCategories = [];
@@ -955,12 +1015,12 @@ function applyFilters() {
         selectedSubtypes.push(this.value);
     });
 
-    let stateText  = $('#stateSelect option:selected').text().toLowerCase().trim();
-    let regionText = $('#regionSelect option:selected').text().toLowerCase().trim();
-    let cityText   = $('#citySelect option:selected').text().toLowerCase().trim();
+    let stateText    = $('#stateSelect option:selected').text().toLowerCase().trim();
+    let districtText = $('#regionSelect option:selected').text().toLowerCase().trim();
+    let cityText     = $('#citySelect option:selected').text().toLowerCase().trim();
 
     if (stateText === 'select state') stateText = '';
-    if (regionText === 'select region') regionText = '';
+    if (districtText === 'select district') districtText = '';
     if (cityText === 'select city') cityText = '';
 
     let visible = 0;
@@ -969,12 +1029,12 @@ function applyFilters() {
 
         let card = this.querySelector('.vendor-card');
 
-        let cardTypeId    = card.dataset.workTypeId || '';
-        let cardSubtypeId = card.dataset.workSubtypeId || '';
+        let cardTypeId     = card.dataset.workTypeId || '';
+        let cardSubtypeIds = (card.dataset.workSubtypeId || '').split(',');
 
-        let cardState  = (card.dataset.state || '').toLowerCase();
-        let cardRegion = (card.dataset.region || '').toLowerCase();
-        let cardCity   = (card.dataset.city || '').toLowerCase();
+        let cardState    = (card.dataset.state || '').toLowerCase();
+        let cardDistrict = (card.dataset.region || '').toLowerCase();
+        let cardCity     = (card.dataset.city || '').toLowerCase();
 
         /* ===== CATEGORY MATCH ===== */
         let categoryMatch = true;
@@ -984,15 +1044,16 @@ function applyFilters() {
         }
 
         if (selectedSubtypes.length > 0) {
-            categoryMatch = selectedSubtypes.includes(cardSubtypeId);
+            categoryMatch = categoryMatch &&
+                selectedSubtypes.some(id => cardSubtypeIds.includes(id));
         }
 
         /* ===== LOCATION MATCH ===== */
-        let stateMatch  = !stateText  || cardState.includes(stateText);
-        let regionMatch = !regionText || cardRegion.includes(regionText);
-        let cityMatch   = !cityText   || cardCity.includes(cityText);
+        let stateMatch    = !stateText    || cardState === stateText;
+        let districtMatch = !districtText || cardDistrict === districtText;
+        let cityMatch     = !cityText     || cardCity === cityText;
 
-        if (categoryMatch && stateMatch && regionMatch && cityMatch) {
+        if (categoryMatch && stateMatch && districtMatch && cityMatch) {
             this.classList.remove('hidden');
             visible++;
         } else {
@@ -1004,13 +1065,71 @@ function applyFilters() {
 }
 
 
+// $('#stateSelect').on('change', function () {
+
+//     let stateId = this.value;
+
+//     $('#regionSelect')
+//         .prop('disabled', true)
+//         .html('<option value="">Loading regions...</option>');
+
+//     $('#citySelect')
+//         .prop('disabled', true)
+//         .html('<option value="">Select City</option>');
+
+//     if (!stateId) {
+//         applyFilters();
+//         return;
+//     }
+
+//     $.get(`/locations/regions/${stateId}`, function (regions) {
+
+//         let options = '<option value="">Select Region</option>';
+//         regions.forEach(r => {
+//             options += `<option value="${r.id}">${r.name}</option>`;
+//         });
+
+//         $('#regionSelect')
+//             .html(options)
+//             .prop('disabled', false);
+
+//         applyFilters();
+//     });
+// });
+// $('#regionSelect').on('change', function () {
+
+//     let regionId = this.value;
+
+//     $('#citySelect')
+//         .prop('disabled', true)
+//         .html('<option value="">Loading cities...</option>');
+
+//     if (!regionId) {
+//         applyFilters();
+//         return;
+//     }
+
+//     $.get(`/locations/cities/${regionId}`, function (cities) {
+
+//         let options = '<option value="">Select City</option>';
+//         cities.forEach(c => {
+//             options += `<option value="${c.id}">${c.name}</option>`;
+//         });
+
+//         $('#citySelect')
+//             .html(options)
+//             .prop('disabled', false);
+
+//         applyFilters();
+//     });
+// });
 $('#stateSelect').on('change', function () {
 
     let stateId = this.value;
 
     $('#regionSelect')
         .prop('disabled', true)
-        .html('<option value="">Loading regions...</option>');
+        .html('<option value="">Loading districts...</option>');
 
     $('#citySelect')
         .prop('disabled', true)
@@ -1023,7 +1142,7 @@ $('#stateSelect').on('change', function () {
 
     $.get(`/locations/regions/${stateId}`, function (regions) {
 
-        let options = '<option value="">Select Region</option>';
+        let options = '<option value="">Select District</option>';
         regions.forEach(r => {
             options += `<option value="${r.id}">${r.name}</option>`;
         });

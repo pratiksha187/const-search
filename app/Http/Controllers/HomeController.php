@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+use App\Helpers\ProfileCompletionHelper;
 use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
@@ -132,7 +133,7 @@ class HomeController extends Controller
                 ->get();
         $notificationCount = $notifications->count();
       
-//   $cust_data = DB::table('users')->where('id',$customer_id)->first();
+        //   $cust_data = DB::table('users')->where('id',$customer_id)->first();
         $cust_data = DB::table('users')->where('id', $customer_id)->first();
 
         return view('web.cutomerprofile', compact('cust_data','notifications','notificationCount'));
@@ -210,7 +211,11 @@ class HomeController extends Controller
             ->orderBy('v.id', 'desc')
             ->get();
 
-        
+   
+        $vendorIds = DB::table('vendor_reg')
+                    ->pluck('id');
+        $vendors = DB::table('vendor_reg as v')->whereIn('id', $vendorIds)->get();
+                    dd($vendors);
         $vendor_reg->transform(function ($vendor) use ($allSubtypes) {
 
             // decode JSON ["16","17","19"]

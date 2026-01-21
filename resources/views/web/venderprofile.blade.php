@@ -843,7 +843,7 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label required">PAN Card<small class="text-muted">(PDF, max 20 MB)</small></label>
+                        <label class="form-label required">PAN Card *<small class="text-muted">(PDF, max 20 MB)</small></label>
                         <input accept="application/pdf" type="file" id="pan_card_file" name="pan_card_file" class="form-control">
                         @if(!empty($vendor->pan_card_file))
                             <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->pan_card_file) }}">View PAN</a>
@@ -859,7 +859,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label required">Aadhaar Card (Authorised Person)<small class="text-muted">(PDF, max 20 MB)</small></label>
+                        <label class="form-label required">Aadhaar Card (Authorised Person) *<small class="text-muted">(PDF, max 20 MB)</small></label>
                         <input accept="application/pdf" type="file" id="aadhaar_card_file" name="aadhaar_card_file" class="form-control">
                         @if(!empty($vendor->aadhaar_card_file))
                             <a class="d-inline-block mt-2" target="_blank" href="{{ asset('storage/'.$vendor->aadhaar_card_file) }}">View Aadhaar</a>
@@ -868,7 +868,7 @@
 
                     <div class="col-md-6">
                         <label id="certificate_label" class="form-label required">
-                        Company Profile<small class="text-muted">(PDF, max 20 MB)</small>
+                        Company Profile *<small class="text-muted">(PDF, max 20 MB)</small>
                         </label>
                         <input accept="application/pdf" type="file" id="certificate_of_incorporation_file" name="certificate_of_incorporation_file" class="form-control" multiple>
                         <ul id="file_list" class="file-list"></ul>
@@ -880,7 +880,7 @@
                     <div class="row">
                         <div class="col-12">
                             <label class="form-label fw-semibold">
-                            Work Completion Photos 
+                            Work Completion Photos *
                             <small class="text-muted">(max 20 MB each)</small>
                             </label>
                         </div>
@@ -968,83 +968,6 @@
 </script>
 
 <script>
-//    $('#entity_type').on('change', function () {
-//        const selectedOption = $(this).find("option:selected");
-//        const text = selectedOption.text();
-//        const value = selectedOption.val();
-
-//        if (text === "Proprietorship") {
-//               $("#certificate_label").text("PAN Of Proprietorship*");
-//           } else if (text === "Private Limited") {
-//               $("#certificate_label").text("Certificate Of Incopration*");
-//           } else  if (text === "Partnership") {
-//               $("#certificate_label").text("Partnership Deed*");
-//           } else if (text === "LLP") {
-//               $("#certificate_label").text("LLP Agreement*");
-//           } else if (text === "Public Limited") {
-//               $("#certificate_label").text("Certificate Of Incopration*");
-//           } else if (text === "OPC") {
-//               $("#certificate_label").text("Certificate Of Incopration*");
-//           } else if (text === "HUF") {
-//               $("#certificate_label").text("HUF PAN Card*");
-//           } else{
-//               $("#certificate_label").text("Relevant Document *");
-//           }
-
-//        // --- Show/hide sections ---
-//        if (value === '1') {
-//            $('#aadhar_pan_link_section').hide();
-//            $('#aadhar_section').hide();
-//            $('#partnershipdeed').hide();
-
-//            $('#cin_section').show();
-//            $('#llpin').hide();
-//        } else if (value === '2') {
-//            $('#aadhar_pan_link_section').hide();
-//            $('#aadhar_section').hide();
-//            $('#partnershipdeed').show();
-
-//            $('#cin_section').hide();
-//            $('#llpin').hide();
-//        } else if (value === '3') {
-//            $('#aadhar_pan_link_section').show();
-//            $('#aadhar_section').show();
-//            $('#partnershipdeed').hide();
-
-//            $('#cin_section').hide();
-//            $('#llpin').hide();
-//        } else if (value === '6') {
-//            $('#aadhar_pan_link_section').hide();
-//            $('#cin_section').hide();
-//            $('#partnershipdeed').hide();
-//            $('#aadhar_section').hide();
-//            $('#llpin').show();
-//        } else if (value === '7') {
-//            $('#aadhar_pan_link_section').hide();
-//            $('#cin_section').show();
-//            $('#partnershipdeed').hide();
-
-//            $('#aadhar_section').hide();
-//            $('#llpin').hide();
-//        } else if (value === '8') {
-//            $('#aadhar_pan_link_section').hide();
-//            $('#cin_section').show();
-//            $('#partnershipdeed').hide();
-
-//            $('#aadhar_section').hide();
-//            $('#llpin').hide();
-//        } else if (value === '9') {
-//            $('#aadhar_pan_link_section').hide();
-//            $('#cin_section').show();
-//            $('#partnershipdeed').hide();
-
-//            $('#aadhar_section').hide();
-//            $('#llpin').hide();
-//        } else {
-//            $('#llpin, #aadhar_pan_link_section, #aadhar_section, #cin_section').hide();
-//        }
-//    });
-
    // ✅ run once on page load to show correct sections based on saved entity type
    $(document).ready(function(){
        $('#entity_type').trigger('change');

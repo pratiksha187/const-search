@@ -50,10 +50,10 @@ class ProfileCompletionHelper
             [
                 'weight' => 30,
                 'fields' => [
-                    $vendor->pan_card_file,
-                    $vendor->gst_certificate_file,
-                    $vendor->aadhaar_card_file,
-                    $vendor->certificate_of_incorporation_file
+                    $vendor->requerd_documnet_approve
+                    // $vendor->gst_certificate_file,
+                    // $vendor->aadhaar_card_file,
+                    // $vendor->certificate_of_incorporation_file
                 ]
             ],
 

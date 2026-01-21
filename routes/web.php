@@ -21,6 +21,7 @@ use App\Http\Controllers\whightController;
 use App\Http\Controllers\StateController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\AdminController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -28,9 +29,6 @@ use App\Http\Controllers\CityController;
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
 Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');
 Route::get('addmaster', [MasterController::class, 'addmaster'])->name('addmaster');
-
-
-
 
 Route::get('/login-register', [LoginRegController::class, 'login_register'])->name('login_register');
 Route::post('/change-password', [LoginRegController::class, 'changePassword'])->name('change-password');
@@ -144,17 +142,13 @@ Route::post('/supplier/products/save', [SuppliersController::class, 'saveProduct
 
 Route::get('/locations/regions/{stateId}', [MasterController::class, 'getRegions']);
 Route::get('/locations/cities/{regionId}', [MasterController::class, 'getCities']);
-// Route::post('/vendor/profile/update-field', [VenderController::class, 'updateVendorField'])
-//     ->name('vendor.profile.update.field');
+
 Route::post('/vendor/profile/update', [VenderController::class, 'updateProfile'])
     ->name('vendor.profile.update');
 
 Route::get('/get-subtypes/{id}', [VenderController::class, 'getSubtypes']);
 Route::get('/search-suppliers', [SuppliersController::class, 'supplierserch'])->name('supplierserch');
 Route::get('vendor-lead-history', [VenderController::class, 'vendorleadhistory'])->name('vendorleadhistory');
-
-// Route::get('/supplier-search', [HomeController::class, 'supplierserch'])
-//     ->name('supplier.search');
 
 Route::post('/supplier-search/ajax', [SuppliersController::class, 'supplierSearchAjax'])
     ->name('supplier.search.ajax');
@@ -293,6 +287,12 @@ Route::get('/admin/vendors', [HomeController::class, 'vendorslist'])
 Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
     ->name('admin.vendors.show');
 
+Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsapproved'])
+    ->name('admin.vendorsapproved');
+
+Route::post('/admin/vendors/{id}/status',
+    [AdminController::class, 'updateStatus']
+)->name('admin.vendors.status');
  // STATE
     Route::get('/states', [StateController::class, 'index'])->name('states.index');
     Route::post('/states', [StateController::class, 'store'])->name('states.store');
@@ -318,7 +318,10 @@ Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
         '/customer/notification/action',
         [LoginRegController::class, 'handleNotificationAction']
     )->name('customer.notification.action');
+   
+    Route::get('vendor_verification', [AdminController::class, 'vendor_verification'])->name('vendor_verification');
 
+    
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";

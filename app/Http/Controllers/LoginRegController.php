@@ -433,6 +433,7 @@ class LoginRegController extends Controller
                     ->where('id', $vendor_id)
                     ->first();
         $profilePercent = ProfileCompletionHelper::vendor($vendor);
+        // dd($profilePercent);
         $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');

@@ -626,6 +626,40 @@ body {
   padding:14px;
   font-weight:700;
 }
+.hero-link{
+    margin-top: 24px;
+}
+
+.cta-link{
+    font-size: 20px;
+    font-weight: 600;
+    color: #2563eb; /* Brand blue */
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 4px;
+    transition: all 0.25s ease;
+}
+
+.cta-link::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #2563eb, #1e40af);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.cta-link:hover{
+    color: #1e40af;
+}
+
+.cta-link:hover::after{
+    transform: scaleX(1);
+}
 
 /* .ck-submit:hover{
   background:#fff7ed;
@@ -660,10 +694,20 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     India’s Construction Vendor Platform
                 </span>
 
+            
                 <h1 class="hero-title mt-3">
-                    Find <span class="hero-highlight">Verified Vendors</span> & <span class="hero-highlight-blue">Suppliers</span>
-                    <br>for All Your Construction Projects
+                    Find <span class="hero-highlight">Verified Vendors</span> & 
+                    <span class="hero-highlight-blue">Suppliers</span><br>
+                    for All Your Construction Projects.
+                    If Still Confused,
+                    <span class="hero-highlight-blue">Post Your Project</span> For Free Here
                 </h1>
+
+                <div class="hero-link mt-4">
+                    <a href="{{ url('/post-project') }}" class="cta-link">
+                        Post Your Project Free →
+                    </a>
+                </div>
 
                 <p class="hero-subtext">
                     Contractors, architects, interior designers, machinery rentals, material suppliers – all in one place.
