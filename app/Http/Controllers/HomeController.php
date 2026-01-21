@@ -215,7 +215,7 @@ class HomeController extends Controller
         $vendorIds = DB::table('vendor_reg')
                     ->pluck('id');
         $vendors = DB::table('vendor_reg as v')->whereIn('id', $vendorIds)->get();
-                    dd($vendors);
+                    // dd($vendors);
         $vendor_reg->transform(function ($vendor) use ($allSubtypes) {
 
             // decode JSON ["16","17","19"]
