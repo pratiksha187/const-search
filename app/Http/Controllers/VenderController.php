@@ -265,23 +265,76 @@ class VenderController extends Controller
         return view('web.vendor-profile', compact('vendor_data_byid', 'workSubtypes','cust_data','notificationCount','notifications'));
     }
 
+    
 
-    public function checkLeadBalance(Request $request)
-    {
+    // public function checkLeadBalance(Request $request)
+    // {
        
-        $vendorId  = session('vendor_id');
+    //     $vendorId  = session('vendor_id');
        
-        // Assuming you have a 'customers' table with 'lead_balance' column
-        $vendor_lead_check = DB::table('vendor_reg')
-                    ->where('id', $vendorId)->first();
+    //     // Assuming you have a 'customers' table with 'lead_balance' column
+    //     $vendor_lead_check = DB::table('vendor_reg')
+    //                 ->where('id', $vendorId)->first();
 
-        if (!$vendor_lead_check) {
-            return response()->json(['balance' => 0]);
-        }
+    //     if (!$vendor_lead_check) {
+    //         return response()->json(['balance' => 0]);
+    //     }
 
-        return response()->json(['balance' => $vendor_lead_check->lead_balance]);
+    //     return response()->json(['balance' => $vendor_lead_check->lead_balance]);
+    // }
+
+public function checkLeadBalance(Request $request)
+{
+    $vendorId = session('vendor_id');
+   
+    $custId   = $request->customer_id;
+//  dd( $custId );
+    if (!$vendorId) {
+        return response()->json([
+            'balance' => 0,
+            'already_exists' => false
+        ]);
     }
 
+    /* ===============================
+       1️⃣ CHECK ALREADY ENQUIRED
+    ================================ */
+    $already = DB::table('vendor_interests')
+        ->where('vendor_id', $vendorId)
+        ->where('customer_id', $custId)
+        ->exists();
+
+    if ($already) {
+
+        $customer = DB::table('users')->where('id', $custId)->first();
+
+        return response()->json([
+            'already_exists'  => true,
+            'balance'         => null,
+            'customer_mobile' => $customer->mobile ?? '',
+            'customer_email'  => $customer->email ?? ''
+        ]);
+    }
+
+    /* ===============================
+       2️⃣ CHECK LEAD BALANCE
+    ================================ */
+    $vendor = DB::table('vendor_reg')
+        ->where('id', $vendorId)
+        ->first();
+
+    if (!$vendor) {
+        return response()->json([
+            'balance' => 0,
+            'already_exists' => false
+        ]);
+    }
+
+    return response()->json([
+        'already_exists' => false,
+        'balance' => $vendor->lead_balance
+    ]);
+}
 
     public function claimFreeLead(Request $request)
     {

@@ -171,34 +171,7 @@ body{ background:var(--bg); }
     <div class="row g-3">
 
         {{-- INSTAGRAM --}}
-        <!-- <div class="col-md-6">
-            <div class="free-card">
-                <h6>📸 Instagram</h6>
-                <p>Add a story & tag us</p>
-
-                <button class="free-btn" onclick="toggleUpload('instagram')">
-                    Claim Free Lead
-                </button>
-
-                <form class="upload-box d-none"
-                      id="upload-instagram"
-                      method="POST"
-                      enctype="multipart/form-data"
-                      action="{{ route('vendor.freelead.upload') }}">
-                    @csrf
-                    <input type="hidden" name="platform" value="instagram">
-
-                    <label class="form-label small fw-semibold mt-2">
-                        Upload Screenshot
-                    </label>
-                    <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
-
-                    <button class="btn btn-success btn-sm w-100">
-                        Submit Screenshot
-                    </button>
-                </form>
-            </div>
-        </div> -->
+      
         <div class="col-md-6">
             <div class="free-card">
                 <h6>📸 Instagram</h6>
@@ -242,34 +215,6 @@ body{ background:var(--bg); }
 
 
         {{-- FACEBOOK --}}
-        <!-- <div class="col-md-6">
-            <div class="free-card">
-                <h6>👍 Facebook</h6>
-                <p>Share on Facebook</p>
-
-                <button class="free-btn" onclick="toggleUpload('facebook')">
-                    Claim Free Lead
-                </button>
-
-                <form class="upload-box d-none"
-                      id="upload-facebook"
-                      method="POST"
-                      enctype="multipart/form-data"
-                      action="{{ route('vendor.freelead.upload') }}">
-                    @csrf
-                    <input type="hidden" name="platform" value="facebook">
-
-                    <label class="form-label small fw-semibold mt-2">
-                        Upload Screenshot
-                    </label>
-                    <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
-
-                    <button class="btn btn-success btn-sm w-100">
-                        Submit Screenshot
-                    </button>
-                </form>
-            </div>
-        </div> -->
         <div class="col-md-6">
             <div class="free-card">
                 <h6>👍 Facebook</h6>

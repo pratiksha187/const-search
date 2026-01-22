@@ -159,6 +159,8 @@ Route::get('/supplier-filter', [SuppliersController::class, 'supplierFilter'])
 
 Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->name('productenquiry');
 Route::get('/check_lead_balance', [VenderController::class, 'checkLeadBalance'])->name('vendor.check_lead_balance');
+Route::get('/vendor/check-already-interest', [VenderController::class, 'checkAlreadyInterest'])
+    ->name('vendor.check_already_interest');
 
 
 Route::post('/productenquirystore', [HomeController::class, 'productenquirystore'])->name('productenquirystore');

@@ -799,8 +799,14 @@ class HomeController extends Controller
                     ->toArray();
             }
         }
+
+        $freeLeadPlatforms = DB::table('free_lead_requests')
+                            ->where('vendor_id', $vendor_id)
+                            ->whereIn('platform', ['instagram','facebook'])
+                            ->pluck('platform')
+                            ->toArray();
             //  dd($customer_data);           
-        return view('web.customer-profile', compact('customer_data','workSubtypes','vendor','vendor_id','notifications','notificationCount'));
+        return view('web.customer-profile', compact('customer_data','freeLeadPlatforms','workSubtypes','vendor','vendor_id','notifications','notificationCount'));
         // dd($customer_data);
       
     }
