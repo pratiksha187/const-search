@@ -256,7 +256,7 @@ body{ background:var(--bg); }
         <div class="dashboard-header-right">
             <div class="header-badge">
                 <i class="bi bi-shield-check"></i>
-                Verified vendors get more leads
+                Verified Customer get more leads
             </div>
         </div>
     </div>
@@ -351,7 +351,7 @@ body{ background:var(--bg); }
                 @forelse($projects->take(6) as $project)
                     <tr>
                         <td><strong>{{ $project->title }}</strong></td>
-                        <td>{{ $project->city }}, {{ $project->state }}</td>
+                        <td>{{ $project->statename }}, {{ $project->regionname }} ,{{$project->cityname}}</td>
                         <td>{{ \Carbon\Carbon::parse($project->created_at)->diffForHumans() }}</td>
                     </tr>
                 @empty

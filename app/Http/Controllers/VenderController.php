@@ -267,74 +267,58 @@ class VenderController extends Controller
 
     
 
-    // public function checkLeadBalance(Request $request)
-    // {
-       
-    //     $vendorId  = session('vendor_id');
-       
-    //     // Assuming you have a 'customers' table with 'lead_balance' column
-    //     $vendor_lead_check = DB::table('vendor_reg')
-    //                 ->where('id', $vendorId)->first();
+    public function checkLeadBalance(Request $request)
+    {
+        $vendorId = session('vendor_id');
+    
+        $custId   = $request->customer_id;
+        //  dd( $custId );
+        if (!$vendorId) {
+            return response()->json([
+                'balance' => 0,
+                'already_exists' => false
+            ]);
+        }
 
-    //     if (!$vendor_lead_check) {
-    //         return response()->json(['balance' => 0]);
-    //     }
+        /* ===============================
+        1️⃣ CHECK ALREADY ENQUIRED
+        ================================ */
+        $already = DB::table('vendor_interests')
+            ->where('vendor_id', $vendorId)
+            ->where('customer_id', $custId)
+            ->exists();
 
-    //     return response()->json(['balance' => $vendor_lead_check->lead_balance]);
-    // }
+        if ($already) {
 
-public function checkLeadBalance(Request $request)
-{
-    $vendorId = session('vendor_id');
-   
-    $custId   = $request->customer_id;
-//  dd( $custId );
-    if (!$vendorId) {
+            $customer = DB::table('users')->where('id', $custId)->first();
+
+            return response()->json([
+                'already_exists'  => true,
+                'balance'         => null,
+                'customer_mobile' => $customer->mobile ?? '',
+                'customer_email'  => $customer->email ?? ''
+            ]);
+        }
+
+        /* ===============================
+        2️⃣ CHECK LEAD BALANCE
+        ================================ */
+        $vendor = DB::table('vendor_reg')
+            ->where('id', $vendorId)
+            ->first();
+
+        if (!$vendor) {
+            return response()->json([
+                'balance' => 0,
+                'already_exists' => false
+            ]);
+        }
+
         return response()->json([
-            'balance' => 0,
-            'already_exists' => false
+            'already_exists' => false,
+            'balance' => $vendor->lead_balance
         ]);
     }
-
-    /* ===============================
-       1️⃣ CHECK ALREADY ENQUIRED
-    ================================ */
-    $already = DB::table('vendor_interests')
-        ->where('vendor_id', $vendorId)
-        ->where('customer_id', $custId)
-        ->exists();
-
-    if ($already) {
-
-        $customer = DB::table('users')->where('id', $custId)->first();
-
-        return response()->json([
-            'already_exists'  => true,
-            'balance'         => null,
-            'customer_mobile' => $customer->mobile ?? '',
-            'customer_email'  => $customer->email ?? ''
-        ]);
-    }
-
-    /* ===============================
-       2️⃣ CHECK LEAD BALANCE
-    ================================ */
-    $vendor = DB::table('vendor_reg')
-        ->where('id', $vendorId)
-        ->first();
-
-    if (!$vendor) {
-        return response()->json([
-            'balance' => 0,
-            'already_exists' => false
-        ]);
-    }
-
-    return response()->json([
-        'already_exists' => false,
-        'balance' => $vendor->lead_balance
-    ]);
-}
 
     public function claimFreeLead(Request $request)
     {
@@ -443,5 +427,26 @@ public function checkLeadBalance(Request $request)
         //    dd( $notifications );     
         $notificationCount = $notifications->count(); 
          return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount','freeLeadPlatforms'));
+    }
+
+    public function storerate(Request $request)
+    {
+        $request->validate([
+            'vendor_id' => 'required|integer',
+            'rating'    => 'required|integer|min:1|max:5',
+            'comment'   => 'nullable|string'
+        ]);
+
+        DB::table('vendor_ratings')->insert([
+            'vendor_id'   => $request->vendor_id,
+            'rating'      => $request->rating,
+            'comment'     => $request->comment,
+            'created_at'  => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Rating submitted successfully'
+        ]);
     }
 }

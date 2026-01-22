@@ -53,6 +53,9 @@ class RazorpayController extends Controller
   
     public function verifyPayment(Request $request)
     {
+        $c = $request->c; // customer flag
+        $v = $request->v; // vendor flag
+        // dd($request);
         $api = new Api(
             config('services.razorpay.key'),
             config('services.razorpay.secret')

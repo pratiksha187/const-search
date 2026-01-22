@@ -185,10 +185,11 @@
     <div class="top-menu">
         @if($cust_data)
         <a href="{{ route('dashboard') }}">Dashboard</a>
-        <a href="{{ route('myposts') }}">My Posts</a>
-        <a href="{{ route('post') }}">Add Post</a>
+        <!-- <a href="{{ route('myposts') }}">My Posts</a> -->
+        <!-- <a href="{{ route('post') }}">Add Post</a> -->
         <a href="{{ route('search_vendor') }}">Find Vendor</a>
         <a href="{{ route('supplierserch') }}">Find Supplier</a>
+        <a href="{{ route('postsubscription') }}">Subscription Packages</a>
 
         @endif
         @if($cust_data)

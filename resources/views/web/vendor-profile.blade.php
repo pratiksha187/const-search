@@ -300,41 +300,6 @@ body{
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- <script>
-function handleInterested(vendorId){
-
-    // 🔐 login check
-    if(window.CUSTOMERID === null){
-        const auth = document.getElementById('authModal');
-        if(auth){
-            bootstrap.Modal.getOrCreateInstance(auth).show();
-        }
-        return;
-    }
-
-    // 🧾 fill modal
-    $('#vFullname').text(@json($vendor_data_byid->contact_person_name));
-    $('#vBusiness').text(@json($vendor_data_byid->business_name));
-    $('#vMobile').text(@json($vendor_data_byid->mobile));
-    $('#vEmail').text(@json($vendor_data_byid->email));
-    $('#vLocation').text(
-        @json($vendor_data_byid->cityname.', '.$vendor_data_byid->regionname.', '.$vendor_data_byid->statename)
-    );
-
-    $('#callVendorBtn').attr('href','tel:' + @json($vendor_data_byid->mobile));
-
-    // ✅ open modal
-    bootstrap.Modal.getOrCreateInstance(
-        document.getElementById('vendorModal')
-    ).show();
-
-    // 📡 send interest
-    $.post("{{ route('customer.interest.check') }}", {
-        _token: document.querySelector('meta[name="csrf-token"]').content,
-        vend_id: vendorId
-    });
-}
-</script> -->
 <script>
 function handleInterested() {
 

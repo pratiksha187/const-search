@@ -313,41 +313,61 @@ class LoginRegController extends Controller
     // ============================= customer DASHBOARD =============================
     public function dashboard()
     {
-        // dd('test');
         if (!Session::has('customer_id')) {
             return redirect('/'); 
         }
         $customer_id = Session::get('customer_id');
-        //  dd($customer_id);
+        
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
-        //  dd( $cust_data);
-        $post_data = DB::table('posts')->where('user_id',$customer_id)->get();
+       
+        $post_data = DB::table('posts as p')
+                    ->leftJoin('state as s', 's.id', '=', 'p.state')
+                    ->leftJoin('region as r', 'r.id', '=', 'p.region')
+                    ->leftJoin('city as c', 'c.id', '=', 'p.city')
+                    ->where('p.user_id',$customer_id)
+                    ->select('p.*','s.name as statename',
+                            'r.name as regionname',
+                            'c.name as cityname')
+                    ->get();
 
         $postIds = DB::table('posts')
                     ->where('user_id', $customer_id)
                     ->pluck('id');
-        // dd( $post_data);
+   
         $count_post_data = count($post_data);
-        //  dd( $post_data);
         $totalsuppliers = DB::table('supplier_reg')->get();
         $count_suppliers = count($totalsuppliers);
 
-        $vendor_data = DB::table('vendor_reg')->get();
-        //  dd( $vendor_data);
+        $vendor_data = DB::table('vendor_reg as v')
+                    ->leftJoin('state as s', 's.id', '=', 'v.state')
+                    ->leftJoin('region as r', 'r.id', '=', 'v.region')
+                    ->leftJoin('city as c', 'c.id', '=', 'v.city')
+                    ->select('v.*','s.name as statename',
+                            'r.name as regionname',
+                            'c.name as cityname')
+                    ->orderBy('v.created_at', 'desc') 
+                    ->get();
+                    
+
+
         $count_vendor_data = count($vendor_data);
         
         $customer_interests_data = DB::table('customer_interests')->where('customer_id',$customer_id)->get();
         $count_customer_interests_data = count($customer_interests_data);
 
+        $supp_count =  DB::table('supplier_reg')->get();
+        $count_supplier_reg =count($supp_count);
+
+        $customer_interests= DB::table('customer_interests')->where('customer_id',$customer_id)->get();
+        $count_customer_interests =count($customer_interests);
+
+
         $notifications = DB::table('vendor_interests as vi')
-                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
                 ->whereIn('vi.customer_id', $postIds)
-            
                 ->get();
         $notificationCount = $notifications->count();
       
-        //  dd($post_data);
-        return view('web.customerdashboard',compact('post_data','notifications','notificationCount','count_post_data','count_vendor_data','vendor_data','cust_data','count_suppliers','count_customer_interests_data')); 
+        return view('web.customerdashboard',compact('post_data','notifications','count_customer_interests','count_supplier_reg','notificationCount','count_post_data','count_vendor_data','vendor_data','cust_data','count_suppliers','count_customer_interests_data')); 
     }
 
    
@@ -447,9 +467,18 @@ class LoginRegController extends Controller
         //    dd( $notifications );     
         $notificationCount = $notifications->count();
             //  dd($vendor_details);        
-        $ActiveLeads  = DB::connection('mysql')->table('posts')->count();   
-        $projects  = DB::connection('mysql')->table('posts')->get();       
-        // dd( $ActiveLeads_data );
+        $ActiveLeads  = DB::table('posts')->count();   
+        $projects  = DB::table('posts as p')
+                    ->leftJoin('state as s', 's.id', '=', 'p.state')
+                    ->leftJoin('region as r', 'r.id', '=', 'p.region')
+                    ->leftJoin('city as c', 'c.id', '=', 'p.city')
+                   
+                    ->select('p.*','s.name as statename',
+                            'r.name as regionname',
+                            'c.name as cityname')
+                    ->orderBy('p.created_at', 'desc') 
+                    ->get();       
+        // dd( $projects );
 
         return view('web.vendordashboard',compact('ActiveLeads','profilePercent','projects','vendor','vendor_id','notifications','notificationCount')); 
     }

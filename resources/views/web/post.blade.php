@@ -165,14 +165,7 @@ textarea.form-control-lg {
 
                 <div class="row g-4">
 
-                    <!-- TITLE -->
-                    <div class="col-md-4">
-                        <label class="form-label-custom">Project Title</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-pencil"></i></span>
-                            <input type="text" class="form-control form-control-lg" name="title">
-                        </div>
-                    </div>
+                  
 
                     
                     <!-- Vendor -->
@@ -202,7 +195,14 @@ textarea.form-control-lg {
                         </div>
                     </div>
 
-
+                    <!-- TITLE -->
+                    <div class="col-md-4">
+                        <label class="form-label-custom">Project Title</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                            <input type="text" class="form-control form-control-lg" name="title" placeholder="e.g. 2BHK Residential Construction, Office Renovation">
+                        </div>
+                    </div>
                     <!-- STATE -->
                     <div class="col-md-4">
                         <label class="form-label-custom">State</label>
@@ -257,21 +257,36 @@ textarea.form-control-lg {
                     <!-- CONTACT -->
                     <div class="col-md-4">
                         <label class="form-label-custom">Contact Name</label>
-                        <input type="text" class="form-control form-control-lg" name="contact_name">
+                        <input type="text" class="form-control form-control-lg" name="contact_name" placeholder="e.g. Aniket Patil">
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label-custom">Mobile</label>
-                        <input type="text" class="form-control form-control-lg" name="mobile">
+                        <input type="text" class="form-control form-control-lg" name="mobile" placeholder="e.g. 9876543210">
                     </div>
 
                     <div class="col-md-4">
                         <label class="form-label-custom">Email</label>
-                        <input type="email" class="form-control form-control-lg" name="email">
+                        <input type="email" class="form-control form-control-lg" name="email" placeholder="e.g. Aniket@example.com">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label-custom">Area</label>
+                        <input type="text" class="form-control form-control-lg" name="area" placeholder="e.g. Plot: 2000 sq.ft / Built-up: 1500 sq.ft">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label-custom">Unit</label>
+                        <select class="form-select form-select-lg" name="budget">
+                            <option value="">Select Budget</option>
+                            @foreach($unit as $units)
+                                <option value="{{ $units->id }}">{{ $units->unitname }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <!-- UPLOAD -->
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label-custom">Upload Drawings / BOQ</label>
                         <div class="upload-box">
                             <input type="file" class="form-control form-control-lg" name="files[]" multiple>
@@ -282,8 +297,13 @@ textarea.form-control-lg {
                     <!-- DESCRIPTION -->
                     <div class="col-12">
                         <label class="form-label-custom">Project Description</label>
-                        <textarea class="form-control form-control-lg" rows="4" name="description"></textarea>
+                        <textarea
+                            class="form-control form-control-lg"
+                            rows="4"
+                            name="description"
+                            placeholder="Example: Construction of a 2BHK residential house on a 1500 sq.ft plot in Pune. Work includes civil, plumbing, electrical & finishing. Expected start in 1 month."></textarea>
                     </div>
+
 
                 </div>
 

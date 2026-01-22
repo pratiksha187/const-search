@@ -68,6 +68,8 @@ Route::post('/save-post', [HomeController::class, 'store'])->name('save.post');
 Route::get('/Lead-Marketplace', [HomeController::class, 'leadmarketplace'])->name('leadmarketplace');
 
 
+Route::get('postsubscription', [HomeController::class, 'postsubscription'])->name('postsubscription');
+
 
 Route::get('/vendor/register', [HomeController::class, 'vendorRegister'])->name('vendor.register');
 Route::get('/supplier/register', [HomeController::class, 'supplierRegister'])->name('supplier.register');
@@ -84,6 +86,8 @@ Route::post('/razorpay/handle', [RazorpayController::class, 'handlePayment'])
 Route::post('vendor.razorpay.verify', [RazorpayController::class, 'handlePayment'])
     ->name('razorpay.handle');
     
+Route::post('/after-project-payment', [HomeController::class, 'afterProjectPayment'])
+    ->name('after.project.payment');
 
 Route::post('/razorpay/create-order', [RazorpayController::class, 'createOrder'])
     ->name('razorpay.createOrder');
@@ -265,9 +269,6 @@ Route::post('/whight-update/{id}', [whightController::class,'update'])
 Route::get('/whight-delete/{id}', [whightController::class,'destroy'])
     ->name('whight.delete');
 
-
-
-
 Route::get('/standard-master', [StandardController::class,'index'])
     ->name('standard.index');
 
@@ -321,6 +322,9 @@ Route::post('/admin/vendors/{id}/status',
     Route::get('/customer/notifications', [LoginRegController::class, 'customerNotificationsPage'])->name('customer.notifications');
 
     Route::get('/vendor/notifications', [LoginRegController::class, 'vendorNotificationsPage'])->name('vendor.notifications');
+    
+    Route::post('/vendor/rate', [VenderController::class, 'storerate'])
+    ->name('vendor.rate');
 
     Route::post(
         '/customer/notification/action',

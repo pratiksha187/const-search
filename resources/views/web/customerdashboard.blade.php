@@ -1,371 +1,430 @@
 @extends('layouts.custapp')
 
-@section('title', 'Dashboard | ConstructKaro')
+@section('title', 'Customer Dashboard | ConstructKaro')
 
 @section('content')
 
 <style>
 :root{
-    --navy:#1c2c3e;
     --orange:#f25c05;
-    --bg:#f4f6f9;
+    --blue:#2563eb;
+    --green:#16a34a;
+    --gold:#f59e0b;
+    --text:#0f172a;
+    --muted:#64748b;
     --border:#e5e7eb;
-    --text:#374151;
-    --muted:#6b7280;
+    --bg:#f6f8fb;
 }
+
+body{ background:var(--bg); }
 
 /* PAGE */
-body{
-    background:var(--bg);
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-/* WRAPPER */
-.dashboard-wrapper{
-    max-width:1400px;
-    margin:30px auto;
+.dashboard-wrap{
+    max-width:1450px;
+    margin:24px auto 40px;
     padding:0 16px;
 }
 
-/* MAIN CARD */
-.dashboard-card{
-    background:#fff;
-    border-radius:16px;
-    padding:28px;
-    border:1px solid var(--border);
-}
-
 /* HEADER */
-.dashboard-header{
-    margin-bottom:30px;
+.dashboard-header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:24px;
+    margin-bottom:28px;
 }
 
-.dashboard-header h2{
-    font-size:24px;
-    font-weight:700;
-    color:var(--navy);
+.dashboard-header-left h2{
+    font-size:28px;
+    font-weight:900;
+    margin-bottom:4px;
+}
+
+.dashboard-header-left p{
+    font-size:14px;
+    color:var(--muted);
     margin-bottom:6px;
 }
 
-.dashboard-header p{
-    color:var(--muted);
-    font-size:14px;
+.how-it-works-link{
+    font-size:16px;
+    font-weight:700;
+    color:var(--blue);
+    text-decoration:none;
+}
+.how-it-works-link:hover{
+    text-decoration:underline;
+}
+
+.dashboard-header-right{
+    display:flex;
+    align-items:center;
+}
+
+.header-badge{
+    background:#ecfeff;
+    color:#0369a1;
+    font-size:13px;
+    font-weight:700;
+    padding:8px 16px;
+    border-radius:999px;
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 /* KPI */
 .kpi-card{
     background:#fff;
     border:1px solid var(--border);
-    border-radius:14px;
+    border-radius:16px;
     padding:18px;
     display:flex;
+    justify-content:space-between;
     align-items:center;
-    gap:14px;
-    transition:.2s;
+    height:100%;
+    transition:all .25s ease;
 }
-
 .kpi-card:hover{
-    box-shadow:0 4px 14px rgba(0,0,0,.08);
+    transform:translateY(-4px);
+    box-shadow:0 10px 28px rgba(15,23,42,0.06);
 }
-
-.kpi-icon{
-    width:44px;
-    height:44px;
-    border-radius:12px;
-    background:#f3f4f6;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:var(--navy);
-    font-size:18px;
-}
-
-.kpi-value{
-    font-size:22px;
-    font-weight:700;
-    color:var(--navy);
-}
-
-.kpi-label{
-    font-size:13px;
+.kpi-title{
+    font-size:12px;
+    text-transform:uppercase;
     color:var(--muted);
 }
-
-/* SECTION CARD */
-.section-card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:22px;
+.kpi-value{
+    font-size:26px;
+    font-weight:900;
 }
-
-.section-title{
-    font-size:15px;
-    font-weight:700;
-    color:var(--navy);
-    margin-bottom:18px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-/* PROJECT LIST */
-.project-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 0;
-    border-bottom:1px dashed var(--border);
-}
-
-.project-row:last-child{
-    border-bottom:none;
-}
-
-.project-row:hover{
-    background:#f9fafb;
-    border-radius:10px;
-    padding-left:10px;
-    padding-right:10px;
-}
-
-.project-name{
-    font-weight:600;
-    color:var(--text);
-}
-
-.project-location{
+.kpi-sub{
     font-size:12px;
     color:var(--muted);
 }
-
-/* STATUS */
-.status{
-    font-size:11px;
-    font-weight:600;
-    padding:5px 12px;
-    border-radius:999px;
-}
-
-.status-pending{background:#fff7ed;color:#9a3412;}
-.status-active{background:#ecfdf5;color:#065f46;}
-.status-review{background:#eff6ff;color:#1e40af;}
-
-/* CHART */
-.chart-wrap{
-    height:260px;
+.kpi-icon{
+    width:44px;
+    height:44px;
+    border-radius:14px;
     display:flex;
     align-items:center;
     justify-content:center;
+    color:#fff;
 }
+.orange{background:#f97316;}
+.blue{background:#2563eb;}
+.green{background:#16a34a;}
+.gold{background:#f59e0b;}
 
-/* VENDORS */
-.vendor-row{
+/* PROFILE COMPLETION */
+.profile-complete-card{
+    background:linear-gradient(135deg,#fff7ed,#ffffff);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:22px 26px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:16px 0;
-    border-bottom:1px dashed var(--border);
+    gap:28px;
+    margin-bottom:28px;
+    box-shadow:0 8px 24px rgba(15,23,42,0.04);
 }
 
-.vendor-row:last-child{
-    border-bottom:none;
+.pc-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
 }
 
-.vendor-row:hover{
-    background:#f9fafb;
-    border-radius:10px;
-    padding-left:10px;
-    padding-right:10px;
+.pc-icon{
+    width:56px;
+    height:56px;
+    border-radius:16px;
+    background:linear-gradient(135deg,#ff9a3c,#f25c05);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
 }
 
-.vendor-name{
-    font-weight:600;
-    color:var(--text);
+.pc-left h4{
+    font-weight:800;
+    margin-bottom:4px;
 }
-
-.vendor-type{
-    font-size:13px;
+.pc-left p{
+    font-size:14px;
     color:var(--muted);
+    margin:0;
 }
 
-/* BUTTON */
-.btn-view{
-    border:1px solid var(--orange);
-    background:#fff;
+.pc-right{
+    min-width:260px;
+    text-align:right;
+}
+
+.pc-percent{
+    font-size:30px;
+    font-weight:900;
     color:var(--orange);
-    font-size:13px;
-    font-weight:600;
-    padding:6px 16px;
-    border-radius:8px;
+    margin-bottom:6px;
 }
 
-.btn-view:hover{
+.progress{
+    height:8px;
+    background:#eef2f7;
+    border-radius:10px;
+    overflow:hidden;
+    width: 880px;
+}
+.progress-bar{
+    background:linear-gradient(135deg,#ff9a3c,#f25c05);
+}
+
+.pc-btn{
+    display:inline-block;
+    margin-top:10px;
+    padding:8px 18px;
+    border-radius:22px;
     background:var(--orange);
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+}
+.pc-btn:hover{
+    background:#e45703;
     color:#fff;
 }
 
-.dashboard-content {
-    margin-top: 54px;
-    padding: 30px;
+.pc-done{
+    margin-top:10px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--green);
 }
 
-/* MOBILE */
-@media(max-width:768px){
-    .dashboard-card{padding:20px;}
+/* CARD */
+.card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    margin-bottom:20px;
 }
+.card-title{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* TABLE */
+.table th{
+    font-size:12px;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+.kpi-link:hover{
+    border-color:#2563eb;
+    box-shadow:0 12px 30px rgba(37,99,235,.15);
+    transform: translateY(-2px);
+    transition:.25s;
+}
+.dashboard-header-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+/* Badge */
+.header-badge{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 14px;
+    background:#ecfeff;
+    color:#0369a1;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+/* Button */
+.pc-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:10px 18px;
+    background:#f25c05;
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    border-radius:999px;
+    text-decoration:none;
+    transition:.2s;
+}
+
+.pc-btn:hover{
+    background:#d94f04;
+    color:#fff;
+}
+
 </style>
 
-<div class="dashboard-wrapper">
-<div class="dashboard-card">
+<div class="dashboard-wrap">
 
     <!-- HEADER -->
-    <div class="dashboard-header">
-        <h2>Welcome, {{ $cust_data->name ?? 'Customer' }}</h2>
-        <p>Overview of your projects, vendors and activities</p>
+    <div class="dashboard-header-row">
+        <div class="dashboard-header-left">
+            <h2>Welcome, {{ $cust_data->name ?? 'Customer' }} 👋</h2>
+            <p>Overview of your projects, vendors and activities</p>
+
+            <a href="javascript:void(0)"
+               class="how-it-works-link"
+               data-bs-toggle="modal"
+               data-bs-target="#howItWorksModal">
+                How it works?
+            </a>
+        </div>
+
+        <div class="dashboard-header-right">
+
+            <div class="header-badge">
+                <i class="bi bi-shield-check"></i>
+                Verified vendors get more leads
+            </div>
+
+            <a href="{{ route('myposts') }}" class="pc-btn">
+                <i class="bi bi-plus-circle"></i>
+                Post Project
+            </a>
+
+        </div>
+
     </div>
 
-    <!-- KPI -->
+    <!-- KPI ROW -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-folder"></i></div>
                 <div>
+                    <div class="kpi-title">My Posts</div>
                     <div class="kpi-value">{{ $count_post_data }}</div>
-                    <div class="kpi-label">My Posts</div>
+                    <div class="kpi-sub">My all data</div>
                 </div>
+                <div class="kpi-icon orange"><i class="bi bi-briefcase-fill"></i></div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <a href="" class="text-decoration-none text-dark">
+                <div class="kpi-card">
+                    <div>
+                        <div class="kpi-title">All Vendors</div>
+                        <div class="kpi-value">{{ $count_vendor_data }}</div>
+                        <div class="kpi-sub">Under review</div>
+                    </div>
+                    <div class="kpi-icon blue"><i class="bi bi-file-earmark-text"></i></div>
+                </div>
+            </a>
+        </div>
+
+    
+        <div class="col-md-3">
+            <div class="kpi-card">
+                <div>
+                    <div class="kpi-title">Suppliers Count</div>
+                    <div class="kpi-value">{{$count_supplier_reg}}</div>
+                    <div class="kpi-sub">Profile based</div>
+                </div>
+                <div class="kpi-icon gold"><i class="bi bi-archive"></i></div>
             </div>
         </div>
 
         <div class="col-md-3">
             <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-people"></i></div>
                 <div>
-                    <div class="kpi-value">{{ $count_vendor_data }}</div>
-                    <div class="kpi-label">Shortlist Vendors</div>
+                    <div class="kpi-title">Intrested Vendor Count</div>
+                    <div class="kpi-value">{{ $count_customer_interests }}</div>
+                    <div class="kpi-sub">Profile based</div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-truck"></i></div>
-                <div>
-                    <div class="kpi-value">{{ $count_suppliers ?? 0 }}</div>
-                    <div class="kpi-label">Suppliers History</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="kpi-card">
-                <div class="kpi-icon"><i class="bi bi-heart"></i></div>
-                <div>
-                    <div class="kpi-value">{{ $count_customer_interests_data ?? 0 }}</div>
-                    <div class="kpi-label">Vendor History</div>
-                </div>
+                <div class="kpi-icon gold"><i class="bi bi-star-fill"></i></div>
             </div>
         </div>
     </div>
 
-    <!-- PROJECT + CHART -->
-    <div class="row g-4 mb-4">
-        <div class="col-lg-7">
-            <div class="section-card">
-                <div class="section-title">Recent Projects</div>
+    <!-- PROFILE COMPLETION -->
+    <div class="profile-complete-card">
+        <div class="pc-left">
+            <div class="pc-icon">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+            <div>
+                <h4>Complete Your Profile</h4>
+                <p>Higher profile completion increases trust & visibility</p>
+            </div>
+        </div>
 
-                @forelse($post_data as $post)
-                    <div class="project-row">
-                        <div>
-                            <div class="project-name">{{ $post->title }}</div>
-                            <div class="project-location">
-                                {{ $post->city }}, {{ $post->region }}
-                            </div>
-                        </div>
-                        <span class="status status-pending">Submitted</span>
-                    </div>
+        <div class="pc-right">
+            <div class="pc-percent">%</div>
+
+            <div class="progress">
+                <div class="progress-bar" style="width: %"></div>
+            </div>
+
+            @if(0 < 100)
+                <a href="" class="pc-btn">
+                    Complete Now →
+                </a>
+            @else
+                <div class="pc-done">✅ Profile Fully Completed</div>
+            @endif
+        </div>
+    </div>
+
+    <!-- OPPORTUNITIES -->
+    <div class="card">
+        <div class="card-title">
+            <span>New Vendors</span>
+            <a href="{{ route('search_vendor') }}" class="btn btn-sm btn-outline-primary">
+                View All Projects
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Vendor Name</th>
+                        <th>Location</th>
+                        <th>Posted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @forelse($vendor_data->take(6) as $vendor)
+                
+                    <tr>
+                        <td><strong>{{ $vendor->business_name }}</strong></td>
+                        <td> {{ $vendor->statename }}, {{ $vendor->regionname }},{{ $vendor->cityname }}</td>
+                        <td>{{ \Carbon\Carbon::parse($vendor->created_at)->diffForHumans() }}</td>
+                    </tr>
                 @empty
-                    <div class="text-center text-muted py-4">
-                        No projects posted yet
-                    </div>
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            No opportunities available
+                        </td>
+                    </tr>
                 @endforelse
-            </div>
-        </div>
-
-        <div class="col-lg-5">
-            <div class="section-card">
-                <div class="section-title">Activity Overview</div>
-                <div class="chart-wrap">
-                    <canvas id="progressChart"></canvas>
-                </div>
-                <div class="text-center mt-3">
-                   
-                    <small class="text-muted">Total Activities</small>
-                </div>
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <!-- VENDORS -->
-    <div class="section-card">
-        <div class="section-title">Recommended Vendors</div>
-
-        @forelse($vendor_data as $vendor)
-            <div class="vendor-row">
-                <div>
-                    <div class="vendor-name">
-                        {{ $vendor->company_name ?? $vendor->business_name ?? $vendor->name }}
-                    </div>
-                    <div class="vendor-type">Verified Construction Vendor</div>
-                </div>
-
-                <a href="#" class="btn-view">View</a>
-            </div>
-        @empty
-            <div class="text-center text-muted py-4">
-                No vendors recommended yet
-            </div>
-        @endforelse
-    </div>
-
 </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-const chartData = {
-    posts: {{ $count_post_data ?? 0 }},
-    vendors: {{ $count_vendor_data ?? 0 }},
-    suppliers: {{ $count_suppliers ?? 0 }},
-    interests: {{ $count_customer_interests_data ?? 0 }},
-};
-
-new Chart(document.getElementById('progressChart'), {
-    type: 'doughnut',
-    data: {
-        labels: ['Posts','Vendors','Suppliers','Interests'],
-        datasets: [{
-            data: [
-                chartData.posts,
-                chartData.vendors,
-                chartData.suppliers,
-                chartData.interests
-            ],
-            backgroundColor: ['#2563eb','#16a34a','#f59e0b','#dc2626'],
-            borderWidth: 0
-        }]
-    },
-    options: {
-        cutout: '70%',
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom'
-            }
-        }
-    }
-});
-</script>
 
 @endsection

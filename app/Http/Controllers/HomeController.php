@@ -89,8 +89,9 @@ class HomeController extends Controller
 
         $work_subtypes = DB::table('work_subtypes')->get();
         $budget_range = DB::table('budget_range')->get();
-        // $states = DB::connection('mysql2')->table('states')->get();
-        return view('web.post',compact('work_subtypes','budget_range','work_types','states','cust_data','notifications','notificationCount'));
+
+        $unit = DB::table('unit')->get();
+        return view('web.post',compact('work_subtypes','budget_range','unit','work_types','states','cust_data','notifications','notificationCount'));
     }
 
     public function getProjectTypes($workTypeId)
@@ -189,29 +190,54 @@ class HomeController extends Controller
         $allSubtypes = DB::table('work_subtypes')
             ->pluck('work_subtype', 'id');
 
+       
         $vendor_reg = DB::table('vendor_reg as v')
-            ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
-            ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
-            ->leftJoin('state as s', 's.id', '=', 'v.state')
-            ->leftJoin('region as r', 'r.id', '=', 'v.region')
-            ->leftJoin('city as c', 'c.id', '=', 'v.city')
-            ->select(
-                'v.*',
+                    ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+                    ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
 
-                // work
-                'wt.work_type',
-                'ts.team_size as team_size_data',
+                    // ✅ FIXED JOIN
+                    ->leftJoin('vendor_ratings as vr', 'vr.vendor_id', '=', 'v.id')
 
-                // location
-                's.name as statename',
-                'r.name as regionname',
-                'c.name as cityname'
-            )
-           
-            ->orderBy('v.id', 'desc')
-            ->get();
+                    ->leftJoin('state as s', 's.id', '=', 'v.state')
+                    ->leftJoin('region as r', 'r.id', '=', 'v.region')
+                    ->leftJoin('city as c', 'c.id', '=', 'v.city')
 
-   
+                    ->select(
+                        'v.*',
+
+                        // ✅ AGGREGATES
+                        DB::raw('ROUND(AVG(vr.rating), 1) as avg_rating'),
+                        DB::raw('COUNT(vr.id) as total_reviews'),
+
+                        // work
+                        'wt.work_type',
+                        'ts.team_size as team_size_data',
+
+                        // location
+                        's.name as statename',
+                        'r.name as regionname',
+                        'c.name as cityname'
+                    )
+
+                    // ✅ REQUIRED GROUP BY
+                    ->groupBy(
+                        'v.id',
+                        'wt.work_type',
+                        'ts.team_size',
+                        's.name',
+                        'r.name',
+                        'c.name'
+                    )
+
+                    ->orderBy('v.id', 'desc')
+                    ->get();
+
+        // dd($vendor_reg);
+        $vendorsWithProfile = $vendor_reg->map(function ($vendor) {
+            $vendor->profile_percent = ProfileCompletionHelper::vendor($vendor);
+            return $vendor;
+        });
+        // dd($vendorsWithProfile);
         $vendorIds = DB::table('vendor_reg')
                     ->pluck('id');
         $vendors = DB::table('vendor_reg as v')->whereIn('id', $vendorIds)->get();
@@ -497,6 +523,7 @@ class HomeController extends Controller
             'mobile'          => 'required|string|max:20',
             'email'           => 'required|email',
             'description'     => 'required|string',
+            'area'            => 'required|string',
         ]);
 
         // Upload files
@@ -513,6 +540,7 @@ class HomeController extends Controller
             'user_id'         => $customer_id,
             'title'           => $request->title,
             'work_type_id'    => $request->work_type_id,
+            'area'            => $request->area,
             'work_subtype_id' => $request->work_subtype_id,
             'state'           => $request->state,
             'region'          => $request->region_id,
@@ -812,16 +840,37 @@ class HomeController extends Controller
     }
 
 
-    public function productenquirystore(Request $request){
+    public function postsubscription(){
+        
         $customer_id = Session::get('customer_id');
-        $vendor_id   = Session::get('vendor_id');
-        $supplier_id = Session::get('supplier_id');
-
-        $store_productenquirystore = 
-
-
-        dd($supplier_id);
+        $cust_data = DB::table('users')->where('id',$customer_id)->first();
+         $postIds = DB::table('posts')
+                    ->where('user_id', $customer_id)
+                    ->pluck('id');
+         $notifications = DB::table('vendor_interests as vi')
+                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+            
+                ->get();
+        $notificationCount = $notifications->count();
+        return view('web.postsubscription',compact('cust_data','notifications','notificationCount'));
     }
+
+    public function afterProjectPayment(Request $request)
+    {
+        $custId = $request->cust_id;
+
+        // Example: increment subscription count
+        DB::table('users')
+            ->where('id', $custId)
+            ->increment('subscription_count', 1);
+
+        // OR activate project
+        // DB::table('posts')->where('id', $request->project_id)->update(['is_paid' => 1]);
+
+        return response()->json(['success' => true]);
+    }
+
 
 
 }

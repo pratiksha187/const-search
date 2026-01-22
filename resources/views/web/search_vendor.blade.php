@@ -505,6 +505,98 @@
     white-space:nowrap;
     box-shadow:inset 0 0 0 1px #e5e7eb;
 }
+.badge-wrapper{
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+.badge{
+    font-size:12px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+}
+
+/* VERIFIED */
+.badge.verified{
+    background:#ecfdf5;
+    color:#065f46;
+    border:1px solid #10b981;
+}
+
+/* TRUSTED */
+.badge.trusted{
+    background:#fff7ed;
+    color:#9a3412;
+    border:1px solid #f97316;
+}
+
+.actions{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+/* Existing outline button stays same */
+
+/* Rating Button */
+.btn-rating{
+    border:1px solid #f59e0b;
+    background:#fff7ed;
+    color:#9a3412;
+    font-size:13px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:8px;
+    transition:.2s;
+}
+
+.btn-rating:hover{
+    background:#f59e0b;
+    color:#fff;
+}
+.star-rating{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    font-size:34px;
+    cursor:pointer;
+}
+
+.star-rating i{
+    color:#d1d5db;
+    transition:.2s;
+}
+
+.star-rating i.active,
+.star-rating i.hover{
+    color:#f59e0b;
+}
+
+.rating-text{
+    font-size:14px;
+    font-weight:600;
+    color:#6b7280;
+}
+.rating-display{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:14px;
+    font-weight:600;
+    color:#374151;
+}
+
+.rating-display i{
+    color:#f59e0b;
+}
+
+.rating-text small{
+    color:#6b7280;
+    font-weight:500;
+}
+
 
 </style>
 <script>
@@ -565,15 +657,15 @@
                         </select>
                      </div>
                      <div class="col-md-4">
-                        <label class="form-label fw-semibold small text-muted">Region</label>
+                        <label class="form-label fw-semibold small text-muted">District</label>
                         <select id="regionSelect" class="form-select form-select-custom" disabled>
-                           <option value="">Select Region</option>
+                           <option value="">Select District</option>
                         </select>
                      </div>
                      <div class="col-md-4">
-                        <label class="form-label fw-semibold small text-muted">City</label>
+                        <label class="form-label fw-semibold small text-muted">Region</label>
                         <select id="citySelect" class="form-select form-select-custom" disabled>
-                           <option value="">Select City</option>
+                           <option value="">Select Region</option>
                         </select>
                      </div>
                   </div>
@@ -584,76 +676,111 @@
                {{-- ================= VENDORS ================= --}}
                <div class="vendor-grid">
                   @foreach($vendor_reg as $vendor)
-                  <div class="card vendor-card"
-                  data-vendor-id="{{ $vendor->id }}"
-                  {{-- BASIC --}}
-                  data-business="{{ $vendor->business_name }}"
-                  data-fullname="{{ $vendor->name }}"
-                  data-contact-name="{{ $vendor->contact_person_name }}"
-                  data-mobile="{{ $vendor->mobile }}"
-                  data-email="{{ $vendor->email }}"
-                  {{-- WORK --}}
-                  data-work-type-id="{{ $vendor->work_type_id }}"
-                  data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
-                  data-work-type="{{ strtolower($vendor->work_type) }}"
-                  data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
-                  data-experience="{{ $vendor->experience_years }}"
-                  data-team-size="{{ $vendor->team_size_data }}"
-                  data-min-project="{{ $vendor->min_project_value }}"
-                  {{-- COMPANY --}}
-                  data-company-name="{{ $vendor->company_name }}"
-                  data-entity-type="{{ $vendor->entity_type }}"
-                  data-gst="{{ $vendor->gst_number }}"
-                  data-pan="{{ $vendor->pan_number }}"
-                  data-msme="{{ $vendor->msme_registered }}"
-                  {{-- LOCATION --}}
-                  data-state-id="{{ $vendor->state }}"
-                  data-region-id="{{ $vendor->region }}"
-                  data-city-id="{{ $vendor->city }}"
-                  {{-- BANK (OPTIONAL) --}}
-                  data-bank-name="{{ $vendor->bank_name }}"
-                  data-account-type="{{ $vendor->account_type }}">
-                  <div class="card-header">
-                     <div class="title">{{ strtoupper($vendor->business_name) }}</div>
-                     <div class="verified">✔ Verified</div>
-                  </div>
+                     <div class="card vendor-card"
+                        data-vendor-id="{{ $vendor->id }}"
+                        {{-- BASIC --}}
+                        data-business="{{ $vendor->business_name }}"
+                        data-fullname="{{ $vendor->name }}"
+                        data-contact-name="{{ $vendor->contact_person_name }}"
+                        data-mobile="{{ $vendor->mobile }}"
+                        data-email="{{ $vendor->email }}"
+                        {{-- WORK --}}
+                        data-work-type-id="{{ $vendor->work_type_id }}"
+                        data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
+                        data-work-type="{{ strtolower($vendor->work_type) }}"
+                        data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
+                        data-experience="{{ $vendor->experience_years }}"
+                        data-team-size="{{ $vendor->team_size_data }}"
+                        data-min-project="{{ $vendor->min_project_value }}"
+                        {{-- COMPANY --}}
+                        data-company-name="{{ $vendor->company_name }}"
+                        data-entity-type="{{ $vendor->entity_type }}"
+                        data-gst="{{ $vendor->gst_number }}"
+                        data-pan="{{ $vendor->pan_number }}"
+                        data-msme="{{ $vendor->msme_registered }}"
+                        {{-- LOCATION --}}
+                        data-state-id="{{ $vendor->state }}"
+                        data-region-id="{{ $vendor->region }}"
+                        data-city-id="{{ $vendor->city }}"
+                        {{-- BANK (OPTIONAL) --}}
+                        data-bank-name="{{ $vendor->bank_name }}"
+                        data-account-type="{{ $vendor->account_type }}">
+                        <div class="card-header">
+                           <div class="title">{{ strtoupper($vendor->business_name) }}</div>
 
-                  <div class="subtitle">{{ $vendor->work_type }}</div>
-                  <div class="location">📍  {{ $vendor->statename ?? '' }},
-                        {{ $vendor->regionname ?? '' }},
-                        {{ $vendor->cityname ?? '' }}</div>
+                           <div class="badge-wrapper">
+                              @if($vendor->profile_percent >= 90)
+                                    <span class="badge verified">✔ Verified</span>
+                                    <span class="badge trusted">⭐ Trusted</span>
+                              @elseif($vendor->profile_percent >= 60)
+                                    <span class="badge verified">✔ Verified</span>
+                              @endif
+                           </div>
+                        </div>
 
-                  <!-- <div class="tags">
-                     <div class="tag">✔ {{ $vendor->work_subtype_data }}</div>
-                  
-                  </div> -->
-                  <div class="tags">
-         @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
-            <span class="tag-chip">
-                  ✔ {{ trim($subtype) }}
-            </span>
-         @endforeach
+
+                        <div class="subtitle">{{ $vendor->work_type }}</div>
+                        <div class="location">📍  {{ $vendor->statename ?? '' }},
+                              {{ $vendor->regionname ?? '' }},
+                              {{ $vendor->cityname ?? '' }}</div>
+
+                        
+                        <div class="tags">
+                           @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
+                              <span class="tag-chip">
+                                    ✔ {{ trim($subtype) }}
+                              </span>
+                           @endforeach
+                        </div>
+
+
+                        <div class="details">
+                           <p>✔ {{ $vendor->experience_years }} years experience</p>
+                           <p>✔ Premium {{$vendor->work_type}}</p>
+                        </div>
+
+                       
+                        <div class="actions">
+
+                           <button class="btn btn-outline"
+                              onclick="viewProfile({{ $vendor->id }})">
+                              View Profile
+                           </button>
+
+                           @if(($vendor->total_reviews ?? 0) > 0)
+                              <div class="rating-display">
+                                 <div class="rating-stars">
+                                       @php $r = (int) round($vendor->avg_rating ?? 0); @endphp
+                                       @for($i = 1; $i <= 5; $i++)
+                                          @if($i <= $r)
+                                             <i class="bi bi-star-fill"></i>
+                                          @else
+                                             <i class="bi bi-star"></i>
+                                          @endif
+                                       @endfor
+                                 </div>
+
+                                 <span class="rating-text">
+                                       {{ number_format((float)($vendor->avg_rating ?? 0), 1) }} / 5
+                                       <small>({{ $vendor->total_reviews ?? 0 }})</small>
+                                 </span>
+                              </div>
+                           @else
+                              <button class="btn btn-rating" onclick="openRatingModal({{ $vendor->id }})">
+                                 ⭐ Add Rating
+                              </button>
+                           @endif
+
+
+                        </div>
+
+
+                     </div>
+                  @endforeach
+               </div>
+         </div>
+         <!-- </div> -->
       </div>
-
-
-      <div class="details">
-         <p>✔ {{ $vendor->experience_years }} years experience</p>
-         <p>✔ Premium {{$vendor->work_type}}</p>
-      </div>
-
-      <div class="actions">
-        
-         <button class="btn btn-outline" onclick="viewProfile({{ $vendor->id }})">
-            View Profile
-         </button>
-
-      </div>
-   </div>
-   @endforeach
-   </div>
-   </div>
-</div>
-</div>
 {{-- ================= AUTH MODAL (UNCHANGED) ================= --}}
 
 <div class="modal fade" id="authModal" tabindex="-1">
@@ -678,6 +805,52 @@
          </div>
       </div>
    </div>
+</div>
+<div class="modal fade" id="ratingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Rate Vendor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+
+                <input type="hidden" id="ratingVendorId">
+                <input type="hidden" id="ratingValue">
+
+                <p class="mb-2 text-muted">How was your experience?</p>
+
+                <div class="star-rating" id="starRating">
+                    <i class="bi bi-star" data-value="1"></i>
+                    <i class="bi bi-star" data-value="2"></i>
+                    <i class="bi bi-star" data-value="3"></i>
+                    <i class="bi bi-star" data-value="4"></i>
+                    <i class="bi bi-star" data-value="5"></i>
+                </div>
+
+                <div class="rating-text mt-2" id="ratingText">Select a rating</div>
+
+                <textarea class="form-control mt-3"
+                    id="ratingComment"
+                    placeholder="Write a short review (optional)"
+                    rows="3"></textarea>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button class="btn btn-primary" onclick="submitRating()">
+                    Submit Rating
+                </button>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 {{-- ================= SCRIPTS ================= --}}
@@ -770,11 +943,11 @@
    
        $('#regionSelect')
            .prop('disabled', true)
-           .html('<option value="">Loading regions...</option>');
+           .html('<option value="">Loading District...</option>');
    
        $('#citySelect')
            .prop('disabled', true)
-           .html('<option value="">Select City</option>');
+           .html('<option value="">Select regions</option>');
    
        if (!stateId) {
            applyFilters();
@@ -783,7 +956,7 @@
    
        $.get(`/locations/regions/${stateId}`, function (regions) {
    
-           let options = '<option value="">Select Region</option>';
+           let options = '<option value="">Select District</option>';
            regions.forEach(r => {
                options += `<option value="${r.id}">${r.name}</option>`;
            });
@@ -801,7 +974,7 @@
    
        $('#citySelect')
            .prop('disabled', true)
-           .html('<option value="">Loading cities...</option>');
+           .html('<option value="">Loading Region...</option>');
    
        if (!regionId) {
            applyFilters();
@@ -810,7 +983,7 @@
    
        $.get(`/locations/cities/${regionId}`, function (cities) {
    
-           let options = '<option value="">Select City</option>';
+           let options = '<option value="">Select Region</option>';
            cities.forEach(c => {
                options += `<option value="${c.id}">${c.name}</option>`;
            });
@@ -843,5 +1016,97 @@ function viewProfile(id) {
 }
 </script>
 
+
+<script>
+const ratingLabels = {
+    1: "Very Bad",
+    2: "Bad",
+    3: "Average",
+    4: "Good",
+    5: "Excellent"
+};
+
+function openRatingModal(vendorId){
+    document.getElementById('ratingVendorId').value = vendorId;
+    document.getElementById('ratingValue').value = '';
+    document.getElementById('ratingText').innerText = 'Select a rating';
+
+    document.querySelectorAll('#starRating i').forEach(star => {
+        star.classList.remove('active');
+    });
+
+    new bootstrap.Modal(document.getElementById('ratingModal')).show();
+}
+
+document.querySelectorAll('#starRating i').forEach(star => {
+
+    star.addEventListener('mouseenter', function(){
+        const val = this.dataset.value;
+        highlightStars(val, 'hover');
+    });
+
+    star.addEventListener('mouseleave', function(){
+        clearHover();
+    });
+
+    star.addEventListener('click', function(){
+        const val = this.dataset.value;
+        document.getElementById('ratingValue').value = val;
+        document.getElementById('ratingText').innerText = ratingLabels[val];
+        highlightStars(val, 'active');
+    });
+});
+
+function highlightStars(val, type){
+    document.querySelectorAll('#starRating i').forEach(star => {
+        star.classList.remove('hover', 'active');
+        if(star.dataset.value <= val){
+            star.classList.add(type);
+        }
+    });
+}
+
+function clearHover(){
+    const selected = document.getElementById('ratingValue').value;
+    document.querySelectorAll('#starRating i').forEach(star => {
+        star.classList.remove('hover');
+        if(selected && star.dataset.value <= selected){
+            star.classList.add('active');
+        }
+    });
+}
+
+function submitRating(){
+
+    const vendorId = document.getElementById('ratingVendorId').value;
+    const rating   = document.getElementById('ratingValue').value;
+    const comment  = document.getElementById('ratingComment').value;
+
+    if(!rating){
+        alert('Please select a rating');
+        return;
+    }
+
+    $.ajax({
+        url: "/vendor/rate", // 🔁 change to your route
+        method: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            vendor_id: vendorId,
+            rating: rating,
+            comment: comment
+        },
+        success: function(){
+            alert('⭐ Rating submitted successfully');
+            bootstrap.Modal.getInstance(
+                document.getElementById('ratingModal')
+            ).hide();
+        },
+        error: function(){
+            alert('❌ Failed to submit rating');
+        }
+    });
+}
+</script>
 
 @endsection
