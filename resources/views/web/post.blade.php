@@ -143,6 +143,57 @@ textarea.form-control-lg {
     margin-top: 77px;
     padding: 0px;
 }
+
+.paywall-card{
+    border-radius:18px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.25);
+    font-family: Inter, system-ui, sans-serif;
+}
+
+.limit-box{
+    background:#f8fafc;
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:15px;
+    color:#374151;
+}
+
+.price-box{
+    background:linear-gradient(135deg,#fff7ed,#fff);
+    border-radius:16px;
+    padding:18px;
+}
+
+.price{
+    font-size:38px;
+    font-weight:800;
+    color:#f25c05;
+    line-height:1;
+}
+
+.gst{
+    font-size:14px;
+    color:#6b7280;
+    margin-top:4px;
+}
+
+.per{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:2px;
+}
+
+.pay-btn{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    border:none;
+    font-weight:600;
+    padding:14px;
+}
+
+.pay-btn:hover{
+    opacity:0.95;
+}
+
 </style>
 
 <div class="page-bg">
@@ -164,10 +215,9 @@ textarea.form-control-lg {
                 @csrf
 
                 <div class="row g-4">
-
-                  
-
                     
+                    <input type="hidden" id="customer_id"  name="customer_id"  value="{{$customer_id}}">
+
                     <!-- Vendor -->
                 
                     <div class="col-md-4">
@@ -320,38 +370,146 @@ textarea.form-control-lg {
     </div>
 </div>
 
+
 <!-- Payment Modal -->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true" style="--bs-modal-width: 400px;">
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true" style="--bs-modal-width: 420px;">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg rounded-4 border-0">
-      <div class="modal-header border-bottom-0 pb-0">
-        <h5 class="modal-title text-primary fw-bold">Payment Required</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal-content paywall-card border-0">
+
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-0">
+        <div class="w-100 text-center position-relative">
+          <h5 class="modal-title fw-bold text-dark mb-1">
+            🔒 Upgrade Required
+          </h5>
+          <p class="text-muted mb-0 fs-6">
+            Unlock more project posts
+          </p>
+          <button type="button" class="btn-close position-absolute end-0 top-0"
+                  data-bs-dismiss="modal"></button>
+        </div>
       </div>
-      <div class="modal-body text-center px-4 py-3">
-        <p class="fs-5 mb-3">
-          You have reached the free post limit <span class="fw-semibold">(3 posts)</span>.
-        </p>
-        <p class="fs-4 fw-bold text-danger mb-4">
-          ₹4999 <span class="fs-5 fw-normal text-muted">+ GST</span><br/>
-          <small class="text-secondary">per post</small>
-        </p>
-        <button id="payNowBtn" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
-          Proceed to Pay
+
+      <!-- BODY -->
+      <div class="modal-body text-center px-4 pt-3 pb-2">
+
+        <div class="limit-box mb-4">
+          You’ve reached your free limit of  
+          <strong>3 project posts</strong>
+        </div>
+
+        <div class="price-box mb-4">
+          <div class="price">₹4,999</div>
+          <div class="gst">+ GST</div>
+          <div class="per">per project post</div>
+        </div>
+
+        <button
+            id="payProjectSubscription"
+            class="btn pay-btn btn-lg w-100 rounded-pill">
+            🚀 Proceed to Pay
         </button>
+
       </div>
-      <div class="modal-footer border-top-0 justify-content-center">
-        <small class="text-muted">Your payment is secure and encrypted</small>
+
+      <!-- FOOTER -->
+      <div class="modal-footer border-0 justify-content-center pt-0">
+        <small class="text-muted">
+          🔐 Secure & encrypted payment
+        </small>
       </div>
+
     </div>
   </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+const CUSTOMER_ID = {{ $customer_id ?? 'null' }}; // ✅ SAFE
+
+$(document).on('click', '#payProjectSubscription', function () {
+
+    if (!CUSTOMER_ID) {
+        Swal.fire('Session Expired', 'Please login again', 'warning');
+        return;
+    }
+
+    console.log('custId:', CUSTOMER_ID); // ✅ will show number
+
+    const totalAmount = 1; // test (change to 4999 for live)
+    const plan = 'single';
+
+    $.post("{{ route('razorpay.createOrder') }}", {
+        _token: "{{ csrf_token() }}",
+        cust_id: CUSTOMER_ID,
+        plan: plan,
+        amount: totalAmount
+    }, function (res) {
+
+        if (!res.success) {
+            Swal.fire('Error', 'Order creation failed', 'error');
+            return;
+        }
+
+        const options = {
+            key: res.key,
+            amount: res.amount,
+            currency: "INR",
+            name: "ConstructKaro",
+            description: "Project Activation Fee",
+            order_id: res.order_id,
+
+            prefill: {
+                name: "ConstructKaro",
+                email: "connect@constructkaro.com",
+                contact: "8806561819"
+            },
+
+            handler: function (response) {
+
+                $.post("{{ route('razorpay.verify') }}", {
+                    _token: "{{ csrf_token() }}",
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                    cust_id: btoa(CUSTOMER_ID),
+                    plan: plan,
+                    amount: totalAmount,
+                    c: 'project_activation'
+                }, function (verifyRes) {
+
+                    if (verifyRes.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Payment Successful',
+                            text: 'Payment completed successfully',
+                            confirmButtonColor: '#10b981'
+                        }).then(() => {
+                            window.location.href = "{{ route('post') }}";
+                        });
+                    } else {
+                        Swal.fire('Error', 'Payment verification failed', 'error');
+                    }
+                });
+            },
+
+            theme: { color: "#f25c05" }
+        };
+
+        new Razorpay(options).open();
+    });
+});
+</script>
+
 <script>
 $(document).ready(function () {
     // Initialize Select2

@@ -76,6 +76,7 @@ class HomeController extends Controller
 
     public function post(){
         $customer_id = Session::get('customer_id');
+        // dd( $customer_id);
         $postIds = DB::table('posts')
                     ->where('user_id', $customer_id)
                     ->pluck('id');
@@ -93,7 +94,7 @@ class HomeController extends Controller
         $budget_range = DB::table('budget_range')->get();
 
         $unit = DB::table('unit')->get();
-        return view('web.post',compact('work_subtypes','budget_range','unit','work_types','states','cust_data','notifications','notificationCount'));
+        return view('web.post',compact('work_subtypes','customer_id','budget_range','unit','work_types','states','cust_data','notifications','notificationCount'));
     }
 
     public function getProjectTypes($workTypeId)
