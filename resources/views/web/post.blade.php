@@ -723,40 +723,40 @@ const projectTitleSamples = {
         30: "Environmental Clearance Consultancy for G+8 Project",
         31: "Construction Safety Consultancy for G+4 Building Project",
         32: "Architectural Design Consultancy for G+8 Residential Building",
-        33: "Urban Planning Services for Housing Project",
-        34: "Soil Investigation & Geotechnical Study for G+8 Building",
-        35: "Fire Fighting System Design for G+9 Residential Building",
-        36: "Façade Design Consultancy for G+7 Residential Building",
-        37: "Green Building Consultancy for G+12 Residential Project",
-        38: "Quality Control & NDT Testing for G+11 Residential Building"
+        35: "Urban Planning Services for Housing Project",
+        36: "Soil Investigation & Geotechnical Study for G+8 Building",
+        37: "Fire Fighting System Design for G+9 Residential Building",
+        38: "Façade Design Consultancy for G+7 Residential Building",
+        39: "Green Building Consultancy for G+12 Residential Project",
+        40: "Quality Control & NDT Testing for G+11 Residential Building"
     },
 
     /* ================= INTERIORS (4) ================= */
     4: {
-        39: "Interior Design for 2BHK Residential Plot – 500 sq.ft",
-        40: "Interior Design for G+7 Commercial Bare Shell Office",
-        41: "Office Interior Design for Corporate Building",
-        42: "G+7 Hotel Interior Design Project",
-        43: "Showroom Interior Design Project",
-        44: "Luxury Interior Design for Apartment",
-        45: "Minimalist Interior Design for Residential Apartment",
-        46: "Modern Interior Design for G+2 Residential Building",
-        47: "Industrial Theme Interior Design for Office Space",
-        48: "Traditional Interior Design for Residential G+2 Home",
-        49: "Modular Kitchen & Wardrobe Interior Project"
+        41: "Interior Design for 2BHK Residential Plot – 500 sq.ft",
+        42: "Interior Design for G+7 Commercial Bare Shell Office",
+        43: "Office Interior Design for Corporate Building",
+        44: "G+7 Hotel Interior Design Project",
+        45: "Showroom Interior Design Project",
+        46: "Luxury Interior Design for Apartment",
+        47: "Minimalist Interior Design for Residential Apartment",
+        48: "Modern Interior Design for G+2 Residential Building",
+        49: "Industrial Theme Interior Design for Office Space",
+        50: "Traditional Interior Design for Residential G+2 Home",
+        51: "Modular Kitchen & Wardrobe Interior Project"
     },
 
     /* ================= SURVEYOR (5) ================= */
     5: {
-        50: "Land Survey for Residential Building Plot",
-        51: "Quantity Survey & BOQ for G+2 Residential Building",
-        52: "Building Condition Survey for G+2 Residential Building",
-        53: "Rock & Soil Study for Residential Project",
-        54: "Topographic Survey for Residential Plot Development",
-        55: "Drainage & Water Flow Survey for Construction Site",
-        56: "Mine Site Survey for Industrial Development",
-        57: "Structural Survey for G+2 Residential Building",
-        58: "Drone Survey & Mapping for Residential Land"
+        52: "Land Survey for Residential Building Plot",
+        53: "Quantity Survey & BOQ for G+2 Residential Building",
+        54: "Building Condition Survey for G+2 Residential Building",
+        55: "Rock & Soil Study for Residential Project",
+        56: "Topographic Survey for Residential Plot Development",
+        57: "Drainage & Water Flow Survey for Construction Site",
+        58: "Mine Site Survey for Industrial Development",
+        59: "Structural Survey for G+2 Residential Building",
+        60: "Drone Survey & Mapping for Residential Land"
     }
 };
 
