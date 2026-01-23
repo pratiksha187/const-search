@@ -35,6 +35,7 @@
                         <th>Type</th>
                         <th>Location</th>
                         <th>Budget</th>
+                        <th>Post Verify</th>
                         <th width="120">Action</th>
                     </tr>
                 </thead>
@@ -50,6 +51,14 @@
                                 {{ $post->cityname }}
                             </td>
                             <td>{{ $post->budget_range }}</td>
+                            <td>
+                                @if ($post->post_verify == 0)
+                                    <span class="badge bg-warning">Pending</span>
+                                @else
+                                    <span class="badge bg-success">Verified</span>
+                                @endif
+                            </td>
+
                             <td>
                                 <button class="btn btn-sm btn-primary"
                                     onclick='openEditModal(@json($post))'>

@@ -13,9 +13,9 @@ class HomeController extends Controller
 {
     public function homepage(){
         
-         $vendors = DB::table('vendor_reg')->count();
-         $cities =DB::table('city')->count();
-         $posts= DB::table('posts')->count();
+        $vendors = DB::table('vendor_reg')->count();
+        $cities =DB::table('city')->count();
+        $posts= DB::table('posts')->count();
         //  dd( $vendors);
         return view('welcome',compact('vendors','posts','cities'));
     }
@@ -42,6 +42,7 @@ class HomeController extends Controller
                     'posts.state as state_id',
                     'posts.region as region_id',
                     'posts.city as city_id',
+                    
 
                     // Names (for table display)
                     'state.name as statename',
@@ -56,14 +57,15 @@ class HomeController extends Controller
                     'budget_range.budget_range as budget_range'
                 )
                 ->where('posts.user_id', $customer_id)
+
                 ->orderBy('posts.id', 'DESC')
                 ->paginate(10);
 
        
-         $postIds = DB::table('posts')
+        $postIds = DB::table('posts')
                     ->where('user_id', $customer_id)
                     ->pluck('id');
-         $notifications = DB::table('vendor_interests as vi')
+        $notifications = DB::table('vendor_interests as vi')
                 // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
                 ->whereIn('vi.customer_id', $postIds)
             

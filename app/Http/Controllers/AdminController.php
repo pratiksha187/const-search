@@ -161,4 +161,64 @@ class AdminController extends Controller
             'Free lead request '.$status.' successfully ✅'
         );
     }
+
+    public function postverification(){
+        $work_types = DB::table('work_types')->get();
+        $states = DB::table('state')->orderBy('name')->get();
+        $budget_range = DB::table('budget_range')->get();
+        $posts = DB::table('posts')
+            ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
+            ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
+            ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
+            ->leftJoin('region', 'region.id', '=', 'posts.region')
+            ->leftJoin('city', 'city.id', '=', 'posts.city')
+            ->leftJoin('state', 'state.id', '=', 'posts.state')
+            ->select(
+                    'posts.*',
+
+                    // ✅ IMPORTANT: SEND IDS TO FRONTEND
+                    'posts.state as state_id',
+                    'posts.region as region_id',
+                    'posts.city as city_id',
+                    
+
+                    // Names (for table display)
+                    'state.name as statename',
+                    'region.name as regionname',
+                    'city.name as cityname',
+
+                    'work_types.work_type as work_type_name',
+                    'work_subtypes.work_subtype as work_subtype_name',
+
+                    // ✅ IMPORTANT FOR EDIT BUDGET
+                    'posts.budget_id as budget_id',
+                    'budget_range.budget_range as budget_range'
+                )
+               
+                ->orderBy('posts.id', 'DESC')
+                ->paginate(10);
+        return view('web.verification_post',compact('posts','work_types','states','budget_range'));
+    }
+
+
+   
+    public function verifyPost(Request $request, $id)
+    {
+        $request->validate([
+            'post_verify' => 'required|in:0,1',
+        ]);
+
+        // Use query builder to update the post_verify field
+        $updated = DB::table('posts')
+            ->where('id', $id)
+            ->update(['post_verify' => $request->post_verify]);
+
+        if ($updated) {
+            return back()->with('success', 'Project status updated successfully.');
+        } else {
+            return back()->with('error', 'Failed to update project status.');
+        }
+    }
+
+   
 }

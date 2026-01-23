@@ -131,6 +131,10 @@
                 width:100%;
             }
         }
+        .sidebar-footer button:hover{
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 
@@ -163,17 +167,29 @@
                 <i class="bi bi-shield-check"></i>
                 Vendor Verification
             </a>
+
             <a href="{{ route('admin.freeleads') }}" class="menu-item">
                 <i class="bi bi-award"></i>
-                Free Leads Verification
+                Free Leads(fb/insta) Verification
+            </a>
+
+            <a href="{{ route('postverification') }}" class="menu-item">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                 Leads Verification
             </a>
 
         </nav>
 
         <div class="sidebar-footer">
             <div class="profile-avatar">A</div>
-            <div class="profile-name">Admin</div>
+
+            <div class="d-flex flex-column">
+                <div class="profile-name">Admin</div>
+                <a href="{{ route('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                
+            </div>
         </div>
+
 
     </aside>
 

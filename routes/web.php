@@ -59,6 +59,12 @@ Route::get('/logout', [LoginRegController::class, 'logout'])->name('logout');
 
 Route::get('/post', [HomeController::class, 'post'])->name('post');
 
+Route::post('/posts/{id}', [AdminController::class, 'verifyPost'])->name('posts.verify');
+
+
+Route::get('/postverification', [AdminController::class, 'postverification'])->name('postverification');
+
+
 // Route::get('/get-subtypes/{id}', [HomeController::class, 'getSubtypes']);
 Route::get('/get-project-types/{workType}', [HomeController::class, 'getProjectTypes']);
 
