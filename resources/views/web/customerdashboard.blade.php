@@ -358,35 +358,6 @@ body{ background:var(--bg); }
         </div>
     </div>
 
-    <!-- PROFILE COMPLETION -->
-    <div class="profile-complete-card">
-        <div class="pc-left">
-            <div class="pc-icon">
-                <i class="bi bi-person-check-fill"></i>
-            </div>
-            <div>
-                <h4>Complete Your Profile</h4>
-                <p>Higher profile completion increases trust & visibility</p>
-            </div>
-        </div>
-
-        <div class="pc-right">
-            <div class="pc-percent">%</div>
-
-            <div class="progress">
-                <div class="progress-bar" style="width: %"></div>
-            </div>
-
-            @if(0 < 100)
-                <a href="" class="pc-btn">
-                    Complete Now →
-                </a>
-            @else
-                <div class="pc-done">✅ Profile Fully Completed</div>
-            @endif
-        </div>
-    </div>
-
     <!-- OPPORTUNITIES -->
     <div class="card">
         <div class="card-title">

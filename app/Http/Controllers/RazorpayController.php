@@ -28,7 +28,9 @@ class RazorpayController extends Controller
             config('services.razorpay.secret')
         );
 
-        $amount = $request->amount * 100;
+        // $amount = $request->amount * 100;
+         $amount =1;
+        // dd($amount);
         //   $amount =0;
         $order = $api->order->create([
             'amount'   => $amount,
@@ -53,8 +55,17 @@ class RazorpayController extends Controller
   
     public function verifyPayment(Request $request)
     {
+        // dd($request);
         $c = $request->c; // customer flag
         $v = $request->v; // vendor flag
+
+         // decide flag
+        $flag = null;
+        if ($c) {
+            $flag = 'c';
+        } elseif ($v) {
+            $flag = 'v';
+        }
         // dd($request);
         $api = new Api(
             config('services.razorpay.key'),
@@ -76,12 +87,14 @@ class RazorpayController extends Controller
                 'order_id'   => $request->razorpay_order_id,
                 'amount'     => $request->amount,
                 'currency'   => 'INR',
+                'flag'       =>$flag,
                 'status'     => 'success',
                 'login_id'   => Session::get('user_id'),
                 'user_id'    => base64_decode($request->cust_id),
                 'response'   => json_encode($request->all())
             ]);
 
+            
             // 2️⃣ Calculate leads to add
             $planLeads = [
                 'single'  => 1,
@@ -92,7 +105,7 @@ class RazorpayController extends Controller
             $leadsToAdd = $planLeads[$request->plan] ?? 0;
 
             // 3️⃣ ADD LEADS TO VENDOR
-            DB::table('vendors')
+            DB::table('vendor_reg')
                 ->where('id', Session::get('vendor_id'))
                 ->increment('lead_balance', $leadsToAdd);
 
