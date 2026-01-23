@@ -63,10 +63,8 @@ class VenderController extends Controller
     public function updateProfile(Request $request)
     {
         $vendor_id = session('vendor_id');
-dd($vendor_id);
-        if (!$vendor_id) {
-            return back()->with('error', 'Session expired. Please login again.');
-        }
+
+     
 
         /* ================= VALIDATION ================= */
         $request->validate([
@@ -118,6 +116,7 @@ dd($vendor_id);
 
         ]);
 
+       
         /* ================= WORK SUBTYPE (CHECKBOX ARRAY) ================= */
         if ($request->has('work_subtype_id')) {
             $data['work_subtype_id'] = json_encode($request->work_subtype_id);
