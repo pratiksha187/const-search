@@ -761,21 +761,41 @@ const projectTitleSamples = {
 };
 
 /* ================= AUTO FILL TITLE ================= */
+// document.getElementById('work_subtype').addEventListener('change', function () {
+//     const workType = document.getElementById('work_type').value;
+//     const subtype = this.value;
+
+//     if (
+//         projectTitleSamples[workType] &&
+//         projectTitleSamples[workType][subtype]
+//     ) {
+//         document.getElementById('project_title').placeholder =
+//             projectTitleSamples[workType][subtype];
+//     } else {
+//         document.getElementById('project_title').value = '';
+//     }
+// });
+
+/* ================= AUTO SET PLACEHOLDER ================= */
 document.getElementById('work_subtype').addEventListener('change', function () {
     const workType = document.getElementById('work_type').value;
     const subtype = this.value;
+    const titleInput = document.getElementById('project_title');
 
     if (
         projectTitleSamples[workType] &&
         projectTitleSamples[workType][subtype]
     ) {
-        document.getElementById('project_title').value =
-            projectTitleSamples[workType][subtype];
+        titleInput.value = ''; // clear any typed value
+        titleInput.placeholder = projectTitleSamples[workType][subtype];
     } else {
-        document.getElementById('project_title').value = '';
+        titleInput.value = '';
+        titleInput.placeholder =
+            'e.g. 2BHK Residential Construction, Office Renovation';
     }
 });
 </script>
+
 
 
 @endsection
