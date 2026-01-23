@@ -59,151 +59,288 @@ class VenderController extends Controller
         return response()->json($subtypes);
     }
 
+public function updateProfile(Request $request)
+{
+    $vendor_id = session('vendor_id');
 
-    public function updateProfile(Request $request)
-    {
-        $vendor_id = session('vendor_id');
+    /* ================= AUTH CHECK ================= */
+    if (!$vendor_id) {
+        return $request->ajax()
+            ? response()->json(['success' => false, 'message' => 'Vendor session expired'], 401)
+            : redirect('/vendor/login');
+    }
+
+    /* ================= VALIDATION ================= */
+    $validator = Validator::make($request->all(), [
+        'mobile'        => 'nullable|string|max:15',
+        'email'         => 'nullable|email',
+        'business_name' => 'nullable|string|max:255',
+
+        'gst_number'    => 'nullable|string|size:15',
+        'pan_number'    => 'nullable|string|size:10',
+
+        'work_type_id'    => 'nullable|integer',
+        'work_subtype_id' => 'nullable|array',
+
+        'state'  => 'nullable|integer',
+        'region' => 'nullable|integer',
+        'city'   => 'nullable|integer',
+
+        'company_logo' => 'nullable|file|mimes:jpg,jpeg,png|max:20480',
+
+        'pan_card_file'                     => 'nullable|file|max:20480',
+        'gst_certificate_file'              => 'nullable|file|max:20480',
+        'aadhaar_card_file'                 => 'nullable|file|max:20480',
+        'certificate_of_incorporation_file' => 'nullable|file|max:20480',
+        'pf_documents_file'                 => 'nullable|file|max:20480',
+        'esic_documents_file'               => 'nullable|file|max:20480',
+        'cancelled_cheque_file'             => 'nullable|file|max:20480',
+        'msme_file'                          => 'nullable|file|max:20480',
+
+        'work_completion_certificates_file1' => 'nullable|file|max:20480',
+        'work_completion_certificates_file2' => 'nullable|file|max:20480',
+        'work_completion_certificates_file3' => 'nullable|file|max:20480',
+    ]);
+
+    if ($validator->fails()) {
+        return $request->ajax()
+            ? response()->json(['success' => false, 'errors' => $validator->errors()], 422)
+            : back()->withErrors($validator)->withInput();
+    }
+
+    /* ================= BASE DATA ================= */
+    $data = $request->except([
+        '_token',
+        'work_subtype_id',
+        'company_logo',
+
+        'pan_card_file',
+        'gst_certificate_file',
+        'aadhaar_card_file',
+        'certificate_of_incorporation_file',
+        'pf_documents_file',
+        'esic_documents_file',
+        'cancelled_cheque_file',
+        'msme_file',
+
+        'work_completion_certificates_file1',
+        'work_completion_certificates_file2',
+        'work_completion_certificates_file3',
+    ]);
+
+    /* ================= WORK SUBTYPE ================= */
+    if ($request->filled('work_subtype_id')) {
+        $data['work_subtype_id'] = json_encode($request->work_subtype_id);
+    }
+
+    /* ================= COMPANY LOGO ================= */
+    if ($request->hasFile('company_logo')) {
+
+        $oldLogo = DB::table('vendor_reg')
+            ->where('id', $vendor_id)
+            ->value('company_logo');
+
+        if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
+            Storage::disk('public')->delete($oldLogo);
+        }
+
+        $data['company_logo'] = $request->file('company_logo')
+            ->store("vendor_logos/{$vendor_id}", 'public');
+    }
+
+    /* ================= FILE UPLOAD HANDLER ================= */
+    $fileFields = [
+        'pan_card_file',
+        'gst_certificate_file',
+        'aadhaar_card_file',
+        'certificate_of_incorporation_file',
+        'pf_documents_file',
+        'esic_documents_file',
+        'cancelled_cheque_file',
+        'msme_file',
+    ];
+
+    $workImages = [
+        'work_completion_certificates_file1',
+        'work_completion_certificates_file2',
+        'work_completion_certificates_file3',
+    ];
+
+    foreach (array_merge($fileFields, $workImages) as $field) {
+        if ($request->hasFile($field)) {
+
+            $oldFile = DB::table('vendor_reg')
+                ->where('id', $vendor_id)
+                ->value($field);
+
+            if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+                Storage::disk('public')->delete($oldFile);
+            }
+
+            $folder = in_array($field, $workImages)
+                ? "vendor_work_photos/{$vendor_id}"
+                : "vendor_docs/{$vendor_id}";
+
+            $data[$field] = $request->file($field)->store($folder, 'public');
+        }
+    }
+
+    $data['updated_at'] = now();
+
+    /* ================= UPDATE ================= */
+    DB::table('vendor_reg')
+        ->where('id', $vendor_id)
+        ->update($data);
+
+    return $request->ajax()
+        ? response()->json(['success' => true, 'message' => 'Profile updated successfully'])
+        : back()->with('success', 'Profile updated successfully ✅');
+}
+
+    // public function updateProfile(Request $request)
+    // {
+    //     $vendor_id = session('vendor_id');
 
      
 
-        /* ================= VALIDATION ================= */
-        $request->validate([
-            'mobile'        => 'nullable|string|max:15',
-            'email'         => 'nullable|email',
-            'business_name' => 'nullable|string|max:255',
+    //     /* ================= VALIDATION ================= */
+    //     $request->validate([
+    //         'mobile'        => 'nullable|string|max:15',
+    //         'email'         => 'nullable|email',
+    //         'business_name' => 'nullable|string|max:255',
 
-            'gst_number'    => 'nullable|string|size:15',
-            'pan_number'    => 'nullable|string|size:10',
+    //         'gst_number'    => 'nullable|string|size:15',
+    //         'pan_number'    => 'nullable|string|size:10',
 
-            'work_type_id'  => 'nullable|integer',
-            'work_subtype_id' => 'nullable|array',
+    //         'work_type_id'  => 'nullable|integer',
+    //         'work_subtype_id' => 'nullable|array',
 
-            'state'  => 'nullable|integer',
-            'region' => 'nullable|integer',
-            'city'   => 'nullable|integer',
-            'company_logo' => 'nullable|max:20480',
-            // Files
-            'pan_card_file'                     => 'nullable|max:20480',
-            'gst_certificate_file'              => 'nullable|max:20480',
-            'aadhaar_card_file'                 => 'nullable|max:20480',
-            'certificate_of_incorporation_file' => 'nullable|max:20480',
-            'pf_documents_file'                 => 'nullable|max:20480',
-            'esic_documents_file'               => 'nullable|max:20480',
-            'cancelled_cheque_file'             => 'nullable|max:20480',
-            'msme_file'                          => 'nullable|max:20480',
-            'work_completion_certificates_file1' => 'nullable|max:20480',
-            'work_completion_certificates_file2' => 'nullable|max:20480',
-            'work_completion_certificates_file3' => 'nullable|max:20480',
+    //         'state'  => 'nullable|integer',
+    //         'region' => 'nullable|integer',
+    //         'city'   => 'nullable|integer',
+    //         'company_logo' => 'nullable|max:20480',
+    //         // Files
+    //         'pan_card_file'                     => 'nullable|max:20480',
+    //         'gst_certificate_file'              => 'nullable|max:20480',
+    //         'aadhaar_card_file'                 => 'nullable|max:20480',
+    //         'certificate_of_incorporation_file' => 'nullable|max:20480',
+    //         'pf_documents_file'                 => 'nullable|max:20480',
+    //         'esic_documents_file'               => 'nullable|max:20480',
+    //         'cancelled_cheque_file'             => 'nullable|max:20480',
+    //         'msme_file'                          => 'nullable|max:20480',
+    //         'work_completion_certificates_file1' => 'nullable|max:20480',
+    //         'work_completion_certificates_file2' => 'nullable|max:20480',
+    //         'work_completion_certificates_file3' => 'nullable|max:20480',
 
-        ]);
+    //     ]);
 
-        /* ================= BASE DATA ================= */
-        $data = $request->except([
-            '_token',
-            'work_subtype_id',
-            'pan_card_file',
-            'gst_certificate_file',
-            'aadhaar_card_file',
-            'certificate_of_incorporation_file',
-            'pf_documents_file',
-            'esic_documents_file',
-            'cancelled_cheque_file',
-            'msme_file',
-            'company_logo',
-            'work_completion_certificates_file1',
-            'work_completion_certificates_file2',
-            'work_completion_certificates_file3',
+    //     /* ================= BASE DATA ================= */
+    //     $data = $request->except([
+    //         '_token',
+    //         'work_subtype_id',
+    //         'pan_card_file',
+    //         'gst_certificate_file',
+    //         'aadhaar_card_file',
+    //         'certificate_of_incorporation_file',
+    //         'pf_documents_file',
+    //         'esic_documents_file',
+    //         'cancelled_cheque_file',
+    //         'msme_file',
+    //         'company_logo',
+    //         'work_completion_certificates_file1',
+    //         'work_completion_certificates_file2',
+    //         'work_completion_certificates_file3',
 
-        ]);
+    //     ]);
 
        
-        /* ================= WORK SUBTYPE (CHECKBOX ARRAY) ================= */
-        if ($request->has('work_subtype_id')) {
-            $data['work_subtype_id'] = json_encode($request->work_subtype_id);
-        }
+    //     /* ================= WORK SUBTYPE (CHECKBOX ARRAY) ================= */
+    //     if ($request->has('work_subtype_id')) {
+    //         $data['work_subtype_id'] = json_encode($request->work_subtype_id);
+    //     }
 
 
-        /* ================= COMPANY LOGO ================= */
-        if ($request->hasFile('company_logo')) {
+    //     /* ================= COMPANY LOGO ================= */
+    //     if ($request->hasFile('company_logo')) {
 
-            // delete old logo if exists
-            $oldLogo = DB::table('vendor_reg')
-                ->where('id', $vendor_id)
-                ->value('company_logo');
+    //         // delete old logo if exists
+    //         $oldLogo = DB::table('vendor_reg')
+    //             ->where('id', $vendor_id)
+    //             ->value('company_logo');
 
-            if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
-                Storage::disk('public')->delete($oldLogo);
-            }
+    //         if ($oldLogo && Storage::disk('public')->exists($oldLogo)) {
+    //             Storage::disk('public')->delete($oldLogo);
+    //         }
 
-            $data['company_logo'] = $request->file('company_logo')
-                ->store("vendor_logos/{$vendor_id}", 'public');
-        }
-
-
-        /* ================= FILE UPLOAD HANDLER ================= */
-        $fileFields = [
-            'pan_card_file',
-            'gst_certificate_file',
-            'aadhaar_card_file',
-            'certificate_of_incorporation_file',
-            'pf_documents_file',
-            'esic_documents_file',
-            'cancelled_cheque_file',
-            'msme_file'
-        ];
-
-        /* ================= WORK COMPLETION PHOTOS ================= */
-        $workImages = [
-            'work_completion_certificates_file1',
-            'work_completion_certificates_file2',
-            'work_completion_certificates_file3',
-        ];
-
-        foreach ($workImages as $field) {
-            if ($request->hasFile($field)) {
-
-                // delete old image if exists
-                $oldFile = DB::table('vendor_reg')
-                    ->where('id', $vendor_id)
-                    ->value($field);
-
-                if ($oldFile && Storage::disk('public')->exists($oldFile)) {
-                    Storage::disk('public')->delete($oldFile);
-                }
-
-                $data[$field] = $request->file($field)
-                    ->store("vendor_work_photos/{$vendor_id}", 'public');
-            }
-        }
+    //         $data['company_logo'] = $request->file('company_logo')
+    //             ->store("vendor_logos/{$vendor_id}", 'public');
+    //     }
 
 
-        foreach ($fileFields as $field) {
-            if ($request->hasFile($field)) {
+    //     /* ================= FILE UPLOAD HANDLER ================= */
+    //     $fileFields = [
+    //         'pan_card_file',
+    //         'gst_certificate_file',
+    //         'aadhaar_card_file',
+    //         'certificate_of_incorporation_file',
+    //         'pf_documents_file',
+    //         'esic_documents_file',
+    //         'cancelled_cheque_file',
+    //         'msme_file'
+    //     ];
 
-                // delete old file if exists
-                $oldFile = DB::table('vendor_reg')
-                    ->where('id', $vendor_id)
-                    ->value($field);
+    //     /* ================= WORK COMPLETION PHOTOS ================= */
+    //     $workImages = [
+    //         'work_completion_certificates_file1',
+    //         'work_completion_certificates_file2',
+    //         'work_completion_certificates_file3',
+    //     ];
 
-                if ($oldFile && Storage::disk('public')->exists($oldFile)) {
-                    Storage::disk('public')->delete($oldFile);
-                }
+    //     foreach ($workImages as $field) {
+    //         if ($request->hasFile($field)) {
 
-                $data[$field] = $request->file($field)
-                    ->store("vendor_docs/{$vendor_id}", 'public');
-            }
-        }
+    //             // delete old image if exists
+    //             $oldFile = DB::table('vendor_reg')
+    //                 ->where('id', $vendor_id)
+    //                 ->value($field);
 
-        /* ================= TIMESTAMP ================= */
-        $data['updated_at'] = now();
+    //             if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+    //                 Storage::disk('public')->delete($oldFile);
+    //             }
 
-        /* ================= UPDATE ================= */
-        DB::table('vendor_reg')
-            ->where('id', $vendor_id)
-            ->update($data);
+    //             $data[$field] = $request->file($field)
+    //                 ->store("vendor_work_photos/{$vendor_id}", 'public');
+    //         }
+    //     }
 
-        return back()->with('success', 'Profile updated successfully ✅');
-    }
+
+    //     foreach ($fileFields as $field) {
+    //         if ($request->hasFile($field)) {
+
+    //             // delete old file if exists
+    //             $oldFile = DB::table('vendor_reg')
+    //                 ->where('id', $vendor_id)
+    //                 ->value($field);
+
+    //             if ($oldFile && Storage::disk('public')->exists($oldFile)) {
+    //                 Storage::disk('public')->delete($oldFile);
+    //             }
+
+    //             $data[$field] = $request->file($field)
+    //                 ->store("vendor_docs/{$vendor_id}", 'public');
+    //         }
+    //     }
+
+    //     /* ================= TIMESTAMP ================= */
+    //     $data['updated_at'] = now();
+
+    //     /* ================= UPDATE ================= */
+    //     DB::table('vendor_reg')
+    //         ->where('id', $vendor_id)
+    //         ->update($data);
+
+    //     return back()->with('success', 'Profile updated successfully ✅');
+    // }
 
     public function vendorprofileid($id)
     {
