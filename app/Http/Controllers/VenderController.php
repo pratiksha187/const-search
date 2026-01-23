@@ -63,7 +63,7 @@ class VenderController extends Controller
     public function updateProfile(Request $request)
     {
         $vendor_id = session('vendor_id');
-
+dd($vendor_id);
         if (!$vendor_id) {
             return back()->with('error', 'Session expired. Please login again.');
         }
