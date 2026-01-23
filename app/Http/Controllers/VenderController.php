@@ -63,49 +63,9 @@ public function updateProfile(Request $request)
 {
     $vendor_id = session('vendor_id');
 
-    /* ================= AUTH CHECK ================= */
+    // safety check
     if (!$vendor_id) {
-        return $request->ajax()
-            ? response()->json(['success' => false, 'message' => 'Vendor session expired'], 401)
-            : redirect('/vendor/login');
-    }
-
-    /* ================= VALIDATION ================= */
-    $validator = Validator::make($request->all(), [
-        'mobile'        => 'nullable|string|max:15',
-        'email'         => 'nullable|email',
-        'business_name' => 'nullable|string|max:255',
-
-        'gst_number'    => 'nullable|string|size:15',
-        'pan_number'    => 'nullable|string|size:10',
-
-        'work_type_id'    => 'nullable|integer',
-        'work_subtype_id' => 'nullable|array',
-
-        'state'  => 'nullable|integer',
-        'region' => 'nullable|integer',
-        'city'   => 'nullable|integer',
-
-        'company_logo' => 'nullable|file|mimes:jpg,jpeg,png|max:20480',
-
-        'pan_card_file'                     => 'nullable|file|max:20480',
-        'gst_certificate_file'              => 'nullable|file|max:20480',
-        'aadhaar_card_file'                 => 'nullable|file|max:20480',
-        'certificate_of_incorporation_file' => 'nullable|file|max:20480',
-        'pf_documents_file'                 => 'nullable|file|max:20480',
-        'esic_documents_file'               => 'nullable|file|max:20480',
-        'cancelled_cheque_file'             => 'nullable|file|max:20480',
-        'msme_file'                          => 'nullable|file|max:20480',
-
-        'work_completion_certificates_file1' => 'nullable|file|max:20480',
-        'work_completion_certificates_file2' => 'nullable|file|max:20480',
-        'work_completion_certificates_file3' => 'nullable|file|max:20480',
-    ]);
-
-    if ($validator->fails()) {
-        return $request->ajax()
-            ? response()->json(['success' => false, 'errors' => $validator->errors()], 422)
-            : back()->withErrors($validator)->withInput();
+        return redirect('/vendor/login');
     }
 
     /* ================= BASE DATA ================= */
@@ -129,7 +89,7 @@ public function updateProfile(Request $request)
     ]);
 
     /* ================= WORK SUBTYPE ================= */
-    if ($request->filled('work_subtype_id')) {
+    if ($request->has('work_subtype_id')) {
         $data['work_subtype_id'] = json_encode($request->work_subtype_id);
     }
 
@@ -181,7 +141,8 @@ public function updateProfile(Request $request)
                 ? "vendor_work_photos/{$vendor_id}"
                 : "vendor_docs/{$vendor_id}";
 
-            $data[$field] = $request->file($field)->store($folder, 'public');
+            $data[$field] = $request->file($field)
+                ->store($folder, 'public');
         }
     }
 
@@ -192,9 +153,7 @@ public function updateProfile(Request $request)
         ->where('id', $vendor_id)
         ->update($data);
 
-    return $request->ajax()
-        ? response()->json(['success' => true, 'message' => 'Profile updated successfully'])
-        : back()->with('success', 'Profile updated successfully ✅');
+    return back()->with('success', 'Profile updated successfully ✅');
 }
 
     // public function updateProfile(Request $request)
