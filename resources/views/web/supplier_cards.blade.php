@@ -12,7 +12,15 @@
 <div class="supplier-card">
 
     <div class="card-header">
-        <div class="logo-circle">{{ $initials }}</div>
+        <div class="logo-circle">
+            @if(!empty($supplier->shop_logo))
+                <img src="{{ asset('storage/'.$supplier->shop_logo) }}"
+                    alt="{{ $supplier->shop_name }}"
+                    class="shop-logo-img">
+            @else
+                {{ $initials }}
+            @endif
+        </div>
 
         <div class="supplier-info">
             <h5 class="supplier-name">{{ $supplier->shop_name }}</h5>

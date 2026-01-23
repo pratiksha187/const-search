@@ -269,6 +269,27 @@
     transform:translateY(-1px);
     box-shadow:0 6px 18px rgba(37,99,235,.35);
 }
+.logo-circle{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#1c2c3e;
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    flex-shrink:0;
+}
+
+.shop-logo-img{
+    width:100%;
+    height:100%;
+    object-fit:cover;   /* or contain if logos get cut */
+    background:#fff;
+}
 
 </style>
 
