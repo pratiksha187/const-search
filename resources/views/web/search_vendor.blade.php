@@ -597,6 +597,133 @@
     font-weight:500;
 }
 
+.vendor-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.logo-placeholder {
+    width: 100%;
+    height: 100%;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+    background: #1c2c3e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.vendor-card{
+    background:#fff;
+    border-radius:12px;
+    padding:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.06);
+}
+
+.card-header{
+    margin-bottom:10px;
+}
+
+.vendor-logo{
+    width:48px;
+    height:48px;
+    border-radius:8px;
+    overflow:hidden;
+    background:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.logo-img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.logo-placeholder{
+    width:100%;
+    height:100%;
+    background:#1c2c3e;
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.title{
+    font-weight:800;
+    font-size:15px;
+}
+
+.subtitle{
+    font-size:14px;
+    color:#555;
+    margin-top:6px;
+}
+
+.location{
+    font-size:13px;
+    color:#777;
+    margin-top:4px;
+}
+
+.tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:8px;
+}
+
+.tag-chip{
+    background:#eef2ff;
+    color:#1c2c3e;
+    font-size:12px;
+    padding:4px 8px;
+    border-radius:6px;
+}
+
+.details{
+    font-size:13px;
+    margin-top:10px;
+}
+
+.actions{
+    margin-top:14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.badge{
+    font-size:11px;
+    padding:3px 6px;
+    border-radius:4px;
+}
+
+.badge.verified{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge.trusted{
+    background:#fff7ed;
+    color:#9a3412;
+}
 
 </style>
 <script>
@@ -674,7 +801,7 @@
                   <span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
                </h3>
                {{-- ================= VENDORS ================= --}}
-               <div class="vendor-grid">
+               <!-- <div class="vendor-grid">
                   @foreach($vendor_reg as $vendor)
                      <div class="card vendor-card"
                         data-vendor-id="{{ $vendor->id }}"
@@ -705,7 +832,19 @@
                         {{-- BANK (OPTIONAL) --}}
                         data-bank-name="{{ $vendor->bank_name }}"
                         data-account-type="{{ $vendor->account_type }}">
+                        
                         <div class="card-header">
+                            <div class="vendor-logo">
+                                @if(!empty($vendor->company_logo))
+                                    <img src="{{ asset('storage/'.$vendor->company_logo) }}"
+                                        alt="{{ $vendor->business_name }}"
+                                        class="logo-img">
+                                @else
+                                    <div class="logo-placeholder">
+                                        {{ strtoupper(substr($vendor->business_name, 0, 1)) }}
+                                    </div>
+                                @endif
+                            </div>
                            <div class="title">{{ strtoupper($vendor->business_name) }}</div>
 
                            <div class="badge-wrapper">
@@ -735,7 +874,7 @@
 
 
                         <div class="details">
-                           <p>✔ {{ $vendor->experience_years }} years experience</p>
+                           <p>✔ {{ $vendor->experiance }} years experience</p>
                            <p>✔ Premium {{$vendor->work_type}}</p>
                         </div>
 
@@ -777,7 +916,129 @@
 
                      </div>
                   @endforeach
-               </div>
+               </div> -->
+               <div class="vendor-grid">
+@foreach($vendor_reg as $vendor)
+
+<div class="card vendor-card"
+    data-vendor-id="{{ $vendor->id }}"
+    data-business="{{ $vendor->business_name }}"
+    data-fullname="{{ $vendor->name }}"
+    data-contact-name="{{ $vendor->contact_person_name }}"
+    data-mobile="{{ $vendor->mobile }}"
+    data-email="{{ $vendor->email }}"
+    data-work-type-id="{{ $vendor->work_type_id }}"
+    data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
+    data-work-type="{{ strtolower($vendor->work_type) }}"
+    data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
+    data-experience="{{ $vendor->experience_years }}"
+    data-team-size="{{ $vendor->team_size_data }}"
+    data-min-project="{{ $vendor->min_project_value }}"
+    data-company-name="{{ $vendor->company_name }}"
+    data-entity-type="{{ $vendor->entity_type }}"
+    data-gst="{{ $vendor->gst_number }}"
+    data-pan="{{ $vendor->pan_number }}"
+    data-msme="{{ $vendor->msme_registered }}"
+    data-state-id="{{ $vendor->state }}"
+    data-region-id="{{ $vendor->region }}"
+    data-city-id="{{ $vendor->city }}"
+    data-bank-name="{{ $vendor->bank_name }}"
+    data-account-type="{{ $vendor->account_type }}"
+>
+
+    {{-- ================= HEADER ================= --}}
+    <div class="card-header d-flex align-items-center gap-3">
+
+        {{-- LOGO --}}
+        <div class="vendor-logo">
+            @if(!empty($vendor->company_logo))
+                <img src="{{ asset('storage/'.$vendor->company_logo) }}"
+                     alt="{{ $vendor->business_name }}"
+                     class="logo-img">
+            @else
+                <div class="logo-placeholder">
+                    {{ strtoupper(substr($vendor->business_name, 0, 1)) }}
+                </div>
+            @endif
+        </div>
+
+        {{-- TITLE + BADGES --}}
+        <div class="flex-grow-1">
+            <div class="title">{{ strtoupper($vendor->business_name) }}</div>
+
+            <div class="badge-wrapper">
+                @if($vendor->profile_percent >= 90)
+                    <span class="badge verified">✔ Verified</span>
+                    <span class="badge trusted">⭐ Trusted</span>
+                @elseif($vendor->profile_percent >= 60)
+                    <span class="badge verified">✔ Verified</span>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    {{-- ================= BODY ================= --}}
+    <div class="subtitle">{{ $vendor->work_type }}</div>
+
+    <div class="location">
+        📍 {{ $vendor->statename ?? '' }},
+        {{ $vendor->regionname ?? '' }},
+        {{ $vendor->cityname ?? '' }}
+    </div>
+
+    {{-- TAGS --}}
+    <div class="tags">
+        @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
+            <span class="tag-chip">✔ {{ trim($subtype) }}</span>
+        @endforeach
+    </div>
+
+    {{-- DETAILS --}}
+    <div class="details">
+        <p>✔ {{ $vendor->experiance }} years experience</p>
+        <p>✔ Premium {{ $vendor->work_type }}</p>
+    </div>
+
+    {{-- ================= ACTIONS ================= --}}
+    <div class="actions">
+
+        <button class="btn btn-outline"
+            onclick="viewProfile({{ $vendor->id }})">
+            View Profile
+        </button>
+
+        @if(($vendor->total_reviews ?? 0) > 0)
+            <div class="rating-display">
+                <div class="rating-stars">
+                    @php $r = (int) round($vendor->avg_rating ?? 0); @endphp
+                    @for($i = 1; $i <= 5; $i++)
+                        @if($i <= $r)
+                            <i class="bi bi-star-fill"></i>
+                        @else
+                            <i class="bi bi-star"></i>
+                        @endif
+                    @endfor
+                </div>
+
+                <span class="rating-text">
+                    {{ number_format((float)($vendor->avg_rating ?? 0), 1) }} / 5
+                    <small>({{ $vendor->total_reviews ?? 0 }})</small>
+                </span>
+            </div>
+        @else
+            <button class="btn btn-rating"
+                onclick="openRatingModal({{ $vendor->id }})">
+                ⭐ Add Rating
+            </button>
+        @endif
+
+    </div>
+
+</div>
+
+@endforeach
+</div>
+
          </div>
          <!-- </div> -->
       </div>

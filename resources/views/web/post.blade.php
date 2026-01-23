@@ -200,7 +200,7 @@ textarea.form-control-lg {
                         <label class="form-label-custom">Project Title</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-pencil"></i></span>
-                            <input type="text" class="form-control form-control-lg" name="title" placeholder="e.g. 2BHK Residential Construction, Office Renovation">
+                            <input type="text" class="form-control form-control-lg" name="title"   id="project_title" placeholder="e.g. 2BHK Residential Construction, Office Renovation">
                         </div>
                     </div>
                     <!-- STATE -->
@@ -278,7 +278,7 @@ textarea.form-control-lg {
                     <div class="col-md-4">
                         <label class="form-label-custom">Unit</label>
                         <select class="form-select form-select-lg" name="budget">
-                            <option value="">Select Budget</option>
+                            <option value="">Select Unit</option>
                             @foreach($unit as $units)
                                 <option value="{{ $units->id }}">{{ $units->unitname }}</option>
                             @endforeach
@@ -522,5 +522,102 @@ $(document).ready(function () {
 
 });
 </script>
+<script>
+const projectTitleSamples = {
+
+    /* ================= CONTRACTOR (1) ================= */
+    1: {
+        1: "Construction of G+7 Residential Building",
+        2: "Construction of Bituminous Road & Highway Stretch",
+        3: "Construction of RCC Culvert for Residential Layout",
+        4: "Earthwork & Excavation for G+4 Residential Building",
+        6: "Electrical Works for 2BHK Residential Block",
+        7: "Plumbing & Sanitary Works for G+5 Residential Building",
+        8: "Mechanical Services Installation for G+2 Building",
+        9: "HVAC Installation for G+5 Residential Building",
+        10: "Interior & Exterior Painting for G+2 Residential Building",
+        11: "Basement & Roof Waterproofing for G+3 Residential Building",
+        12: "Structural Steel Fabrication for G+2 Residential Building",
+        13: "Landscaping Works for Residential Building Premises",
+        15: "Manpower Deployment for G+3 Building Project"
+    },
+
+    /* ================= ARCHITECT (2) ================= */
+    2: {
+        16: "Architectural Design for G+24 Residential Building",
+        17: "Architectural Design for G+3 Office",
+        18: "Landscape Design for G+10 Residential Building Premises",
+        19: "Interior Design for G+2 Residential Building",
+        20: "Urban Planning Design for Housing Project",
+        21: "Architectural Design for Industrial Shed Building",
+        22: "Conservation Planning for Old G+6 Structure",
+        23: "Sustainable Design for G+14 Residential Building",
+        24: "Structural Concept Design for G+8 Residential Building"
+    },
+
+    /* ================= CONSULTANT (3) ================= */
+    3: {
+        25: "Structural Design & Analysis for G+8 Residential Building",
+        26: "Complete MEP Planning for G+5 Apartment",
+        27: "HVAC Design Consultancy for G+10 Residential Building",
+        28: "Project Management Consultancy for G+7 Residential Building",
+        29: "Cost Estimation & BOQ for G+4 Residential Building",
+        30: "Environmental Clearance Consultancy for G+8 Project",
+        31: "Construction Safety Consultancy for G+4 Building Project",
+        32: "Architectural Design Consultancy for G+8 Residential Building",
+        33: "Urban Planning Services for Housing Project",
+        34: "Soil Investigation & Geotechnical Study for G+8 Building",
+        35: "Fire Fighting System Design for G+9 Residential Building",
+        36: "Façade Design Consultancy for G+7 Residential Building",
+        37: "Green Building Consultancy for G+12 Residential Project",
+        38: "Quality Control & NDT Testing for G+11 Residential Building"
+    },
+
+    /* ================= INTERIORS (4) ================= */
+    4: {
+        39: "Interior Design for 2BHK Residential Plot – 500 sq.ft",
+        40: "Interior Design for G+7 Commercial Bare Shell Office",
+        41: "Office Interior Design for Corporate Building",
+        42: "G+7 Hotel Interior Design Project",
+        43: "Showroom Interior Design Project",
+        44: "Luxury Interior Design for Apartment",
+        45: "Minimalist Interior Design for Residential Apartment",
+        46: "Modern Interior Design for G+2 Residential Building",
+        47: "Industrial Theme Interior Design for Office Space",
+        48: "Traditional Interior Design for Residential G+2 Home",
+        49: "Modular Kitchen & Wardrobe Interior Project"
+    },
+
+    /* ================= SURVEYOR (5) ================= */
+    5: {
+        50: "Land Survey for Residential Building Plot",
+        51: "Quantity Survey & BOQ for G+2 Residential Building",
+        52: "Building Condition Survey for G+2 Residential Building",
+        53: "Rock & Soil Study for Residential Project",
+        54: "Topographic Survey for Residential Plot Development",
+        55: "Drainage & Water Flow Survey for Construction Site",
+        56: "Mine Site Survey for Industrial Development",
+        57: "Structural Survey for G+2 Residential Building",
+        58: "Drone Survey & Mapping for Residential Land"
+    }
+};
+
+/* ================= AUTO FILL TITLE ================= */
+document.getElementById('work_subtype').addEventListener('change', function () {
+    const workType = document.getElementById('work_type').value;
+    const subtype = this.value;
+
+    if (
+        projectTitleSamples[workType] &&
+        projectTitleSamples[workType][subtype]
+    ) {
+        document.getElementById('project_title').value =
+            projectTitleSamples[workType][subtype];
+    } else {
+        document.getElementById('project_title').value = '';
+    }
+});
+</script>
+
 
 @endsection

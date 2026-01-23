@@ -196,6 +196,8 @@ class HomeController extends Controller
         $vendor_reg = DB::table('vendor_reg as v')
                     ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
                     ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
+                    ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
+
 
                     // ✅ FIXED JOIN
                     ->leftJoin('vendor_ratings as vr', 'vr.vendor_id', '=', 'v.id')
@@ -214,6 +216,8 @@ class HomeController extends Controller
                         // work
                         'wt.work_type',
                         'ts.team_size as team_size_data',
+
+                        'ey.experiance as experiance',
 
                         // location
                         's.name as statename',

@@ -245,7 +245,7 @@ body{
 
                 <p class="text-muted mb-0">
                     Need help?  
-                    <strong>Call us at +91 88065 61819</strong>
+                    <strong>Call us at +91 7385882657</strong>
                 </p>
             </div>
         </div>
