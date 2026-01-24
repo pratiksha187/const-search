@@ -330,7 +330,7 @@ textarea.form-control-lg {
                         <select class="form-select form-select-lg" name="budget">
                             <option value="">Select Unit</option>
                             @foreach($unit as $units)
-                                <option value="{{ $units->id }}">{{ $units->unitname }}</option>
+                                <option value="{{ $units->id }}">{{ $units->unit }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -760,21 +760,6 @@ const projectTitleSamples = {
     }
 };
 
-/* ================= AUTO FILL TITLE ================= */
-// document.getElementById('work_subtype').addEventListener('change', function () {
-//     const workType = document.getElementById('work_type').value;
-//     const subtype = this.value;
-
-//     if (
-//         projectTitleSamples[workType] &&
-//         projectTitleSamples[workType][subtype]
-//     ) {
-//         document.getElementById('project_title').placeholder =
-//             projectTitleSamples[workType][subtype];
-//     } else {
-//         document.getElementById('project_title').value = '';
-//     }
-// });
 
 /* ================= AUTO SET PLACEHOLDER ================= */
 document.getElementById('work_subtype').addEventListener('change', function () {

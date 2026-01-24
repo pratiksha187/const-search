@@ -24,20 +24,29 @@ class AdminController extends Controller
         return view('web.vendor_verification', compact('vendors'));
     }
 
+     public function supplier_verification(){
+        // dd('test');
+        $supplier = DB::table('supplier_reg as s')
+            
+            ->select(
+                's.*'
+               
+            )
+            ->orderBy('s.created_at', 'desc')
+            ->get();
+            // dd($vendors);
+        return view('web.supplier_verification', compact('supplier'));
+    }
     public function vendorsapproved($id){
          $vendor = DB::table('vendor_reg as v')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
             ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
-            // ->leftJoin('states as s', 's.id', '=', 'v.state')
-            // ->leftJoin('regions as r', 'r.id', '=', 'v.region')
-            // ->leftJoin('cities as c', 'c.id', '=', 'v.city')
+           
             ->select(
                 'v.*',
                 'wt.work_type as work_type_name',
                 'wst.work_subtype as work_subtype_name'
-                // 's.name as state_name',
-                // 'r.name as region_name',
-                // 'c.name as city_name'
+               
             )
             ->where('v.id', $id)
             ->first();
@@ -46,6 +55,22 @@ class AdminController extends Controller
         return view('web.vendorsapproved', compact('vendor'));
     }
 
+     public function supplierapproved($id){
+         $supplier = DB::table('supplier_reg as s')
+            
+            ->select(
+                's.*'
+               
+               
+            )
+            ->where('s.id', $id)
+            ->first();
+
+
+        return view('web.supplierapproved', compact('supplier'));
+    }
+
+    
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -74,6 +99,36 @@ class AdminController extends Controller
                 : 'Vendor rejected successfully.'
         );
     }
+
+    public function updatesupplierStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:approve,reject'
+        ]);
+
+        // 1 = Approved, 2 = Rejected
+        $statusValue = ($request->status === 'approve') ? 1 : 2;
+
+        $updated = DB::table('supplier_reg')
+            ->where('id', $id)
+            ->update([
+                'status' => $statusValue,
+                'updated_at' => now()
+            ]);
+
+        // Optional safety check
+        if (!$updated) {
+            return redirect()->back()->with('error', 'supplier not found or already updated.');
+        }
+
+        return redirect()->back()->with(
+            'success',
+            $request->status === 'approve'
+                ? 'supplier approved successfully.'
+                : 'supplier rejected successfully.'
+        );
+    }
+    
 
     public function uploadFreeLead(Request $request)
     {
@@ -162,63 +217,147 @@ class AdminController extends Controller
         );
     }
 
-    public function postverification(){
-        $work_types = DB::table('work_types')->get();
-        $states = DB::table('state')->orderBy('name')->get();
-        $budget_range = DB::table('budget_range')->get();
-        $posts = DB::table('posts')
-            ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
-            ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
-            ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
-            ->leftJoin('region', 'region.id', '=', 'posts.region')
-            ->leftJoin('city', 'city.id', '=', 'posts.city')
-            ->leftJoin('state', 'state.id', '=', 'posts.state')
-            ->select(
-                    'posts.*',
+    // public function postverification(){
+    //     $work_types = DB::table('work_types')->get();
+    //     $states = DB::table('state')->orderBy('name')->get();
+    //     $budget_range = DB::table('budget_range')->get();
+    //     $posts = DB::table('posts')
+    //         ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
+    //         ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
+    //         ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
+    //         ->leftJoin('region', 'region.id', '=', 'posts.region')
+    //         ->leftJoin('city', 'city.id', '=', 'posts.city')
+    //         ->leftJoin('state', 'state.id', '=', 'posts.state')
+    //         ->select(
+    //                 'posts.*',
 
-                    // ✅ IMPORTANT: SEND IDS TO FRONTEND
-                    'posts.state as state_id',
-                    'posts.region as region_id',
-                    'posts.city as city_id',
+    //                 // ✅ IMPORTANT: SEND IDS TO FRONTEND
+    //                 'posts.state as state_id',
+    //                 'posts.region as region_id',
+    //                 'posts.city as city_id',
                     
 
-                    // Names (for table display)
-                    'state.name as statename',
-                    'region.name as regionname',
-                    'city.name as cityname',
+    //                 // Names (for table display)
+    //                 'state.name as statename',
+    //                 'region.name as regionname',
+    //                 'city.name as cityname',
 
-                    'work_types.work_type as work_type_name',
-                    'work_subtypes.work_subtype as work_subtype_name',
+    //                 'work_types.work_type as work_type_name',
+    //                 'work_subtypes.work_subtype as work_subtype_name',
 
-                    // ✅ IMPORTANT FOR EDIT BUDGET
-                    'posts.budget_id as budget_id',
-                    'budget_range.budget_range as budget_range'
-                )
+    //                 // ✅ IMPORTANT FOR EDIT BUDGET
+    //                 'posts.budget_id as budget_id',
+    //                 'budget_range.budget_range as budget_range'
+    //             )
                
-                ->orderBy('posts.id', 'DESC')
-                ->paginate(10);
-        return view('web.verification_post',compact('posts','work_types','states','budget_range'));
+    //             ->orderBy('posts.id', 'DESC')
+    //             ->get();
+    //     return view('web.verification_post',compact('posts','work_types','states','budget_range'));
+    // }
+
+
+    // public function postverification()
+    // {
+    //     $work_types = DB::table('work_types')->get();
+    //     $states = DB::table('state')->orderBy('name')->get();
+    //     $budget_range = DB::table('budget_range')->get();
+
+    //     $posts = DB::table('posts')
+    //         ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
+    //         ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
+    //         ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
+    //         ->leftJoin('region', 'region.id', '=', 'posts.region')
+    //         ->leftJoin('city', 'city.id', '=', 'posts.city')
+    //         ->leftJoin('state', 'state.id', '=', 'posts.state')
+    //         ->select(
+    //             'posts.*',
+    //             'state.name as statename',
+    //             'region.name as regionname',
+    //             'city.name as cityname',
+    //             'work_types.work_type as work_type_name',
+    //             'work_subtypes.work_subtype as work_subtype_name',
+    //             'budget_range.budget_range'
+    //         )
+    //         ->orderBy('posts.id', 'DESC')
+    //         ->paginate(10);   // ✅ REQUIRED
+
+
+    //     return view('web.verification_post', compact(
+    //         'posts',
+    //         'work_types',
+    //         'states',
+    //         'budget_range'
+    //     ));
+    // }
+public function postverification(Request $request)
+{
+    $work_types = DB::table('work_types')->get();
+    $states = DB::table('state')->orderBy('name')->get();
+    $budget_range = DB::table('budget_range')->get();
+
+    $query = DB::table('posts')
+        ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
+        ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
+        ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
+        ->leftJoin('region', 'region.id', '=', 'posts.region')
+        ->leftJoin('city', 'city.id', '=', 'posts.city')
+        ->leftJoin('state', 'state.id', '=', 'posts.state')
+        ->select(
+            'posts.*',
+            'state.name as statename',
+            'region.name as regionname',
+            'city.name as cityname',
+            'work_types.work_type as work_type_name',
+            'work_subtypes.work_subtype as work_subtype_name',
+            'budget_range.budget_range'
+        )
+        ->orderBy('posts.id', 'DESC');
+
+    // 🔍 SEARCH
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('posts.title', 'like', "%{$search}%")
+              ->orWhere('work_types.work_type', 'like', "%{$search}%")
+              ->orWhere('state.name', 'like', "%{$search}%")
+              ->orWhere('region.name', 'like', "%{$search}%")
+              ->orWhere('city.name', 'like', "%{$search}%");
+        });
     }
 
+    $posts = $query->paginate(10)->withQueryString();
+
+    return view('web.verification_post', compact(
+        'posts',
+        'work_types',
+        'states',
+        'budget_range'
+    ));
+}
 
    
-    public function verifyPost(Request $request, $id)
-    {
-        $request->validate([
-            'post_verify' => 'required|in:0,1',
+   public function verifyPost(Request $request, $id)
+{
+    $request->validate([
+        'post_verify' => 'required|in:0,1',
+    ]);
+
+    $updated = DB::table('posts')
+        ->where('id', $id)
+        ->update([
+            'post_verify' => $request->post_verify,
+            'updated_at' => now()
         ]);
 
-        // Use query builder to update the post_verify field
-        $updated = DB::table('posts')
-            ->where('id', $id)
-            ->update(['post_verify' => $request->post_verify]);
+    return back()->with(
+        $updated ? 'success' : 'error',
+        $updated
+            ? 'Project status updated successfully.'
+            : 'No changes were made.'
+    );
+}
 
-        if ($updated) {
-            return back()->with('success', 'Project status updated successfully.');
-        } else {
-            return back()->with('error', 'Failed to update project status.');
-        }
-    }
 
    
 }

@@ -173,7 +173,7 @@
                         <i class="bi bi-check-circle-fill"></i> Verified
                     </span>
                 </h3>
-                <p class="location">Manufacturer | Pune–Raigad</p>
+                <p class="location">Manufacturer | {{$supplier_data->statename}}.{{$supplier_data->regionname}}.{{$supplier_data->cityname}}</p>
 
                 <div class="tags">
                     @foreach($categories as $category)

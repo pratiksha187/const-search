@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Storage;
 use App\Helpers\ProfileCompletionHelper;
 use Illuminate\Support\Facades\Session;
 
@@ -93,7 +93,7 @@ class HomeController extends Controller
         $work_subtypes = DB::table('work_subtypes')->get();
         $budget_range = DB::table('budget_range')->get();
 
-        $unit = DB::table('unit')->get();
+        $unit = DB::table('cust_unit')->get();
         return view('web.post',compact('work_subtypes','customer_id','budget_range','unit','work_types','states','cust_data','notifications','notificationCount'));
     }
 
@@ -878,6 +878,88 @@ class HomeController extends Controller
         return response()->json(['success' => true]);
     }
 
+
+    // public function productenquirystore(Request $request)
+    // {
+        
+    //     $c_id =$request->customer_id;
+    //     $v_id =$request->vendor_id;
+
+    //     if($request->customer_id){
+    //         $u_id = 'c_'.$c_id;
+
+    //     }elseif($request->vendor_id){
+    //         $u_id =  'v_'.$v_id;  
+    //     }
+
+    //     // handle attachments
+    //     $files = [];
+    //     if ($request->hasFile('attachments')) {
+    //         foreach ($request->file('attachments') as $file) {
+    //             $files[] = $file->store('supplier_enquiries', 'public');
+    //         }
+    //     }
+
+    //     DB::table('supplier_enquiries')->insert([
+    //         'supplier_id'        => $request->supplier_id,
+    //         'user_id'                => $u_id, 
+    //         'category'           => $request->category,
+    //         'quantity'           => $request->quantity,
+    //         'specs'              => $request->specs,
+    //         'delivery_location'  => $request->delivery_location,
+    //         'required_by'        => $request->required_by,
+    //         'attachments'        => json_encode($files),
+    //         'created_at'         => now(),
+    //         'updated_at'         => now(),
+    //     ]);
+
+    //     return back()->with('success', 'Enquiry sent successfully!');
+    // }
+
+public function productenquirystore(Request $request)
+{
+    // Determine user
+    $u_id = null;
+
+    if ($request->customer_id) {
+        $u_id = 'c_' . $request->customer_id;
+    } elseif ($request->vendor_id) {
+        $u_id = 'v_' . $request->vendor_id;
+    } else {
+        return response()->json([
+            'status' => false,
+            'message' => 'User not identified'
+        ], 400);
+    }
+
+    // Handle attachments
+    $files = [];
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $file) {
+            $files[] = $file->store('supplier_enquiries', 'public');
+        }
+    }
+
+    // Save enquiry
+    DB::table('supplier_enquiries')->insert([
+        'supplier_id'       => $request->supplier_id,
+        'user_id'           => $u_id,
+        'category'          => $request->category,
+        'quantity'          => $request->quantity,
+        'specs'             => $request->specs,
+        'delivery_location' => $request->delivery_location,
+        'required_by'       => $request->required_by,
+        'attachments'       => json_encode($files),
+        'created_at'        => now(),
+        'updated_at'        => now(),
+    ]);
+
+    // ✅ RETURN JSON (NOT redirect)
+    return response()->json([
+        'status' => true,
+        'message' => 'Enquiry sent successfully'
+    ]);
+}
 
 
 }

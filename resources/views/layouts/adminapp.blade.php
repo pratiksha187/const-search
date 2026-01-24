@@ -178,6 +178,11 @@
                  Leads Verification
             </a>
 
+            <a href="{{ route('supplier_verification') }}" class="menu-item">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                 Supplier Verification
+            </a>
+
         </nav>
 
         <div class="sidebar-footer">

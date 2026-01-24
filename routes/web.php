@@ -59,7 +59,9 @@ Route::get('/logout', [LoginRegController::class, 'logout'])->name('logout');
 
 Route::get('/post', [HomeController::class, 'post'])->name('post');
 
-Route::post('/posts/{id}', [AdminController::class, 'verifyPost'])->name('posts.verify');
+// Route::post('/posts/{id}', [AdminController::class, 'verifyPost'])->name('posts.verify');
+Route::post('/posts/{id}', [AdminController::class, 'verifyPost'])
+    ->name('posts.verify');
 
 
 Route::get('/postverification', [AdminController::class, 'postverification'])->name('postverification');
@@ -305,9 +307,19 @@ Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
 Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsapproved'])
     ->name('admin.vendorsapproved');
 
-Route::post('/admin/vendors/{id}/status',
-    [AdminController::class, 'updateStatus']
-)->name('admin.vendors.status');
+    Route::get('/admin/supplier/approved/{id}', [AdminController::class, 'supplierapproved'])
+    ->name('admin.supplierapproved');
+
+
+    Route::post('/admin/vendors/{id}/status',
+        [AdminController::class, 'updateStatus']
+    )->name('admin.vendors.status');
+
+    Route::post('/admin/supplier/{id}/status',
+        [AdminController::class, 'updatesupplierStatus']
+    )->name('admin.supplier.status');
+
+
  // STATE
     Route::get('/states', [StateController::class, 'index'])->name('states.index');
     Route::post('/states', [StateController::class, 'store'])->name('states.store');
@@ -338,11 +350,19 @@ Route::post('/admin/vendors/{id}/status',
     )->name('customer.notification.action');
    
     Route::get('vendor_verification', [AdminController::class, 'vendor_verification'])->name('vendor_verification');
+    Route::get('supplier_verification', [AdminController::class, 'supplier_verification'])->name('supplier_verification');
+
+    Route::post('/send-suppliersenquiry', [HomeController::class, 'suppliersenquirystore'])
+     ->name('enquiry.store');
 
     // Route::post('freeleadupload', [AdminController::class, 'freeleadupload'])->name('vendor.freelead.upload');
     Route::post('/vendor/free-lead/upload', 
         [AdminController::class, 'uploadFreeLead']
     )->name('vendor.freelead.upload');
+
+    Route::post('/supplier/send-quote', [SuppliersController::class, 'sendQuote'])
+     ->name('supplier.sendQuote');
+
 
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

@@ -256,7 +256,7 @@ body{ background:var(--bg); }
         <div class="dashboard-header-right">
             <div class="header-badge">
                 <i class="bi bi-shield-check"></i>
-                Verified Customer get more leads
+                Verified Vendor get more leads
             </div>
         </div>
     </div>

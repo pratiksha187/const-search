@@ -387,7 +387,7 @@
                   <span>MOQ: {{ $supplier->minimum_order_qty ?? 'N/A' }}</span>
                   <span class="green">{{ $supplier->dispatch_time ?? 'Same / Next Day' }}</span>
                </div>
-               <!-- <button class="btn-quote">Request Quote</button> -->
+               
             </div>
             @endforeach
          </div>
@@ -458,8 +458,10 @@
         <div class="modal-body">
 
           <!-- <input type="hidden" name="supplier_id" id="modalSupplierId"> -->
-          <input type="hidden" name="supplier_id" id="modalSupplierId" value="{{ $supplier->id }}">
-
+         <input type="hidden" name="supplier_id" id="modalSupplierId" value="{{ $supplier->id }}">
+         <input type="hidden" name="customer_id" value="{{ session('customer_id') }}">
+         <input type="hidden" name="vendor_id" value="{{ session('vendor_id') }}">
+        
           <div class="row g-3">
 
             <div class="col-md-6">
@@ -544,148 +546,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    const enquiryModalEl = document.getElementById('enquiryModal');
-    const enquiryModal   = enquiryModalEl
-        ? new bootstrap.Modal(enquiryModalEl)
-        : null;
-
-    document.querySelectorAll('.cta-quote').forEach(btn => {
-
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            // Optional: reset form each time
-            const form = document.getElementById('enquiryForm');
-            if (form) form.reset();
-
-            enquiryModal?.show();
-        });
-
-    });
-
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const form = document.getElementById('enquiryForm');
-    if (!form) return;
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Sending...';
-
-        const formData = new FormData(form);
-
-        fetch("{{ route('productenquiry') }}", {
-            method: "POST",
-            headers: {
-                'X-CSRF-TOKEN': document
-                    .querySelector('meta[name="csrf-token"]')
-                    .getAttribute('content')
-            },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-
-            if (data.status === true) {
-                alert('✅ Enquiry sent successfully');
-
-                bootstrap.Modal
-                    .getInstance(document.getElementById('enquiryModal'))
-                    .hide();
-
-                form.reset();
-            } else {
-                alert(data.message || '❌ Something went wrong');
-            }
-
-        })
-        .catch(() => {
-            alert('❌ Server error. Please try again.');
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'Send enquiry';
-        });
-    });
-
-});
-</script> -->
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    if (typeof bootstrap === 'undefined') {
-        console.error('Bootstrap not loaded');
-        return;
-    }
-
-    const enquiryModalEl = document.getElementById('enquiryModal');
-    const form           = document.getElementById('enquiryForm');
-    const csrfToken      = document.querySelector('meta[name="csrf-token"]');
-
-    if (!enquiryModalEl || !form) {
-        console.error('Modal or form not found');
-        return;
-    }
-
-    const enquiryModal = new bootstrap.Modal(enquiryModalEl);
-
-    document.querySelectorAll('.cta-quote').forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            form.reset();
-            enquiryModal.show();
-        });
-    });
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'Sending...';
-
-        const formData = new FormData(form);
-
-        fetch("{{ route('productenquirystore') }}", {
-            method: "POST",
-            headers: csrfToken ? {
-                'X-CSRF-TOKEN': csrfToken.getAttribute('content')
-            } : {},
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === true) {
-                alert('✅ Enquiry sent successfully');
-                enquiryModal.hide();
-                form.reset();
-            } else {
-                alert(data.message || '❌ Something went wrong');
-                bootstrap.Modal.getOrCreateInstance(
-                        document.getElementById('paymentModal')
-                  ).show();
-            }
-        })
-        .catch(() => {
-            alert('❌ Server error. Please try again.');
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'Send enquiry';
-        });
-    });
-
-});
-</script> -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -726,13 +587,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const formData = new FormData(form);
 
-        fetch("{{ route('productenquirystore') }}", {
-            method: "POST",
-            headers: csrfToken ? {
-                'X-CSRF-TOKEN': csrfToken.getAttribute('content')
-            } : {},
-            body: formData
-        })
+      //   fetch("{{ route('productenquirystore') }}", {
+      //       method: "POST",
+      //       headers: csrfToken ? {
+      //           'X-CSRF-TOKEN': csrfToken.getAttribute('content')
+      //       } : {},
+      //       body: formData
+      //   })
+      fetch("{{ route('productenquirystore') }}", {
+    method: "POST",
+    headers: {
+        'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+        'Accept': 'application/json'
+    },
+    body: formData
+})
+
         .then(res => res.json())
         .then(data => {
             if (data.status === true) {

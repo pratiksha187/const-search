@@ -25,44 +25,62 @@ body{
 }
 .cardx{
     background:#fff;
-    border:1px solid var(--line);
-    border-radius:16px;
-    padding:20px;
-    box-shadow:0 8px 30px rgba(0,0,0,.06);
+    border-radius:20px;
+    padding:26px;
+    border:none;
+    box-shadow:0 20px 45px rgba(15,23,42,.08);
+    margin-bottom:24px;
 }
-.form-label{font-weight:600;}
+.form-control,
+.form-select{
+    border-radius:12px;
+    padding:12px 14px;
+    border:1px solid #e5e7eb;
+}
+
+.form-control:focus,
+.form-select:focus{
+    border-color:#f25c05;
+    box-shadow:0 0 0 3px rgba(242,92,5,.15);
+}
 .save-bar{
     position:sticky;
     bottom:0;
-    background:#fff;
-    padding:16px;
-    border-top:1px solid var(--line);
-    box-shadow:0 -8px 25px rgba(0,0,0,.08);
-    z-index:999;
-}
-.save-btn{
-    background:#f25c05;
-    color:#fff;
-    border:none;
-    border-radius:40px;
-    padding:14px 50px;
-    font-weight:700;
+    background:linear-gradient(180deg,#ffffff,#f8fafc);
+    padding:18px 24px;
+    border-top:1px solid #e5e7eb;
+    box-shadow:0 -14px 40px rgba(0,0,0,.15);
 }
 
+.save-btn{
+    background:linear-gradient(135deg,#f25c05,#ea580c);
+    padding:14px 56px;
+    font-size:16px;
+    box-shadow:0 12px 25px rgba(242,92,5,.45);
+}
+.save-btn:hover{
+    transform:translateY(-2px);
+}
 /* PROGRESS */
 .progress-wrapper{
-    background:#1e293b;
-    border-radius:16px;
-    padding:20px;
+    background:linear-gradient(135deg,#1e293b,#0f172a);
+    border-radius:18px;
+    padding:24px;
     color:#fff;
+    box-shadow:0 18px 40px rgba(15,23,42,.35);
 }
+
 .step-card{
-    background:#0f172a;
-    border-radius:14px;
+    background:rgba(255,255,255,.08);
+    border-radius:16px;
     padding:18px;
     min-height:140px;
-    opacity:.6;
-    cursor:pointer;
+    transition:.3s;
+}
+
+.step-card:hover{
+    transform:translateY(-4px);
+    background:rgba(255,255,255,.14);
 }
 .step-card.active{opacity:1;}
 .step-badge{
@@ -127,21 +145,29 @@ body{
     display: none;
 }
 
-.pill-content {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    border: 1px solid #e5e7eb;
-    border-radius: 999px;
-    background: #fff;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all .25s ease;
+.pill-content{
+    padding:10px 16px;
+    font-size:14px;
+    border-radius:999px;
+    box-shadow:0 6px 14px rgba(0,0,0,.06);
 }
+
 
 .material-pill:hover .pill-content {
     border-color: #f25c05;
+}
+.category-tabs{
+    max-height:70vh;
+    overflow-y:auto;
+}
+
+.category-tabs .list-group-item{
+    transition:.2s;
+}
+
+.category-tabs .list-group-item:hover{
+    background:#fff7f0;
+    color:#f25c05;
 }
 
 .material-pill input:checked + .pill-content {
@@ -153,6 +179,13 @@ body{
 
 .pill-icon {
     font-size: 14px;
+}
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
 }
 
 
@@ -233,7 +266,14 @@ $materialIconMap = [
 @endphp
 
 <div class="page">
-<h4 class="mb-3">🧾 Supplier Registration</h4>
+<div class="page-header mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Supplier Registration</h3>
+        <p class="text-muted mb-0">
+            Complete your profile to start receiving verified enquiries
+        </p>
+    </div>
+</div>
 
 {{-- ================= PROGRESS ================= --}}
 
@@ -456,57 +496,34 @@ $materialIconMap = [
                   >
             </div>
             {{-- Materials --}}
-            <!-- <div class="col-md-12">
-               <label class="form-label fw-bold">
-               Materials Supplied
-               </label>
-               <div class="row">
+           
+            <div class="col-md-12">
+               <label class="form-label fw-bold">Materials Supplied</label>
+
+               <div class="d-flex flex-wrap gap-3">
                   @foreach ($material_categories as $material_category)
-                  <div class="col-md-4">
-                     <div class="form-check">
-                        <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="material_category[]"
-                        id="material_category_{{ $material_category->id }}"
-                        value="{{ $material_category->id }}"
-                        {{ in_array($material_category->id, $selectedMaterials) ? 'checked' : '' }}
-                        >
-                        <label class="form-check-label" for="material_category_{{ $material_category->id }}">
-                        {{ $material_category->name }}
+
+                        @php
+                           $icon = $materialIconMap[$material_category->name] ?? '📦';
+                        @endphp
+
+                        <label class="material-pill">
+                           <input
+                              type="checkbox"
+                              name="material_category[]"
+                              value="{{ $material_category->id }}"
+                              {{ in_array($material_category->id, $selectedMaterials) ? 'checked' : '' }}
+                           >
+
+                           <span class="pill-content">
+                              <span class="pill-icon">{{ $icon }}</span>
+                              <span class="pill-text">{{ $material_category->name }}</span>
+                           </span>
                         </label>
-                     </div>
-                  </div>
+
                   @endforeach
                </div>
-            </div> -->
-            <div class="col-md-12">
-    <label class="form-label fw-bold">Materials Supplied</label>
-
-    <div class="d-flex flex-wrap gap-2">
-        @foreach ($material_categories as $material_category)
-
-            @php
-                $icon = $materialIconMap[$material_category->name] ?? '📦';
-            @endphp
-
-            <label class="material-pill">
-                <input
-                    type="checkbox"
-                    name="material_category[]"
-                    value="{{ $material_category->id }}"
-                    {{ in_array($material_category->id, $selectedMaterials) ? 'checked' : '' }}
-                >
-
-                <span class="pill-content">
-                    <span class="pill-icon">{{ $icon }}</span>
-                    <span class="pill-text">{{ $material_category->name }}</span>
-                </span>
-            </label>
-
-        @endforeach
-    </div>
-</div>
+            </div>
 
          </div>
       </div>
@@ -991,11 +1008,6 @@ const SAVED_REGION = "{{ isset($supplier) ? $supplier->region_id : '' }}";
 const SAVED_CITY = "{{ isset($supplier) ? $supplier->city_id : '' }}";
 </script>
 
-<!-- <script>
-const SAVED_STATE="{{ $supplier->state_id ?? '' }}";
-const SAVED_REGION="{{ $supplier->region_id ?? '' }}";
-const SAVED_CITY="{{ $supplier->city_id ?? '' }}";
-</script> -->
 <script>
    $(document).ready(function () {
    
@@ -1164,5 +1176,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
+
+
+
+document.querySelectorAll('.tab-pane').forEach(p=>{
+    if(p.classList.contains('active')){
+        document.querySelector(`[onclick*="${p.id}"]`)?.classList.add('active');
+    }
+});
+
 </script>
+
 @endsection

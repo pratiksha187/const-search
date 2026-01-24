@@ -116,28 +116,32 @@ body{
 .dashboard-stats .stat-box{
     background:#fff;
     border-radius:18px;
-    padding:24px;
+    padding:22px;
     display:flex;
-    align-items:flex-start;
-    gap:18px;
-    box-shadow:0 12px 30px rgba(15,23,42,.08);
+    align-items:center;
+    gap:16px;
+    height:100%;
+    min-height:120px;
+    box-shadow:0 10px 28px rgba(15,23,42,.08);
     transition:.25s;
 }
+
 
 .dashboard-stats .stat-box:hover{
     transform:translateY(-4px);
 }
 
 /* ICON */
+
 .stat-box .icon{
-    width:54px;
-    height:54px;
+    width:56px;
+    height:56px;
+    min-width:56px;
     border-radius:14px;
     display:flex;
     align-items:center;
     justify-content:center;
     font-size:22px;
-    color:#fff;
 }
 
 .icon.blue{ background:#3b82f6; }
@@ -146,12 +150,17 @@ body{
 .icon.green{ background:#10b981; }
 
 /* INFO */
-.stat-info span{
-    font-size:14px;
-    color:#64748b;
-    display:block;
-    margin-bottom:4px;
+.stat-info{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 }
+
+.stat-info span{
+    font-size:13px;
+    font-weight:500;
+}
+
 
 .stat-info h3{
     margin:0;
@@ -182,6 +191,14 @@ body{
         font-size:26px;
     }
 }
+
+@media(max-width:768px){
+    .dashboard-stats .stat-box{
+        padding:18px;
+        min-height:auto;
+    }
+}
+
 /* CARD */
 .card-box{
     background:#fff;
@@ -417,7 +434,7 @@ body{
   <div class="row g-4 mt-2">
 
     <!-- RECENT ENQUIRIES -->
-    <div class="col-xl-8">
+    <div class="col-xl-12">
         <div class="card-box">
             <div class="card-header">
                 <h5>Recent Enquiries</h5>
@@ -476,7 +493,7 @@ body{
     </div>
 
     <!-- PROFILE COMPLETION -->
-    <div class="col-xl-4">
+    <!-- <div class="col-xl-4">
         <div class="card-box">
             <h5>Complete Your Profile</h5>
 
@@ -502,7 +519,7 @@ body{
                 Become Featured Supplier →
             </button>
         </div>
-    </div>
+    </div> -->
 
 </div>
 
@@ -511,7 +528,7 @@ body{
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+<!-- <script>
 /* PRODUCTS ADDED – LINE CHART */
 new Chart(document.getElementById('productChart'), {
     type: 'line',
@@ -558,6 +575,6 @@ new Chart(document.getElementById('categoryChart'), {
         plugins: { legend: { position: 'bottom' } }
     }
 });
-</script>
+</script> -->
 
 @endsection
