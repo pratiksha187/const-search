@@ -449,7 +449,7 @@ $(document).ready(function () {
 
 });
 </script>
-<script>
+<!-- <script>
 document.addEventListener('DOMContentLoaded', function () {
 
     const isLoggedIn = @json($isLoggedIn);
@@ -475,6 +475,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+});
+</script> -->
+<script>
+document.addEventListener('click', function (e) {
+
+    const btn = e.target.closest('.btn-view-profile');
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const isLoggedIn = @json($isLoggedIn);
+    const profileUrl = btn.dataset.url;
+
+    const loginModalEl = document.getElementById('loginModal');
+    const loginModal = loginModalEl ? new bootstrap.Modal(loginModalEl) : null;
+
+    // 🔐 Not logged in
+    if (!isLoggedIn) {
+        loginModal?.show();
+        return;
+    }
+
+    // ✅ Logged in
+    window.location.href = profileUrl;
 });
 </script>
 
@@ -528,9 +552,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
-
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 

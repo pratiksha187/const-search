@@ -43,7 +43,6 @@ Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name(
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
 
 
-
 Route::get('/get-regions/{state_id}', [HomeController::class, 'getRegions']);
 Route::get('/get-cities/{region_id}', [HomeController::class, 'getCities']);
 
