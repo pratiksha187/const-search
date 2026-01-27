@@ -500,31 +500,82 @@ class HomeController extends Controller
     }
 
     
-    public function store(Request $request)
+    // public function store(Request $request)
+    // {
+    //     $customer_id = Session::get('customer_id');
+
+    //     $check_post_count = DB::table('posts')
+    //         ->where('user_id', $customer_id)
+    //         ->count(); // direct count
+
+    //     // If user has posted 3 or more, return JSON so JS can handle
+    //     if ($check_post_count >= 3) {
+    //         return response()->json([
+    //             'status' => 'payment_required',
+    //             'message' => 'You have reached the free post limit. Payment required.',
+    //             'post_count' => $check_post_count,
+    //         ]);
+    //     }
+
+    //     // Validate
+    //     $request->validate([
+    //         'title'           => 'required|string|max:255',
+    //         'work_type_id'    => 'required|integer',
+    //         'work_subtype_id' => 'required|integer',
+    //         'state'           => 'nullable|string',
+    //         'region_id'       => 'nullable|string',
+    //         'city_id'         => 'nullable|string',
+    //         'budget'          => 'required|integer',
+    //         'contact_name'    => 'required|string|max:255',
+    //         'mobile'          => 'required|string|max:20',
+    //         'email'           => 'required|email',
+    //         'description'     => 'required|string',
+    //         'area'            => 'required|string',
+    //     ]);
+
+    //     // Upload files
+    //     $uploadedFiles = [];
+    //     if ($request->hasFile('files')) {
+    //         foreach ($request->file('files') as $file) {
+    //             $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+    //             $file->move(public_path('uploads/posts'), $filename);
+    //             $uploadedFiles[] = $filename;
+    //         }
+    //     }
+
+    //     DB::table('posts')->insert([
+    //         'user_id'         => $customer_id,
+    //         'title'           => $request->title,
+    //         'work_type_id'    => $request->work_type_id,
+    //         'area'            => $request->area,
+    //         'work_subtype_id' => $request->work_subtype_id,
+    //         'state'           => $request->state,
+    //         'region'          => $request->region_id,
+    //         'city'            => $request->city_id,
+    //         'budget_id'       => $request->budget,
+    //         'contact_name'    => $request->contact_name,
+    //         'mobile'          => $request->mobile,
+    //         'email'           => $request->email,
+    //         'description'     => $request->description,
+    //         'files'           => json_encode($uploadedFiles),
+    //         'created_at'      => now(),
+    //         'updated_at'      => now(),
+    //     ]);
+
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'message' => 'Project Posted Successfully!',
+    //     ]);
+    // }
+ public function store(Request $request)
     {
         $customer_id = Session::get('customer_id');
 
-        $check_post_count = DB::table('posts')
-            ->where('user_id', $customer_id)
-            ->count(); // direct count
-
-        // If user has posted 3 or more, return JSON so JS can handle
-        if ($check_post_count >= 3) {
-            return response()->json([
-                'status' => 'payment_required',
-                'message' => 'You have reached the free post limit. Payment required.',
-                'post_count' => $check_post_count,
-            ]);
-        }
-
-        // Validate
+        /* ================= VALIDATION ================= */
         $request->validate([
             'title'           => 'required|string|max:255',
             'work_type_id'    => 'required|integer',
             'work_subtype_id' => 'required|integer',
-            'state'           => 'nullable|string',
-            'region_id'       => 'nullable|string',
-            'city_id'         => 'nullable|string',
             'budget'          => 'required|integer',
             'contact_name'    => 'required|string|max:255',
             'mobile'          => 'required|string|max:20',
@@ -533,41 +584,123 @@ class HomeController extends Controller
             'area'            => 'required|string',
         ]);
 
-        // Upload files
-        $uploadedFiles = [];
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-                $file->move(public_path('uploads/posts'), $filename);
-                $uploadedFiles[] = $filename;
+        /* =====================================================
+           🟡 GUEST USER → STORE IN SESSION
+        ===================================================== */
+        if (!$customer_id) {
+
+            Session::put('pending_post', $request->except(['_token', 'files']));
+
+            $tempFiles = [];
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $name = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                    $file->move(public_path('uploads/temp_posts'), $name);
+                    $tempFiles[] = $name;
+                }
+            }
+
+            Session::put('pending_post_files', $tempFiles);
+
+            return response()->json([
+                'status' => 'login_required',
+                'message' => 'Login required'
+            ]);
+        }
+
+        /* =====================================================
+           POST LIMIT CHECK
+        ===================================================== */
+        $count = DB::table('posts')->where('user_id', $customer_id)->count();
+        if ($count >= 3) {
+            return response()->json([
+                'status' => 'payment_required'
+            ]);
+        }
+
+        /* =====================================================
+           SAVE POST DIRECTLY (LOGGED IN)
+        ===================================================== */
+        $this->insertPost(
+            $customer_id,
+            $request->all(),
+            $request->file('files')
+        );
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Project Posted Successfully'
+        ]);
+    }
+
+    /* =====================================================
+       SAVE POST FROM SESSION (AFTER LOGIN / REGISTER)
+    ===================================================== */
+    public function savePostFromSession()
+    {
+        if (
+            !Session::has('customer_id') ||
+            !Session::has('pending_post')
+        ) {
+            return;
+        }
+
+        $customer_id = Session::get('customer_id');
+        $data  = Session::get('pending_post');
+        $files = Session::get('pending_post_files', []);
+
+        $this->insertPost($customer_id, $data, $files, true);
+
+        Session::forget([
+            'pending_post',
+            'pending_post_files'
+        ]);
+    }
+
+    /* =====================================================
+       COMMON INSERT METHOD (SINGLE SOURCE OF TRUTH)
+    ===================================================== */
+    private function insertPost($customer_id, $data, $files, $fromSession = false)
+    {
+        $uploaded = [];
+
+        if ($files) {
+            foreach ($files as $file) {
+
+                if ($fromSession) {
+                    // move temp → final
+                    rename(
+                        public_path("uploads/temp_posts/$file"),
+                        public_path("uploads/posts/$file")
+                    );
+                    $uploaded[] = $file;
+                } else {
+                    $name = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                    $file->move(public_path('uploads/posts'), $name);
+                    $uploaded[] = $name;
+                }
             }
         }
 
         DB::table('posts')->insert([
             'user_id'         => $customer_id,
-            'title'           => $request->title,
-            'work_type_id'    => $request->work_type_id,
-            'area'            => $request->area,
-            'work_subtype_id' => $request->work_subtype_id,
-            'state'           => $request->state,
-            'region'          => $request->region_id,
-            'city'            => $request->city_id,
-            'budget_id'       => $request->budget,
-            'contact_name'    => $request->contact_name,
-            'mobile'          => $request->mobile,
-            'email'           => $request->email,
-            'description'     => $request->description,
-            'files'           => json_encode($uploadedFiles),
+            'title'           => $data['title'],
+            'work_type_id'    => $data['work_type_id'],
+            'work_subtype_id' => $data['work_subtype_id'],
+            'area'            => $data['area'],
+            'state'           => $data['state'] ?? null,
+            'region'          => $data['region_id'] ?? null,
+            'city'            => $data['city_id'] ?? null,
+            'budget_id'       => $data['budget'],
+            'contact_name'    => $data['contact_name'],
+            'mobile'          => $data['mobile'],
+            'email'           => $data['email'],
+            'description'     => $data['description'],
+            'files'           => json_encode($uploaded),
             'created_at'      => now(),
             'updated_at'      => now(),
         ]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Project Posted Successfully!',
-        ]);
     }
-
    
     public function leadmarketplace(){
         return view('web.lead_marketplace');

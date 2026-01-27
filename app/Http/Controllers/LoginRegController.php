@@ -178,7 +178,7 @@ class LoginRegController extends Controller
             //  dd($customerId);
             // customer
            Session::put('customer_id', $customerId);
-
+            app(HomeController::class)->savePostFromSession();
         }
 
         $redirectUrl = match ($request->role) {
@@ -240,6 +240,7 @@ class LoginRegController extends Controller
             Session::put('customer_id', $user->id);
             Session::put('user_name', $user->name);
             Session::put('user_role', 'customer');
+            app(HomeController::class)->savePostFromSession();
 
             return response()->json([
                 'status'   => true,

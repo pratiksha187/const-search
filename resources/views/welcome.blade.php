@@ -704,7 +704,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                 </h1>
 
                 <div class="hero-link mt-4">
-                    <a href="{{ url('/post-project') }}" class="cta-link">
+                    <a href="{{ route('myposts') }}" class="cta-link">
                         Post Your Project Free →
                     </a>
                 </div>

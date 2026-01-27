@@ -422,6 +422,28 @@ textarea.form-control-lg {
     </div>
   </div>
 </div>
+<div class="modal fade" id="loginRegisterModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-4 rounded-4">
+
+      <h4 class="fw-bold text-center mb-2">Login Required</h4>
+      <p class="text-muted text-center">
+        Please login or register to submit your project
+      </p>
+
+      <a href="{{ route('login_register') }}"
+         class="btn btn-dark w-100 mb-2">
+         Login
+      </a>
+
+      <a href="{{ route('login_register') }}"
+         class="btn btn-outline-dark w-100">
+         Register
+      </a>
+
+    </div>
+  </div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -624,61 +646,115 @@ $(document).ready(function () {
 });
 </script>
 <script>
-$(document).ready(function () {
+// $(document).ready(function () {
 
-    $('form').on('submit', function (e) {
-        e.preventDefault(); // prevent normal submit
+//     $('form').on('submit', function (e) {
+//         e.preventDefault(); // prevent normal submit
 
-        let form = this;
-        let formData = new FormData(form);
+//         let form = this;
+//         let formData = new FormData(form);
 
-        $.ajax({
-            url: $(form).attr('action'),
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (res) {
+//         $.ajax({
+//             url: $(form).attr('action'),
+//             type: 'POST',
+//             data: formData,
+//             processData: false,
+//             contentType: false,
+//             success: function (res) {
 
-                if (res.status === 'payment_required') {
-                    // Show payment modal
-                    new bootstrap.Modal(
-                        document.getElementById('paymentModal')
-                    ).show();
-                }
+//                 if (res.status === 'payment_required') {
+//                     // Show payment modal
+//                     new bootstrap.Modal(
+//                         document.getElementById('paymentModal')
+//                     ).show();
+//                 }
 
-                if (res.status === 'success') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: res.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = "{{ route('myposts') }}";
-                    });
-                }
+//                 if (res.status === 'success') {
+//                     Swal.fire({
+//                         icon: 'success',
+//                         title: res.message,
+//                         timer: 2000,
+//                         showConfirmButton: false
+//                     }).then(() => {
+//                         window.location.href = "{{ route('myposts') }}";
+//                     });
+//                 }
 
-            },
-            error: function (xhr) {
-                if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    let msgs = Object.values(errors).flat().join('<br>');
-                    Swal.fire('Validation Error', msgs, 'error');
-                } else {
-                    Swal.fire('Error', 'Something went wrong', 'error');
-                }
+//             },
+//             error: function (xhr) {
+//                 if (xhr.status === 422) {
+//                     let errors = xhr.responseJSON.errors;
+//                     let msgs = Object.values(errors).flat().join('<br>');
+//                     Swal.fire('Validation Error', msgs, 'error');
+//                 } else {
+//                     Swal.fire('Error', 'Something went wrong', 'error');
+//                 }
+//             }
+//         });
+
+//     });
+
+//     // Handle payment action
+//     $('#payNowBtn').on('click', function () {
+//         // Redirect to payment page
+//         // window.location.href = "";
+//     });
+
+// });
+$('form').on('submit', function (e) {
+    e.preventDefault();
+
+    let form = this;
+    let formData = new FormData(form);
+
+    $.ajax({
+        url: $(form).attr('action'),
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        success: function (res) {
+
+            if (res.status === 'login_required') {
+                // 🔐 Open login/register modal
+                new bootstrap.Modal(
+                    document.getElementById('loginRegisterModal')
+                ).show();
+                return;
             }
-        });
 
+            if (res.status === 'payment_required') {
+                new bootstrap.Modal(
+                    document.getElementById('paymentModal')
+                ).show();
+                return;
+            }
+
+            if (res.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: res.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = "{{ route('myposts') }}";
+                });
+            }
+        },
+
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                let errors = xhr.responseJSON.errors;
+                let msgs = Object.values(errors).flat().join('<br>');
+                Swal.fire('Validation Error', msgs, 'error');
+            } else {
+                Swal.fire('Error', 'Something went wrong', 'error');
+            }
+        }
     });
-
-    // Handle payment action
-    $('#payNowBtn').on('click', function () {
-        // Redirect to payment page
-        // window.location.href = "";
-    });
-
 });
+
 </script>
 <script>
 const projectTitleSamples = {
