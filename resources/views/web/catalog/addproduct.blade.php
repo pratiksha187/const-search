@@ -68,6 +68,7 @@ $categories = [
 
 <div class="container-fluid py-4">
 
+    <input type="hidden" id="GLOBAL_CATEGORY_ID">
     <!-- HEADER -->
     <div class="card mb-4 shadow-sm">
         <div class="card-body">
@@ -87,52 +88,27 @@ $categories = [
                     Material Categories
                 </div>
 
-                <!-- <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
-                    <li class="list-group-item active" data-target="ConstructionChemicals" data-category-id="5">Construction & Chemicals</li>
-                    <li class="list-group-item" data-target="plumbing" data-category-id="6">Plumbing Materials</li>
-                    <li class="list-group-item" data-target="electrical" data-category-id="7">Electrical Items</li>
-                    <li class="list-group-item" data-target="doorswindows" data-category-id="8">Doors & Windows</li>
-                    <li class="list-group-item" data-target="glassglazing" data-category-id="9">Glass & Glazing</li>
-                    <li class="list-group-item" data-target="hardwaretools" data-category-id="10">Hardware & Tools</li>
-                    <li class="list-group-item" data-target="machineries" data-category-id="11">Machineries & Equipments</li>
-                    <li class="list-group-item" data-target="timberwood" data-category-id="12">Timber & Wood</li>
-                    <li class="list-group-item" data-target="roofing"  data-category-id="13">Roofing Materials </li>
-                    <li class="list-group-item" data-target="pavers"  data-category-id="14">Pavers & Kerbstones </li>
-                    <li class="list-group-item" data-target="concreteproducts"  data-category-id="15">Concrete Products</li>
-                    <li class="list-group-item" data-target="roadsafety"  data-category-id="16">Road Safety Products</li>
-                    <li class="list-group-item" data-target="facadecladding"  data-category-id="17">Facade & Cladding Materials</li>
-                    <li class="list-group-item" data-target="scaffolding" data-category-id="18">Scaffolding</li>
-                    <li class="list-group-item" data-target="hvacutilities"  data-category-id="19">HVAC & Utilities</li>
-                    <li class="list-group-item" data-target="readymix"  data-category-id="20">Ready Mix Concrete</li>
-                    <li class="list-group-item" data-target="paintcoating"  data-category-id="21">Paint & Coatings</li>
-                    <li class="list-group-item" data-target="tilesflooring"  data-category-id="22">Tiles & Flooring</li>
-                    <li class="list-group-item" data-target="steeltmt"  data-category-id="2">Steel & TMT Bars</li>
-                    <li class="list-group-item" data-target="cement-concrete" data-category-id="1">Cement & Concrete</li>
-                    <li class="list-group-item" data-target="aggregates"  data-category-id="28">Aggregates, sand, and Masonry Materials</li>
-                    <li class="list-group-item" data-target="roadconstruction"  data-category-id="29">Road Construction Materials & Asphalt Works</li>
-                    											
-                </ul> -->
                 <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
 
-@php $first = true; @endphp
+                    @php $first = true; @endphp
 
-@foreach($categories as $cat)
+                    @foreach($categories as $cat)
 
-    @if(in_array($cat['id'], $allowedCategories))
+                        @if(in_array($cat['id'], $allowedCategories))
 
-        <li class="list-group-item {{ $first ? 'active' : '' }}"
-            data-target="{{ $cat['target'] }}"
-            data-category-id="{{ $cat['id'] }}">
-            {{ $cat['name'] }}
-        </li>
+                            <li class="list-group-item {{ $first ? 'active' : '' }}"
+                                data-target="{{ $cat['target'] }}"
+                                data-category-id="{{ $cat['id'] }}">
+                                {{ $cat['name'] }}
+                            </li>
 
-        @php $first = false; @endphp
+                            @php $first = false; @endphp
 
-    @endif
+                        @endif
 
-@endforeach
+                    @endforeach
 
-</ul>
+                    </ul>
 
             </div>
         </div>
@@ -390,67 +366,108 @@ $categories = [
         </div>
     </div>
 </div>
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    const tabs = document.querySelectorAll('#categoryTabs .list-group-item');
 
-    function activateTab(tab){
-
-        // UI
-        tabs.forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.category-page')
-            .forEach(p => p.classList.remove('active'));
-
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.target).classList.add('active');
-
-        // ✅ SET CATEGORY ID IN ALL FORMS
-        document.querySelectorAll('.materialCategoryInput')
-            .forEach(input => input.value = tab.dataset.categoryId);
-
-        console.log('material_category_id:', tab.dataset.categoryId);
-    }
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => activateTab(tab));
-    });
-
-    // default
-    activateTab(tabs[0]);
-});
-</script> -->
+{{-- ================== JS ================== --}}
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    const tabs = document.querySelectorAll('#categoryTabs .list-group-item');
+    const tabs  = document.querySelectorAll('#categoryTabs .list-group-item');
     const pages = document.querySelectorAll('.category-page');
-    const categoryInput = document.getElementById('materialCategoryInput');
 
-    function activate(tab){
+    function activate(tab) {
+
+        // Reset tabs + pages
         tabs.forEach(t => t.classList.remove('active'));
         pages.forEach(p => p.classList.remove('active'));
 
+        // Activate selected tab
         tab.classList.add('active');
 
+        // Show correct page
+        const page = document.getElementById(tab.dataset.target);
+        if (page) page.classList.add('active');
+
+        // ✅ SET CATEGORY ID INTO ALL FORMS
+        document.querySelectorAll('.materialCategoryInput')
+            .forEach(input => {
+                input.value = tab.dataset.categoryId;
+            });
+
+        console.log('Selected material_category_id:', tab.dataset.categoryId);
+    }
+
+    // Click events
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => activate(tab));
+    });
+
+    // Auto-load first tab
+    if (tabs.length) {
+        activate(tabs[0]);
+    }
+
+});
+</script>
+
+{{-- FORCE SET ON SUBMIT (SAFETY NET) --}}
+<script>
+document.addEventListener('submit', function(e){
+    const activeTab = document.querySelector('#categoryTabs .list-group-item.active');
+    if(activeTab){
+        const input = e.target.querySelector('.materialCategoryInput');
+        if(input){
+            input.value = activeTab.dataset.categoryId;
+        }
+    }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tabs  = document.querySelectorAll('#categoryTabs .list-group-item');
+    const pages = document.querySelectorAll('.category-page');
+
+    function activate(tab){
+
+        // reset
+        tabs.forEach(t => t.classList.remove('active'));
+        pages.forEach(p => p.classList.remove('active'));
+
+        // activate tab
+        tab.classList.add('active');
+
+        // activate right page
         const page = document.getElementById(tab.dataset.target);
         if(page) page.classList.add('active');
 
-        if(categoryInput){
-            categoryInput.value = tab.dataset.categoryId;
-        }
+        // 🔥 SET CATEGORY ID IN ALL FORMS
+        document.querySelectorAll('.materialCategoryInput')
+            .forEach(input => {
+                input.value = tab.dataset.categoryId;
+            });
+
+        console.log(
+            'Selected material_category_id:',
+            tab.dataset.categoryId
+        );
     }
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => activate(tab));
     });
 
+    // auto activate first allowed category
     if(tabs.length){
-        activate(tabs[0]); // auto select first allowed
+        activate(tabs[0]);
     }
+
 });
 </script>
+
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -530,34 +547,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    document.querySelectorAll('.category-page').forEach(page => {
-
-        page.addEventListener('click', function () {
-
-            // remove active from all
-            document.querySelectorAll('.category-page')
-                .forEach(p => p.classList.remove('active'));
-
-            // add active to clicked
-            this.classList.add('active');
-
-            // get category id
-            const categoryId = this.dataset.categoryId;
-
-            // set input value
-            document.getElementById('materialCategoryInput').value = categoryId;
-
-            console.log('Selected material_category_id:', categoryId);
-        });
-
-    });
-
-});
-</script>
+</script> 
 
 @endsection

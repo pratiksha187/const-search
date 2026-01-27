@@ -177,7 +177,9 @@ class SuppliersController extends Controller
                 'sp.created_at'
             )
             ->orderBy('sp.id', 'desc')
-            ->get();
+            ->paginate(10)   // 🔥 THIS ENABLES PAGINATION
+            ->withQueryString(); // keeps filters while paging
+            // ->get();
         // dd($products);
         return view('web.myproducts', compact('products','supplierName'));
     }
@@ -1016,8 +1018,9 @@ public function supplierFilter(Request $request)
    
     public function storeSupplierProductData(Request $request)
     {
-        $supp_id = session('supplier_id'); // keep as-is if working
         // dd($request );
+        $supp_id = session('supplier_id'); // keep as-is if working
+       
         // ✅ FIXED VALIDATION (MATCH REQUEST)
         $request->validate([
             'material_category_id' => 'required',
@@ -1030,7 +1033,7 @@ public function supplierFilter(Request $request)
             'delivery_time'        => 'nullable',
             'product_image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
-
+        //  dd($request );
         // ✅ IMAGE UPLOAD
         $imageName = null;
         if ($request->hasFile('product_image')) {

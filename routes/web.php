@@ -366,7 +366,7 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "8805835135";
+    $password = "123456789";
     $hash = Hash::make($password);
 
     return $hash; 

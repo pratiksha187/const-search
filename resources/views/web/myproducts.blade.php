@@ -88,7 +88,8 @@
                 <tbody>
                     @forelse($products as $key => $row)
                         <tr>
-                            <td>{{ $key + 1 }}</td>
+                            <td>{{ $products->firstItem() + $key }}</td>
+
                             <td>{{ $row->category ?? '-' }}</td>
                             <td>{{ $row->product ?? '-' }}</td>
                             <td>{{ $row->subtype ?? '-' }}</td>
@@ -138,6 +139,9 @@
                     @endforelse
                 </tbody>
             </table>
+            <div class="d-flex justify-content-end mt-3">
+                {{ $products->links('pagination::bootstrap-5') }}
+            </div>
 
         </div>
     </div>

@@ -871,95 +871,55 @@ class HomeController extends Controller
         DB::table('users')
             ->where('id', $custId)
             ->increment('subscription_count', 1);
-
-        // OR activate project
-        // DB::table('posts')->where('id', $request->project_id)->update(['is_paid' => 1]);
-
         return response()->json(['success' => true]);
     }
 
 
-    // public function productenquirystore(Request $request)
-    // {
-        
-    //     $c_id =$request->customer_id;
-    //     $v_id =$request->vendor_id;
 
-    //     if($request->customer_id){
-    //         $u_id = 'c_'.$c_id;
+    public function productenquirystore(Request $request)
+    {
+        // Determine user
+        $u_id = null;
 
-    //     }elseif($request->vendor_id){
-    //         $u_id =  'v_'.$v_id;  
-    //     }
-
-    //     // handle attachments
-    //     $files = [];
-    //     if ($request->hasFile('attachments')) {
-    //         foreach ($request->file('attachments') as $file) {
-    //             $files[] = $file->store('supplier_enquiries', 'public');
-    //         }
-    //     }
-
-    //     DB::table('supplier_enquiries')->insert([
-    //         'supplier_id'        => $request->supplier_id,
-    //         'user_id'                => $u_id, 
-    //         'category'           => $request->category,
-    //         'quantity'           => $request->quantity,
-    //         'specs'              => $request->specs,
-    //         'delivery_location'  => $request->delivery_location,
-    //         'required_by'        => $request->required_by,
-    //         'attachments'        => json_encode($files),
-    //         'created_at'         => now(),
-    //         'updated_at'         => now(),
-    //     ]);
-
-    //     return back()->with('success', 'Enquiry sent successfully!');
-    // }
-
-public function productenquirystore(Request $request)
-{
-    // Determine user
-    $u_id = null;
-
-    if ($request->customer_id) {
-        $u_id = 'c_' . $request->customer_id;
-    } elseif ($request->vendor_id) {
-        $u_id = 'v_' . $request->vendor_id;
-    } else {
-        return response()->json([
-            'status' => false,
-            'message' => 'User not identified'
-        ], 400);
-    }
-
-    // Handle attachments
-    $files = [];
-    if ($request->hasFile('attachments')) {
-        foreach ($request->file('attachments') as $file) {
-            $files[] = $file->store('supplier_enquiries', 'public');
+        if ($request->customer_id) {
+            $u_id = 'c_' . $request->customer_id;
+        } elseif ($request->vendor_id) {
+            $u_id = 'v_' . $request->vendor_id;
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not identified'
+            ], 400);
         }
+
+        // Handle attachments
+        $files = [];
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $files[] = $file->store('supplier_enquiries', 'public');
+            }
+        }
+
+        // Save enquiry
+        DB::table('supplier_enquiries')->insert([
+            'supplier_id'       => $request->supplier_id,
+            'user_id'           => $u_id,
+            'category'          => $request->category,
+            'quantity'          => $request->quantity,
+            'specs'             => $request->specs,
+            'delivery_location' => $request->delivery_location,
+            'required_by'       => $request->required_by,
+            'attachments'       => json_encode($files),
+            'created_at'        => now(),
+            'updated_at'        => now(),
+        ]);
+
+        // ✅ RETURN JSON (NOT redirect)
+        return response()->json([
+            'status' => true,
+            'message' => 'Enquiry sent successfully'
+        ]);
     }
-
-    // Save enquiry
-    DB::table('supplier_enquiries')->insert([
-        'supplier_id'       => $request->supplier_id,
-        'user_id'           => $u_id,
-        'category'          => $request->category,
-        'quantity'          => $request->quantity,
-        'specs'             => $request->specs,
-        'delivery_location' => $request->delivery_location,
-        'required_by'       => $request->required_by,
-        'attachments'       => json_encode($files),
-        'created_at'        => now(),
-        'updated_at'        => now(),
-    ]);
-
-    // ✅ RETURN JSON (NOT redirect)
-    return response()->json([
-        'status' => true,
-        'message' => 'Enquiry sent successfully'
-    ]);
-}
 
 
 }
