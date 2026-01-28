@@ -490,8 +490,8 @@ class LoginRegController extends Controller
         $supplier_id = Session::get('supplier_id');
 
         $supplierName = DB::table('supplier_reg')
-        ->where('id', $supplier_id)
-        ->value('contact_person'); 
+                        ->where('id', $supplier_id)
+                        ->value('contact_person'); 
 
         /* ===============================
         PRODUCTS STATS
@@ -511,6 +511,36 @@ class LoginRegController extends Controller
             ->latest()
             ->value('price');
 
+        // $supp_enq_data= DB::table('supplier_enquiries as se')
+        //                 ->leftJoin('users as u', 'u.id', '=', 'se.user_id')
+        //                 ->where('supplier_id', $supplier_id)
+        //                 ->get();
+        $supp_enq_data = DB::table('supplier_enquiries as se')
+                            ->leftJoin('users as u', function ($join) {
+                                $join->on(DB::raw("SUBSTRING(se.user_id, 3)"), '=', 'u.id')
+                                    ->where('se.user_id', 'like', 'c_%');
+                            })
+                            ->leftJoin('vendor_reg as v', function ($join) {
+                                $join->on(DB::raw("SUBSTRING(se.user_id, 3)"), '=', 'v.id')
+                                    ->where('se.user_id', 'like', 'v_%');
+                            })
+                            ->where('se.supplier_id', $supplier_id)
+                            ->select(
+                                'se.*','v.*',
+                                DB::raw("COALESCE(u.name, v.name) as name"),
+                                DB::raw("CASE 
+                                    WHEN se.user_id LIKE 'c_%' THEN 'customer'
+                                    ELSE 'vendor_reg'
+                                END as user_type")
+                            )
+                            ->get();
+
+        $notifications = DB::table('supplier_enquiries as se')
+                        ->where('se.supplier_id', $supplier_id)
+                        ->get();
+                        // dd($notifications);
+        $notificationCount = $notifications->count();
+        // dd($supp_enq_data);
         /* ===============================
         PRODUCTS ADDED – LAST 7 DAYS
         =============================== */
@@ -521,7 +551,7 @@ class LoginRegController extends Controller
             ->groupBy('date')
             ->orderBy('date')
             ->get();
-
+ 
         $labels = [];
         $values = [];
 
@@ -539,13 +569,14 @@ class LoginRegController extends Controller
             ->select('mc.name', DB::raw('COUNT(sp.id) as total'))
             ->groupBy('mc.name')
             ->get();
+          
         $categoryLabels = $categoryData->pluck('name');
         $categoryCounts = $categoryData->pluck('total');
         return view('web.supplierdashboard', compact(
             'supplierName','supplier_enquiries',
             'productCount',
-            'avgPrice',
-            'latestProduct',
+            'avgPrice','supp_enq_data',
+            'latestProduct','notificationCount','notifications',
             'labels',
             'values',
             'categoryLabels',

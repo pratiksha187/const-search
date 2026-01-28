@@ -8,42 +8,29 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+
 <style>
 :root{
     --navy:#1c2c3e;
     --orange:#f25c05;
+    --bg:#f5f7fb;
     --line:#e6ebf2;
 }
-
-/* PAGE */
 body{
     background:linear-gradient(180deg,#f8fbff,#eef2f9);
 }
-
 .page{
     max-width:1202px;
     margin:87px auto 90px;
 }
-
-/* HEADER */
-.page-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding-bottom:14px;
-    border-bottom:1px solid var(--line);
-}
-
-/* CARD */
 .cardx{
     background:#fff;
     border-radius:20px;
     padding:26px;
-    margin-bottom:24px;
+    border:none;
     box-shadow:0 20px 45px rgba(15,23,42,.08);
+    margin-bottom:24px;
 }
-
-/* FORM */
 .form-control,
 .form-select{
     border-radius:12px;
@@ -53,100 +40,206 @@ body{
 
 .form-control:focus,
 .form-select:focus{
-    border-color:var(--orange);
+    border-color:#f25c05;
     box-shadow:0 0 0 3px rgba(242,92,5,.15);
 }
-
-/* PROGRESS */
-.progress-wrapper{
-    background:linear-gradient(135deg,#0f172a,#1e293b);
-    border-radius:20px;
-    padding:26px;
-    color:#fff;
-    margin-bottom:24px;
-}
-
-.progress{
-    height:8px;
-    background:rgba(255,255,255,.15);
-    border-radius:999px;
-    overflow:hidden;
-}
-
-.progress-bar{
-    background:linear-gradient(90deg,#f59e0b,#f97316,#f25c05);
-}
-
-/* STEP CARDS */
-.step-card{
-    background:rgba(255,255,255,.12);
-    border-radius:18px;
-    padding:20px;
-    height:100%;
-    cursor:pointer;
-    border:1px solid rgba(255,255,255,.15);
-}
-
-.step-card h6{
-    margin:14px 0 4px;
-    font-weight:700;
-    font-size:15px;
-}
-
-.step-card p{
-    margin:0;
-    font-size:13px;
-    opacity:.8;
-}
-
-.step-card.active{
-    background:#fff;
-    color:#111827;
-    box-shadow:0 16px 40px rgba(0,0,0,.25);
-}
-
-.step-card.active p{
-    color:#374151;
-}
-
-/* STEP BADGE */
-.step-badge{
-    width:34px;
-    height:34px;
-    border-radius:10px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:800;
-    font-size:14px;
-    color:#fff;
-}
-
-/* SAVE BAR */
 .save-bar{
     position:sticky;
     bottom:0;
-    background:#ffffff;
+    background:linear-gradient(180deg,#ffffff,#f8fafc);
     padding:18px 24px;
     border-top:1px solid #e5e7eb;
     box-shadow:0 -14px 40px rgba(0,0,0,.15);
-    z-index:99;
 }
 
 .save-btn{
     background:linear-gradient(135deg,#f25c05,#ea580c);
     padding:14px 56px;
     font-size:16px;
-    color:#fff;
-    border-radius:12px;
-    border:none;
+    box-shadow:0 12px 25px rgba(242,92,5,.45);
 }
-
 .save-btn:hover{
     transform:translateY(-2px);
 }
+/* PROGRESS */
+.progress-wrapper{
+    background:linear-gradient(135deg,#1e293b,#0f172a);
+    border-radius:18px;
+    padding:24px;
+    color:#fff;
+    box-shadow:0 18px 40px rgba(15,23,42,.35);
+}
+
+.step-card{
+    background:rgba(255,255,255,.08);
+    border-radius:16px;
+    padding:18px;
+    min-height:140px;
+    transition:.3s;
+}
+
+.step-card:hover{
+    transform:translateY(-4px);
+    background:rgba(255,255,255,.14);
+}
+.step-card.active{opacity:1;}
+.step-badge{
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;color:#fff;
+}
+
+/* CATEGORY */
+.category-tabs .list-group-item{
+    cursor:pointer;
+    border-left:4px solid transparent;
+}
+.category-tabs .list-group-item.active{
+    background:#fff3e9;
+    border-left-color:#f25c05;
+    color:#f25c05;
+    font-weight:600;
+}
+.category-page{display:none;}
+.category-page.active{display:block;}
+
+.dashboard-content {
+    margin-left: 237px;
+    padding: 22px;
+    padding-top: 20px;
+    transition: .3s;
+}
+.step-card{
+    height: 100%;
+    transition: all .3s ease;
+}
+.step-card.active{
+    opacity: 1;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+.category-tabs .list-group-item{
+    font-size:14px;
+    padding:10px 14px;
+    border:0;
+    border-bottom:1px solid #e5e7eb;
+    cursor:pointer;
+    background:#f1f1f1;
+}
+
+.category-tabs .list-group-item:nth-child(odd){
+    background:#ffffff;
+}
+
+.category-tabs .list-group-item.active{
+    background:#e5e7eb;
+    font-weight:600;
+    color:#000;
+    border-left:4px solid #f25c05;
+}
+.material-pill {
+    position: relative;
+    cursor: pointer;
+}
+
+.material-pill input {
+    display: none;
+}
+
+.pill-content{
+    padding:10px 16px;
+    font-size:14px;
+    border-radius:999px;
+    box-shadow:0 6px 14px rgba(0,0,0,.06);
+}
+
+
+.material-pill:hover .pill-content {
+    border-color: #f25c05;
+}
+.category-tabs{
+    max-height:70vh;
+    overflow-y:auto;
+}
+
+.category-tabs .list-group-item{
+    transition:.2s;
+}
+
+.category-tabs .list-group-item:hover{
+    background:#fff7f0;
+    color:#f25c05;
+}
+
+.material-pill input:checked + .pill-content {
+    border-color: #f25c05;
+    background: #fff7f0;
+    color: #f25c05;
+    box-shadow: 0 0 0 1px #f25c05 inset;
+}
+
+.pill-icon {
+    font-size: 14px;
+}
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
+}
+
+
 </style>
 
+{{-- ================= SAFE DATA HANDLING ================= --}}
+@php
+$rawCategories = $supplier->categories_json ?? '[]';
+$savedCategories = [];
+
+if(is_string($rawCategories)){
+    $decoded = json_decode($rawCategories,true);
+    $savedCategories = is_array($decoded) ? $decoded : array_filter(explode(',',$rawCategories));
+}
+
+$savedNotes = json_decode($supplier->category_notes_json ?? '{}', true);
+$savedNotes = is_array($savedNotes) ? $savedNotes : [];
+
+$categoryIdMap = [
+    5=>'ConstructionChemicals',6=>'plumbing',7=>'electrical',8=>'doorswindows',
+    9=>'glassglazing',10=>'hardwaretools',11=>'machineries',12=>'timberwood',
+    13=>'roofing',14=>'pavers',15=>'concreteproducts',16=>'roadsafety',
+    17=>'facadecladding',18=>'scaffolding',19=>'hvacutilities',
+    20=>'readymix',21=>'paintcoating',22=>'tilesflooring',
+    2=>'steel-tmt-bars',1=>'cement-concrete',28=>'aggregates',29=>'roadconstruction'
+];
+
+@endphp
+@php
+$categoryLabelMap = [
+    'cement-concrete'      => 'Cement & Concrete',
+    'steel-tmt-bars'             => 'Steel & TMT Bars',
+    'ConstructionChemicals'=> 'Construction & Chemicals',
+    'plumbing'             => 'Plumbing Materials',
+    'electrical'           => 'Electrical Items',
+    'doorswindows'         => 'Doors & Windows',
+    'glassglazing'         => 'Glass & Glazing',
+    'hardwaretools'        => 'Hardware & Tools',
+    'machineries'          => 'Machineries & Equipments',
+    'timberwood'           => 'Timber & Wood',
+    'roofing'              => 'Roofing Materials',
+    'pavers'               => 'Pavers & Kerbstones',
+    'concreteproducts'     => 'Concrete Products',
+    'roadsafety'           => 'Road Safety Products',
+    'facadecladding'       => 'Facade & Cladding Materials',
+    'scaffolding'          => 'Scaffolding',
+    'hvacutilities'        => 'HVAC & Utilities',
+    'readymix'             => 'Ready Mix Concrete',
+    'paintcoating'         => 'Paint & Coatings',
+    'tilesflooring'        => 'Tiles & Flooring',
+    'aggregates'           => 'Aggregates, Sand, and Masonry Materials',
+    'roadconstruction'     => 'Road Construction Materials & Asphalt Works',
+];
+@endphp
 @php
 $materialIconMap = [
     'Cement & Concrete' => '🧱',
@@ -172,9 +265,6 @@ $materialIconMap = [
 ];
 @endphp
 
-
-{{-- ================= SAFE DATA HANDLING ================= --}}
-
 <div class="page">
 <div class="page-header mb-4">
     <div>
@@ -184,6 +274,8 @@ $materialIconMap = [
         </p>
     </div>
 </div>
+
+{{-- ================= PROGRESS ================= --}}
 
 <div class="progress-wrapper mb-4">
     <div class="d-flex justify-content-between mb-2">
@@ -441,8 +533,253 @@ $materialIconMap = [
 <div class="tab-pane fade" id="tab-material">
       <div class="cardx">
           <div class="row g-3">
-              
-              
+               <div class="row g-4">
+                  <!-- LEFT SIDEBAR -->
+                  <div class="col-md-3">
+                     <div class="card shadow-sm">
+                        <div class="card-header fw-semibold">
+                           Material Categories
+                        </div>
+                        <ul class="list-group list-group-flush category-tabs" id="categoryTabs">
+                           @foreach($enabledCategoryTabs as $catId)
+                              @if(isset($categoryIdMap[$catId]))
+                                    @php
+                                       $slug  = $categoryIdMap[$catId];
+                                       $label = $categoryLabelMap[$slug] ?? ucwords(str_replace('-', ' ', $slug));
+                                    @endphp
+
+                                    <li class="list-group-item {{ $loop->first ? 'active' : '' }}"
+                                       data-target="{{ $slug }}">
+                                       {{ $label }}
+                                    </li>
+                              @endif
+                           @endforeach
+                        </ul>
+
+                        
+                     </div>
+                  </div>
+                  <!-- RIGHT CONTENT -->
+                  <div class="col-md-9">
+                     <!-- ConstructionChemicals -->
+                     <div class="category-page" id="ConstructionChemicals">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Construction Chemicals</div>
+                           <div class="card-body">
+                              @include('web.catalog.construction-chemicals')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- STEEL -->
+                     <div class="category-page" id="steel-tmt-bars">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Steel & TMT Bars</div>
+                           <div class="card-body">
+                              @include('web.catalog.steeltmt')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- TILES -->
+                     <div class="category-page" id="tiles">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Tiles & Flooring</div>
+                           <div class="card-body">
+                              @include('web.catalog.tilesflooring')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- PAINT -->
+                     <div class="category-page" id="paint">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Paint & Coatings</div>
+                           <div class="card-body">
+                              @include('web.catalog.paint-coatings')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- ELECTRICAL -->
+                     <div class="category-page" id="electrical">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Electrical Items</div>
+                           <div class="card-body">
+                              @include('web.catalog.electrical-items')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- PLUMBING -->
+                     <div class="category-page" id="plumbing">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Plumbing Materials</div>
+                           <div class="card-body">
+                              @include('web.catalog.plumbing-materials')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- doorswindows -->
+                     <div class="category-page" id="doorswindows">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Doors & Windows</div>
+                           <div class="card-body">
+                              @include('web.catalog.doorswindows')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- glassglazing -->
+                     <div class="category-page" id="glassglazing">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Glass & Glazing</div>
+                           <div class="card-body">
+                              @include('web.catalog.glassglazing')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- hardwaretools -->
+                     <div class="category-page" id="hardwaretools">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product –  Hardware & Tools</div>
+                           <div class="card-body">
+                              @include('web.catalog.hardwaretools')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- machineries -->
+                     <div class="category-page" id="machineries">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product –  Machineries & Equipments</div>
+                           <div class="card-body">
+                              @include('web.catalog.machineries')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- timberwood -->
+                     <div class="category-page" id="timberwood">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Timber & Wood</div>
+                           <div class="card-body">
+                              @include('web.catalog.timberwood')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- roofing -->
+                     <div class="category-page" id="roofing">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Roofing Materials</div>
+                           <div class="card-body">
+                              @include('web.catalog.roofing')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- pavers -->
+                     <div class="category-page" id="pavers">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Pavers & Kerbstones</div>
+                           <div class="card-body">
+                              @include('web.catalog.pavers')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- concreteproducts -->
+                     <div class="category-page" id="concreteproducts">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Concrete Products </div>
+                           <div class="card-body">
+                              @include('web.catalog.concreteproducts')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- roadsafety -->
+                     <div class="category-page" id="roadsafety">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Road Safety Products </div>
+                           <div class="card-body">
+                              @include('web.catalog.roadsafety')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- facadecladding -->
+                     <div class="category-page" id="facadecladding">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Facade & Cladding Materials </div>
+                           <div class="card-body">
+                              @include('web.catalog.facadecladding')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- Scaffolding -->
+                     <div class="category-page" id="scaffolding">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Scaffolding </div>
+                           <div class="card-body">
+                              @include('web.catalog.scaffolding')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- hvacutilities -->
+                     <div class="category-page" id="hvacutilities">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – HVAC & Utilities </div>
+                           <div class="card-body">
+                              @include('web.catalog.hvacutilities')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- readymix -->
+                     <div class="category-page" id="readymix">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Ready Mix Concrete</div>
+                           <div class="card-body">
+                              @include('web.catalog.readymix')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- Paint & Coatings									 -->
+                     <div class="category-page" id="paintcoating">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Paint & Coatings</div>
+                           <div class="card-body">
+                              @include('web.catalog.paint-coatings')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- tilesflooring -->
+                     <div class="category-page" id="tilesflooring">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Tiles & Flooring	</div>
+                           <div class="card-body">
+                              @include('web.catalog.tilesflooring')
+                           </div>
+                        </div>
+                     </div>
+                     
+                     <!-- cement-concrete -->
+                     <div class="category-page" id="cement-concrete">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Cement & Concrete</div>
+                           <div class="card-body">
+                              @include('web.catalog.cementconcrete')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- aggregates -->
+                     <div class="category-page" id="aggregates">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Aggregates, sand, and Masonry Materials</div>
+                           <div class="card-body">
+                              @include('web.catalog.aggregates')
+                           </div>
+                        </div>
+                     </div>
+                     <!-- roadconstruction -->
+                     <div class="category-page" id="roadconstruction">
+                        <div class="card shadow-sm mb-4">
+                           <div class="card-header fw-semibold">Add Product – Road Construction Materials & Asphalt Works</div>
+                           <div class="card-body">
+                              @include('web.catalog.roadconstruction')
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
                {{-- Credit Days --}}
                <div class="col-md-6">
                   <label class="form-label  fw-bold">Credit Period (Days)</label>
@@ -526,9 +863,6 @@ $materialIconMap = [
                </div>
          </div>
       </div>
-      {{-- ================= ADDED PRODUCTS TABLE ================= --}}
-
-
 </div>
 
 
@@ -745,6 +1079,110 @@ function openTab(id){
     document.getElementById(id).scrollIntoView({behavior:'smooth'});
 }
 </script>
+<script>
+$(document).on('click', '.category-tabs .list-group-item', function () {
 
+    // Remove active from all tabs
+    $('.category-tabs .list-group-item').removeClass('active');
+    $(this).addClass('active');
+
+    // Hide all category pages
+    $('.category-page').removeClass('active');
+
+    // Show selected category page
+    const target = $(this).data('target');
+    $('#' + target).addClass('active');
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const cache = {}; // 🔥 Prevent multiple calls
+
+    document.querySelectorAll('.js-product-type').forEach(select => {
+
+        select.addEventListener('change', function () {
+
+            const form = this.closest('form');
+            if (!form) return;
+
+            const subtype = form.querySelector('.js-product-subtype');
+            const brand   = form.querySelector('.js-brand');
+
+            const productId = this.value;
+
+            // Reset
+            subtype.innerHTML = '<option value="">Select sub type</option>';
+            brand.innerHTML   = '<option value="">Select brand</option>';
+            subtype.disabled = true;
+            brand.disabled   = true;
+
+            if (!productId) return;
+
+            // ✅ If already fetched → use cache
+            if (cache[productId]) {
+                fillData(cache[productId], subtype, brand);
+                return;
+            }
+
+            // 🔥 SINGLE REQUEST
+            fetch(`/get-product-meta/${productId}`)
+                .then(res => res.json())
+                .then(data => {
+                    cache[productId] = data;
+                    fillData(data, subtype, brand);
+                });
+
+        });
+    });
+
+    function fillData(data, subtype, brand) {
+
+        data.subtypes.forEach(i => {
+            subtype.innerHTML +=
+                `<option value="${i.id}">${i.material_subproduct}</option>`;
+        });
+
+        data.brands.forEach(b => {
+            brand.innerHTML +=
+                `<option value="${b.id}">${b.name}</option>`;
+        });
+
+        subtype.disabled = false;
+        brand.disabled   = false;
+    }
+
+    // BRAND CHANGE LOGIC
+    document.querySelectorAll('.js-brand').forEach(select => {
+        select.addEventListener('change', function () {
+
+            const form = this.closest('form');
+            const spec = form.querySelector('.js-specification');
+            const other = form.querySelector('.js-other-brand');
+
+            spec.classList.add('d-none');
+            other.classList.add('d-none');
+
+            if (!this.value) return;
+
+            spec.classList.remove('d-none');
+
+            if (this.value === '25') { // OTHER brand id
+                other.classList.remove('d-none');
+            }
+        });
+    });
+
+});
+
+
+
+document.querySelectorAll('.tab-pane').forEach(p=>{
+    if(p.classList.contains('active')){
+        document.querySelector(`[onclick*="${p.id}"]`)?.classList.add('active');
+    }
+});
+
+</script>
 
 @endsection

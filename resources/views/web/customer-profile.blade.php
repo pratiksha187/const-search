@@ -731,8 +731,8 @@ h1,h4,h5{ letter-spacing:-0.3px; }
 
       <div class="modal-body">
         <p class="text-muted">
-          Fill in your details and the vendor will review your enquiry.
-          Contact details will be shared once accepted.
+          Share your details to review the enquiry.
+            Customer contact details will be shared after Submition.
         </p>
 
         <form id="interestForm">

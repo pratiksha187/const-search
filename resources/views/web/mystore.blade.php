@@ -215,8 +215,8 @@
             <strong>{{ $supplier_data->brands_supplied }}</strong>.
         @endif
 
-        @if($supplier_data->years_in_business)
-            With over <strong>{{ $supplier_data->years_in_business }} years</strong>
+        @if($experience_years)
+            With over <strong>{{ $experience_years }} years</strong>
             of industry experience,
         @endif
 
@@ -234,9 +234,9 @@
             <strong>₹{{ number_format($supplier_data->minimum_order_cost) }}</strong>.
         @endif
 
-        @if($supplier_data->credit_days)
+        @if($credit_days)
             We offer flexible credit terms of
-            <strong>{{ $supplier_data->credit_days }} days</strong>.
+            <strong>{{ $credit_days }} days</strong>.
         @endif
     </p>
 

@@ -224,7 +224,7 @@ body {
         </div>
 
         <!-- PROJECTS + CHART -->
-        <div class="row g-4">
+        <!-- <div class="row g-4">
 
             <div class="col-lg-8">
                 <div class="data-card">
@@ -267,10 +267,10 @@ body {
                 </div>
             </div>
 
-        </div>
+        </div> -->
 
         <!-- VENDORS -->
-        <div class="data-card mt-4">
+        <!-- <div class="data-card mt-4">
             <h6 class="section-title">Recommended Vendors ⭐</h6>
 
             <div class="vendor-item">
@@ -296,7 +296,7 @@ body {
                 </div>
                 <button class="btn-view">View</button>
             </div>
-        </div>
+        </div> -->
 
     </div>
 </div>

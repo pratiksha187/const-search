@@ -431,97 +431,71 @@ body{
     </div>
 </div>
 
-  <div class="row g-4 mt-2">
+<div class="row g-3 mt-2">
 
-    <!-- RECENT ENQUIRIES -->
-    <div class="col-xl-12">
-        <div class="card-box">
-            <div class="card-header">
-                <h5>Recent Enquiries</h5>
-                <a href="#" class="view-all">View All →</a>
-            </div>
+    @foreach($supp_enq_data as $enquiry)
+    <div class="col-xl-6 col-lg-6 col-md-12">
 
-            <!-- Enquiry Item -->
-            <div class="enquiry-item active">
-                <div class="enquiry-left">
-                    <h6>R.K. Infra Pvt Ltd <span class="badge new">New</span></h6>
-                    <p class="muted">Internal Roads Project</p>
+        <div class="enquiry-item {{ $enquiry->status === null ? 'active' : '' }}">
+            <div class="enquiry-left">
 
-                    <div class="enquiry-meta">
-                        <span><i class="bi bi-geo-alt"></i> Khopoli</span>
-                        <span><i class="bi bi-box"></i> 80mm Paver Blocks</span>
-                    </div>
+                {{-- Header --}}
+                <h6>
+                    Customer #{{ $enquiry->name }}
+                    @if($enquiry->status === null)
+                        <!-- <span class="badge new">New</span> -->
+                    @elseif($enquiry->status === 'quoted')
+                        <span class="badge bg-success">Quoted</span>
+                    @endif
+                </h6>
 
-                    <p class="details">
-                        <strong>Quantity:</strong> 2,500 sq.m |
-                        <strong>Credit:</strong> 15 days
-                    </p>
+                {{-- Specs --}}
+                <p class="muted">{{ $enquiry->specs ?? 'Project Enquiry' }}</p>
 
-                    <div class="actions">
-                        <button class="btn btn-primary w-100">Send Quote</button>
-                        <button class="btn btn-call"><i class="bi bi-telephone"></i> Call</button>
-                        <button class="btn btn-whatsapp"><i class="bi bi-whatsapp"></i> WhatsApp</button>
-                    </div>
+                {{-- Meta --}}
+                <div class="enquiry-meta">
+                    <span>
+                        <i class="bi bi-geo-alt"></i>
+                        {{ $enquiry->delivery_location }}
+                    </span>
+                    <span>
+                        <i class="bi bi-box"></i>
+                        Category ID: {{ $enquiry->category }}
+                    </span>
                 </div>
-            </div>
 
-            <!-- Enquiry Item -->
-            <div class="enquiry-item">
-                <div class="enquiry-left">
-                    <h6>Metro Rail Project <span class="badge urgent">Urgent</span></h6>
-                    <p class="muted">Kerb Stones Required</p>
+                {{-- Details --}}
+                <p class="details">
+                    <strong>Quantity:</strong> {{ number_format($enquiry->quantity) }} |
+                    <strong>Payment:</strong> {{ ucfirst($enquiry->payment_preference) }}
+                </p>
 
-                    <div class="enquiry-meta">
-                        <span><i class="bi bi-geo-alt"></i> Pune</span>
-                        <span><i class="bi bi-box"></i> Kerb Stones</span>
-                    </div>
+                {{-- Actions --}}
+                <div class="actions">
+                    <a href="" class="btn btn-primary">Send Quote</a>
 
-                    <p class="details">
-                        <strong>Quantity:</strong> 1,800 running m |
-                        <strong>Delivery:</strong> Required
-                    </p>
-
-                    <div class="actions">
-                        <button class="btn btn-primary w-100">Send Quote</button>
-                        <button class="btn btn-call"><i class="bi bi-telephone"></i> Call</button>
-                        <button class="btn btn-whatsapp"><i class="bi bi-whatsapp"></i> WhatsApp</button>
-                    </div>
+                    @if($enquiry->status === 'quoted')
+                        <button class="btn btn-call">
+                            <i class="bi bi-telephone"></i> Call
+                        </button>
+                        <button class="btn btn-whatsapp">
+                            <i class="bi bi-whatsapp"></i> WhatsApp
+                        </button>
+                    @else
+                        <small class="text-muted">
+                            Contact details visible after acceptance
+                        </small>
+                    @endif
                 </div>
-            </div>
 
+            </div>
         </div>
+
     </div>
-
-    <!-- PROFILE COMPLETION -->
-    <!-- <div class="col-xl-4">
-        <div class="card-box">
-            <h5>Complete Your Profile</h5>
-
-            <div class="progress-info">
-                <h3>82%</h3>
-                <span>Almost there!</span>
-            </div>
-
-            <div class="progress">
-                <div class="progress-bar" style="width:82%"></div>
-            </div>
-
-            <ul class="profile-checklist">
-                <li class="done"><i class="bi bi-check-circle-fill"></i> Company Details</li>
-                <li class="done"><i class="bi bi-check-circle-fill"></i> Products Added</li>
-                <li class="done"><i class="bi bi-check-circle-fill"></i> Delivery & Credit Info</li>
-                <li><i class="bi bi-circle"></i> Upload Logo</li>
-                <li><i class="bi bi-circle"></i> Add Product Images</li>
-                <li><i class="bi bi-circle"></i> GST Details</li>
-            </ul>
-
-            <button class="btn btn-success w-100 mt-3">
-                Become Featured Supplier →
-            </button>
-        </div>
-    </div> -->
+    @endforeach
 
 </div>
+
 
 </div>
 </div>

@@ -28,7 +28,7 @@ class SuppliersController extends Controller
             ->where('supplier_reg.id', $supplier_id)
             ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename')
             ->first(); // use first() instead of get()
-// dd($supplier_data);
+
         // Decode JSON category IDs
         $categoryIds = json_decode($supplier_data->material_category, true);
 
@@ -46,14 +46,14 @@ class SuppliersController extends Controller
         $credit_days = DB::table('credit_days')
             ->where('id', $credit_days_id)
             ->value('days');  
-            // dd($delivery_type);
+            // dd($credit_days);
 
             // experience_years
         $experience_years_id= $supplier_data->years_in_business;
         $experience_years = DB::table('experience_years')
             ->where('id', $experience_years_id)
             ->value('experiance'); 
-            
+            // dd($experience_years);
         $maximum_distance_id = $supplier_data->maximum_distance;
         $maximum_distance = DB::table('maximum_distances')
             ->where('id', $maximum_distance_id)
@@ -187,8 +187,13 @@ class SuppliersController extends Controller
 
     public function editProduct($id)
     {
+         $notificationCount =0;
+    $notifications =0;
         $supplier_id = Session::get('supplier_id');
 
+        $supplierName = DB::table('supplier_reg')
+                        ->where('id', $supplier_id)
+                        ->value('contact_person'); 
         $product = DB::table('supplier_products_data')
             ->where('id', $id)
             ->where('supp_id', $supplier_id)
@@ -200,6 +205,7 @@ class SuppliersController extends Controller
 
         return view('web.productsuppedit', [
             'product' => $product,
+            'supplierName' => $supplierName,
             'categories' => DB::table('material_categories')->get(),
             'products' => DB::table('material_product')->get(),
             'subtypes' => DB::table('material_product_subtype')->get(),
@@ -1077,7 +1083,7 @@ public function supplierFilter(Request $request)
         $vendor_id   = Session::get('vendor_id');
         $supplier_id = Session::get('supplier_id');
 
-        //    dd( $vendor_id );
+           dd( $supplier_id );
         $layout = 'layouts.guest';
         if ($customer_id) {
             $cust_data = DB::table('users')->where('id',$customer_id)->first();
@@ -1129,12 +1135,13 @@ public function supplierFilter(Request $request)
         if (!$supplier) {
             abort(404);
         }
-        // dd( $supplier );
-        // Supplier categories / products
+       
         $materials = DB::table('supplier_products_data as sp')
-            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-            ->where('sp.supp_id', $id)
-            ->pluck('mc.name');
+                    ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+                    ->where('sp.supp_id', $id)
+                    ->distinct()
+                    ->pluck('mc.name');
+
         // dd( $materials);
         return view('web.supplier_profile', compact('supplier', 'materials','layout','cust_data','vendor' ,'vendor_id','notifications','notificationCount'));
     }
