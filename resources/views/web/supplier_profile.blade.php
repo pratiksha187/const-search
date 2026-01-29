@@ -319,7 +319,8 @@
          <p>
             {{ ucfirst($supplier->primary_type ?? 'Supplier') }}
             @if($materials->count())
-            of {{ $materials->take(3)->implode(', ') }}
+           of {{ $grouped->keys()->take(3)->implode(', ') }}
+
             @endif
          </p>
          <div class="badge-row">
@@ -337,7 +338,8 @@
          </strong>
       </div>
       <div class="info-box">📦 Products <strong>
-         {{ $materials->count() ? $materials->implode(', ') : 'Products not listed' }}
+         {{ $grouped->keys()->implode(', ') ?: 'Products not listed' }}
+
          </strong>
       </div>
       <div class="info-box">⚡ Dispatch  <strong>{{ $supplier->dispatch_time ?? 'Same / Next Day' }}</strong></div>
@@ -376,22 +378,47 @@
             ?? 'This supplier provides construction materials and services across multiple regions.' }}
          </p>
       </div>
+     
       <div class="card-box">
-         <h4 class="section-title"><i class="bi bi-box-seam"></i>Products Offered</h4>
-         <div class="product-grid">
-            @foreach($materials as $mat)
-            <div class="product-card">
-               <div class="product-img">🧱</div>
-               <h5>{{ $mat }}</h5>
-               <div class="product-meta">
-                  <span>MOQ: {{ $supplier->minimum_order_qty ?? 'N/A' }}</span>
-                  <span class="green">{{ $supplier->dispatch_time ?? 'Same / Next Day' }}</span>
-               </div>
-               
-            </div>
+    <h4 class="section-title">
+        <i class="bi bi-box-seam"></i> Products Offered
+    </h4>
+
+    @foreach($grouped as $categoryName => $products)
+        <h5 class="mt-3 fw-bold text-primary">
+            {{ $categoryName }}
+        </h5>
+
+        <div class="product-grid">
+            @foreach($products as $productName => $items)
+                <div class="product-card">
+                    <div class="product-img">🧱</div>
+
+                    <h5>{{ $productName }}</h5>
+
+                    <ul class="small mb-2">
+                        @foreach($items as $item)
+                            <li>
+                                {{ $item->material_subproduct }}
+                                <span class="text-muted">
+                                    — {{ $item->brand_name }}
+                                </span>
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    <div class="product-meta">
+                        <span>MOQ: {{ $supplier->minimum_order_qty ?? 'N/A' }}</span>
+                        <span class="green">
+                            {{ $supplier->dispatch_time ?? 'Same / Next Day' }}
+                        </span>
+                    </div>
+                </div>
             @endforeach
-         </div>
-      </div>
+        </div>
+    @endforeach
+</div>
+
    </div>
    <div>
       <div class="card-box">
@@ -470,11 +497,12 @@
                <select class="form-select" name="category" id="modalCategory">
                   <option value="">Select Category</option>
 
-                  @foreach ($materials as $category)
+                  @foreach ($grouped->keys() as $category)
                      <option value="{{ $category }}">
-                           {{ $category }}
+                        {{ $category }}
                      </option>
                   @endforeach
+
                </select>
 
               

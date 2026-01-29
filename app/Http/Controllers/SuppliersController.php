@@ -1136,14 +1136,47 @@ public function supplierFilter(Request $request)
             abort(404);
         }
        
-        $materials = DB::table('supplier_products_data as sp')
+        // $materials = DB::table('supplier_products_data as sp')
+        //             ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+        //             ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
+        //             ->leftJoin('material_product_subtype as mps', 'mps.id', '=', 'sp.material_product_subtype_id')
+        //             ->leftJoin('brands as br', 'br.id', '=', 'sp.brand_id')
+                    
+        //             ->where('sp.supp_id', $id)
+        //             ->distinct()
+        //             ->pluck('mc.name','mp.product_name','mps.material_subproduct','br.name');
+       $materials = DB::table('supplier_products_data as sp')
                     ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+                    ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
+                    ->leftJoin('material_product_subtype as mps', 'mps.id', '=', 'sp.material_product_subtype_id')
+                    ->leftJoin('brands as br', 'br.id', '=', 'sp.brand_id')
                     ->where('sp.supp_id', $id)
-                    ->distinct()
-                    ->pluck('mc.name');
+                    ->select([
+                        DB::raw('TRIM(mc.name) as category_name'),
+                        DB::raw('TRIM(mp.product_name) as product_name'),
+                        DB::raw('TRIM(mps.material_subproduct) as material_subproduct'),
+                        DB::raw('TRIM(br.name) as brand_name'),
+                    ])
 
-        // dd( $materials);
-        return view('web.supplier_profile', compact('supplier', 'materials','layout','cust_data','vendor' ,'vendor_id','notifications','notificationCount'));
+                    ->distinct()
+                    ->get();
+
+                /**
+                 * Grouping:
+                 * Category → Product
+                 */
+                $grouped = $materials
+                    ->groupBy('category_name')
+                    ->map(function ($categoryItems) {
+                        return $categoryItems->groupBy('product_name');
+                    });
+$categories = $materials
+    ->pluck('category_name')
+    ->unique()
+    ->values();
+
+        // dd( $grouped);
+        return view('web.supplier_profile', compact('supplier','grouped', 'materials','layout','cust_data','vendor' ,'vendor_id','notifications','notificationCount'));
     }
 
 
