@@ -29,6 +29,7 @@ use App\Http\Controllers\AdminController;
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
 Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');
 Route::get('addmaster', [MasterController::class, 'addmaster'])->name('addmaster');
+Route::get('/about-us', [HomeController::class, 'aboutus'])->name('aboutus');
 
 Route::get('/login-register', [LoginRegController::class, 'login_register'])->name('login_register');
 Route::post('/change-password', [LoginRegController::class, 'changePassword'])->name('change-password');
@@ -362,6 +363,9 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::post('/supplier/send-quote', [SuppliersController::class, 'sendQuote'])
      ->name('supplier.sendQuote');
 
+    Route::get('/auth/{action?}/{role?}', function () {
+        return view('web.login_register');
+    })->where(['action' => 'login|register', 'role' => 'customer|vendor|supplier']);
 
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

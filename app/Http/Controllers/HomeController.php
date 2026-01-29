@@ -20,6 +20,10 @@ class HomeController extends Controller
         return view('welcome',compact('vendors','posts','cities'));
     }
 
+    public function aboutus(){
+        return view('web.about');
+    }
+
     public function index()
     {
         $customer_id = Session::get('customer_id');
@@ -349,6 +353,7 @@ class HomeController extends Controller
     {
        
         $cust_id   = $request->cust_id;
+        dd($cust_id );
         $vendor_id = Session::get('vendor_id');
 
         if (!$vendor_id) {

@@ -19,6 +19,20 @@
     --gray: #6b7484;
     --bg: #f5f7fb;
 }
+/* ===== MODERN UI BASE ===== */
+
+
+/* Smooth font rendering */
+*{
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Section rhythm */
+.section-wrapper{
+    padding: 90px 0 70px;
+}
+
 
 body {
     background: var(--bg);
@@ -35,6 +49,15 @@ body {
     border-radius: 18px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     transition: .3s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.category-box small{
+    min-height: 36px;
+    display: block;
+    line-height: 1.2;
 }
 .category-box:hover {
     transform: translateY(-6px);
@@ -146,8 +169,9 @@ body {
 /* ================= HERO (PREMIUM) ================= */
 .hero-new{
     position: relative;
-    padding: 140px 0 220px; /* extra bottom so overlap feels premium */
-    background: radial-gradient(circle at top, #ffffff 8%, #f1f4fa 55%, #e5e9f2 100%);
+    padding: 150px 0 240px;
+    background:
+        radial-gradient(circle at top, #ffffff 0%, #eef2ff 40%, #e5e9f2 100%);
     overflow: hidden;
 }
 .hero-new::before{
@@ -160,21 +184,23 @@ body {
     background-size: 58px 58px;
     opacity: .22;
 }
+/* Glass layer */
 .hero-new::after{
-    /* focus glow behind overlap cards (premium touch) */
     content:"";
     position:absolute;
-    left:50%;
-    bottom:-130px;
-    width:560px;
-    height:260px;
-    transform:translateX(-50%);
-    background: radial-gradient(circle, rgba(37,99,235,0.18), transparent 70%);
-    z-index: 1;
+    inset:0;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,.75),
+        rgba(255,255,255,.45)
+    );
 }
 
-.hero-inner{ position: relative; z-index: 3; }
-
+.hero-inner{
+    position: relative;
+    z-index: 3;
+}
 .hero-badge{
     background: rgba(37,99,235,0.12);
     color: var(--blue);
@@ -186,19 +212,18 @@ body {
     gap: 8px;
     align-items: center;
 }
-
 .hero-title{
-    font-size: 2.35rem;
+    font-size: clamp(2.2rem, 4vw, 3rem);
     font-weight: 900;
-    color: #1c2c3e;
-    line-height: 1.18;
-    letter-spacing: .2px;
+    letter-spacing: -0.6px;
 }
 .hero-highlight{ color: var(--orange); }
 .hero-highlight-blue{ color: #1669d5ff; }
 
-.hero-subtext{ color: #6b7484; font-size: 1.1rem; max-width: 640px; }
-
+.hero-subtext{
+    font-size: 1.15rem;
+    max-width: 620px;
+}
 .search-bar-wrapper{
     display:flex;
     align-items:center;
@@ -382,11 +407,11 @@ body {
     transition: all .35s ease;
 }
 
-.category-img {
-    width: 150px;
-    height: 100px;
+.category-img{
+    width: 120px;
+    height: 90px;
     object-fit: contain;
-    margin-bottom: 12px;
+    margin: 0 auto 12px;
 }
 
 
@@ -564,13 +589,6 @@ body {
         font-size: 1.5rem;
     }
 }
-/* 
-:root{
-  --ck-navy:#0f172a;
-  --ck-orange:#f25c05;
-  --ck-bg:#f6f8fb;
-  --ck-border:#e5e7eb;
-} */
 
 .modal-xl{
   max-width:1200px;
@@ -581,6 +599,12 @@ body {
   background:#ffffff;
   border-bottom:1px solid var(--ck-border);
 }
+
+.category-title{
+    min-height: 24px;
+    font-weight: 600;
+}
+
 
 .ck-modal-title{
   color:var(--ck-navy);
@@ -661,6 +685,311 @@ body {
     transform: scaleX(1);
 }
 
+/* ===== COLORFUL SMART SEARCH ===== */
+.smart-search-section{
+    background: linear-gradient(
+        180deg,
+        #ffffff,
+        #f4f7ff
+    );
+}
+
+/* Badge */
+.smart-badge{
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    color:#fff;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+/* Colorful Feature Cards */
+.feature-card.colorful{
+    height:100%;
+    border-radius:18px;
+    padding:22px;
+    color:#0f172a;
+    background:#fff;
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+    transition:.3s;
+}
+
+.feature-card.colorful:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 45px rgba(0,0,0,0.15);
+}
+/* ===== HOW IT WORKS COLORFUL ===== */
+.how-it-works{
+    background: linear-gradient(180deg,#ffffff,#f6f8ff);
+}
+
+/* Badge */
+.how-badge{
+    display:inline-block;
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    color:#fff;
+    padding:6px 16px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+/* Flow Cards */
+.flow-card.colorful{
+    position:relative;
+    border-radius:22px;
+    padding:34px 26px 28px;
+    background:#fff;
+    box-shadow:0 14px 40px rgba(0,0,0,0.08);
+    transition:.35s ease;
+}
+
+.flow-card.colorful:hover{
+    transform:translateY(-8px);
+    box-shadow:0 25px 55px rgba(0,0,0,0.15);
+}
+
+/* Step Number */
+.step-number{
+    position:absolute;
+    top:18px;
+    right:22px;
+    font-size:2.4rem;
+    font-weight:900;
+    opacity:0.08;
+}
+
+/* Icon Circle */
+.flow-card.colorful .flow-icon-circle{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    color:#fff;
+    margin:0 auto 16px;
+}
+
+/* Colors */
+.flow-card.blue .flow-icon-circle{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+.flow-card.orange .flow-icon-circle{
+    background:linear-gradient(135deg,#f25c05,#ff9731);
+}
+.flow-card.green .flow-icon-circle{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+}
+
+/* Text */
+.flow-card h5{
+    font-weight:800;
+    margin-bottom:10px;
+    color:#0f172a;
+}
+.flow-card p{
+    font-size:.95rem;
+    color:#475569;
+    line-height:1.5;
+}
+
+/* Icon */
+.feature-card.colorful .feature-icon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    margin-bottom:10px;
+    color:#fff;
+}
+/* ===== LEAD SECTION ===== */
+.lead-section{
+    background: linear-gradient(180deg,#ffffff,#fef3e7);
+}
+
+/* Badge */
+.lead-badge{
+    display:inline-block;
+    background: linear-gradient(135deg,#f25c05,#ff9731);
+    color:#fff;
+    padding:6px 16px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+/* Left text */
+.lead-subtext{
+    color:#475569;
+    margin-bottom:16px;
+}
+
+/* ===== TESTIMONIAL SECTION ===== */
+.testimonial-section{
+    background: linear-gradient(180deg,#ffffff,#f6f8ff);
+}
+
+/* Badge */
+.testimonial-badge{
+    display:inline-block;
+    background: linear-gradient(135deg,#f25c05,#ff9731);
+    color:#fff;
+    padding:6px 16px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+/* Card */
+.testimonial-card.colorful{
+    min-width:340px;
+    max-width:360px;
+    background:#fff;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:0 14px 40px rgba(0,0,0,0.08);
+    transition:.35s;
+    position:relative;
+}
+
+.testimonial-card.colorful:hover{
+    transform:translateY(-8px);
+    box-shadow:0 25px 60px rgba(0,0,0,0.15);
+}
+
+/* Header */
+.testimonial-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+}
+
+.testimonial-avatar{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #3b82f6;
+}
+
+/* Name & role */
+.testimonial-name{
+    font-weight:700;
+    margin:0;
+    color:#0f172a;
+}
+.testimonial-role{
+    font-size:.85rem;
+    color:#64748b;
+    margin:0;
+}
+
+/* Rating */
+.testimonial-rating i{
+    color:#facc15;
+    margin-right:2px;
+}
+
+/* Text */
+.testimonial-text{
+    font-size:.9rem;
+    color:#475569;
+    line-height:1.5;
+}
+
+/* Smooth auto-scroll already handled by your existing CSS */
+
+
+/* Points */
+.lead-points{
+    list-style:none;
+    padding:0;
+    margin-top:16px;
+}
+.lead-points li{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+    font-weight:500;
+    color:#0f172a;
+}
+.lead-points i{
+    color:#16a34a;
+    font-size:1.1rem;
+}
+
+/* Form Card */
+.lead-form-card{
+    background:#ffffff;
+    border-radius:22px;
+    padding:28px;
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+/* Inputs */
+.lead-input{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:12px 16px;
+    font-size:.95rem;
+}
+.lead-input:focus{
+    outline:none;
+    border-color:#f25c05;
+    box-shadow:0 0 0 3px rgba(242,92,5,.2);
+}
+
+/* Submit Button */
+.lead-submit-btn{
+    width:100%;
+    background: linear-gradient(135deg,#f25c05,#ff9731);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:14px;
+    font-weight:700;
+    transition:.25s;
+}
+.lead-submit-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 30px rgba(242,92,5,.35);
+}
+
+/* Color Variants */
+.feature-card.blue .feature-icon{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+.feature-card.green .feature-icon{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+}
+.feature-card.orange .feature-icon{
+    background:linear-gradient(135deg,#f25c05,#ff9731);
+}
+.feature-card.purple .feature-icon{
+    background:linear-gradient(135deg,#7c3aed,#a78bfa);
+}
+
+/* Text Balance */
+.feature-card h6{
+    font-weight:700;
+    margin-bottom:6px;
+}
+.feature-card p{
+    font-size:.9rem;
+    color:#475569;
+    line-height:1.4;
+}
+
+
 /* .ck-submit:hover{
   background:#fff7ed;
 } */
@@ -677,6 +1006,8 @@ const Toast = Swal.mixin({
     timerProgressBar: true,
     showConfirmButton: false
 });
+
+
 Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 </script>
 @endif
@@ -813,53 +1144,87 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 <!-- add spacing because cards overlap -->
 <div class="section-after-hero"></div>
 
+
 <!-- ================= POPULAR CATEGORIES ================= -->
 <section class="section-wrapper py-5">
     <div class="container">
 
         <h2 class="section-title text-center mb-2">Popular Vendor Categories</h2>
-        <p class="text-center text-muted mb-5">
-            Find trusted professionals for your construction needs
+        <p class="text-center text-muted mb-3">
+            Discover verified professionals commonly required across construction projects
+        </p>
+
+        <!-- INFO STRIP -->
+        <p class="text-center text-muted mb-5" style="max-width:820px;margin:auto;">
+            These categories cover the most frequently searched construction services —
+            from planning and design to execution and on-site workforce.
+            All vendors listed under these categories are location-based and verified.
         </p>
 
         <div class="vendor-row">
 
             <div class="category-box">
                 <div class="category-icon"><i class="bi bi-building"></i></div>
-                <p class="category-title">Building Contractor</p>
+                <p class="category-title mb-1">Building Contractor</p>
+                <small class="text-muted">
+                    RCC, bungalow & building construction execution
+                </small>
             </div>
 
             <div class="category-box">
                 <div class="category-icon"><i class="bi bi-house-heart"></i></div>
-                <p class="category-title">Residential Interiors</p>
+                <p class="category-title mb-1">Residential Interiors</p>
+                <small class="text-muted">
+                    Modular kitchens, wardrobes & turnkey interiors
+                </small>
             </div>
 
             <div class="category-box">
                 <div class="category-icon"><i class="bi bi-rulers"></i></div>
-                <p class="category-title">Residential Architect</p>
+                <p class="category-title mb-1">Residential Architect</p>
+                <small class="text-muted">
+                    Planning, approvals & bungalow designs
+                </small>
             </div>
 
             <div class="category-box">
                 <div class="category-icon"><i class="bi bi-building-gear"></i></div>
-                <p class="category-title">Industrial Contractor</p>
+                <p class="category-title mb-1">Industrial Contractor</p>
+                <small class="text-muted">
+                    Factories, warehouses & PEB sheds
+                </small>
             </div>
 
             <div class="category-box">
                 <div class="category-icon"><i class="bi bi-gem"></i></div>
-                <p class="category-title">Luxury Interiors</p>
+                <p class="category-title mb-1">Luxury Interiors</p>
+                <small class="text-muted">
+                    Premium finishes & high-end interior execution
+                </small>
             </div>
 
             <div class="category-box">
                 <div class="category-icon"><i class="bi bi-people"></i></div>
-                <p class="category-title">Labour Contractor</p>
+                <p class="category-title mb-1">Labour Contractor</p>
+                <small class="text-muted">
+                    Skilled & unskilled construction workforce
+                </small>
             </div>
 
             <div class="category-box">
                 <div class="category-icon"><i class="bi bi-buildings"></i></div>
-                <p class="category-title">Commercial Architect</p>
+                <p class="category-title mb-1">Commercial Architect</p>
+                <small class="text-muted">
+                    Offices, retail & commercial planning
+                </small>
             </div>
 
         </div>
+
+        <!-- HELPER NOTE -->
+        <p class="text-center text-muted mt-4" style="font-size:0.95rem;">
+            👉 Select a category to find nearby verified vendors or post your requirement to receive responses directly.
+        </p>
 
     </div>
 </section>
@@ -871,8 +1236,14 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
     <div class="container">
 
         <h2 class="section-title text-center mb-2">Construction Materials</h2>
-        <p class="text-center text-muted mb-5">
+        <p class="text-center text-muted mb-3">
             Order quality materials delivered to your doorstep
+        </p>
+
+        <!-- INFO LINE -->
+        <p class="text-center text-muted mb-5" style="max-width:820px;margin:auto;">
+            Source construction materials directly from verified local suppliers.
+            Compare quality, pricing, and availability — without brokers or hidden margins.
         </p>
 
         <div class="row g-4 justify-content-center text-center">
@@ -883,7 +1254,10 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <img src="{{ asset('images/cement.png') }}"
                          class="category-img"
                          alt="Cement">
-                    <p class="category-title">Cement</p>
+                    <p class="category-title mb-1">Cement</p>
+                    <small class="text-muted">
+                        OPC, PPC & ready-mix supply
+                    </small>
                 </div>
             </div>
 
@@ -893,7 +1267,10 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <img src="{{ asset('images/sand.jpg') }}"
                          class="category-img"
                          alt="Sand">
-                    <p class="category-title">Sand</p>
+                    <p class="category-title mb-1">Sand</p>
+                    <small class="text-muted">
+                        River sand & manufactured sand
+                    </small>
                 </div>
             </div>
 
@@ -903,7 +1280,10 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <img src="{{ asset('images/steel.jpg') }}"
                          class="category-img"
                          alt="Steel">
-                    <p class="category-title">Steel</p>
+                    <p class="category-title mb-1">Steel</p>
+                    <small class="text-muted">
+                        TMT bars & structural steel
+                    </small>
                 </div>
             </div>
 
@@ -913,7 +1293,10 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <img src="{{ asset('images/bricks.png') }}"
                          class="category-img"
                          alt="Bricks">
-                    <p class="category-title">Bricks</p>
+                    <p class="category-title mb-1">Bricks</p>
+                    <small class="text-muted">
+                        Clay bricks, AAC & fly ash
+                    </small>
                 </div>
             </div>
 
@@ -923,7 +1306,10 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <img src="{{ asset('images/tiles.jpg') }}"
                          class="category-img"
                          alt="Tiles">
-                    <p class="category-title">Tiles</p>
+                    <p class="category-title mb-1">Tiles</p>
+                    <small class="text-muted">
+                        Flooring, wall & outdoor tiles
+                    </small>
                 </div>
             </div>
 
@@ -933,151 +1319,281 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <img src="{{ asset('images/electricals.jpg') }}"
                          class="category-img"
                          alt="Electricals">
-                    <p class="category-title">Electricals</p>
+                    <p class="category-title mb-1">Electricals</p>
+                    <small class="text-muted">
+                        Wires, switches & fittings
+                    </small>
                 </div>
             </div>
 
         </div>
 
+        <!-- TRUST NOTE -->
+        <p class="text-center text-muted mt-4" style="font-size:0.95rem;">
+            ✔ Verified suppliers • ✔ Transparent pricing • ✔ Site-delivery support
+        </p>
+
     </div>
 </section>
+
 
 <!-- ================= SMART SEARCH TOOL ================= -->
-<section class="section-wrapper">
+<section class="section-wrapper smart-search-section">
     <div class="container">
         <div class="row g-4 align-items-center">
 
+            <!-- LEFT CONTENT -->
             <div class="col-lg-5">
-                <h2 class="section-title mb-3">Smart vendor search tool</h2>
-                <p class="text-muted">
-                    ConstructKaro connects you with verified vendors and suppliers using intelligent filters.
+                <span class="badge smart-badge mb-2">
+                    🔍 Smart Discovery
+                </span>
+
+                <h2 class="section-title mb-3">
+                    Smart Vendor Search Tool
+                </h2>
+
+                <p class="text-muted mb-3">
+                    Finding the right construction vendor shouldn’t be confusing.
+                    ConstructKaro helps you discover trusted vendors and suppliers
+                    using smart, location-based filters.
+                </p>
+
+                <p class="fw-semibold text-primary">
+                    No brokers. No random calls. Just verified results.
                 </p>
             </div>
 
+            <!-- RIGHT FEATURES -->
             <div class="col-lg-7">
                 <div class="row g-3">
+
                     <div class="col-md-6">
-                        <div class="feature-card">
-                            <div class="feature-icon mb-2"><i class="bi bi-clock-history"></i></div>
-                            <h6 class="fw-bold">Fast & Reliable</h6>
-                            <p class="text-muted small">Get results instantly.</p>
+                        <div class="feature-card colorful blue">
+                            <div class="feature-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <h6>Fast & Reliable</h6>
+                            <p>
+                                Instantly find vendors who are active,
+                                responsive, and relevant to your project.
+                            </p>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <div class="feature-card">
-                            <div class="feature-icon mb-2"><i class="bi bi-ui-checks-grid"></i></div>
-                            <h6 class="fw-bold">Easy to Use</h6>
-                            <p class="text-muted small">No complicated setup.</p>
+                        <div class="feature-card colorful green">
+                            <div class="feature-icon">
+                                <i class="bi bi-ui-checks-grid"></i>
+                            </div>
+                            <h6>Easy to Use</h6>
+                            <p>
+                                Simple filters and clean profiles —
+                                no technical knowledge required.
+                            </p>
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <div class="feature-card colorful orange">
+                            <div class="feature-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <h6>Verified Vendors</h6>
+                            <p>
+                                Each vendor is checked to reduce
+                                fake leads and unreliable contacts.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="feature-card colorful purple">
+                            <div class="feature-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <h6>Location Based</h6>
+                            <p>
+                                Find vendors near your site for
+                                faster execution and coordination.
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
         </div>
     </div>
 </section>
+
 
 <!-- ================= HOW IT WORKS ================= -->
-<section class="section-wrapper py-5">
+<section class="section-wrapper py-5 how-it-works">
     <div class="container">
 
-        <h2 class="section-title text-center mb-2">How ConstructKaro Works</h2>
-        <p class="text-center text-muted mb-5">Simple 3-step process</p>
+        <div class="text-center mb-5">
+            <span class="how-badge">🚀 Simple Process</span>
+            <h2 class="section-title mt-2">How ConstructKaro Works</h2>
+            <p class="text-muted">
+                From requirement to execution — everything in one structured flow
+            </p>
+        </div>
 
         <div class="row g-4 justify-content-center text-center">
+
+            <!-- STEP 1 -->
             <div class="col-md-4">
-                <div class="flow-card p-4 h-100">
-                    <div class="flow-icon-circle mx-auto mb-3">
+                <div class="flow-card colorful blue h-100">
+                    <div class="step-number">01</div>
+
+                    <div class="flow-icon-circle">
                         <i class="bi bi-person-plus"></i>
                     </div>
-                    <h5 class="fw-bold text-dark">Post Your Requirement</h5>
-                    <p class="text-muted small mb-0">Share your construction needs, budget & timeline.</p>
+
+                    <h5>Post Your Requirement</h5>
+                    <p>
+                        Share your project details like location, budget,
+                        timeline, and work type in a few simple steps.
+                    </p>
                 </div>
             </div>
 
+            <!-- STEP 2 -->
             <div class="col-md-4">
-                <div class="flow-card p-4 h-100">
-                    <div class="flow-icon-circle mx-auto mb-3">
+                <div class="flow-card colorful orange h-100">
+                    <div class="step-number">02</div>
+
+                    <div class="flow-icon-circle">
                         <i class="bi bi-file-earmark-text"></i>
                     </div>
-                    <h5 class="fw-bold text-dark">Get Verified Quotes</h5>
-                    <p class="text-muted small mb-0">Receive proposals from trusted & verified vendors.</p>
+
+                    <h5>Get Verified Quotes</h5>
+                    <p>
+                        Nearby verified vendors and suppliers review your
+                        requirement and share genuine proposals.
+                    </p>
                 </div>
             </div>
 
+            <!-- STEP 3 -->
             <div class="col-md-4">
-                <div class="flow-card p-4 h-100">
-                    <div class="flow-icon-circle mx-auto mb-3">
+                <div class="flow-card colorful green h-100">
+                    <div class="step-number">03</div>
+
+                    <div class="flow-icon-circle">
                         <i class="bi bi-send-check"></i>
                     </div>
-                    <h5 class="fw-bold text-dark">Hire & Track Work</h5>
-                    <p class="text-muted small mb-0">Compare, hire the best vendor & monitor progress online.</p>
+
+                    <h5>Hire & Track Work</h5>
+                    <p>
+                        Compare offers, finalize the right partner,
+                        and track work progress with clarity.
+                    </p>
                 </div>
             </div>
+
         </div>
 
     </div>
 </section>
 
+
 <!-- ================= LEAD FORM ================= -->
-<section class="section-wrapper">
+<section class="section-wrapper lead-section">
     <div class="container">
         <div class="row g-4 align-items-center">
+
+            <!-- LEFT CONTENT -->
             <div class="col-lg-5">
-                <h2 class="section-title">Reduce Your Construction Cost</h2>
-                <p class="text-muted">
-                    Get matched with the right vendor at the right price — saving you time, money, and effort.
+                <span class="lead-badge">💰 Cost Optimization</span>
+
+                <h2 class="section-title mt-2">
+                    Reduce Your Construction Cost
+                </h2>
+
+                <p class="lead-subtext">
+                    ConstructKaro helps you connect directly with verified vendors and suppliers —
+                    eliminating unnecessary commissions, delays, and wrong decisions.
                 </p>
 
-                <ul class="list-unstyled mt-3">
-                    <li class="mb-2">✔ Verified vendors & suppliers near your site</li>
-                    <li class="mb-2">✔ Compare prices without middlemen</li>
-                    <li class="mb-2">✔ Faster decisions, better control</li>
+                <ul class="lead-points">
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Verified vendors & suppliers near your site
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Compare prices transparently without brokers
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Faster execution with better cost control
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        Genuine leads with clear scope & requirements
+                    </li>
                 </ul>
             </div>
 
-
+            <!-- RIGHT FORM -->
             <div class="col-lg-7">
-                <form action="{{ route('save.leadform') }}" method="POST">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <input class="lead-input w-100" name="name" placeholder="Your Name" required>
+                <div class="lead-form-card">
+                    <h5 class="fw-bold mb-2">Tell Us About Your Requirement</h5>
+                    <p class="small text-muted mb-3">
+                        Share your details and our system will match you with suitable vendors.
+                    </p>
+
+                    <form action="{{ route('save.leadform') }}" method="POST">
+                        @csrf
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input class="lead-input w-100" name="name" placeholder="Your Name" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <input class="lead-input w-100" name="company_name" placeholder="Company Name (Optional)">
+                            </div>
+
+                            <div class="col-md-6">
+                                <input class="lead-input w-100" name="phone" placeholder="Phone Number" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <input class="lead-input w-100" name="email" placeholder="Work Email" required>
+                            </div>
+
+                            <div class="col-12">
+                                <input class="lead-input w-100" name="requirement" placeholder="Requirement Type (e.g. Bungalow, PEB Shed)" required>
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="lead-submit-btn">
+                                    Get Matched With Vendors →
+                                </button>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <input class="lead-input w-100" name="company_name" placeholder="Company Name">
-                        </div>
-                        <div class="col-md-6">
-                            <input class="lead-input w-100" name="phone" placeholder="Phone Number" required>
-                        </div>
-                        <div class="col-md-6">
-                            <input class="lead-input w-100" name="email" placeholder="Work Email" required>
-                        </div>
-                        <div class="col-12">
-                            <input class="lead-input w-100" name="requirement" placeholder="Requirement Type" required>
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn w-100 mt-2" style="background:#f25c05;color:#fff;">
-                                Submit Details
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
         </div>
     </div>
 </section>
 
+
 <!-- ================= TESTIMONIALS ================= -->
-<section class="section-wrapper">
+<section class="section-wrapper testimonial-section">
     <div class="container">
 
-        <h2 class="section-title text-center mb-3">What People Say About Us</h2>
-        <p class="text-center text-muted mb-4">
-            Trusted by customers, contractors & suppliers across Maharashtra.
-        </p>
+        <div class="text-center mb-4">
+            <span class="testimonial-badge">⭐ Real Experiences</span>
+            <h2 class="section-title mt-2">What People Say About Us</h2>
+            <p class="text-muted">
+                Trusted by customers, contractors & suppliers across Maharashtra.
+            </p>
+        </div>
 
         @php
             $testimonials = [
@@ -1140,44 +1656,44 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             ];
         @endphp
 
-        <div class="testimonial-auto-wrapper">
+         <div class="testimonial-auto-wrapper">
             <div class="testimonial-track">
 
-                {{-- FIRST SET --}}
                 @foreach ($testimonials as $t)
-                <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-3">
-                       <img 
+                <div class="testimonial-card colorful">
+
+                    <!-- USER -->
+                    <div class="testimonial-header">
+                        <img 
                             src="{{ asset('images/testo/'.$t['image']) }}" 
                             class="testimonial-avatar"
                             alt="{{ $t['name'] }}"
                         >
 
-                        <div class="ms-3">
-                            <p class="testimonial-name mb-0">{{ $t['name'] }}</p>
-                            <p class="testimonial-role mb-0">{{ $t['role'] }}</p>
+                        <div>
+                            <p class="testimonial-name">{{ $t['name'] }}</p>
+                            <p class="testimonial-role">{{ $t['role'] }}</p>
                         </div>
                     </div>
 
-                   
+                    <!-- RATING -->
                     <div class="testimonial-rating mb-2">
                         @for ($i = 1; $i <= 5; $i++)
                             @if ($i <= $t['rating'])
-                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill"></i>
                             @else
-                                <i class="bi bi-star text-muted"></i>
+                                <i class="bi bi-star"></i>
                             @endif
                         @endfor
                     </div>
 
-
-                    <p class="text-muted">
+                    <!-- TEXT -->
+                    <p class="testimonial-text">
                         {{ $t['text'] }}
                     </p>
+
                 </div>
                 @endforeach
-
-                
 
             </div>
         </div>
@@ -1186,53 +1702,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 </section>
 
 
-<!-- LOGIN REQUIRED MODAL -->
-<div class="modal fade" id="loginPromptModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" style="border-radius:16px; text-align:center;">
-            <div class="modal-header bg-warning">
-                <h5 class="modal-title fw-bold">Login Required</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                Please login or register first to continue!
-            </div>
-            <div class="modal-footer d-flex justify-content-center gap-3">
-                <a href="{{ route('login_register') }}" class="btn btn-primary">Login</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- <div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
 
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">🚧 Coming Soon</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body text-center py-4">
-                <div class="mb-3">
-                    <i class="bi bi-hourglass-split fs-1 text-warning"></i>
-                </div>
-
-                <h6 class="fw-semibold mb-2">Business ERP Module</h6>
-                <p class="text-muted mb-0">
-                    This powerful ERP feature is currently under development.  
-                    It will be available very soon on ConstructKaro.
-                </p>
-            </div>
-
-            <div class="modal-footer border-0 justify-content-center">
-                <button class="btn btn-warning text-white px-4" data-bs-dismiss="modal">
-                    OK, Got it
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div> -->
 <div class="modal fade" id="comingSoonModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -1295,51 +1765,35 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             <input class="form-control form-control-lg" name="company_name" required>
           </div>
 
+        
           <!-- 3 -->
-          <!-- <div class="mb-4">
-            <label class="fw-semibold">
-              <span class="ck-step me-1">3</span> Your Role *
-            </label>
-            <select class="form-select form-select-lg" name="role_in_org" required>
-              <option value="">Select role</option>
-              <option>Owner / Founder</option>
-              <option>Director</option>
-              <option>Project Manager</option>
-              <option>Engineer</option>
-              <option>Procurement</option>
-              <option>Consultant</option>
-              <option>Other</option>
-            </select>
-          </div> -->
+        <div class="mb-4">
+        <label class="fw-semibold">
+            <span class="ck-step me-1">3</span> Your Role *
+        </label>
 
-          <!-- 3 -->
-<div class="mb-4">
-  <label class="fw-semibold">
-    <span class="ck-step me-1">3</span> Your Role *
-  </label>
+        <select class="form-select form-select-lg"
+                name="role_in_org"
+                id="roleSelect"
+                required>
+            <option value="">Select role</option>
+            <option value="Owner / Founder">Owner / Founder</option>
+            <option value="Director">Director</option>
+            <option value="Project Manager">Project Manager</option>
+            <option value="Engineer">Engineer</option>
+            <option value="Procurement">Procurement</option>
+            <option value="Consultant">Consultant</option>
+            <option value="Other">Other</option>
+        </select>
 
-  <select class="form-select form-select-lg"
-          name="role_in_org"
-          id="roleSelect"
-          required>
-    <option value="">Select role</option>
-    <option value="Owner / Founder">Owner / Founder</option>
-    <option value="Director">Director</option>
-    <option value="Project Manager">Project Manager</option>
-    <option value="Engineer">Engineer</option>
-    <option value="Procurement">Procurement</option>
-    <option value="Consultant">Consultant</option>
-    <option value="Other">Other</option>
-  </select>
-
-  <!-- OTHER ROLE TEXTBOX (HIDDEN) -->
-  <div id="roleOtherBox" class="mt-2 d-none">
-    <input type="text"
-           class="form-control form-control-lg"
-           name="role_in_org_other"
-           placeholder="Please specify your role">
-  </div>
-</div>
+        <!-- OTHER ROLE TEXTBOX (HIDDEN) -->
+        <div id="roleOtherBox" class="mt-2 d-none">
+            <input type="text"
+                class="form-control form-control-lg"
+                name="role_in_org_other"
+                placeholder="Please specify your role">
+        </div>
+        </div>
 
           <!-- 4 -->
         <div class="mb-4">
@@ -1473,33 +1927,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script>
-document.querySelectorAll(".stat-num").forEach(num => {
-    let target = +num.getAttribute("data-target");
-    let count = 0;
 
-    let update = () => {
-        if (count < target) {
-            count += Math.ceil(target / 40);
-            num.textContent = count;
-            requestAnimationFrame(update);
-        } else {
-            num.textContent = target;
-        }
-    };
-    update();
-});
-</script>
-
-<script>
-function doSearch() {
-    window.location.href = "{{ route('search_vendor') }}";
-}
-
-function openLoginPrompt() {
-    const modal = new bootstrap.Modal(document.getElementById('loginPromptModal'));
-    modal.show();
-}
 </script>
 <script>
 document.querySelectorAll('.org-type-radio').forEach(radio => {
