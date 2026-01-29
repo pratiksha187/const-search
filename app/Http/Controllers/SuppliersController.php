@@ -1083,7 +1083,7 @@ public function supplierFilter(Request $request)
         $vendor_id   = Session::get('vendor_id');
         $supplier_id = Session::get('supplier_id');
 
-           dd( $supplier_id );
+        //    dd( $supplier_id );
         $layout = 'layouts.guest';
         if ($customer_id) {
             $cust_data = DB::table('users')->where('id',$customer_id)->first();

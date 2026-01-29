@@ -19,20 +19,6 @@
     --gray: #6b7484;
     --bg: #f5f7fb;
 }
-/* ===== MODERN UI BASE ===== */
-
-
-/* Smooth font rendering */
-*{
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-/* Section rhythm */
-.section-wrapper{
-    padding: 90px 0 70px;
-}
-
 
 body {
     background: var(--bg);
@@ -49,15 +35,6 @@ body {
     border-radius: 18px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     transition: .3s;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.category-box small{
-    min-height: 36px;
-    display: block;
-    line-height: 1.2;
 }
 .category-box:hover {
     transform: translateY(-6px);
@@ -169,9 +146,8 @@ body {
 /* ================= HERO (PREMIUM) ================= */
 .hero-new{
     position: relative;
-    padding: 150px 0 240px;
-    background:
-        radial-gradient(circle at top, #ffffff 0%, #eef2ff 40%, #e5e9f2 100%);
+    padding: 140px 0 220px; /* extra bottom so overlap feels premium */
+    background: radial-gradient(circle at top, #ffffff 8%, #f1f4fa 55%, #e5e9f2 100%);
     overflow: hidden;
 }
 .hero-new::before{
@@ -184,23 +160,48 @@ body {
     background-size: 58px 58px;
     opacity: .22;
 }
-/* Glass layer */
 .hero-new::after{
+    /* focus glow behind overlap cards (premium touch) */
     content:"";
     position:absolute;
-    inset:0;
-    backdrop-filter: blur(14px);
-    background: linear-gradient(
-        180deg,
-        rgba(255,255,255,.75),
-        rgba(255,255,255,.45)
-    );
+    left:50%;
+    bottom:-130px;
+    width:560px;
+    height:260px;
+    transform:translateX(-50%);
+    background: radial-gradient(circle, rgba(37,99,235,0.18), transparent 70%);
+    z-index: 1;
+}
+/* FEATURE CARD CONSISTENCY */
+.feature-card{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
-.hero-inner{
-    position: relative;
-    z-index: 3;
+/* ICON FIX */
+.feature-icon{
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+/* TEXT BALANCE */
+.feature-card h6{
+    min-height: 22px;
+}
+
+.feature-card p{
+    min-height: 48px;
+    line-height: 1.35;
+}
+
+.hero-inner{ position: relative; z-index: 3; }
+
 .hero-badge{
     background: rgba(37,99,235,0.12);
     color: var(--blue);
@@ -212,18 +213,97 @@ body {
     gap: 8px;
     align-items: center;
 }
+
+/* ===== HOW IT WORKS COLORFUL ===== */
+.how-it-works{
+    background: linear-gradient(180deg,#ffffff,#f6f8ff);
+}
+
+/* Badge */
+.how-badge{
+    display:inline-block;
+    background: linear-gradient(135deg,#2563eb,#3b82f6);
+    color:#fff;
+    padding:6px 16px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+/* Flow Cards */
+.flow-card.colorful{
+    position:relative;
+    border-radius:22px;
+    padding:34px 26px 28px;
+    background:#fff;
+    box-shadow:0 14px 40px rgba(0,0,0,0.08);
+    transition:.35s ease;
+}
+
+.flow-card.colorful:hover{
+    transform:translateY(-8px);
+    box-shadow:0 25px 55px rgba(0,0,0,0.15);
+}
+
+/* Step Number */
+.step-number{
+    position:absolute;
+    top:18px;
+    right:22px;
+    font-size:2.4rem;
+    font-weight:900;
+    opacity:0.08;
+}
+
+/* Icon Circle */
+.flow-card.colorful .flow-icon-circle{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:26px;
+    color:#fff;
+    margin:0 auto 16px;
+}
+
+/* Colors */
+.flow-card.blue .flow-icon-circle{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+}
+.flow-card.orange .flow-icon-circle{
+    background:linear-gradient(135deg,#f25c05,#ff9731);
+}
+.flow-card.green .flow-icon-circle{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+}
+
+/* Text */
+.flow-card h5{
+    font-weight:800;
+    margin-bottom:10px;
+    color:#0f172a;
+}
+.flow-card p{
+    font-size:.95rem;
+    color:#475569;
+    line-height:1.5;
+}
+
+
 .hero-title{
-    font-size: clamp(2.2rem, 4vw, 3rem);
+    font-size: 2.35rem;
     font-weight: 900;
-    letter-spacing: -0.6px;
+    color: #1c2c3e;
+    line-height: 1.18;
+    letter-spacing: .2px;
 }
 .hero-highlight{ color: var(--orange); }
 .hero-highlight-blue{ color: #1669d5ff; }
 
-.hero-subtext{
-    font-size: 1.15rem;
-    max-width: 620px;
-}
+.hero-subtext{ color: #6b7484; font-size: 1.1rem; max-width: 640px; }
+
 .search-bar-wrapper{
     display:flex;
     align-items:center;
@@ -279,6 +359,83 @@ body {
     transition:.25s;
     white-space: nowrap;
 }
+
+/* ===== TESTIMONIAL SECTION ===== */
+.testimonial-section{
+    background: linear-gradient(180deg,#ffffff,#f6f8ff);
+}
+
+/* Badge */
+.testimonial-badge{
+    display:inline-block;
+    background: linear-gradient(135deg,#f25c05,#ff9731);
+    color:#fff;
+    padding:6px 16px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+/* Card */
+.testimonial-card.colorful{
+    min-width:340px;
+    max-width:360px;
+    background:#fff;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:0 14px 40px rgba(0,0,0,0.08);
+    transition:.35s;
+    position:relative;
+}
+
+.testimonial-card.colorful:hover{
+    transform:translateY(-8px);
+    box-shadow:0 25px 60px rgba(0,0,0,0.15);
+}
+
+/* Header */
+.testimonial-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+}
+
+.testimonial-avatar{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #3b82f6;
+}
+
+/* Name & role */
+.testimonial-name{
+    font-weight:700;
+    margin:0;
+    color:#0f172a;
+}
+.testimonial-role{
+    font-size:.85rem;
+    color:#64748b;
+    margin:0;
+}
+
+/* Rating */
+.testimonial-rating i{
+    color:#facc15;
+    margin-right:2px;
+}
+
+/* Text */
+.testimonial-text{
+    font-size:.9rem;
+    color:#475569;
+    line-height:1.5;
+}
+
+/* Smooth auto-scroll already handled by your existing CSS */
+
 .search-btn-final:hover{ transform: translateY(-1px); opacity:.95; }
 
 .trusted-pill{
@@ -307,6 +464,86 @@ body {
     50% { transform: translateY(-12px); }
     100% { transform: translateY(0px); }
 }
+
+/* ===== LEAD SECTION ===== */
+.lead-section{
+    background: linear-gradient(180deg,#ffffff,#fef3e7);
+}
+
+/* Badge */
+.lead-badge{
+    display:inline-block;
+    background: linear-gradient(135deg,#f25c05,#ff9731);
+    color:#fff;
+    padding:6px 16px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+/* Left text */
+.lead-subtext{
+    color:#475569;
+    margin-bottom:16px;
+}
+
+/* Points */
+.lead-points{
+    list-style:none;
+    padding:0;
+    margin-top:16px;
+}
+.lead-points li{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+    font-weight:500;
+    color:#0f172a;
+}
+.lead-points i{
+    color:#16a34a;
+    font-size:1.1rem;
+}
+
+/* Form Card */
+.lead-form-card{
+    background:#ffffff;
+    border-radius:22px;
+    padding:28px;
+    box-shadow:0 18px 45px rgba(0,0,0,0.12);
+}
+
+/* Inputs */
+.lead-input{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:12px 16px;
+    font-size:.95rem;
+}
+.lead-input:focus{
+    outline:none;
+    border-color:#f25c05;
+    box-shadow:0 0 0 3px rgba(242,92,5,.2);
+}
+
+/* Submit Button */
+.lead-submit-btn{
+    width:100%;
+    background: linear-gradient(135deg,#f25c05,#ff9731);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    padding:14px;
+    font-weight:700;
+    transition:.25s;
+}
+.lead-submit-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 30px rgba(242,92,5,.35);
+}
+
 
 /* ======= OVERLAP CARDS (HALF IN / HALF OUT) ======= */
 .hero-overlap-cards{
@@ -407,11 +644,11 @@ body {
     transition: all .35s ease;
 }
 
-.category-img{
-    width: 120px;
-    height: 90px;
+.category-img {
+    width: 150px;
+    height: 100px;
     object-fit: contain;
-    margin: 0 auto 12px;
+    margin-bottom: 12px;
 }
 
 
@@ -479,6 +716,19 @@ body {
         flex-wrap: wrap;
         justify-content: center;
     }
+.vendor-row{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: nowrap; /* 🔥 one line */
+}
+@media(max-width: 992px){
+    .vendor-row{
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 10px;
+    }
+}
 
     .overlap-card {
         width: 90%;
@@ -589,6 +839,13 @@ body {
         font-size: 1.5rem;
     }
 }
+/* 
+:root{
+  --ck-navy:#0f172a;
+  --ck-orange:#f25c05;
+  --ck-bg:#f6f8fb;
+  --ck-border:#e5e7eb;
+} */
 
 .modal-xl{
   max-width:1200px;
@@ -599,12 +856,6 @@ body {
   background:#ffffff;
   border-bottom:1px solid var(--ck-border);
 }
-
-.category-title{
-    min-height: 24px;
-    font-weight: 600;
-}
-
 
 .ck-modal-title{
   color:var(--ck-navy);
@@ -719,82 +970,6 @@ body {
     transform:translateY(-6px);
     box-shadow:0 20px 45px rgba(0,0,0,0.15);
 }
-/* ===== HOW IT WORKS COLORFUL ===== */
-.how-it-works{
-    background: linear-gradient(180deg,#ffffff,#f6f8ff);
-}
-
-/* Badge */
-.how-badge{
-    display:inline-block;
-    background: linear-gradient(135deg,#2563eb,#3b82f6);
-    color:#fff;
-    padding:6px 16px;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-}
-
-/* Flow Cards */
-.flow-card.colorful{
-    position:relative;
-    border-radius:22px;
-    padding:34px 26px 28px;
-    background:#fff;
-    box-shadow:0 14px 40px rgba(0,0,0,0.08);
-    transition:.35s ease;
-}
-
-.flow-card.colorful:hover{
-    transform:translateY(-8px);
-    box-shadow:0 25px 55px rgba(0,0,0,0.15);
-}
-
-/* Step Number */
-.step-number{
-    position:absolute;
-    top:18px;
-    right:22px;
-    font-size:2.4rem;
-    font-weight:900;
-    opacity:0.08;
-}
-
-/* Icon Circle */
-.flow-card.colorful .flow-icon-circle{
-    width:64px;
-    height:64px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:26px;
-    color:#fff;
-    margin:0 auto 16px;
-}
-
-/* Colors */
-.flow-card.blue .flow-icon-circle{
-    background:linear-gradient(135deg,#2563eb,#3b82f6);
-}
-.flow-card.orange .flow-icon-circle{
-    background:linear-gradient(135deg,#f25c05,#ff9731);
-}
-.flow-card.green .flow-icon-circle{
-    background:linear-gradient(135deg,#16a34a,#22c55e);
-}
-
-/* Text */
-.flow-card h5{
-    font-weight:800;
-    margin-bottom:10px;
-    color:#0f172a;
-}
-.flow-card p{
-    font-size:.95rem;
-    color:#475569;
-    line-height:1.5;
-}
 
 /* Icon */
 .feature-card.colorful .feature-icon{
@@ -807,161 +982,6 @@ body {
     font-size:20px;
     margin-bottom:10px;
     color:#fff;
-}
-/* ===== LEAD SECTION ===== */
-.lead-section{
-    background: linear-gradient(180deg,#ffffff,#fef3e7);
-}
-
-/* Badge */
-.lead-badge{
-    display:inline-block;
-    background: linear-gradient(135deg,#f25c05,#ff9731);
-    color:#fff;
-    padding:6px 16px;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-}
-
-/* Left text */
-.lead-subtext{
-    color:#475569;
-    margin-bottom:16px;
-}
-
-/* ===== TESTIMONIAL SECTION ===== */
-.testimonial-section{
-    background: linear-gradient(180deg,#ffffff,#f6f8ff);
-}
-
-/* Badge */
-.testimonial-badge{
-    display:inline-block;
-    background: linear-gradient(135deg,#f25c05,#ff9731);
-    color:#fff;
-    padding:6px 16px;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-}
-
-/* Card */
-.testimonial-card.colorful{
-    min-width:340px;
-    max-width:360px;
-    background:#fff;
-    border-radius:22px;
-    padding:24px;
-    box-shadow:0 14px 40px rgba(0,0,0,0.08);
-    transition:.35s;
-    position:relative;
-}
-
-.testimonial-card.colorful:hover{
-    transform:translateY(-8px);
-    box-shadow:0 25px 60px rgba(0,0,0,0.15);
-}
-
-/* Header */
-.testimonial-header{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:12px;
-}
-
-.testimonial-avatar{
-    width:58px;
-    height:58px;
-    border-radius:50%;
-    object-fit:cover;
-    border:3px solid #3b82f6;
-}
-
-/* Name & role */
-.testimonial-name{
-    font-weight:700;
-    margin:0;
-    color:#0f172a;
-}
-.testimonial-role{
-    font-size:.85rem;
-    color:#64748b;
-    margin:0;
-}
-
-/* Rating */
-.testimonial-rating i{
-    color:#facc15;
-    margin-right:2px;
-}
-
-/* Text */
-.testimonial-text{
-    font-size:.9rem;
-    color:#475569;
-    line-height:1.5;
-}
-
-/* Smooth auto-scroll already handled by your existing CSS */
-
-
-/* Points */
-.lead-points{
-    list-style:none;
-    padding:0;
-    margin-top:16px;
-}
-.lead-points li{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:10px;
-    font-weight:500;
-    color:#0f172a;
-}
-.lead-points i{
-    color:#16a34a;
-    font-size:1.1rem;
-}
-
-/* Form Card */
-.lead-form-card{
-    background:#ffffff;
-    border-radius:22px;
-    padding:28px;
-    box-shadow:0 18px 45px rgba(0,0,0,0.12);
-}
-
-/* Inputs */
-.lead-input{
-    background:#f8fafc;
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    padding:12px 16px;
-    font-size:.95rem;
-}
-.lead-input:focus{
-    outline:none;
-    border-color:#f25c05;
-    box-shadow:0 0 0 3px rgba(242,92,5,.2);
-}
-
-/* Submit Button */
-.lead-submit-btn{
-    width:100%;
-    background: linear-gradient(135deg,#f25c05,#ff9731);
-    color:#fff;
-    border:none;
-    border-radius:14px;
-    padding:14px;
-    font-weight:700;
-    transition:.25s;
-}
-.lead-submit-btn:hover{
-    transform:translateY(-1px);
-    box-shadow:0 10px 30px rgba(242,92,5,.35);
 }
 
 /* Color Variants */
@@ -1006,8 +1026,6 @@ const Toast = Swal.mixin({
     timerProgressBar: true,
     showConfirmButton: false
 });
-
-
 Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 </script>
 @endif
@@ -1144,8 +1162,56 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 <!-- add spacing because cards overlap -->
 <div class="section-after-hero"></div>
 
-
 <!-- ================= POPULAR CATEGORIES ================= -->
+<!-- <section class="section-wrapper py-5">
+    <div class="container">
+
+        <h2 class="section-title text-center mb-2">Popular Vendor Categories</h2>
+        <p class="text-center text-muted mb-5">
+            Find trusted professionals for your construction needs
+        </p>
+
+        <div class="vendor-row">
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-building"></i></div>
+                <p class="category-title">Building Contractor</p>
+            </div>
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-house-heart"></i></div>
+                <p class="category-title">Residential Interiors</p>
+            </div>
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-rulers"></i></div>
+                <p class="category-title">Residential Architect</p>
+            </div>
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-building-gear"></i></div>
+                <p class="category-title">Industrial Contractor</p>
+            </div>
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-gem"></i></div>
+                <p class="category-title">Luxury Interiors</p>
+            </div>
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-people"></i></div>
+                <p class="category-title">Labour Contractor</p>
+            </div>
+
+            <div class="category-box">
+                <div class="category-icon"><i class="bi bi-buildings"></i></div>
+                <p class="category-title">Commercial Architect</p>
+            </div>
+
+        </div>
+
+    </div>
+</section> -->
 <section class="section-wrapper py-5">
     <div class="container">
 
@@ -1427,6 +1493,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 </section>
 
 
+
 <!-- ================= HOW IT WORKS ================= -->
 <section class="section-wrapper py-5 how-it-works">
     <div class="container">
@@ -1584,7 +1651,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 
 
 <!-- ================= TESTIMONIALS ================= -->
-<section class="section-wrapper testimonial-section">
+<section class="section-wrapper  testimonial-section">
     <div class="container">
 
         <div class="text-center mb-4">
@@ -1656,7 +1723,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             ];
         @endphp
 
-         <div class="testimonial-auto-wrapper">
+        <div class="testimonial-auto-wrapper">
             <div class="testimonial-track">
 
                 @foreach ($testimonials as $t)
@@ -1698,11 +1765,58 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             </div>
         </div>
 
+
     </div>
 </section>
 
 
+<!-- LOGIN REQUIRED MODAL -->
+<div class="modal fade" id="loginPromptModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px; text-align:center;">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title fw-bold">Login Required</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Please login or register first to continue!
+            </div>
+            <div class="modal-footer d-flex justify-content-center gap-3">
+                <a href="{{ route('login_register') }}" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
 
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">🚧 Coming Soon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-hourglass-split fs-1 text-warning"></i>
+                </div>
+
+                <h6 class="fw-semibold mb-2">Business ERP Module</h6>
+                <p class="text-muted mb-0">
+                    This powerful ERP feature is currently under development.  
+                    It will be available very soon on ConstructKaro.
+                </p>
+            </div>
+
+            <div class="modal-footer border-0 justify-content-center">
+                <button class="btn btn-warning text-white px-4" data-bs-dismiss="modal">
+                    OK, Got it
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div> -->
 <div class="modal fade" id="comingSoonModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -1765,35 +1879,51 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             <input class="form-control form-control-lg" name="company_name" required>
           </div>
 
-        
           <!-- 3 -->
-        <div class="mb-4">
-        <label class="fw-semibold">
-            <span class="ck-step me-1">3</span> Your Role *
-        </label>
+          <!-- <div class="mb-4">
+            <label class="fw-semibold">
+              <span class="ck-step me-1">3</span> Your Role *
+            </label>
+            <select class="form-select form-select-lg" name="role_in_org" required>
+              <option value="">Select role</option>
+              <option>Owner / Founder</option>
+              <option>Director</option>
+              <option>Project Manager</option>
+              <option>Engineer</option>
+              <option>Procurement</option>
+              <option>Consultant</option>
+              <option>Other</option>
+            </select>
+          </div> -->
 
-        <select class="form-select form-select-lg"
-                name="role_in_org"
-                id="roleSelect"
-                required>
-            <option value="">Select role</option>
-            <option value="Owner / Founder">Owner / Founder</option>
-            <option value="Director">Director</option>
-            <option value="Project Manager">Project Manager</option>
-            <option value="Engineer">Engineer</option>
-            <option value="Procurement">Procurement</option>
-            <option value="Consultant">Consultant</option>
-            <option value="Other">Other</option>
-        </select>
+          <!-- 3 -->
+<div class="mb-4">
+  <label class="fw-semibold">
+    <span class="ck-step me-1">3</span> Your Role *
+  </label>
 
-        <!-- OTHER ROLE TEXTBOX (HIDDEN) -->
-        <div id="roleOtherBox" class="mt-2 d-none">
-            <input type="text"
-                class="form-control form-control-lg"
-                name="role_in_org_other"
-                placeholder="Please specify your role">
-        </div>
-        </div>
+  <select class="form-select form-select-lg"
+          name="role_in_org"
+          id="roleSelect"
+          required>
+    <option value="">Select role</option>
+    <option value="Owner / Founder">Owner / Founder</option>
+    <option value="Director">Director</option>
+    <option value="Project Manager">Project Manager</option>
+    <option value="Engineer">Engineer</option>
+    <option value="Procurement">Procurement</option>
+    <option value="Consultant">Consultant</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <!-- OTHER ROLE TEXTBOX (HIDDEN) -->
+  <div id="roleOtherBox" class="mt-2 d-none">
+    <input type="text"
+           class="form-control form-control-lg"
+           name="role_in_org_other"
+           placeholder="Please specify your role">
+  </div>
+</div>
 
           <!-- 4 -->
         <div class="mb-4">
@@ -1927,7 +2057,33 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<script>
+document.querySelectorAll(".stat-num").forEach(num => {
+    let target = +num.getAttribute("data-target");
+    let count = 0;
 
+    let update = () => {
+        if (count < target) {
+            count += Math.ceil(target / 40);
+            num.textContent = count;
+            requestAnimationFrame(update);
+        } else {
+            num.textContent = target;
+        }
+    };
+    update();
+});
+</script>
+
+<script>
+function doSearch() {
+    window.location.href = "{{ route('search_vendor') }}";
+}
+
+function openLoginPrompt() {
+    const modal = new bootstrap.Modal(document.getElementById('loginPromptModal'));
+    modal.show();
+}
 </script>
 <script>
 document.querySelectorAll('.org-type-radio').forEach(radio => {

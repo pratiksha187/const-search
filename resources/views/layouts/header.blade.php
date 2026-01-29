@@ -121,14 +121,14 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('login_register') }}">Find Vendors</a>
+                <a class="nav-link" href="{{ route('aboutus') }}">About Us</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('login_register')}}">Materials Suppliers</a>
+                <a class="nav-link" href="{{route('login_register')}}">Block Articals</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('login_register')}}">Search Lead</a>
+                <a class="nav-link" href="{{route('login_register')}}">Tutorials</a>
             </li>
         </ul>
 
