@@ -28,7 +28,7 @@ class SuppliersController extends Controller
             ->where('supplier_reg.id', $supplier_id)
             ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename')
             ->first(); // use first() instead of get()
-
+// dd($supplier_data);
         // Decode JSON category IDs
         $categoryIds = json_decode($supplier_data->material_category, true);
 
@@ -67,65 +67,57 @@ class SuppliersController extends Controller
         ));
     }
 
-
-    // public function quotesandorder(){
-    //      $supplier_id = Session::get('supplier_id');
-    //     $supplierName = DB::table('supplier_reg')
-    //                     ->where('id', $supplier_id)
-    //                     ->value('contact_person'); 
-    //     return view('web.quotes&order',compact('supplierName'));
-    // }
     public function quotesandorder()
-{
-    $supplier_id = Session::get('supplier_id');
+    {
+        $supplier_id = Session::get('supplier_id');
 
-    if (!$supplier_id) {
-        abort(403, 'Unauthorized');
+        if (!$supplier_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Supplier Name
+        $supplierName = DB::table('supplier_reg')
+            ->where('id', $supplier_id)
+            ->value('contact_person');
+
+        // ================= QUOTES =================
+        $quotes = DB::table('supplier_quotes as sq')
+            ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
+            ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
+            ->join('material_categories as mc', 'mc.id', '=', 'se.category')
+            ->where('sq.supplier_id', $supplier_id)
+            ->where('sq.status', 'sent')
+            ->select(
+                'sq.*',
+                'se.quantity',
+                'sr.shop_name',
+                'mc.name as material_categories_name'
+            )
+            ->orderBy('sq.created_at', 'DESC')
+            ->get();
+
+        // ================= ORDERS =================
+        $orders = DB::table('supplier_quotes as sq')
+            ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
+            ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
+            ->join('material_categories as mc', 'mc.id', '=', 'se.category')
+            ->where('sq.supplier_id', $supplier_id)
+            ->whereIn('sq.status', ['accepted', 'order'])
+            ->select(
+                'sq.*',
+                'se.quantity',
+                'sr.shop_name',
+                'mc.name as material_categories_name'
+            )
+            ->orderBy('sq.updated_at', 'DESC')
+            ->get();
+
+        return view('web.quotes&order', compact(
+            'supplierName',
+            'quotes',
+            'orders'
+        ));
     }
-
-    // Supplier Name
-    $supplierName = DB::table('supplier_reg')
-        ->where('id', $supplier_id)
-        ->value('contact_person');
-
-    // ================= QUOTES =================
-    $quotes = DB::table('supplier_quotes as sq')
-        ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
-        ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
-        ->join('material_categories as mc', 'mc.id', '=', 'se.category')
-        ->where('sq.supplier_id', $supplier_id)
-        ->where('sq.status', 'sent')
-        ->select(
-            'sq.*',
-            'se.quantity',
-            'sr.shop_name',
-            'mc.name as material_categories_name'
-        )
-        ->orderBy('sq.created_at', 'DESC')
-        ->get();
-
-    // ================= ORDERS =================
-    $orders = DB::table('supplier_quotes as sq')
-        ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
-        ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
-        ->join('material_categories as mc', 'mc.id', '=', 'se.category')
-        ->where('sq.supplier_id', $supplier_id)
-        ->whereIn('sq.status', ['accepted', 'order'])
-        ->select(
-            'sq.*',
-            'se.quantity',
-            'sr.shop_name',
-            'mc.name as material_categories_name'
-        )
-        ->orderBy('sq.updated_at', 'DESC')
-        ->get();
-
-    return view('web.quotes&order', compact(
-        'supplierName',
-        'quotes',
-        'orders'
-    ));
-}
 
    
     public function myproducts(Request $request)

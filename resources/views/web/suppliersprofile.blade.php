@@ -519,7 +519,7 @@ $materialIconMap = [
                      @foreach ($maximum_distances as $maximum_distance)
                      <option value="{{ $maximum_distance->id }}"
                      {{ old('maximum_distance', $supplier->maximum_distance ?? '') == $maximum_distance->id ? 'selected' : '' }}>
-                     {{ $maximum_distance->distance_km }} KM
+                     {{ $maximum_distance->distance_km }}
                      </option>
                      @endforeach
                   </select>

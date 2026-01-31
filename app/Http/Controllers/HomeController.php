@@ -353,7 +353,7 @@ class HomeController extends Controller
     {
        
         $cust_id   = $request->cust_id;
-        dd($cust_id );
+        // dd($cust_id );
         $vendor_id = Session::get('vendor_id');
 
         if (!$vendor_id) {

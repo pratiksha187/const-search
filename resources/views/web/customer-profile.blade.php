@@ -635,7 +635,7 @@ h1,h4,h5{ letter-spacing:-0.3px; }
         <span class="verified-badge">
             <i class="bi bi-check-circle-fill"></i> Verified Customer
         </span>
-
+<!-- <h1 class="mt-4">{{ $customer_data->id }}</h1> -->
         <h1 class="mt-4">{{ $customer_data->title }}</h1>
         <div class="profile-sub">{{ $customer_data->work_typename }}</div>
 
@@ -737,7 +737,7 @@ h1,h4,h5{ letter-spacing:-0.3px; }
 
         <form id="interestForm">
           @csrf
-          <input type="hidden" name="cust_id" value="{{ $customer_data->cust_id }}">
+          <input type="hidden" name="cust_id" value="{{ $customer_data->id }}">
 
           <div class="mb-3">
             <label class="form-label">Your Name *</label>
@@ -1006,6 +1006,7 @@ h1,h4,h5{ letter-spacing:-0.3px; }
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     window.CUSTOMERID = {{ $customer_data->cust_id }};
+    // alert( window.CUSTOMERID);
 </script>
 
 
