@@ -54,6 +54,44 @@
     border:1px solid #e5e7eb;
     padding:6px;
 }
+.status-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:800;
+    line-height:1;
+    white-space:nowrap;
+}
+
+/* 🟢 Leads Available */
+.status-active{
+    background:#ecfdf5;
+    color:#047857;
+    border:1px solid #34d399;
+}
+
+.status-active::before{
+    content:'●';
+    font-size:10px;
+    color:#10b981;
+}
+
+/* 🔴 No Leads */
+.status-empty{
+    background:#fef2f2;
+    color:#b91c1c;
+    border:1px solid #fca5a5;
+}
+
+.status-empty::before{
+    content:'●';
+    font-size:10px;
+    color:#ef4444;
+}
+
 </style>
 
 {{-- ================= HEADER ================= --}}
@@ -63,9 +101,10 @@
         <div class="text-muted">{{ $vendor->work_type_name }}</div>
     </div>
 
-    <span class="status-badge status-{{ $vendor->status }}">
-        {{ ucfirst($vendor->status) }}
-    </span>
+    <span class="status-badge {{ $vendor->lead_balance > 0 ? 'status-active' : 'status-empty' }}">
+    {{ $vendor->lead_balance }} Leads
+</span>
+
 </div>
 
 {{-- ================= BASIC INFO ================= --}}
@@ -79,6 +118,9 @@
         <div class="col-md-4"><div class="label">Business Name</div><div class="value">{{ $vendor->business_name }}</div></div>
         <div class="col-md-4"><div class="label">Experience</div><div class="value">{{ $vendor->experience_years }} Years</div></div>
         <div class="col-md-4"><div class="label">Team Size</div><div class="value">{{ $vendor->team_size }}</div></div>
+        <div class="col-md-4"><div class="label">Lead Balence</div><div class="value">{{ $vendor->lead_balance }}</div></div>
+
+        
     </div>
 </div>
 

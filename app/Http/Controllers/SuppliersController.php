@@ -1314,6 +1314,8 @@ public function supplierFilter(Request $request)
 
             $enquiries = DB::table('supplier_enquiries as se')
                 ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
+                ->where('se.user_id', 'v_'.$vendor_id)
+
                 ->select(
                     'se.id',
                     'se.created_at',
@@ -1322,7 +1324,7 @@ public function supplierFilter(Request $request)
                 )
                 ->orderBy('se.id','desc')
                 ->get();
-
+// dd( $enquiries );
             $layout = 'layouts.vendorapp';
         }
         else {
@@ -1331,7 +1333,7 @@ public function supplierFilter(Request $request)
 
         return view('web.supplier_enquiry_index', compact(
             'enquiries',
-            'layout',
+            'layout','vendor_id', 
             'cust_data',
             'vendor',
             'notifications',
@@ -1348,6 +1350,8 @@ public function supplierenquiryshow($id)
 
     $customer_id = Session::get('customer_id');
     $vendor_id   = Session::get('vendor_id');
+    
+    // dd($vendor_id);
     $supplier_id = Session::get('supplier_id');
 
     // 🔹 Default layout

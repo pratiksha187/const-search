@@ -51,7 +51,7 @@ class AdminController extends Controller
             ->where('v.id', $id)
             ->first();
 
-
+// dd($vendor);
         return view('web.vendorsapproved', compact('vendor'));
     }
 
