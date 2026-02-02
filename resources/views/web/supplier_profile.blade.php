@@ -182,13 +182,15 @@ body{
                         <td>{{ $item->brand_name }}</td>
                         <td>
                             @if(!empty($item->image))
-                                <img src="{{ asset('storage/'.$item->image) }}"
+                                <img src="{{ asset('uploads/products/'.$row->image) }}"
                                     alt="product"
                                     style="width:40px;height:40px;border-radius:6px;object-fit:cover;">
                             @else
                                 <span class="text-muted small">No Image</span>
                             @endif
                         </td>
+
+                        
 
                         
                         <td>{{ $supplier->minimum_order_qty ?? 'N/A' }}</td>
@@ -356,11 +358,15 @@ document.getElementById('openEnquiry')?.addEventListener('click', () => {
                 <td>${item.spec}</td>
                 <td>${item.brand}</td>
                 <td>
-                    ${item.image 
-                        ? `<img src="/storage/${item.image}" style="width:40px;height:40px;border-radius:6px">`
-                        : 'N/A'
+                    ${
+                        item.image
+                        ? `<img src="/uploads/products/${item.image}"
+                            alt="product"
+                            style="width:40px;height:40px;border-radius:6px;object-fit:cover;">`
+                        : '<span class="text-muted small">No Image</span>'
                     }
                 </td>
+
 
 
                 <td class="fw-bold">${item.qty}</td>

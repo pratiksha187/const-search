@@ -613,11 +613,11 @@
                      <i class="bi bi-check-circle-fill"></i> Verified
                      </span>
 
-                    @if($project->get_vendor == 1)
-<div class="corner-ribbon">
-   GET VENDOR
-</div>
-@endif
+                     @if($project->get_vendor == 1)
+                     <div class="corner-ribbon">
+                        Vendor Matched
+                     </div>
+                     @endif
 
                   </div>
                   {{-- ROLE --}}
