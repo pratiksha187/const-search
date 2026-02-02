@@ -25,12 +25,12 @@ class SuppliersController extends Controller
             ->leftJoin('region', 'region.id', '=', 'supplier_reg.region_id')
             ->leftJoin('city', 'city.id', '=', 'supplier_reg.city_id')
             ->leftJoin('state', 'state.id', '=', 'supplier_reg.state_id')
-            ->leftJoin('experience_years', 'experience_years.id', '=', 'supplier_reg.years_in_business')
+            ->leftJoin('years_in_business', 'years_in_business.id', '=', 'supplier_reg.years_in_business')
 
             
             
             ->where('supplier_reg.id', $supplier_id)
-            ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename','experience_years.experiance as experiance_yer')
+            ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename','years_in_business.years as experiance_yer')
             ->first(); // use first() instead of get()
 // dd($supplier_data);
         // Decode JSON category IDs
@@ -330,7 +330,7 @@ class SuppliersController extends Controller
         $supplier = DB::table('supplier_reg')
                         ->where('id', $supplier_id)
                         ->first();
-    
+    // dd($supplier);
             // ================= PROFILE COMPLETION LOGIC =================
         $profileCompletion = 0;
 
@@ -405,6 +405,7 @@ class SuppliersController extends Controller
         $primary_type = DB::table('materials')->get();
         $material_categories = DB::table('material_categories')->get();
         $experience = DB::table('years_in_business')->get();
+        // dd( $experience);
         $delivery_type = DB::table('delivery_type')->get();
         $credit_days = DB::table('credit_days')->get();
         $maximum_distances = DB::table('maximum_distances')->get();
@@ -1150,6 +1151,7 @@ public function supplierFilter(Request $request)
                     //     DB::raw('TRIM(br.name) as brand_name'),
                     // ])
                     ->select([
+                        'sp.image as p_image',
                         'mc.id  as category_id',
                         'mp.id  as product_id',
                         'mps.id as spec_id',

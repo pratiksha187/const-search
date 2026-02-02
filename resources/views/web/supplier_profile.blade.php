@@ -131,6 +131,7 @@ body{
                     <th width="220">Product</th>
                     <th>Specification</th>
                     <th>Brand</th>
+                    <th>Photos</th>
                     <th>MOQ</th>
                     <th width="140">Quantity</th>
                     <th width="120">Action</th>
@@ -168,6 +169,7 @@ body{
                         'product'  => $productName,
                         'spec'     => $item->material_subproduct,
                         'brand'    => $item->brand_name,
+                         'image'    => $item->image ?? null,
                     ];
                     @endphp
 
@@ -178,6 +180,17 @@ body{
                         <td></td>
                         <td>{{ $item->material_subproduct }}</td>
                         <td>{{ $item->brand_name }}</td>
+                        <td>
+                            @if(!empty($item->image))
+                                <img src="{{ asset('storage/'.$item->image) }}"
+                                    alt="product"
+                                    style="width:40px;height:40px;border-radius:6px;object-fit:cover;">
+                            @else
+                                <span class="text-muted small">No Image</span>
+                            @endif
+                        </td>
+
+                        
                         <td>{{ $supplier->minimum_order_qty ?? 'N/A' }}</td>
                         <td>
                             <div class="qty-box">
@@ -242,6 +255,7 @@ body{
                   <th>Product</th>
                   <th>Specification</th>
                   <th>Brand</th>
+                  <th>Photos</th>
                   <th width="100">Qty</th>
                 </tr>
               </thead>
@@ -341,6 +355,14 @@ document.getElementById('openEnquiry')?.addEventListener('click', () => {
                 <td>${item.product}</td>
                 <td>${item.spec}</td>
                 <td>${item.brand}</td>
+                <td>
+                    ${item.image 
+                        ? `<img src="/storage/${item.image}" style="width:40px;height:40px;border-radius:6px">`
+                        : 'N/A'
+                    }
+                </td>
+
+
                 <td class="fw-bold">${item.qty}</td>
             </tr>
         `;
