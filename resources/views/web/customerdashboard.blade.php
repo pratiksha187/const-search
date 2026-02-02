@@ -363,7 +363,7 @@ body{ background:var(--bg); }
         <div class="card-title">
             <span>New Vendors</span>
             <a href="{{ route('search_vendor') }}" class="btn btn-sm btn-outline-primary">
-                View All Projects
+                View All Vendors
             </a>
         </div>
 
