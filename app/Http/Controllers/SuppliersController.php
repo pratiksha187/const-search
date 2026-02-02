@@ -1220,19 +1220,17 @@ public function supplierFilter(Request $request)
                     ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
                     ->leftJoin('material_product_subtype as mps', 'mps.id', '=', 'sp.material_product_subtype_id')
                     ->leftJoin('brands as br', 'br.id', '=', 'sp.brand_id')
+                    ->leftJoin('unit as u', 'u.id', '=', 'sp.unit_id')
                     ->where('sp.supp_id', $id)
-                    // ->select([
-                    //     DB::raw('TRIM(mc.name) as category_name'),
-                    //     DB::raw('TRIM(mp.product_name) as product_name'),
-                    //     DB::raw('TRIM(mps.material_subproduct) as material_subproduct'),
-                    //     DB::raw('TRIM(br.name) as brand_name'),
-                    // ])
+                 
                     ->select([
                         'sp.image as p_image',
                         'mc.id  as category_id',
                         'mp.id  as product_id',
                         'mps.id as spec_id',
+                        'sp.quntity as spquntity',
                         'br.id  as brand_id',
+                        'u.unitname as unitname', 'sp.price as price',
 
                         DB::raw('TRIM(mc.name) as category_name'),
                         DB::raw('TRIM(mp.product_name) as product_name'),

@@ -1137,6 +1137,7 @@ public function productenquirystore(Request $request)
                 'product_id' => $item['product_id'],
                 'spec_id'    => $item['spec_id'],
                 'brand_id'   => $item['brand_id'],
+
                 'qty'        => $item['qty'],
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -1145,10 +1146,7 @@ public function productenquirystore(Request $request)
 
         DB::commit();
 
-        // return redirect()
-        //     ->back()
-        //     ->with('success', 'Enquiry sent successfully');
-
+      
         return redirect()
         ->route('supplier.enquiry.index')
         ->with('success', 'Enquiry sent successfully');

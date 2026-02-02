@@ -131,6 +131,8 @@ body{
                     <th width="220">Product</th>
                     <th>Specification</th>
                     <th>Brand</th>
+                    <th>Unit</th>
+                    <th>Price</th>
                     <th>Photos</th>
                     <th>MOQ</th>
                     <th width="140">Quantity</th>
@@ -169,7 +171,10 @@ body{
                         'product'  => $productName,
                         'spec'     => $item->material_subproduct,
                         'brand'    => $item->brand_name,
-                         'image'    => $item->image ?? null,
+                        'p_image'    => $item->p_image ?? null,
+                        'unit'      => $item->unitname ?? 'N/A',
+                        'price'     => $item->price ?? '0',
+                        'available_qty' => (int) ($item->spquntity ?? 0),
                     ];
                     @endphp
 
@@ -180,9 +185,11 @@ body{
                         <td></td>
                         <td>{{ $item->material_subproduct }}</td>
                         <td>{{ $item->brand_name }}</td>
+                        <td>{{ $item->unitname}}</td>
+                        <td>{{ $item->price}}</td>
                         <td>
-                            @if(!empty($item->image))
-                                <img src="{{ asset('uploads/products/'.$row->image) }}"
+                            @if(!empty($item->p_image))
+                                <img src="{{ asset('uploads/products/'.$item->p_image) }}"
                                     alt="product"
                                     style="width:40px;height:40px;border-radius:6px;object-fit:cover;">
                             @else
@@ -193,7 +200,7 @@ body{
                         
 
                         
-                        <td>{{ $supplier->minimum_order_qty ?? 'N/A' }}</td>
+                        <td>{{ $item->spquntity ?? 'N/A' }}</td>
                         <td>
                             <div class="qty-box">
                                 <button class="qty-btn minus">−</button>
@@ -258,6 +265,9 @@ body{
                   <th>Specification</th>
                   <th>Brand</th>
                   <th>Photos</th>
+                   <th>Unit</th>
+                    <th>Price</th>
+                   
                   <th width="100">Qty</th>
                 </tr>
               </thead>
@@ -303,23 +313,46 @@ let cart = [];
 document.addEventListener('click', e => {
 
     if(e.target.classList.contains('plus')){
-        let i = e.target.previousElementSibling;
-        i.value = +i.value + 1;
+        let input = e.target.previousElementSibling;
+        let row   = e.target.closest('tr');
+        let data  = JSON.parse(row.dataset.product);
+
+        if(parseInt(input.value) >= data.available_qty){
+            alert(`Maximum available quantity is ${data.available_qty}`);
+            return;
+        }
+
+        input.value = +input.value + 1;
     }
+
 
     if(e.target.classList.contains('minus')){
         let i = e.target.nextElementSibling;
         if(+i.value > 1) i.value--;
     }
 
-    if(e.target.classList.contains('add-to-cart')){
-        let row = e.target.closest('tr');
-        let data = JSON.parse(row.dataset.product);
-        let qty  = row.querySelector('.qty-input').value;
+   if(e.target.classList.contains('add-to-cart')){
+    let row = e.target.closest('tr');
+    let data = JSON.parse(row.dataset.product);
+    let qty  = parseInt(row.querySelector('.qty-input').value);
 
-        cart.push({...data, qty});
-        renderCart();
+    // ❌ No stock
+    if(data.available_qty === 0){
+        alert('❌ Product out of stock');
+        return;
     }
+
+    // ❌ Quantity exceeds available
+    if(qty > data.available_qty){
+        alert(`❌ Only ${data.available_qty} quantity available`);
+        return;
+    }
+
+    // ✅ Add to cart
+    cart.push({...data, qty});
+    renderCart();
+}
+
 });
 
 function renderCart(){
@@ -359,8 +392,8 @@ document.getElementById('openEnquiry')?.addEventListener('click', () => {
                 <td>${item.brand}</td>
                 <td>
                     ${
-                        item.image
-                        ? `<img src="/uploads/products/${item.image}"
+                        item.p_image
+                        ? `<img src="/uploads/products/${item.p_image}"
                             alt="product"
                             style="width:40px;height:40px;border-radius:6px;object-fit:cover;">`
                         : '<span class="text-muted small">No Image</span>'
@@ -369,6 +402,9 @@ document.getElementById('openEnquiry')?.addEventListener('click', () => {
 
 
 
+                <td>${item.unit}</td>
+                <td>₹ ${item.price}</td>
+              
                 <td class="fw-bold">${item.qty}</td>
             </tr>
         `;
