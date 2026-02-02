@@ -32,7 +32,7 @@ class SuppliersController extends Controller
             ->where('supplier_reg.id', $supplier_id)
             ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename','years_in_business.years as experiance_yer')
             ->first(); // use first() instead of get()
-dd($supplier_data);
+
         // Decode JSON category IDs
         $categoryIds = json_decode($supplier_data->material_category, true);
 
@@ -52,12 +52,7 @@ dd($supplier_data);
             ->value('days');  
             // dd($credit_days);
 
-            // experience_years
-        // $experience_years_id= $supplier_data->years_in_business;
-        // $experience_years = DB::table('experience_years')
-        //     ->where('id', $experience_years_id)
-        //     ->value('experiance'); 
-            // dd($experience_years);
+     
         $maximum_distance_id = $supplier_data->maximum_distance;
         $maximum_distance = DB::table('maximum_distances')
             ->where('id', $maximum_distance_id)
