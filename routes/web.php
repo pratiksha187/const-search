@@ -176,7 +176,14 @@ Route::get('/vendor/check-already-interest', [VenderController::class, 'checkAlr
 
 
 Route::post('/productenquirystore', [HomeController::class, 'productenquirystore'])->name('productenquirystore');
+// web.php
+Route::get(
+    '/supplier-enquiry/{id}',
+    [SuppliersController::class, 'supplierenquiryshow']
+)->name('supplier.enquiry.show');
 
+Route::get('/supplier-enquiries', [SuppliersController::class, 'allsupplierenquiry'])
+    ->name('supplier.enquiry.index');
 
 Route::post('/supplier-enquiry', [SuppliersController::class, 'supplierenquirystore'])
     ->name('supplier.enquiry.store');
@@ -300,6 +307,15 @@ Route::get('/projects/{id}', [HomeController::class, 'projectsshow'])->name('pro
 
 Route::get('/admin/vendors', [HomeController::class, 'vendorslist'])
     ->name('admin.vendors.index');
+
+Route::get('/admin/suppliers', [HomeController::class, 'supplierslist'])
+    ->name('admin.suppliers.index');
+
+Route::get('/admin/suppliers/{id}', [HomeController::class, 'suppliersshow'])
+    ->name('admin.suppliers.show');
+
+Route::delete('/admin/suppliers/{id}', [HomeController::class, 'suppliersdestroy'])
+    ->name('admin.suppliers.destroy');
 
 Route::get('/admin/vendors/{id}', [HomeController::class, 'vendorsshow'])
     ->name('admin.vendors.show');

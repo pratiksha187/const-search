@@ -1,5 +1,5 @@
 @extends('layouts.vendorapp')
-@section('title','Cusromer Profile')
+@section('title','Customer Profile')
 
 {{-- ===================== CSS ===================== --}}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -292,6 +292,7 @@ h1,h4,h5{ letter-spacing:-0.3px; }
     display:inline-block;
     margin-top:10px;
     padding:10px 22px;
+    color:#000  !important; 
     border-radius:999px;
     background:var(--blue);
     color:#fff;
@@ -1125,6 +1126,20 @@ function checkLeadBalance() {
             }
         });
     });
+}
+</script>
+<script>
+function toggleUpload(platform) {
+    // Hide all upload boxes first (optional safety)
+    document.querySelectorAll('.upload-box').forEach(box => {
+        box.classList.add('d-none');
+    });
+
+    // Show selected platform upload box
+    let box = document.getElementById('upload-' + platform);
+    if (box) {
+        box.classList.toggle('d-none');
+    }
 }
 </script>
 

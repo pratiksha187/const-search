@@ -294,7 +294,7 @@ class HomeController extends Controller
          $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');
-    //    dd( $vendIds );
+        //    dd( $vendIds );
         $notifications = DB::table('customer_interests as ci')
                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
                 ->whereIn('ci.vendor_id', $vendIds)
@@ -310,8 +310,7 @@ class HomeController extends Controller
                         ->get()
                         ->groupBy('work_type_id');
         
-        $projects = DB::connection('mysql')
-            ->table('posts')
+        $projects = DB::table('posts')
             ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
 
             ->leftJoin('users','users.id', '=','posts.user_id')
@@ -335,9 +334,16 @@ class HomeController extends Controller
             )
             ->orderBy('posts.id', 'desc')
             ->get();
-        //    dd($projects);
+
+
+            $complited_project= DB::table('posts')->where('get_vendor',1)->get();
+            $remaining_projects= DB::table('posts')->where('get_vendor',0)->get();
+            
+            //    dd($projects);
         return view('web.search_customer', [
             'notifications'=>$notifications,
+            'complited_project'=>$complited_project,
+            'remaining_projects'=>$remaining_projects,
             'notificationCount' => $notificationCount,
             'work_types' => $work_types,
             'states' => $states,
@@ -634,7 +640,8 @@ class HomeController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Project Posted Successfully'
+            'message' => 'Project Posted Successfully',
+            'redirect' => route('myposts')
         ]);
     }
 
@@ -893,21 +900,31 @@ class HomeController extends Controller
         return view('web.vendorslist', compact('vendors'));
     }
 
+    public function supplierslist()
+    {
+        $supplierslist = DB::table('supplier_reg as s')
+           
+            ->select(
+                's.*'
+                
+            )
+            ->orderBy('s.created_at', 'desc')
+            ->get();
+// dd($supplierslist );
+        return view('web.supplierslist', compact('supplierslist'));
+    }
+
     public function vendorsshow($id)
     {
         $vendor = DB::table('vendor_reg as v')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
             ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
-            // ->leftJoin('states as s', 's.id', '=', 'v.state')
-            // ->leftJoin('regions as r', 'r.id', '=', 'v.region')
-            // ->leftJoin('cities as c', 'c.id', '=', 'v.city')
+           
             ->select(
                 'v.*',
                 'wt.work_type as work_type_name',
                 'wst.work_subtype as work_subtype_name'
-                // 's.name as state_name',
-                // 'r.name as region_name',
-                // 'c.name as city_name'
+              
             )
             ->where('v.id', $id)
             ->first();
@@ -919,6 +936,32 @@ class HomeController extends Controller
         return view('web.vendorshow', compact('vendor'));
     }
 
+
+    public function suppliersshow($id)
+    {
+        $supplier = DB::table('supplier_reg as s')
+            ->leftJoin('experience_years as ey', 'ey.id', '=', 's.years_in_business')
+            ->select(
+                's.*','ey.experiance as experiance_year'
+            )
+            ->where('s.id', $id)
+            ->first();
+// dd($supplier);
+        if (!$supplier) {
+            abort(404);
+        }
+
+        return view('web.suppliersshow', compact('supplier'));
+    }
+
+    public function suppliersdestroy($id)
+    {
+        $supplier = DB::table('supplier_reg')->where('id', $id)->first();
+        return response()->json([
+            'status' => true,
+            'message' => 'Supplier deleted successfully'
+        ]);
+    }
 
 
     public function customerprofileid($id)
@@ -1014,50 +1057,108 @@ class HomeController extends Controller
 
 
 
-    public function productenquirystore(Request $request)
-    {
-        // Determine user
-        $u_id = null;
+    // public function productenquirystore(Request $request)
+    // {
+    //     // Determine user
+    //     $u_id = null;
 
-        if ($request->customer_id) {
-            $u_id = 'c_' . $request->customer_id;
-        } elseif ($request->vendor_id) {
-            $u_id = 'v_' . $request->vendor_id;
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not identified'
-            ], 400);
-        }
+    //     if ($request->customer_id) {
+    //         $u_id = 'c_' . $request->customer_id;
+    //     } elseif ($request->vendor_id) {
+    //         $u_id = 'v_' . $request->vendor_id;
+    //     } else {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'User not identified'
+    //         ], 400);
+    //     }
 
-        // Handle attachments
-        $files = [];
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file) {
-                $files[] = $file->store('supplier_enquiries', 'public');
-            }
-        }
+    //     // Handle attachments
+    //     $files = [];
+    //     if ($request->hasFile('attachments')) {
+    //         foreach ($request->file('attachments') as $file) {
+    //             $files[] = $file->store('supplier_enquiries', 'public');
+    //         }
+    //     }
 
-        // Save enquiry
-        DB::table('supplier_enquiries')->insert([
+    //     // Save enquiry
+    //     DB::table('supplier_enquiries')->insert([
+    //         'supplier_id'       => $request->supplier_id,
+    //         'user_id'           => $u_id,
+    //         'category'          => $request->category,
+    //         'quantity'          => $request->quantity,
+    //         'specs'             => $request->specs,
+    //         'delivery_location' => $request->delivery_location,
+    //         'required_by'       => $request->required_by,
+    //         'attachments'       => json_encode($files),
+    //         'created_at'        => now(),
+    //         'updated_at'        => now(),
+    //     ]);
+
+    //     // ✅ RETURN JSON (NOT redirect)
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Enquiry sent successfully'
+    //     ]);
+    // }
+
+public function productenquirystore(Request $request)
+{
+    // Identify user
+    $u_id = $request->customer_id
+        ? 'c_'.$request->customer_id
+        : 'v_'.$request->vendor_id;
+
+    $cart = json_decode($request->cart_data, true);
+
+    if (!$cart || count($cart) === 0) {
+        return back()->with('error', 'Cart is empty');
+    }
+
+    DB::beginTransaction();
+
+    try {
+
+        // Save enquiry master
+        $enquiryId = DB::table('supplier_enquiries')->insertGetId([
             'supplier_id'       => $request->supplier_id,
             'user_id'           => $u_id,
-            'category'          => $request->category,
-            'quantity'          => $request->quantity,
-            'specs'             => $request->specs,
             'delivery_location' => $request->delivery_location,
             'required_by'       => $request->required_by,
-            'attachments'       => json_encode($files),
             'created_at'        => now(),
             'updated_at'        => now(),
         ]);
 
-        // ✅ RETURN JSON (NOT redirect)
-        return response()->json([
-            'status' => true,
-            'message' => 'Enquiry sent successfully'
-        ]);
+        // Save enquiry items (IDS ONLY)
+        foreach ($cart as $item) {
+            DB::table('supplier_enquiry_items')->insert([
+                'enquiry_id' => $enquiryId,
+                'category_id'=> $item['category_id'],
+                'product_id' => $item['product_id'],
+                'spec_id'    => $item['spec_id'],
+                'brand_id'   => $item['brand_id'],
+                'qty'        => $item['qty'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        DB::commit();
+
+        // return redirect()
+        //     ->back()
+        //     ->with('success', 'Enquiry sent successfully');
+
+        return redirect()
+        ->route('supplier.enquiry.index')
+        ->with('success', 'Enquiry sent successfully');
+
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->with('error', 'Failed to save enquiry');
     }
+}
 
 
 }

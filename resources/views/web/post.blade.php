@@ -454,6 +454,9 @@ textarea.form-control-lg {
 
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 const CUSTOMER_ID = {{ $customer_id ?? 'null' }}; // ✅ SAFE
@@ -646,61 +649,7 @@ $(document).ready(function () {
 });
 </script>
 <script>
-// $(document).ready(function () {
 
-//     $('form').on('submit', function (e) {
-//         e.preventDefault(); // prevent normal submit
-
-//         let form = this;
-//         let formData = new FormData(form);
-
-//         $.ajax({
-//             url: $(form).attr('action'),
-//             type: 'POST',
-//             data: formData,
-//             processData: false,
-//             contentType: false,
-//             success: function (res) {
-
-//                 if (res.status === 'payment_required') {
-//                     // Show payment modal
-//                     new bootstrap.Modal(
-//                         document.getElementById('paymentModal')
-//                     ).show();
-//                 }
-
-//                 if (res.status === 'success') {
-//                     Swal.fire({
-//                         icon: 'success',
-//                         title: res.message,
-//                         timer: 2000,
-//                         showConfirmButton: false
-//                     }).then(() => {
-//                         window.location.href = "{{ route('myposts') }}";
-//                     });
-//                 }
-
-//             },
-//             error: function (xhr) {
-//                 if (xhr.status === 422) {
-//                     let errors = xhr.responseJSON.errors;
-//                     let msgs = Object.values(errors).flat().join('<br>');
-//                     Swal.fire('Validation Error', msgs, 'error');
-//                 } else {
-//                     Swal.fire('Error', 'Something went wrong', 'error');
-//                 }
-//             }
-//         });
-
-//     });
-
-//     // Handle payment action
-//     $('#payNowBtn').on('click', function () {
-//         // Redirect to payment page
-//         // window.location.href = "";
-//     });
-
-// });
 $('form').on('submit', function (e) {
     e.preventDefault();
 

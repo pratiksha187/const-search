@@ -160,8 +160,11 @@ body{ background:var(--bg); }
 
 .pc-right{
     min-width:260px;
+    max-width:420px;
+    width:100%;
     text-align:right;
 }
+
 
 .pc-percent{
     font-size:30px;
@@ -175,11 +178,14 @@ body{ background:var(--bg); }
     background:#eef2f7;
     border-radius:10px;
     overflow:hidden;
-    width: 880px;
+    width: 100%;
 }
+
 .progress-bar{
     background:linear-gradient(135deg,#ff9a3c,#f25c05);
+    transition: width .6s ease;
 }
+
 
 .pc-btn{
     display:inline-block;
@@ -320,12 +326,13 @@ body{ background:var(--bg); }
             </div>
 
             @if($profilePercent < 100)
-                <a href="{{ route('vendor.profile') }}" class="pc-btn">
-                    Complete Now →
-                </a>
+                <div class="progress">
+                    <div class="progress-bar" style="width: {{ $profilePercent }}%"></div>
+                </div>
             @else
                 <div class="pc-done">✅ Profile Fully Completed</div>
             @endif
+
         </div>
     </div>
 

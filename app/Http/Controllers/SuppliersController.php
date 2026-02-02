@@ -25,8 +25,12 @@ class SuppliersController extends Controller
             ->leftJoin('region', 'region.id', '=', 'supplier_reg.region_id')
             ->leftJoin('city', 'city.id', '=', 'supplier_reg.city_id')
             ->leftJoin('state', 'state.id', '=', 'supplier_reg.state_id')
+            ->leftJoin('experience_years', 'experience_years.id', '=', 'supplier_reg.years_in_business')
+
+            
+            
             ->where('supplier_reg.id', $supplier_id)
-            ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename')
+            ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename','experience_years.experiance as experiance_yer')
             ->first(); // use first() instead of get()
 // dd($supplier_data);
         // Decode JSON category IDs
@@ -49,10 +53,10 @@ class SuppliersController extends Controller
             // dd($credit_days);
 
             // experience_years
-        $experience_years_id= $supplier_data->years_in_business;
-        $experience_years = DB::table('experience_years')
-            ->where('id', $experience_years_id)
-            ->value('experiance'); 
+        // $experience_years_id= $supplier_data->years_in_business;
+        // $experience_years = DB::table('experience_years')
+        //     ->where('id', $experience_years_id)
+        //     ->value('experiance'); 
             // dd($experience_years);
         $maximum_distance_id = $supplier_data->maximum_distance;
         $maximum_distance = DB::table('maximum_distances')
@@ -61,7 +65,7 @@ class SuppliersController extends Controller
         // dd($experience_years);
         return view('web.mystore', compact(
             'supplierName','maximum_distance',
-            'supplier_data','experience_years',
+            'supplier_data',
             'credit_days',
             'categories','delivery_type'
         ));
@@ -180,7 +184,7 @@ class SuppliersController extends Controller
     public function editProduct($id)
     {
          $notificationCount =0;
-    $notifications =0;
+        $notifications =0;
         $supplier_id = Session::get('supplier_id');
 
         $supplierName = DB::table('supplier_reg')
@@ -830,7 +834,7 @@ public function supplierserch()
                     ->where('user_id', $customer_id)
                     ->pluck('id');
         $notifications = DB::table('vendor_interests as vi')
-                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                
                 ->whereIn('vi.customer_id', $postIds)
             
                 ->get();
@@ -1026,6 +1030,7 @@ public function supplierFilter(Request $request)
             'product_subtype'      => 'nullable',
             'brand'                => 'nullable',
             'unit'                 => 'required',
+            'quntity'               => 'nullable',
             'price'                => 'nullable|numeric',
             'gst'                  => 'nullable|numeric',
             'delivery_time'        => 'nullable',
@@ -1050,6 +1055,7 @@ public function supplierFilter(Request $request)
             'material_product_subtype_id' => $request->product_subtype,
             'brand_id'                    => $request->brand,
             'unit_id'                     => $request->unit,
+            'quntity'                     => $request->quntity,
             'price'                       => $request->price,
             'gst_percent'                 => $request->gst, 
             'gst_included'                => $request->has('gst_included') ? 1 : 0,
@@ -1116,43 +1122,49 @@ public function supplierFilter(Request $request)
             ->leftJoin('city as c', 'c.id', '=', 's.city_id')
             ->leftJoin('region as r', 'r.id', '=', 's.region_id')
             ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
+            ->leftJoin('experience_years as ey', 'ey.id', '=', 's.years_in_business')
+            
 
             ->select(
                 's.*','c.name as cityname','r.name as regionname','sn.name as statename',
-                'cd.days as credit_days_value'
+                'cd.days as credit_days_value','ey.experiance as experiance_year'
             )
             ->where('s.id', $id)
             ->first();
-
+            //  dd($supplier);  
         if (!$supplier) {
             abort(404);
         }
        
-        // $materials = DB::table('supplier_products_data as sp')
-        //             ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-        //             ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
-        //             ->leftJoin('material_product_subtype as mps', 'mps.id', '=', 'sp.material_product_subtype_id')
-        //             ->leftJoin('brands as br', 'br.id', '=', 'sp.brand_id')
-                    
-        //             ->where('sp.supp_id', $id)
-        //             ->distinct()
-        //             ->pluck('mc.name','mp.product_name','mps.material_subproduct','br.name');
+      
        $materials = DB::table('supplier_products_data as sp')
                     ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
                     ->leftJoin('material_product as mp', 'mp.id', '=', 'sp.material_product_id')
                     ->leftJoin('material_product_subtype as mps', 'mps.id', '=', 'sp.material_product_subtype_id')
                     ->leftJoin('brands as br', 'br.id', '=', 'sp.brand_id')
                     ->where('sp.supp_id', $id)
+                    // ->select([
+                    //     DB::raw('TRIM(mc.name) as category_name'),
+                    //     DB::raw('TRIM(mp.product_name) as product_name'),
+                    //     DB::raw('TRIM(mps.material_subproduct) as material_subproduct'),
+                    //     DB::raw('TRIM(br.name) as brand_name'),
+                    // ])
                     ->select([
+                        'mc.id  as category_id',
+                        'mp.id  as product_id',
+                        'mps.id as spec_id',
+                        'br.id  as brand_id',
+
                         DB::raw('TRIM(mc.name) as category_name'),
                         DB::raw('TRIM(mp.product_name) as product_name'),
                         DB::raw('TRIM(mps.material_subproduct) as material_subproduct'),
                         DB::raw('TRIM(br.name) as brand_name'),
                     ])
 
+
                     ->distinct()
                     ->get();
-
+   
                 /**
                  * Grouping:
                  * Category → Product
@@ -1162,117 +1174,54 @@ public function supplierFilter(Request $request)
                     ->map(function ($categoryItems) {
                         return $categoryItems->groupBy('product_name');
                     });
-$categories = $materials
-    ->pluck('category_name')
-    ->unique()
-    ->values();
+                $categories = $materials
+                    ->pluck('category_name')
+                    ->unique()
+                    ->values();
 
         // dd( $grouped);
         return view('web.supplier_profile', compact('supplier','grouped', 'materials','layout','cust_data','vendor' ,'vendor_id','notifications','notificationCount'));
     }
 
 
-    // public function productenquiry()
-    // {
-    //     $supplier_id = Session::get('supplier_id');
-    //     // dd($supplier_id);
-    //     $supplierName = DB::table('supplier_reg')
-    //                         ->where('id', $supplier_id)
-    //                     ->value('contact_person'); 
-    //                     //  dd($supplierName);
-    //     $enquiries = DB::table('supplier_enquiries as se')
-    //         ->join('supplier_reg as sr', 'se.supplier_id', '=', 'sr.id')
-    //         ->join('material_categories as mc', 'se.category', '=', 'mc.id')
+    public function productenquiry()
+    {
+        $supplier_id = Session::get('supplier_id');
 
-            
-    //         ->where('se.supplier_id', $supplier_id)
-    //         ->select(
-    //             'se.*',
-    //             'sr.contact_person',
-    //             'sr.shop_name', // Add any other supplier columns you need
-    //             'sr.mobile',
-    //             'sr.email',
-    //             'mc.name as material_categories_name'
-    //         )
-    //         ->get();
+        $supplierName = DB::table('supplier_reg')
+            ->where('id', $supplier_id)
+            ->value('contact_person');
 
-    //     // dd($enquiries); // Check the result
-    //     return view('web.productenquiry', compact('enquiries','supplierName'));
-    // }
-// public function productenquiry()
-// {
-//     $supplier_id = Session::get('supplier_id');
+        $allEnquiries = DB::table('supplier_enquiries as se')
+            ->join('supplier_reg as sr', 'se.supplier_id', '=', 'sr.id')
+            ->join('supplier_enquiry_items as sei', 'sei.enquiry_id', '=', 'se.id')
 
-//     $supplierName = DB::table('supplier_reg')
-//         ->where('id', $supplier_id)
-//         ->value('contact_person');
+            ->join('material_categories as mc', 'sei.category_id', '=', 'mc.id')
+            ->where('se.supplier_id', $supplier_id)
+            ->select(
+                'se.*','sei.*',
+                'sr.contact_person',
+                'sr.shop_name',
+                'sr.mobile',
+                'sr.email',
+                'mc.name as material_categories_name'
+            )
+            ->orderBy('se.created_at', 'DESC')
+            ->get();
+// dd($allEnquiries);
+        // ✅ NEW = status IS NULL
+        $newEnquiries = $allEnquiries->whereNull('status');
 
-//     // ALL enquiries (new + quoted)
-//     $allEnquiries = DB::table('supplier_enquiries as se')
-//         ->join('supplier_reg as sr', 'se.supplier_id', '=', 'sr.id')
-//         ->join('material_categories as mc', 'se.category', '=', 'mc.id')
-//         ->where('se.supplier_id', $supplier_id)
-//         ->select(
-//             'se.*',
-//             'sr.contact_person',
-//             'sr.shop_name',
-//             'sr.mobile',
-//             'sr.email',
-//             'mc.name as material_categories_name'
-//         )
-//         ->orderBy('se.created_at', 'DESC')
-//         ->get();
-//         // dd($allEnquiries );
-//     // ONLY quoted enquiries
-//     $quotedEnquiries = $allEnquiries->where('status', 'quoted');
+        // ✅ QUOTED
+        $quotedEnquiries = $allEnquiries->where('status', 'quoted');
 
-//     // ONLY new enquiries
-//     $newEnquiries = $allEnquiries->whereNull('status')
-//                                  ->merge($allEnquiries->where('status', 'new'));
-
-//     return view('web.productenquiry', compact(
-//         'supplierName',
-//         'allEnquiries',
-//         'newEnquiries',
-//         'quotedEnquiries'
-//     ));
-// }
-public function productenquiry()
-{
-    $supplier_id = Session::get('supplier_id');
-
-    $supplierName = DB::table('supplier_reg')
-        ->where('id', $supplier_id)
-        ->value('contact_person');
-
-    $allEnquiries = DB::table('supplier_enquiries as se')
-        ->join('supplier_reg as sr', 'se.supplier_id', '=', 'sr.id')
-        ->join('material_categories as mc', 'se.category', '=', 'mc.id')
-        ->where('se.supplier_id', $supplier_id)
-        ->select(
-            'se.*',
-            'sr.contact_person',
-            'sr.shop_name',
-            'sr.mobile',
-            'sr.email',
-            'mc.name as material_categories_name'
-        )
-        ->orderBy('se.created_at', 'DESC')
-        ->get();
-
-    // ✅ NEW = status IS NULL
-    $newEnquiries = $allEnquiries->whereNull('status');
-
-    // ✅ QUOTED
-    $quotedEnquiries = $allEnquiries->where('status', 'quoted');
-
-    return view('web.productenquiry', compact(
-        'supplierName',
-        'allEnquiries',
-        'newEnquiries',
-        'quotedEnquiries'
-    ));
-}
+        return view('web.productenquiry', compact(
+            'supplierName',
+            'allEnquiries',
+            'newEnquiries',
+            'quotedEnquiries'
+        ));
+    }
 
     public function sendQuote(Request $request)
     {
@@ -1320,5 +1269,169 @@ public function productenquiry()
 
         return back()->with('success', 'Quotation sent successfully');
     }
+
+    public function allsupplierenquiry()
+    {
+        $notificationCount = 0;
+        $notifications = collect();
+        $cust_data = null;
+        $vendor = null;
+
+        $customer_id = Session::get('customer_id');
+        $vendor_id   = Session::get('vendor_id');
+
+        $layout = 'layouts.guest';
+
+        /* ================= CUSTOMER ================= */
+        if ($customer_id) {
+
+            $cust_data = DB::table('users')->where('id', $customer_id)->first();
+
+            $notifications = DB::table('vendor_interests')->get();
+            $notificationCount = $notifications->count();
+
+            $enquiries = DB::table('supplier_enquiries as se')
+                ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
+                ->where('se.user_id', 'c_'.$customer_id)
+                ->select(
+                    'se.id',
+                    'se.created_at',
+                    'se.delivery_location',
+                    's.shop_name'
+                )
+                ->orderBy('se.id','desc')
+                ->get();
+
+            $layout = 'layouts.custapp';
+        }
+        /* ================= VENDOR ================= */
+        elseif ($vendor_id) {
+
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+
+            $notifications = DB::table('customer_interests')->get();
+            $notificationCount = $notifications->count();
+
+            $enquiries = DB::table('supplier_enquiries as se')
+                ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
+                ->select(
+                    'se.id',
+                    'se.created_at',
+                    'se.delivery_location',
+                    's.shop_name'
+                )
+                ->orderBy('se.id','desc')
+                ->get();
+
+            $layout = 'layouts.vendorapp';
+        }
+        else {
+            abort(403);
+        }
+
+        return view('web.supplier_enquiry_index', compact(
+            'enquiries',
+            'layout',
+            'cust_data',
+            'vendor',
+            'notifications',
+            'notificationCount'
+        ));
+    }
+
+public function supplierenquiryshow($id)
+{
+    $notificationCount = 0;
+    $notifications = collect(); // ✅ ALWAYS collection
+    $vendor = null;
+    $cust_data = null;
+
+    $customer_id = Session::get('customer_id');
+    $vendor_id   = Session::get('vendor_id');
+    $supplier_id = Session::get('supplier_id');
+
+    // 🔹 Default layout
+    $layout = 'layouts.guest';
+
+    /* ================= CUSTOMER ================= */
+    if ($customer_id) {
+
+        $cust_data = DB::table('users')->where('id', $customer_id)->first();
+
+        $postIds = DB::table('posts')
+            ->where('user_id', $customer_id)
+            ->pluck('id');
+
+        $notifications = DB::table('vendor_interests as vi')
+            ->whereIn('vi.customer_id', $postIds)
+            ->get();
+
+        $notificationCount = $notifications->count();
+        $layout = 'layouts.custapp';
+
+    }
+    /* ================= VENDOR ================= */
+    elseif ($vendor_id) {
+
+        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+
+        $vendIds = DB::table('vendor_reg')
+            ->where('id', $vendor_id)
+            ->pluck('id');
+
+        $notifications = DB::table('customer_interests as ci')
+            ->join('users as u', 'u.id', '=', 'ci.customer_id')
+            ->whereIn('ci.vendor_id', $vendIds)
+            ->select('ci.*', 'u.*')
+            ->get();
+
+        $notificationCount = $notifications->count();
+        $layout = 'layouts.vendorapp';
+    }
+
+    /* ================= ENQUIRY MASTER ================= */
+    $enquiry = DB::table('supplier_enquiries as se')
+        ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
+        ->select(
+            'se.*',
+            's.shop_name',
+            's.city_id',
+            's.state_id'
+        )
+        ->where('se.id', $id)
+        ->first();
+
+    if (!$enquiry) {
+        abort(404);
+    }
+
+    /* ================= ENQUIRY ITEMS ================= */
+    $items = DB::table('supplier_enquiry_items as ei')
+        ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
+        ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
+        ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
+        ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
+        ->select(
+            'mc.name as category',
+            'mp.product_name as product',
+            'ms.material_subproduct as spec',
+            'b.name as brand',
+            'ei.qty'
+        )
+        ->where('ei.enquiry_id', $id)
+        ->get();
+
+    return view('web.supplier_enquiry_show', compact(
+        'enquiry',
+        'items',
+        'layout',
+        'cust_data',
+        'vendor',
+        'notifications',
+        'notificationCount'
+    ));
+}
+
+
 
 }

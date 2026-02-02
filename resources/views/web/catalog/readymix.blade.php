@@ -63,7 +63,11 @@
                     @endforeach
                 </select>
             </div>
-
+            <!-- Quntity -->
+            <div class="col-md-6 js-quntity">
+                <label class="form-label">Quntity</label>
+                <input type="text" name="quntity" class="form-control">
+            </div>
             <div class="col-md-6">
                 <label class="form-label">Size / Grade</label>
                 <select class="form-select" name="thickness_size">

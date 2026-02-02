@@ -215,8 +215,8 @@
             <strong>{{ $supplier_data->brands_supplied }}</strong>.
         @endif
 
-        @if($experience_years)
-            With over <strong>{{ $experience_years }} years</strong>
+        @if($supplier_data->experiance_yer)
+            With over <strong>{{ $supplier_data->experiance_yer }} years</strong>
             of industry experience,
         @endif
 
@@ -257,7 +257,7 @@
     <!-- STATS -->
     <div class="store-stats">
         <div>
-            <h3>{{$experience_years}}</h3>
+            <h3>{{$supplier_data->experiance_yer}}</h3>
             <span>Years Experience</span>
         </div>
        

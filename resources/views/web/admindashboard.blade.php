@@ -203,6 +203,7 @@ body {
             </div>
 
             <div class="col-md-3">
+                <a href="{{ route('admin.suppliers.index') }}" class="text-decoration-none text-dark">
                 <div class="kpi-card">
                     <div class="kpi-icon"><i class="bi bi-receipt"></i></div>
                     <div>
@@ -210,6 +211,7 @@ body {
                         <p class="kpi-label">Connected Suppliers</p>
                     </div>
                 </div>
+                 </a>
             </div>
 
             <div class="col-md-3">

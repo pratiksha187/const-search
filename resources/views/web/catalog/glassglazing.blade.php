@@ -58,7 +58,11 @@
                 </select>
             </div>
 
-         
+          <!-- Quntity -->
+            <div class="col-md-6 js-quntity">
+                <label class="form-label">Quntity</label>
+                <input type="text" name="quntity" class="form-control">
+            </div>
             <!-- UPLOAD PHOTO -->
             <div class="col-md-6">
                 <label class="form-label">Upload Photo</label>

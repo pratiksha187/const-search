@@ -424,9 +424,72 @@
 }
 
 /* Ensure actions always stay bottom */
-.lead-actions {
-    margin-top: auto;
+.lead-card{
+    position:relative;
+    overflow:hidden;
 }
+
+/* CORNER RIBBON */
+.corner-ribbon{
+    position:absolute;
+    top:14px;
+    right:-52px;
+    transform:rotate(45deg);
+    background:#f25c05; /* ConstructKaro orange */
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    padding:6px 60px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    box-shadow:0 6px 16px rgba(0,0,0,.25);
+    z-index:20;
+}
+
+.lead-header{
+    padding:14px 0;
+}
+
+.lead-title-wrap{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+/* title */
+.lead-title{
+    font-size:28px;
+    font-weight:800;
+    color:#0f172a;
+    margin:0;
+}
+
+/* pills */
+.lead-pill{
+    font-size:13px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:999px;
+    line-height:1;
+    white-space:nowrap;
+}
+
+.lead-pill.completed{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.lead-pill.remaining{
+    background:#fff7ed;
+    color:#c2410c;
+}
+@media(max-width:576px){
+    .lead-title{
+        font-size:22px;
+    }
+}
+
 
 </style>
 
@@ -505,13 +568,25 @@
          </div>
          <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
-               <div>
-                  <h3 class="fw-bold mb-1"><span id="vendorCount">{{ $projects->count() }}</span> Professional Lead</h3>
-                  <p class="text-muted mb-0 d-flex align-items-center gap-2">
-                     <span class="badge bg-success rounded-circle p-1" style="width:10px;height:10px;"></span>
-                     Verified and ready to serve
-                  </p>
-               </div>
+               <div class="lead-header">
+   <div class="lead-title-wrap">
+      <h2 class="lead-title">
+         {{ $projects->count() }} Professional Leads
+      </h2>
+
+    <span class="lead-pill completed">
+   <i class="bi bi-check-circle-fill me-1"></i>
+   {{ $complited_project->count() }} Completed
+</span>
+
+<span class="lead-pill remaining">
+   <i class="bi bi-hourglass-split me-1"></i>
+   {{ $remaining_projects->count() }} Remaining
+</span>
+
+   </div>
+</div>
+
             </div>
          </div>
          {{-- RESULTS --}}
@@ -537,6 +612,13 @@
                      <span class="verified-pill">
                      <i class="bi bi-check-circle-fill"></i> Verified
                      </span>
+
+                    @if($project->get_vendor == 1)
+<div class="corner-ribbon">
+   GET VENDOR
+</div>
+@endif
+
                   </div>
                   {{-- ROLE --}}
                   <div class="lead-role mb-1">
@@ -595,19 +677,23 @@
                      </div>
                   </div>
                   {{-- ACTIONS (SAME handleInterested) --}}
+                 
                   <div class="lead-actions">
-                     <!-- <a href="{{ route('customer.profile.id', $project->id) }}"
-                        class="btn-outline-lead">
-                     View Profile
-                     </a> -->
-                     <a href="javascript:void(0)"
-                        class="btn-outline-lead view-profile-btn"
-                        data-id="{{ $project->id }}">
-                        View Profile
-                     </a>
-
-                     
+                     @if($project->get_vendor == 1)
+                        <a href="javascript:void(0)"
+                           class="btn-outline-lead disabled"
+                           style="pointer-events:none;opacity:0.5;">
+                           View Profile
+                        </a>
+                     @else
+                        <a href="javascript:void(0)"
+                           class="btn-outline-lead view-profile-btn"
+                           data-id="{{ $project->id }}">
+                           View Profile
+                        </a>
+                     @endif
                   </div>
+
                </div>
             </div>
             @endforeach
