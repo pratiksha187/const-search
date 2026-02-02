@@ -32,7 +32,7 @@ class SuppliersController extends Controller
             ->where('supplier_reg.id', $supplier_id)
             ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename','years_in_business.years as experiance_yer')
             ->first(); // use first() instead of get()
-// dd($supplier_data);
+dd($supplier_data);
         // Decode JSON category IDs
         $categoryIds = json_decode($supplier_data->material_category, true);
 

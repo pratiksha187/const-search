@@ -236,7 +236,7 @@
 
         @if($credit_days)
             We offer flexible credit terms of
-            <strong>{{ $credit_days }} days</strong>.
+            <strong>{{ $credit_days }}</strong>.
         @endif
     </p>
 
