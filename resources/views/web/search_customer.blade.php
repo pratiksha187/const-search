@@ -430,20 +430,20 @@
 }
 
 /* CORNER RIBBON */
-.corner-ribbon{
-    position:absolute;
-    top:14px;
-    right:-52px;
-    transform:rotate(45deg);
-    background:#f25c05; /* ConstructKaro orange */
-    color:#fff;
-    font-size:11px;
-    font-weight:700;
-    padding:6px 60px;
-    text-transform:uppercase;
-    letter-spacing:.5px;
-    box-shadow:0 6px 16px rgba(0,0,0,.25);
-    z-index:20;
+.corner-ribbon {
+    position: absolute;
+    top: 35px;
+    right: -52px;
+    transform: rotate(45deg);
+    background: #f25c05;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 41px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+    z-index: 20;
 }
 
 .lead-header{

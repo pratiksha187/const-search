@@ -845,6 +845,8 @@ public function supplierserch()
        MASTER DATA
     =============================== */
     $credit_days       = DB::table('credit_days')->get();
+    $states = DB::table('state')->orderBy('name')->get();
+
     $delivery_type     = DB::table('delivery_type')->get();
     $maximum_distances = DB::table('maximum_distances')->get();
     $material_categories = DB::table('material_categories')->get();
@@ -856,16 +858,19 @@ public function supplierserch()
         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+          ->leftJoin('city as c', 'c.id', '=', 's.city_id')
+            ->leftJoin('region as r', 'r.id', '=', 's.region_id')
+            ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
         ->select(
             's.*',
-            'cd.days as credit_days_value',
+            'cd.days as credit_days_value','c.name as cityname','r.name as regionname','sn.name as statename',
             DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
             DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
         )
         ->groupBy('s.id', 'cd.days')
         ->orderBy('s.id', 'desc')
         ->get();
-
+        // dd($supplier_data);
     /* ===============================
        NORMALIZE CATEGORY DATA
     =============================== */
@@ -925,7 +930,7 @@ public function supplierserch()
         $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');
-    //    dd( $vendIds );
+        //    dd( $vendIds );
         $notifications = DB::table('customer_interests as ci')
                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
                 ->whereIn('ci.vendor_id', $vendIds)
@@ -954,7 +959,7 @@ public function supplierserch()
     return view('web.supplierserch', compact(
         'credit_days','material_categories','notificationCount','notifications',
         'delivery_type',
-        'maximum_distances',
+        'maximum_distances','states',
         'supplier_data',
         'layout','cust_data',
         'customer_id',
@@ -972,8 +977,11 @@ public function supplierFilter(Request $request)
         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+         ->leftJoin('city as c', 'c.id', '=', 's.city_id')
+            ->leftJoin('region as r', 'r.id', '=', 's.region_id')
+            ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
         ->select(
-            's.*',
+            's.*','c.name as cityname','r.name as regionname','sn.name as statename',
             'cd.days as credit_days_value',
             DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
             DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_category_names')
@@ -983,13 +991,6 @@ public function supplierFilter(Request $request)
     if ($request->filled('search')) {
         $search = $request->search;
 
-        // $query->where(function ($q) use ($search) {
-        //     $q->where('s.shop_name', 'LIKE', "%{$search}%")
-        //       ->orWhere('s.city', 'LIKE', "%{$search}%")
-        //       ->orWhere('s.area', 'LIKE', "%{$search}%")
-        //       ->orWhere('mc.name', 'LIKE', "%{$search}%");
-        // });
-        // ✅ SAFE SEARCH
         $query->where(function ($q) use ($search) {
             $q->where('s.shop_name', 'LIKE', "%{$search}%")
             ->orWhere('mc.name', 'LIKE', "%{$search}%");
@@ -1006,6 +1007,18 @@ public function supplierFilter(Request $request)
     if ($request->filled('credit_terms')) {
         $query->whereIn('s.credit_days', $request->credit_terms);
     }
+    if ($request->filled('state_id')) {
+        $query->where('s.state_id', $request->state_id);
+    }
+
+    if ($request->filled('region_id')) {
+        $query->where('s.region_id', $request->region_id);
+    }
+
+    if ($request->filled('city_id')) {
+        $query->where('s.city_id', $request->city_id);
+    }
+
 
     $supplier_data = $query
         ->groupBy('s.id', 'cd.days')
@@ -1032,7 +1045,7 @@ public function supplierFilter(Request $request)
 }
 
 
-    public function supplierenquirystore(Request $request)
+public function supplierenquirystore(Request $request)
 {
     /* ===============================
        🔐 LOGIN CHECK (VERY IMPORTANT)
@@ -1224,7 +1237,7 @@ public function supplierFilter(Request $request)
                     ->where('sp.supp_id', $id)
                  
                     ->select([
-                        'sp.image as p_image',
+                        'sp.image as p_image','sp.gst_percent as gst_percent',
                         'mc.id  as category_id',
                         'mp.id  as product_id',
                         'mps.id as spec_id',

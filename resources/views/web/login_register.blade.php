@@ -195,7 +195,7 @@
 </div>
 
 <!-- FORGOT PASSWORD MODAL -->
-<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+<!-- <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4">
             <div class="modal-header border-0">
@@ -214,7 +214,81 @@
             </div>
         </div>
     </div>
+</div> -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Forgot Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- STEP 1 : ROLE + LOGIN -->
+                <div id="fp-step-1">
+
+                    <select class="form-select mb-3" id="fp-role">
+                        <option value="">Select Role</option>
+                        <option value="customer">Customer</option>
+                        <option value="vendor">Vendor</option>
+                        <option value="supplier">Supplier</option>
+                    </select>
+
+                    <input
+                        class="form-control mb-3"
+                        id="fp-login"
+                        placeholder="Registered Mobile / Email">
+
+                    <button class="btn btn-primary w-100" id="send-otp-btn">
+                        Send OTP
+                    </button>
+                </div>
+
+                <!-- STEP 2 : VERIFY OTP -->
+                <div id="fp-step-2" class="d-none">
+
+                    <input
+                        class="form-control mb-3 text-center"
+                        id="fp-otp"
+                        placeholder="Enter OTP">
+
+                    <button class="btn btn-success w-100" id="verify-otp-btn">
+                        Verify OTP
+                    </button>
+
+                    <p class="text-center text-muted mt-2">
+                        Didn’t receive OTP?
+                        <a href="javascript:void(0)" id="resend-otp">Resend</a>
+                    </p>
+                </div>
+
+                <!-- STEP 3 : RESET PASSWORD -->
+                <div id="fp-step-3" class="d-none">
+
+                    <input
+                        type="password"
+                        class="form-control mb-3"
+                        id="fp-password"
+                        placeholder="New Password">
+
+                    <input
+                        type="password"
+                        class="form-control mb-3"
+                        id="fp-confirm"
+                        placeholder="Confirm Password">
+
+                    <button class="btn btn-primary w-100" id="reset-password-btn">
+                        Change Password
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <!-- JS LIBS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -332,5 +406,66 @@ $(function(){
     $(`.role-box[data-role="${role}"]`).trigger('click');
 });
 </script>
+<script>
+$('#send-otp-btn').click(function () {
+    fetch('/forgot-password/send-otp', {
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        body: JSON.stringify({
+            login: $('#fp-login').val(),
+            role: $('#fp-role').val()
+        })
+    }).then(r=>r.json()).then(res=>{
+        if(res.status){
+            $('#fp-step-1').addClass('d-none');
+            $('#fp-step-2').removeClass('d-none');
+        }else alert(res.message);
+    });
+});
 
+
+$('#verify-otp-btn').click(function () {
+    fetch('/forgot-password/verify-otp', {
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+        },
+        body:JSON.stringify({ otp: $('#fp-otp').val() })
+    }).then(r=>r.json()).then(res=>{
+        if(res.status){
+            $('#fp-step-2').addClass('d-none');
+            $('#fp-step-3').removeClass('d-none');
+        }else alert('Invalid OTP');
+    });
+});
+
+
+$('#reset-password-btn').click(function () {
+
+    let p = $('#fp-password').val();
+    let c = $('#fp-confirm').val();
+
+    if(p !== c){
+        alert('Passwords do not match');
+        return;
+    }
+
+    fetch('/forgot-password/reset', {
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+        },
+        body:JSON.stringify({ password: p })
+    }).then(r=>r.json()).then(res=>{
+        alert(res.message);
+        if(res.status) location.reload();
+    });
+});
+
+</script>
 @endsection

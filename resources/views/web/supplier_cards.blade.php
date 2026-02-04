@@ -8,7 +8,32 @@
 
     $materials = $supplier->material_categories ?? [];
 @endphp
+<style>
+    .supplier-meta{
+    font-size:13px;
+    color:#475569;
+}
 
+.supplier-type{
+    background:#eef2ff;
+    color:#1d4ed8;
+    font-weight:600;
+    padding:6px 10px;
+    border-radius:999px;
+}
+
+.location-text{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:#64748b;
+}
+
+.location-text i{
+    color:#ef4444;
+}
+
+</style>
 <div class="supplier-card">
 
     <div class="card-header">
@@ -24,9 +49,17 @@
 
         <div class="supplier-info">
             <h5 class="supplier-name">{{ $supplier->shop_name }}</h5>
-            <p class="supplier-meta">
-                {{ ucfirst($supplier->primary_type ?? 'Supplier') }} • Pune
+            <p class="supplier-meta d-flex align-items-center flex-wrap gap-2">
+                <span class="badge supplier-type">
+                    {{ ucfirst($supplier->primary_type ?? 'Supplier') }}
+                </span>
+
+                <span class="location-text">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    {{$supplier->statename}} • {{$supplier->regionname}} • {{$supplier->cityname}}
+                </span>
             </p>
+
         </div>
 
         <div class="badges">

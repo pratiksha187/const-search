@@ -44,8 +44,8 @@ Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name(
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
 
 
-Route::get('/get-regions/{state_id}', [HomeController::class, 'getRegions']);
-Route::get('/get-cities/{region_id}', [HomeController::class, 'getCities']);
+// Route::get('/get-regions/{state_id}', [HomeController::class, 'getRegions']);
+// Route::get('/get-cities/{region_id}', [HomeController::class, 'getCities']);
 
 
 Route::post('/register', [LoginRegController::class, 'register'])->name('register');
@@ -382,6 +382,12 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::get('/auth/{action?}/{role?}', function () {
         return view('web.login_register');
     })->where(['action' => 'login|register', 'role' => 'customer|vendor|supplier']);
+
+  
+
+    Route::post('/forgot-password/send-otp', [LoginRegController::class, 'sendOtp']);
+    Route::post('/forgot-password/verify-otp', [LoginRegController::class, 'verifyOtp']);
+    Route::post('/forgot-password/reset', [LoginRegController::class, 'resetPassword']);
 
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

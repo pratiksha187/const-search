@@ -11,7 +11,10 @@
     background:#f3f9ff;
     font-family:system-ui,-apple-system,BlinkMacSystemFont;
     padding:20px;
+    font-size:16px;   /* ✅ FIX */
+    line-height:1.5; /* ✅ READABILITY */
 }
+
 
 /* ================= HEADER ================= */
 .find-suppliers-header{
@@ -50,31 +53,9 @@
     text-decoration:none;   /* ✅ removes underline */
     color:#1f2937;          /* optional: normal text color */
 }
-.btn-primary{
-    flex:1;
-    border:2px solid #225ed7;
-    background:#fff;
-    padding:12px;
-    border-radius:10px;
-    font-weight:600;
-
-    text-decoration:none;   /* ✅ removes underline */
-    color:#1f2937;          /* optional: normal text color */
-}
-.btn-outline:hover{
-    text-decoration:none;
-}
 
 
-.btn-post{
-    background:#fff;
-    color:#1f2937;
-    padding:8px 14px;
-    border-radius:8px;
-    font-weight:600;
-    text-decoration:none;
-    font-size:14px;
-}
+
 
 /* ================= SEARCH ================= */
 .find-search-bar{
@@ -129,150 +110,35 @@
     gap:22px;
 }
 
-/* ================= SUPPLIER CARD ================= */
+/* ================= SUPPLIER CARD – PROFESSIONAL ================= */
+
 .supplier-card{
-    background:#fffdf5;
-    border-radius:18px;
-    padding:18px;
-    border:2px solid #fde68a;
-    box-shadow:0 10px 25px rgba(253,230,138,.35);
-    transition:
-        background .3s ease,
-        border-color .3s ease,
-        box-shadow .3s ease,
-        transform .2s ease;
-}
-
-/* HOVER ONLY (NO RANDOM COLOR CHANGE) */
-.supplier-card:hover{
-    background:#f0f9ff;
-    border-color:#93c5fd;
-    box-shadow:0 14px 32px rgba(147,197,253,.45);
-    transform:translateY(-3px);
-}
-
-/* ================= CARD HEADER ================= */
-.card-header{
-    display:flex;
-    align-items:flex-start;
-    gap:12px;
-}
-.logo-circle{
-    width:50px;
-    height:50px;
+    background:#ffffff;
+    border:1px solid #e5e7eb;
     border-radius:14px;
-    background:#2563eb;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
-    font-size:18px;
-}
-
-/* ================= BADGES ================= */
-.badges{
-    margin-left:auto;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
-.badge{
-    font-size:12px;
-    font-weight:700;
-    padding:6px 12px;
-    border-radius:8px;
-}
-.badge.featured{ background:#fbbf24; color:#78350f; }
-.badge.verified{ background:#22c55e; color:#fff; }
-.badge.enterprise{ background:#8b5cf6; color:#fff; }
-
-/* ================= TAGS ================= */
-.product-tags span{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:#eef2ff;
-    color:#1e3a8a;
-    padding:6px 10px;
-    border-radius:8px;
-    font-size:13px;
-    font-weight:600;
-    margin-right:6px;
-    margin-top:10px;
-}
-.info-tags span{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:#f1f5f9;
-    padding:6px 10px;
-    border-radius:8px;
-    font-size:13px;
-    margin-right:6px;
-    margin-top:10px;
-}
-.info-tags .distance{
-    background:#dcfce7;
-    color:#166534;
-}
-
-/* ================= ACTIONS ================= */
-.card-actions{
-    display:flex;
-    gap:12px;
-    margin-top:16px;
-}
-.btn-outline{
-    flex:1;
-    border:2px solid #e5e7eb;
-    background:#fff;
-    padding:12px;
-    border-radius:10px;
-    font-weight:600;
-}
-.btn-primary{
-    flex:1;
-    background:#2563eb;
-    color:#fff;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    font-weight:700;
-}
-.card-actions{
-    margin-top:auto;
-    padding-top:12px;
-    border-top:1px dashed #e5e7eb;
-    display:flex;
-    justify-content:center;   /* ✅ center horizontally */
-}
-
-.btn-outline{
-    display:flex;             /* ✅ center text vertically */
-    align-items:center;
-    justify-content:center;
-    padding:10px 24px;
-    min-width:160px;          /* ✅ nice balanced width */
-    border-radius:12px;
-    background:#2563eb;       /* ✅ blue background */
-    color:#ffffff;            /* ✅ white text */
-    font-weight:800;
-    font-size:14px;
-    text-decoration:none;
+    padding:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
     transition:all .25s ease;
 }
 
-.btn-outline:hover{
-    background:#1d4ed8;
-    color:#ffffff;
-    transform:translateY(-1px);
-    box-shadow:0 6px 18px rgba(37,99,235,.35);
+.supplier-card:hover{
+    border-color:#c7d2fe;
+    box-shadow:0 10px 26px rgba(37,99,235,.15);
+    transform:translateY(-2px);
 }
+
+/* HEADER */
+.card-header{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+}
+
+/* LOGO */
 .logo-circle{
-    width:48px;
-    height:48px;
-    border-radius:50%;
+    width:52px;
+    height:52px;
+    border-radius:12px;
     background:#1c2c3e;
     color:#fff;
     font-weight:700;
@@ -287,9 +153,281 @@
 .shop-logo-img{
     width:100%;
     height:100%;
-    object-fit:cover;   /* or contain if logos get cut */
-    background:#fff;
+    object-fit:contain;
+    background:#ffffff;
 }
+
+/* INFO */
+.supplier-info{
+    flex:1;
+}
+
+.supplier-name{
+    font-size:25px;
+    font-weight:700;
+    color:#0f172a;
+    margin-bottom:4px;
+}
+
+/* META */
+.supplier-meta{
+    font-size:13px;
+    color:#64748b;
+    margin:0;
+}
+
+.location-text{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size: 14px;
+    color:#64748b;
+}
+
+.location-text i{
+    color:#ef4444;
+    
+    font-size:14px;
+}
+
+/* TYPE BADGE */
+.supplier-type{
+    background:#eef2ff;
+    color:#1e40af;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px;
+}
+
+/* BADGES */
+.badges{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.badge{
+    font-size:11px;
+    font-weight:700;
+    padding:5px 10px;
+    border-radius:8px;
+    text-transform:uppercase;
+}
+
+.badge.featured{
+    background:#fff7ed;
+    color:#9a3412;
+}
+
+.badge.verified{
+    background:#ecfdf5;
+    color:#065f46;
+}
+
+/* MATERIAL TAGS */
+.product-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:14px 0;
+}
+
+.product-tags span{
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    color:#334155;
+    padding:6px 10px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:600;
+}
+
+/* INFO TAGS */
+.info-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    font-size:13px;
+    color:#475569;
+    padding-top:10px;
+    border-top:1px dashed #e5e7eb;
+}
+
+.info-tags span{
+    background:#f1f5f9;
+    padding:6px 10px;
+    border-radius:8px;
+}
+
+.info-tags .distance{
+    background:#ecfdf5;
+    color:#065f46;
+}
+
+/* ACTION */
+.card-actions{
+    margin-top:14px;
+    display:flex;
+    justify-content:center;
+}
+
+.btn-outline{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px 26px;
+    min-width:160px;
+    border-radius:12px;
+    background:#2563eb;
+    color:#ffffff;
+    font-weight:700;
+    font-size:14px;
+    text-decoration:none;
+    transition:all .25s ease;
+}
+
+.btn-outline:hover{
+    background:#1d4ed8;
+    box-shadow:0 6px 18px rgba(37,99,235,.35);
+    transform:translateY(-1px);
+}
+
+/* ================= CONTROL BAR ================= */
+
+.control-bar{
+    background:#ffffff;
+    border-radius:14px;
+    padding:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
+    margin-bottom:20px;
+}
+
+/* SEARCH */
+.find-search-bar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+}
+
+.find-search-bar i{
+    color:#64748b;
+}
+
+.find-search-bar input{
+    flex:1;
+    border:none;
+    outline:none;
+    font-size:15px;
+}
+
+.find-search-bar .btn-search{
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    padding:10px 22px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+/* ================= LOCATION FILTER ================= */
+
+.location-filters{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.location-filters select{
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:14px;
+}
+
+/* ================= LAYOUT ================= */
+
+.content{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:22px;
+}
+
+/* ================= FILTER PANEL ================= */
+
+.filters{
+    background:#ffffff;
+    border-radius:16px;
+    padding:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
+    position:sticky;
+    top:20px;
+    height:max-content;
+}
+
+.filter-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+}
+
+.filter-header h6{
+    font-weight:700;
+    color:#0f172a;
+}
+
+.filter-header a{
+    font-size:13px;
+    font-weight:600;
+    color:#2563eb;
+    text-decoration:none;
+}
+
+/* FILTER SECTIONS */
+.filter-section{
+    margin-bottom:16px;
+}
+
+.filter-section h6{
+    font-size:14px;
+    font-weight:700;
+    color:#0f172a;
+    margin-bottom:8px;
+}
+
+/* CHECKBOX ITEMS */
+.filter-item,
+.filter-section label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+    color:#475569;
+    margin-bottom:6px;
+    cursor:pointer;
+}
+
+.filter-section input[type="checkbox"]{
+    accent-color:#2563eb;
+}
+
+/* ================= RESULTS GRID ================= */
+
+.supplier-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr); /* ✅ EXACTLY 2 CARDS */
+    gap:22px;
+}
+
+/* OPTIONAL: nice tablet/mobile fallback */
+@media (max-width: 992px){
+    .supplier-grid{
+        grid-template-columns:1fr;
+    }
+}
+
 
 </style>
 
@@ -308,71 +446,90 @@
         </div>
 
         {{-- SEARCH --}}
-      
+      <div class="control-bar">
+
+        {{-- SEARCH --}}
         <div class="find-search-bar">
             <i class="bi bi-search"></i>
-            <input 
-                type="text" 
-                id="searchText"
-                name="search"
-                placeholder="Search by product, location, or supplier name..."
-            >
+            <input type="text" id="searchText" placeholder="Search by product or supplier name...">
             <button class="btn-search" id="searchBtn">Search</button>
         </div>
 
+        {{-- LOCATION --}}
+        <div class="location-filters">
+            <select id="filterState">
+                <option value="">Select State</option>
+                @foreach($states as $state)
+                    <option value="{{ $state->id }}">{{ $state->name }}</option>
+                @endforeach
+            </select>
 
-        <div class="content">
+            <select id="filterRegion" disabled>
+                <option value="">Select Region</option>
+            </select>
 
-            {{-- FILTERS --}}
-            
-            <div class="filters">
-                <div class="filter-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Filters</h6>
-                    <a href="javascript:void(0)" id="clearFilters">Clear All</a>
-                </div>
-                <div class="filter-section">
-                        @foreach($material_categories as $category)
-                            <label class="d-block">
-                                <input 
-                                    type="checkbox" 
-                                    name="categories[]" 
-                                    value="{{ $category->id }}"
-                                    data-slug="{{ $category->slug }}"
-                                >
-                                {{ $category->name }}
-                            </label>
-                        @endforeach
-                </div>
-                <hr>
-                <div class="filter-section">
-                    <h6>Delivery & Payment</h6>
+            <select id="filterCity" disabled>
+                <option value="">Select City</option>
+            </select>
+        </div>
 
-                    @foreach($delivery_type as $option)
-                        <label class="filter-item">
+    </div>
+
+
+    <div class="content">
+
+        {{-- FILTERS --}}
+        
+        <div class="filters">
+            <div class="filter-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Filters</h6>
+                <a href="javascript:void(0)" id="clearFilters">Clear All</a>
+            </div>
+
+
+            <div class="filter-section">
+                    @foreach($material_categories as $category)
+                        <label class="d-block">
                             <input 
-                                type="checkbox"
-                                name="delivery_payment[]"
-                                value="{{ $option->id }}"
+                                type="checkbox" 
+                                name="categories[]" 
+                                value="{{ $category->id }}"
+                                data-slug="{{ $category->slug }}"
                             >
-                            <span>{{ $option->type }}</span>
+                            {{ $category->name }}
                         </label>
                     @endforeach
-                </div>
-                <hr>
-                <div class="filter-section">
-            <h6>Credit Terms</h6>
+            </div>
+            <hr>
+            <div class="filter-section">
+                <h6>Delivery & Payment</h6>
 
-            @foreach($credit_days as $term)
-                <label class="filter-item">
-                    <input 
-                        type="checkbox"
-                        name="credit_terms[]"
-                        value="{{ $term->id }}"
-                    >
-                    <span>{{ $term->days }}</span>
-                </label>
-            @endforeach
-        </div>
+                @foreach($delivery_type as $option)
+                    <label class="filter-item">
+                        <input 
+                            type="checkbox"
+                            name="delivery_payment[]"
+                            value="{{ $option->id }}"
+                        >
+                        <span>{{ $option->type }}</span>
+                    </label>
+                @endforeach
+            </div>
+            <hr>
+            <div class="filter-section">
+        <h6>Credit Terms</h6>
+
+        @foreach($credit_days as $term)
+            <label class="filter-item">
+                <input 
+                    type="checkbox"
+                    name="credit_terms[]"
+                    value="{{ $term->id }}"
+                >
+                <span>{{ $term->days }}</span>
+            </label>
+        @endforeach
+    </div>
 
 
     </div>
@@ -392,41 +549,70 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
+// 🔥 MAKE IT GLOBAL
+function fetchSuppliers() {
+
+    let categories = [];
+    let delivery   = [];
+    let credit     = [];
+    let searchText = $('#searchText').val();
+
+    let state  = $('#filterState').val();
+    let region = $('#filterRegion').val();
+    let city   = $('#filterCity').val();
+
+    $('input[name="categories[]"]:checked').each(function () {
+        categories.push($(this).val());
+    });
+
+    $('input[name="delivery_payment[]"]:checked').each(function () {
+        delivery.push($(this).val());
+    });
+
+    $('input[name="credit_terms[]"]:checked').each(function () {
+        credit.push($(this).val());
+    });
+
+    $.ajax({
+        url: "{{ route('supplier.search.filter') }}",
+        type: "GET",
+        data: {
+            categories: categories,
+            delivery_payment: delivery,
+            credit_terms: credit,
+            search: searchText,
+            state_id: state,
+            region_id: region,
+            city_id: city
+        },
+        success: function (res) {
+            $('.supplier-grid').html(res);
+        }
+    });
+}
+
 $(document).ready(function () {
 
-    function fetchSuppliers() {
+    // 🔄 Trigger on checkbox change
+    $('input[type="checkbox"]').on('change', fetchSuppliers);
 
-        let categories = [];
-        let delivery   = [];
-        let credit     = [];
-        let searchText = $('#searchText').val(); 
+    // 🔍 Search button
+    $('#searchBtn').on('click', fetchSuppliers);
 
-        $('input[name="categories[]"]:checked').each(function () {
-            categories.push($(this).val());
-        });
+    // ⌨️ Search while typing
+    $('#searchText').on('keyup', fetchSuppliers);
 
-        $('input[name="delivery_payment[]"]:checked').each(function () {
-            delivery.push($(this).val());
-        });
+    // ❌ Clear filters
+    $('#clearFilters').on('click', function () {
+        $('input[type="checkbox"]').prop('checked', false);
+        $('#filterState,#filterRegion,#filterCity').val('').prop('disabled', true);
+        fetchSuppliers();
+    });
 
-        $('input[name="credit_terms[]"]:checked').each(function () {
-            credit.push($(this).val());
-        });
-
-        $.ajax({
-            url: "{{ route('supplier.search.filter') }}",
-            type: "GET",
-            data: {
-                categories: categories,
-                delivery_payment: delivery,
-                credit_terms: credit,
-                search: searchText 
-            },
-            success: function (res) {
-                $('.supplier-grid').html(res);
-            }
-        });
-    }
+});
+</script>
+<script>
+$(document).ready(function () {
 
     // 🔄 Trigger on checkbox change
     $('input[type="checkbox"]').on('change', function () {
@@ -449,34 +635,7 @@ $(document).ready(function () {
 
 });
 </script>
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function () {
 
-    const isLoggedIn = @json($isLoggedIn);
-    const loginModalEl = document.getElementById('loginModal');
-    const loginModal = loginModalEl ? new bootstrap.Modal(loginModalEl) : null;
-
-    document.querySelectorAll('.btn-view-profile').forEach(btn => {
-
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            const profileUrl = this.dataset.url;
-
-            // 🔐 Not logged in → show login modal
-            if (!isLoggedIn) {
-                loginModal?.show();
-                return;
-            }
-
-            // ✅ Logged in → go to profile
-            window.location.href = profileUrl;
-        });
-
-    });
-
-});
-</script> -->
 <script>
 document.addEventListener('click', function (e) {
 
@@ -601,4 +760,48 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
+
+<script>
+$('#filterState').on('change', function () {
+
+    const stateId = $(this).val();
+    $('#filterRegion').prop('disabled', true).html('<option value="">Loading...</option>');
+    $('#filterCity').prop('disabled', true).html('<option value="">Select City</option>');
+
+    if (!stateId) {
+        $('#filterRegion').html('<option value="">Select Region</option>').prop('disabled', true);
+        fetchSuppliers();
+        return;
+    }
+
+    $.get('/locations/regions/' + stateId, function (data) {
+        let options = '<option value="">Select Region</option>';
+        data.forEach(r => options += `<option value="${r.id}">${r.name}</option>`);
+        $('#filterRegion').html(options).prop('disabled', false);
+        fetchSuppliers();
+    });
+});
+
+$('#filterRegion').on('change', function () {
+
+    const regionId = $(this).val();
+    $('#filterCity').prop('disabled', true).html('<option value="">Loading...</option>');
+
+    if (!regionId) {
+        $('#filterCity').html('<option value="">Select City</option>').prop('disabled', true);
+        fetchSuppliers();
+        return;
+    }
+
+    $.get('/locations/cities/' + regionId, function (data) {
+        let options = '<option value="">Select City</option>';
+        data.forEach(c => options += `<option value="${c.id}">${c.name}</option>`);
+        $('#filterCity').html(options).prop('disabled', false);
+        fetchSuppliers();
+    });
+});
+
+$('#filterCity').on('change', fetchSuppliers);
+</script>
+
 @endsection

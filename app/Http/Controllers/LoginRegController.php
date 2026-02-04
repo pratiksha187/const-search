@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Twilio\Rest\Client;
+
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Cache;
 use App\Helpers\ProfileCompletionHelper;
 use Illuminate\Support\Facades\DB;
 
@@ -603,4 +605,106 @@ class LoginRegController extends Controller
         Session::flush();
         return redirect('/');
     }
+
+
+    
+     /* ===========================
+       SEND OTP (MOBILE / EMAIL)
+    ============================*/
+   
+public function sendOtp(Request $request)
+{
+    $request->validate([
+        'mobile' => 'required|digits:10'
+    ]);
+
+    $otp = rand(100000, 999999);
+
+    Session::put('otp', $otp);
+    Session::put('mobile', $request->mobile);
+
+    try {
+        $client = new Client(
+            config('services.twilio.sid'),
+            config('services.twilio.token')
+        );
+
+        $client->messages->create(
+            '+91'.$request->mobile,
+            [
+                'from' => config('services.twilio.from'),
+                'body' => "Your ConstructKaro OTP is $otp"
+            ]
+        );
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OTP sent successfully'
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}
+
+    /* ===========================
+       VERIFY OTP
+    ============================*/
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|digits:6'
+        ]);
+
+        if ($request->otp == Session::get('fp_otp')) {
+            return response()->json(['status' => true]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Invalid OTP'
+        ]);
+    }
+
+    /* ===========================
+       RESET PASSWORD
+    ============================*/
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|min:6'
+        ]);
+
+        $login = Session::get('fp_login');
+        $role  = Session::get('fp_role');
+
+        $user = User::where('role', $role)
+            ->where(function ($q) use ($login) {
+                $q->where('email', $login)
+                  ->orWhere('mobile', $login);
+            })
+            ->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ]);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        Session::forget(['fp_otp','fp_login','fp_role']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password updated successfully'
+        ]);
+    }
+
+
 }
