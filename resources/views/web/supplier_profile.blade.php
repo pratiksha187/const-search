@@ -520,7 +520,8 @@ hr{
         {{-- LOGO --}}
         <div class="supplier-logo">
             @if($supplier->shop_logo)
-                <img src="{{ asset('storage/'.$supplier->shop_logo) }}">
+               <img src="{{ asset('storage/supplier_logos/'.$supplier->shop_logo) }}" class="shop-logo-img">
+
             @else
                 {{ strtoupper(substr($supplier->shop_name,0,1)) }}
             @endif
