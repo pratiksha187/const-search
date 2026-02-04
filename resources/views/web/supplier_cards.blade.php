@@ -83,9 +83,11 @@
     <div class="card-header">
         <div class="logo-circle">
             @if(!empty($supplier->shop_logo))
-                <img src="{{ asset('storage/'.$supplier->shop_logo) }}"
+                <img src="{{ asset('storage/supplier_logos'.$supplier->shop_logo) }}"
                     alt="{{ $supplier->shop_name }}"
                     class="shop-logo-img">
+
+
             @else
                 {{ $initials }}
             @endif
