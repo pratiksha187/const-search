@@ -504,6 +504,11 @@ hr{
     border-radius:8px;
     display:inline-block;
 }
+.blur-text{
+    filter: blur(5px);
+    user-select: none;
+    pointer-events: none;
+}
 
 </style>
 {{-- ================= PROFILE ================= --}}
@@ -571,12 +576,14 @@ hr{
         </div>
         <div class="info-item">
             <span>Mobile</span>
-            <strong>{{ $supplier->mobile }}</strong>
+            <strong class="blur-text">{{ $supplier->mobile }}</strong>
         </div>
+
         <div class="info-item">
             <span>Email</span>
-            <strong>{{ $supplier->email }}</strong>
+            <strong class="blur-text">{{ $supplier->email }}</strong>
         </div>
+
         <div class="info-item">
             <span>Experience</span>
             <strong>{{ $supplier->experiance_year }}</strong>
