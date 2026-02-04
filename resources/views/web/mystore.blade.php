@@ -216,7 +216,7 @@
         @endif
 
         @if($supplier_data->experiance_yer)
-            With over <strong>{{ $supplier_data->experiance_yer }} years</strong>
+            With over <strong>{{ $supplier_data->experiance_yer }} </strong>
             of industry experience,
         @endif
 

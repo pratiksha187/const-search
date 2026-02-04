@@ -33,6 +33,50 @@
     color:#ef4444;
 }
 
+.badges{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.badge{
+    font-size:11px;
+    font-weight:700;
+    padding:5px 10px;
+    border-radius:999px;
+    text-transform:uppercase;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+}
+
+/* STATES */
+.badge.verified{
+    background:#ecfdf5;
+    color:#065f46;
+}
+
+.badge.trusted{
+    background:#eef2ff;
+    color:#1e40af;
+}
+
+.badge.partial{
+    background:#fff7ed;
+    color:#9a3412;
+}
+
+.badge.incomplete{
+    background:#fef2f2;
+    color:#991b1b;
+}
+
+.badge.featured{
+    background:#fdf4ff;
+    color:#86198f;
+}
+
+
 </style>
 <div class="supplier-card">
 
@@ -63,9 +107,28 @@
         </div>
 
         <div class="badges">
-            <span class="badge featured">FEATURED</span>
-            <span class="badge verified">VERIFIED</span>
+
+            {{-- FEATURED --}}
+            @if($supplier->featured ?? false)
+                <span class="badge featured">FEATURED</span>
+            @endif
+
+            {{-- PROFILE COMPLETION BADGE --}}
+            @if($profileCompletion == 100)
+                <span class="badge verified">✔ Verified</span>
+
+            @elseif($profileCompletion >= 75)
+                <span class="badge trusted">⭐ Trusted</span>
+
+            @elseif($profileCompletion >= 50)
+                <span class="badge partial">🟡 Partially Verified</span>
+
+            @else
+                <span class="badge incomplete">⚠ Incomplete Profile</span>
+            @endif
+
         </div>
+
     </div>
 
     <div class="product-tags">

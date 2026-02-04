@@ -13,139 +13,88 @@ use App\Models\SupplierProductData;
 class SuppliersController extends Controller
 {
 
-    // public function mystore()
-    // {
-    //     $supplier_id = Session::get('supplier_id');
-
-    //     $supplierName = DB::table('supplier_reg')
-    //         ->where('id', $supplier_id)
-    //         ->value('contact_person');
-
-    //     $supplier_data = DB::table('supplier_reg')
-    //         ->leftJoin('region', 'region.id', '=', 'supplier_reg.region_id')
-    //         ->leftJoin('city', 'city.id', '=', 'supplier_reg.city_id')
-    //         ->leftJoin('state', 'state.id', '=', 'supplier_reg.state_id')
-    //         ->leftJoin('years_in_business', 'years_in_business.id', '=', 'supplier_reg.years_in_business')
-
-            
-            
-    //         ->where('supplier_reg.id', $supplier_id)
-    //         ->select('supplier_reg.*','region.name as regionname','city.name as cityname','state.name as statename','years_in_business.years as experiance_yer')
-    //         ->first(); // use first() instead of get()
-
-    //     // Decode JSON category IDs
-    //     $categoryIds = json_decode($supplier_data->material_category, true);
-
-    //     // Fetch category names
-    //     $categories = DB::table('material_categories')
-    //         ->whereIn('id', $categoryIds)
-    //         ->pluck('name');
-
-    //     //  delivery_type   
-    //     $delivery_type_id=$supplier_data->delivery_type;
-    //     $delivery_type = DB::table('delivery_type')
-    //         ->where('id', $delivery_type_id)
-    //         ->value('type');
-    //     $credit_days_id=$supplier_data->credit_days;
-    //     $credit_days = DB::table('credit_days')
-    //         ->where('id', $credit_days_id)
-    //         ->value('days');  
-    //         // dd($credit_days);
-
-     
-    //     $maximum_distance_id = $supplier_data->maximum_distance;
-    //     $maximum_distance = DB::table('maximum_distances')
-    //         ->where('id', $maximum_distance_id)
-    //         ->value('distance_km'); 
-    //     // dd($experience_years);
-    //     return view('web.mystore', compact(
-    //         'supplierName','maximum_distance',
-    //         'supplier_data',
-    //         'credit_days',
-    //         'categories','delivery_type'
-    //     ));
-    // }
+  
     public function mystore()
-{
-    $supplier_id = Session::get('supplier_id');
+    {
+        $supplier_id = Session::get('supplier_id');
 
-    // 🔴 SAFETY CHECK 1: Supplier login
-    if (!$supplier_id) {
-        abort(403, 'Supplier not logged in');
-    }
-
-    // 🔹 Supplier name
-    $supplierName = DB::table('supplier_reg')
-        ->where('id', $supplier_id)
-        ->value('contact_person');
-
-    // 🔹 Supplier full data
-    $supplier_data = DB::table('supplier_reg')
-        ->leftJoin('region', 'region.id', '=', 'supplier_reg.region_id')
-        ->leftJoin('city', 'city.id', '=', 'supplier_reg.city_id')
-        ->leftJoin('state', 'state.id', '=', 'supplier_reg.state_id')
-        ->leftJoin('years_in_business', 'years_in_business.id', '=', 'supplier_reg.years_in_business')
-        ->where('supplier_reg.id', $supplier_id)
-        ->select(
-            'supplier_reg.*',
-            'region.name as regionname',
-            'city.name as cityname',
-            'state.name as statename',
-            'years_in_business.years as experiance_yer'
-        )
-        ->first();
-
-    // 🔴 SAFETY CHECK 2: Supplier exists
-    if (!$supplier_data) {
-        abort(404, 'Supplier record not found');
-    }
-
-    /* ================= MATERIAL CATEGORIES ================= */
-    $categories = collect();
-
-    if (!empty($supplier_data->material_category)) {
-        $categoryIds = json_decode($supplier_data->material_category, true);
-
-        if (is_array($categoryIds)) {
-            $categories = DB::table('material_categories')
-                ->whereIn('id', $categoryIds)
-                ->pluck('name');
+        // 🔴 SAFETY CHECK 1: Supplier login
+        if (!$supplier_id) {
+            abort(403, 'Supplier not logged in');
         }
-    }
 
-    /* ================= DELIVERY TYPE ================= */
-    $delivery_type = null;
-    if (!empty($supplier_data->delivery_type)) {
-        $delivery_type = DB::table('delivery_type')
-            ->where('id', $supplier_data->delivery_type)
-            ->value('type');
-    }
+        // 🔹 Supplier name
+        $supplierName = DB::table('supplier_reg')
+            ->where('id', $supplier_id)
+            ->value('contact_person');
 
-    /* ================= CREDIT DAYS ================= */
-    $credit_days = null;
-    if (!empty($supplier_data->credit_days)) {
-        $credit_days = DB::table('credit_days')
-            ->where('id', $supplier_data->credit_days)
-            ->value('days');
-    }
+        // 🔹 Supplier full data
+        $supplier_data = DB::table('supplier_reg')
+            ->leftJoin('region', 'region.id', '=', 'supplier_reg.region_id')
+            ->leftJoin('city', 'city.id', '=', 'supplier_reg.city_id')
+            ->leftJoin('state', 'state.id', '=', 'supplier_reg.state_id')
+            ->leftJoin('years_in_business', 'years_in_business.id', '=', 'supplier_reg.years_in_business')
+            ->where('supplier_reg.id', $supplier_id)
+            ->select(
+                'supplier_reg.*',
+                'region.name as regionname',
+                'city.name as cityname',
+                'state.name as statename',
+                'years_in_business.years as experiance_yer'
+            )
+            ->first();
 
-    /* ================= MAX DISTANCE ================= */
-    $maximum_distance = null;
-    if (!empty($supplier_data->maximum_distance)) {
-        $maximum_distance = DB::table('maximum_distances')
-            ->where('id', $supplier_data->maximum_distance)
-            ->value('distance_km');
-    }
+        // 🔴 SAFETY CHECK 2: Supplier exists
+        if (!$supplier_data) {
+            abort(404, 'Supplier record not found');
+        }
 
-    return view('web.mystore', compact(
-        'supplierName',
-        'supplier_data',
-        'categories',
-        'delivery_type',
-        'credit_days',
-        'maximum_distance'
-    ));
-}
+        /* ================= MATERIAL CATEGORIES ================= */
+        $categories = collect();
+
+        if (!empty($supplier_data->material_category)) {
+            $categoryIds = json_decode($supplier_data->material_category, true);
+
+            if (is_array($categoryIds)) {
+                $categories = DB::table('material_categories')
+                    ->whereIn('id', $categoryIds)
+                    ->pluck('name');
+            }
+        }
+
+        /* ================= DELIVERY TYPE ================= */
+        $delivery_type = null;
+        if (!empty($supplier_data->delivery_type)) {
+            $delivery_type = DB::table('delivery_type')
+                ->where('id', $supplier_data->delivery_type)
+                ->value('type');
+        }
+
+        /* ================= CREDIT DAYS ================= */
+        $credit_days = null;
+        if (!empty($supplier_data->credit_days)) {
+            $credit_days = DB::table('credit_days')
+                ->where('id', $supplier_data->credit_days)
+                ->value('days');
+        }
+
+        /* ================= MAX DISTANCE ================= */
+        $maximum_distance = null;
+        if (!empty($supplier_data->maximum_distance)) {
+            $maximum_distance = DB::table('maximum_distances')
+                ->where('id', $supplier_data->maximum_distance)
+                ->value('distance_km');
+        }
+
+        return view('web.mystore', compact(
+            'supplierName',
+            'supplier_data',
+            'categories',
+            'delivery_type',
+            'credit_days',
+            'maximum_distance'
+        ));
+    }
 
 
     public function quotesandorder()
@@ -954,15 +903,81 @@ public function supplierserch()
         $isLoggedIn = true;
     }
 
+   // ================= PROFILE COMPLETION LOGIC =================
+        $profileCompletion = 0;
+
+        $profileSteps = [
+            'basic'   => false,
+            'material'=> false,
+            'uploads' => false,
+            'bank'    => false,
+        ];
+
+        // STEP 1: BASIC DETAILS
+        if (
+            !empty($supplier->shop_name) &&
+            !empty($supplier->mobile) &&
+            !empty($supplier->state_id) &&
+            !empty($supplier->city_id)
+        ) {
+            $profileSteps['basic'] = true;
+            $profileCompletion += 25;
+        }
+
+        // STEP 2: MATERIAL SELECTED
+        if (!empty($supplier->material_category)) {
+            $profileSteps['material'] = true;
+            $profileCompletion += 25;
+        }
+
+        // STEP 3: DOCUMENT UPLOADS (MIN REQUIRED)
+        if (
+            !empty($supplier->gst_certificate_path) &&
+            !empty($supplier->pan_card_path)
+        ) {
+            $profileSteps['uploads'] = true;
+            $profileCompletion += 25;
+        }
+
+        // STEP 4: BANK DETAILS
+        if (
+            !empty($supplier->bank_name) &&
+            !empty($supplier->account_number) &&
+            !empty($supplier->ifsc_code)
+        ) {
+            $profileSteps['bank'] = true;
+            $profileCompletion += 25;
+        }
+$profileBadge = [
+    'label' => 'Incomplete',
+    'class' => 'incomplete'
+];
+
+if ($profileCompletion == 100) {
+    $profileBadge = [
+        'label' => 'Verified',
+        'class' => 'verified'
+    ];
+} elseif ($profileCompletion >= 75) {
+    $profileBadge = [
+        'label' => 'Trusted',
+        'class' => 'trusted'
+    ];
+} elseif ($profileCompletion >= 50) {
+    $profileBadge = [
+        'label' => 'Partially Verified',
+        'class' => 'partial'
+    ];
+}
 
     // dd($supplier_data);
     return view('web.supplierserch', compact(
         'credit_days','material_categories','notificationCount','notifications',
         'delivery_type',
-        'maximum_distances','states',
+        'maximum_distances','states','profileBadge',
         'supplier_data',
         'layout','cust_data',
-        'customer_id',
+        'customer_id','profileCompletion',
         'brands',
         'vendor_id',
         'supplier_id',
@@ -1222,7 +1237,6 @@ public function supplierenquirystore(Request $request)
             )
             ->where('s.id', $id)
             ->first();
-            //  dd($supplier);  
         if (!$supplier) {
             abort(404);
         }
