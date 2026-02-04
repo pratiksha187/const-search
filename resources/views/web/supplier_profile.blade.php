@@ -496,6 +496,14 @@ hr{
         flex-wrap:wrap;
     }
 }
+.doc-links .no-docs{
+    font-size:13px;
+    color:#64748b;
+    background:#f8fafc;
+    padding:8px 12px;
+    border-radius:8px;
+    display:inline-block;
+}
 
 </style>
 {{-- ================= PROFILE ================= --}}
@@ -599,22 +607,57 @@ hr{
 
     {{-- DOCUMENTS --}}
     <div class="doc-links mt-3">
+
+    @php
+        $hasDocs =
+            $supplier->gst_certificate_path ||
+            $supplier->pan_card_path ||
+            $supplier->shop_license_path ||
+            $supplier->sample_invoice_path ||
+            $supplier->costing_sheet_path;
+    @endphp
+
+    @if($hasDocs)
+
         @if($supplier->gst_certificate_path)
-            <a href="{{ asset('storage/'.$supplier->gst_certificate_path) }}" target="_blank">GST Certificate</a>
+            <a href="{{ asset('storage/'.$supplier->gst_certificate_path) }}" target="_blank">
+                GST Certificate
+            </a>
         @endif
+
         @if($supplier->pan_card_path)
-            <a href="{{ asset('storage/'.$supplier->pan_card_path) }}" target="_blank">PAN Card</a>
+            <a href="{{ asset('storage/'.$supplier->pan_card_path) }}" target="_blank">
+                PAN Card
+            </a>
         @endif
+
         @if($supplier->shop_license_path)
-            <a href="{{ asset('storage/'.$supplier->shop_license_path) }}" target="_blank">Shop License</a>
+            <a href="{{ asset('storage/'.$supplier->shop_license_path) }}" target="_blank">
+                Shop License
+            </a>
         @endif
+
         @if($supplier->sample_invoice_path)
-            <a href="{{ asset('storage/'.$supplier->sample_invoice_path) }}" target="_blank">Sample Invoice</a>
+            <a href="{{ asset('storage/'.$supplier->sample_invoice_path) }}" target="_blank">
+                Sample Invoice
+            </a>
         @endif
+
         @if($supplier->costing_sheet_path)
-            <a href="{{ asset('storage/'.$supplier->costing_sheet_path) }}" target="_blank">Costing Sheet</a>
+            <a href="{{ asset('storage/'.$supplier->costing_sheet_path) }}" target="_blank">
+                Costing Sheet
+            </a>
         @endif
-    </div>
+
+    @else
+       
+          <span class="no-docs">📄 No documents uploaded</span>
+
+        
+    @endif
+
+</div>
+
 
 </div>
 
@@ -666,32 +709,32 @@ hr{
                         'available_qty' => (int) ($item->spquntity ?? 0),
                     ];
                     @endphp
-               <div class="product-card" data-product='@json($productJson)'>
-                  <div class="product-img">
-                     @if($item->p_image)
-                     <img src="{{ asset('uploads/products/'.$item->p_image) }}">
-                     @else
-                     <span class="text-muted">No Image</span>
-                     @endif
-                  </div>
-                  <div class="product-title">{{ $item->material_subproduct }}</div>
-                  <div class="product-meta">
-                     Brand: {{ $item->brand_name }}<br>
-                     Unit: {{ $item->unitname ?? 'N/A' }}
-                  </div>
-                  <div class="product-price">
-                     ₹ {{ number_format($item->price ?? 0,2) }}
-                  </div>
-                  <div class="qty-box">
-                     <button class="qty-btn minus">−</button>
-                     <input class="qty-input" value="1">
-                     <button class="qty-btn plus">+</button>
-                  </div>
-                  <button class="add-cart-btn add-to-cart">
-                  <i class="bi bi-cart-plus"></i> Add to Cart
-                  </button>
-               </div>
-               @endforeach
+                    <div class="product-card" data-product='@json($productJson)'>
+                        <div class="product-img">
+                            @if($item->p_image)
+                            <img src="{{ asset('uploads/products/'.$item->p_image) }}">
+                            @else
+                            <span class="text-muted">No Image</span>
+                            @endif
+                        </div>
+                        <div class="product-title">{{ $item->material_subproduct }}</div>
+                        <div class="product-meta">
+                            Brand: {{ $item->brand_name }}<br>
+                            Unit: {{ $item->unitname ?? 'N/A' }}
+                        </div>
+                        <div class="product-price">
+                            ₹ {{ number_format($item->price ?? 0,2) }}
+                        </div>
+                        <div class="qty-box">
+                            <button class="qty-btn minus">−</button>
+                            <input class="qty-input" value="1">
+                            <button class="qty-btn plus">+</button>
+                        </div>
+                        <button class="add-cart-btn add-to-cart">
+                        <i class="bi bi-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                    @endforeach
             </div>
          </div>
          @endforeach
