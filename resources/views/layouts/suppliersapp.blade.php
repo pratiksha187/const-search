@@ -217,14 +217,7 @@ body{
     </div>
 </div>
 
-<!-- SIDEBAR -->
-<!-- <div class="sidebar" id="sidebar">
-    <a href="{{ route('supplierdashboard') }}">Dashboard</a>
-    <a href="{{ route('mystore') }}">My Store</a>
-    <a href="{{ route('myproducts') }}">My Products</a>
-    <a href="{{ route('productenquiry') }}">Enquiries</a>
-    <a href="{{ route('quotes.orders') }}">Quotes & Orders</a>
-</div> -->
+
 <div class="sidebar" id="sidebar">
 
     <a href="{{ route('supplierdashboard') }}"

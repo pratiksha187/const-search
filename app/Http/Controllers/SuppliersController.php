@@ -9,6 +9,7 @@ use App\Models\SupplierEnquiry;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Suppliers;
 use App\Models\SupplierProductData;
+use Illuminate\Support\Facades\Mail;
 
 class SuppliersController extends Controller
 {
@@ -97,57 +98,57 @@ class SuppliersController extends Controller
     }
 
 
-    public function quotesandorder()
-    {
-        $supplier_id = Session::get('supplier_id');
+    // public function quotesandorder()
+    // {
+    //     $supplier_id = Session::get('supplier_id');
 
-        if (!$supplier_id) {
-            abort(403, 'Unauthorized');
-        }
+    //     if (!$supplier_id) {
+    //         abort(403, 'Unauthorized');
+    //     }
 
-        // Supplier Name
-        $supplierName = DB::table('supplier_reg')
-            ->where('id', $supplier_id)
-            ->value('contact_person');
+    //     // Supplier Name
+    //     $supplierName = DB::table('supplier_reg')
+    //         ->where('id', $supplier_id)
+    //         ->value('contact_person');
 
-        // ================= QUOTES =================
-        $quotes = DB::table('supplier_quotes as sq')
-            ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
-            ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
-            ->join('material_categories as mc', 'mc.id', '=', 'se.category')
-            ->where('sq.supplier_id', $supplier_id)
-            ->where('sq.status', 'sent')
-            ->select(
-                'sq.*',
-                'se.quantity',
-                'sr.shop_name',
-                'mc.name as material_categories_name'
-            )
-            ->orderBy('sq.created_at', 'DESC')
-            ->get();
+    //     // ================= QUOTES =================
+    //     $quotes = DB::table('supplier_quotes as sq')
+    //         ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
+    //         ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
+    //         ->join('material_categories as mc', 'mc.id', '=', 'se.category')
+    //         ->where('sq.supplier_id', $supplier_id)
+    //         ->where('sq.status', 'sent')
+    //         ->select(
+    //             'sq.*',
+    //             'se.quantity',
+    //             'sr.shop_name',
+    //             'mc.name as material_categories_name'
+    //         )
+    //         ->orderBy('sq.created_at', 'DESC')
+    //         ->get();
 
-        // ================= ORDERS =================
-        $orders = DB::table('supplier_quotes as sq')
-            ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
-            ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
-            ->join('material_categories as mc', 'mc.id', '=', 'se.category')
-            ->where('sq.supplier_id', $supplier_id)
-            ->whereIn('sq.status', ['accepted', 'order'])
-            ->select(
-                'sq.*',
-                'se.quantity',
-                'sr.shop_name',
-                'mc.name as material_categories_name'
-            )
-            ->orderBy('sq.updated_at', 'DESC')
-            ->get();
+    //     // ================= ORDERS =================
+    //     $orders = DB::table('supplier_quotes as sq')
+    //         ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
+    //         ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
+    //         ->join('material_categories as mc', 'mc.id', '=', 'se.category')
+    //         ->where('sq.supplier_id', $supplier_id)
+    //         ->whereIn('sq.status', ['accepted', 'order'])
+    //         ->select(
+    //             'sq.*',
+    //             'se.quantity',
+    //             'sr.shop_name',
+    //             'mc.name as material_categories_name'
+    //         )
+    //         ->orderBy('sq.updated_at', 'DESC')
+    //         ->get();
 
-        return view('web.quotes&order', compact(
-            'supplierName',
-            'quotes',
-            'orders'
-        ));
-    }
+    //     return view('web.quotes&order', compact(
+    //         'supplierName',
+    //         'quotes',
+    //         'orders'
+    //     ));
+    // }
 
    
     public function myproducts(Request $request)
@@ -1327,6 +1328,33 @@ public function supplierenquirystore(Request $request)
         ));
     }
 
+    public function acceptEnquiry(Request $request)
+    {
+        // dd($request);
+        $supplier = DB::table('supplier_enquiries')
+                    ->where('id', $request->enquiry_id)
+                    ->where('supplier_id', $request->supplier_id)
+                    ->update(['status' => 'accepted']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Enquiry accepted successfully'
+        ]);
+    }
+
+    public function rejectEnquiry(Request $request)
+    {
+        $supplier = DB::table('supplier_enquiries')->where('supplier_id', $request->supplier_id)
+            ->update(['status' => 'rejected']);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Enquiry rejected'
+        ]);
+    }
+
+   
+
     public function sendQuote(Request $request)
     {
         $request->validate([
@@ -1540,6 +1568,218 @@ public function supplierenquiryshow($id)
     ));
 }
 
+    // public function quotationForm($enquiry_id)
+    // {
+    //     $enquiry = DB::table('supplier_enquiries')
+    //         ->where('id', $enquiry_id)
+    //         ->first();   // SINGLE ROW
 
+    //     $items = DB::table('supplier_enquiry_items')
+    //         ->where('enquiry_id', $enquiry_id)
+    //         ->get();     // MULTIPLE ROWS
+       
+
+    //     return view('web.send-custquotation', compact('enquiry','items'));
+    // }
+
+    // public function quotationForm($enquiry_id)
+    // {
+    //     $enquiry = DB::table('supplier_enquiries as se')
+
+    //         ->leftJoin('users as u', function ($join) {
+    //             $join->on(
+    //                 DB::raw("SUBSTRING_INDEX(se.user_id, '_', -1)"),
+    //                 '=',
+    //                 'u.id'
+    //             )->where('se.user_id', 'LIKE', 'c_%');
+    //         })
+
+    //         ->leftJoin('vendor_reg as v', function ($join) {
+    //             $join->on(
+    //                 DB::raw("SUBSTRING_INDEX(se.user_id, '_', -1)"),
+    //                 '=',
+    //                 'v.id'
+    //             )->where('se.user_id', 'LIKE', 'v_%');
+    //         })
+
+    //         ->where('se.id', $enquiry_id)
+
+    //         ->select(
+    //             'se.*',
+
+    //             // Customer fields
+    //             'u.name as name',
+    //             'u.email as email',
+    //             'u.mobile as mobile',
+
+    //             // Vendor fields
+    //             'v.name as name',
+    //             'v.email as email',
+    //             'v.mobile as mobile'
+    //         )
+    //         ->first();
+    //     dd( $enquiry );
+    //     $items = DB::table('supplier_enquiry_items')
+    //         ->where('enquiry_id', $enquiry_id)
+    //         ->get();
+
+    //     return view('web.send-custquotation', compact('enquiry', 'items'));
+    // }
+public function quotationForm($enquiry_id)
+{
+    // 1️⃣ Get enquiry (single row)
+    $enquiry = DB::table('supplier_enquiries')
+        ->where('id', $enquiry_id)
+        ->first();
+
+    abort_if(!$enquiry, 404);
+
+    // 2️⃣ Detect user type from user_id
+    $userType = explode('_', $enquiry->user_id)[0]; // c or v
+    // dd($userType);
+    $userId   = explode('_', $enquiry->user_id)[1]; // numeric id
+
+    $user = null;
+
+    // 3️⃣ Load correct user
+    if ($userType === 'c') {
+        // CUSTOMER
+        $user = DB::table('users')
+            ->where('id', $userId)
+            ->first();
+    } elseif ($userType === 'v') {
+        // VENDOR
+        $user = DB::table('vendor_reg')
+            ->where('id', $userId)
+            ->first();
+    }
+
+    // 4️⃣ Get enquiry items (multiple rows)
+//    DB::table('supplier_enquiry_items')
+//         ->where('enquiry_id', $enquiry_id)
+//         ->get();
+
+      $items =    DB::table('supplier_enquiry_items as ei')
+        ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
+        ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
+        ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
+        ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
+        ->select(
+
+            'mc.name as category',
+            'mp.product_name as product',
+            'ms.material_subproduct as spec',
+            'b.name as brand',
+            'ei.*'
+        )
+        ->where('ei.enquiry_id', $enquiry_id)
+        ->get();
+// dd($items);
+    return view('web.send-custquotation', compact('enquiry', 'user', 'items'));
+}
+
+
+    public function sendQuotationtocust(Request $request)
+    {
+        $supp_id = session('supplier_id');
+        // dd($request->all()); // enable once to verify
+
+        $request->validate([
+            'enquiry_id' => 'required',
+            'items'      => 'required|array',
+            'items.*.qty'   => 'required|numeric|min:1',
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.gst'   => 'nullable|numeric|min:0',
+        ]);
+
+        $grandTotal = 0;
+
+        foreach ($request->items as $item) {
+
+            $qty   = $item['qty'];
+            $price = $item['price'];
+            $gst   = $item['gst'] ?? 0;
+
+            $amount = $qty * $price;
+            $gstAmt = ($amount * $gst) / 100;
+            $total  = $amount + $gstAmt;
+
+            $grandTotal += $total;
+
+            // 🔹 Save each row
+            DB::table('quotations')->insert([
+                'enquiry_id'  => $request->enquiry_id,
+                'supplier_id' => $supp_id,
+
+                'item_id'     => $item['item_id'], // optional but recommended
+                'rate'        => $price,
+                'qty'         => $qty,
+                'gst_percent' => $gst,
+                'total'       => $total,
+
+                'remarks'     => $request->remarks,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+        }
+
+        // 🔔 Optional email (grand total)
+        // Mail::raw(
+        //     "Quotation Sent Successfully\n\nGrand Total: ₹{$grandTotal}\n\nRemarks: {$request->remarks}",
+        //     function ($mail) use ($request) {
+        //         $mail->to(auth()->user()->email)
+        //             ->subject('Quotation Sent');
+        //     }
+        // );
+
+        return redirect()
+            ->route('supplier.orders')
+            ->with('success', 'Quotation sent successfully');
+    }
+
+    public function quotesorders(){
+        $supp_id = session('supplier_id');
+        $supplierName = DB::table('supplier_reg')
+            ->where('id', $supp_id)
+            ->value('contact_person');
+         // 🔹 Fetch quotations for this supplier
+        $quotationItems = DB::table('quotations')
+                        ->where('supplier_id', $supp_id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                        // No data safety
+        if ($quotationItems->isEmpty()) {
+            return view('web.quotes&order')->with([
+                'quotationItems' => collect(),
+                'quotationStatus' => null
+            ]);
+        }
+          // 🔹 Status is same for all items of same enquiry
+        $quotationStatus = $quotationItems->first()->status;
+        return view('web.quotes&order', compact('quotationItems', 'quotationStatus','supplierName'));
+    }
+
+    public function supplierandorder(){
+        $supp_id = session('supplier_id');
+        $supplierName = DB::table('supplier_reg')
+            ->where('id', $supp_id)
+            ->value('contact_person');
+         // 🔹 Fetch quotations for this supplier
+        $quotationItems = DB::table('quotations')
+                        ->where('supplier_id', $supp_id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                        // No data safety
+        if ($quotationItems->isEmpty()) {
+            return view('web.quotes&order')->with([
+                'quotationItems' => collect(),
+                'quotationStatus' => null
+            ]);
+        }
+          // 🔹 Status is same for all items of same enquiry
+        $quotationStatus = $quotationItems->first()->status;
+        //  dd($quotationItems);
+        return view('web.quotes&order', compact('quotationItems', 'quotationStatus','supplierName'));
+    }
 
 }

@@ -105,7 +105,17 @@ Route::post('/razorpay/verify', [RazorpayController::class, 'verifyPayment'])
 
 Route::get('/vendor_reg_form', [HomeController::class, 'vendor_reg_form'])->name('vendor_reg_form');
 
-Route::get('/quotes&order', [SuppliersController::class, 'quotesandorder'])->name('quotes.orders');
+Route::get('/supplierorder', [SuppliersController::class, 'supplierandorder'])->name('supplier.orders');
+
+
+Route::get('/customer/quotation/{enquiry_id}',
+    [HomeController::class, 'viewQuotation']
+)->name('customer.view.quotation');
+
+Route::post('/customer/quotation/action',
+    [HomeController::class, 'quotationAction']
+)->name('customer.quotation.action');
+
 
 Route::post('/razorpay/payment', [RazorpayController::class, 'handlePayment'])->name('razorpay.payment');
 
@@ -173,6 +183,21 @@ Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->n
 Route::get('/check_lead_balance', [VenderController::class, 'checkLeadBalance'])->name('vendor.check_lead_balance');
 Route::get('/vendor/check-already-interest', [VenderController::class, 'checkAlreadyInterest'])
     ->name('vendor.check_already_interest');
+
+Route::post('/supplier/enquiry/accept', [SuppliersController::class, 'acceptEnquiry'])
+    ->name('supplier.enquiry.accept');
+
+Route::post('/supplier/enquiry/reject', [SuppliersController::class, 'rejectEnquiry'])
+    ->name('supplier.enquiry.reject');
+
+Route::get('/supplier/quotation/{enquiry}', 
+    [SuppliersController::class, 'quotationForm']
+)->name('supplier.send.quotation');
+
+Route::post('/supplier/quotation/send', 
+    [SuppliersController::class, 'sendQuotationtocust']
+)->name('supplier.quotation.send');
+
 
 
 Route::post('/productenquirystore', [HomeController::class, 'productenquirystore'])->name('productenquirystore');
@@ -379,6 +404,10 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::post('/supplier/send-quote', [SuppliersController::class, 'sendQuote'])
      ->name('supplier.sendQuote');
 
+
+    Route::get('product-orders', [SuppliersController::class, 'quotesorders'])->name('quotes.orders');
+
+     
     Route::get('/auth/{action?}/{role?}', function () {
         return view('web.login_register');
     })->where(['action' => 'login|register', 'role' => 'customer|vendor|supplier']);

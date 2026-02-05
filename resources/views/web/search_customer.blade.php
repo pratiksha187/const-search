@@ -446,6 +446,22 @@
     z-index: 20;
 }
 
+.corner-ribbon-coming{
+    position: absolute;
+    top: 22px;
+    right: -52px;
+    transform: rotate(45deg);
+    background: #dfb82b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 5px 41px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+    z-index: 20;
+}
+
 .lead-header{
     padding:14px 0;
 }
@@ -613,11 +629,21 @@
                      <i class="bi bi-check-circle-fill"></i> Verified
                      </span>
 
-                     @if($project->get_vendor == 1)
+                     <!-- @if($project->get_vendor == 1)
                      <div class="corner-ribbon">
                         Vendor Matched
                      </div>
+                     @endif -->
+                     @if($project->get_vendor == 1)
+                        <div class="corner-ribbon">
+                           Vendor Matched
+                        </div>
+                     @elseif($project->get_vendor == 2)
+                        <div class="corner-ribbon-coming">
+                           Coming Soon
+                        </div>
                      @endif
+
 
                   </div>
                   {{-- ROLE --}}
@@ -679,7 +705,7 @@
                   {{-- ACTIONS (SAME handleInterested) --}}
                  
                   <div class="lead-actions">
-                     @if($project->get_vendor == 1)
+                     @if($project->get_vendor == 1 || $project->get_vendor == 2)
                         <a href="javascript:void(0)"
                            class="btn-outline-lead disabled"
                            style="pointer-events:none;opacity:0.5;">

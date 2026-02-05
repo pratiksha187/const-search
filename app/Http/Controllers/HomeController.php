@@ -511,73 +511,6 @@ class HomeController extends Controller
     }
 
     
-    // public function store(Request $request)
-    // {
-    //     $customer_id = Session::get('customer_id');
-
-    //     $check_post_count = DB::table('posts')
-    //         ->where('user_id', $customer_id)
-    //         ->count(); // direct count
-
-    //     // If user has posted 3 or more, return JSON so JS can handle
-    //     if ($check_post_count >= 3) {
-    //         return response()->json([
-    //             'status' => 'payment_required',
-    //             'message' => 'You have reached the free post limit. Payment required.',
-    //             'post_count' => $check_post_count,
-    //         ]);
-    //     }
-
-    //     // Validate
-    //     $request->validate([
-    //         'title'           => 'required|string|max:255',
-    //         'work_type_id'    => 'required|integer',
-    //         'work_subtype_id' => 'required|integer',
-    //         'state'           => 'nullable|string',
-    //         'region_id'       => 'nullable|string',
-    //         'city_id'         => 'nullable|string',
-    //         'budget'          => 'required|integer',
-    //         'contact_name'    => 'required|string|max:255',
-    //         'mobile'          => 'required|string|max:20',
-    //         'email'           => 'required|email',
-    //         'description'     => 'required|string',
-    //         'area'            => 'required|string',
-    //     ]);
-
-    //     // Upload files
-    //     $uploadedFiles = [];
-    //     if ($request->hasFile('files')) {
-    //         foreach ($request->file('files') as $file) {
-    //             $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-    //             $file->move(public_path('uploads/posts'), $filename);
-    //             $uploadedFiles[] = $filename;
-    //         }
-    //     }
-
-    //     DB::table('posts')->insert([
-    //         'user_id'         => $customer_id,
-    //         'title'           => $request->title,
-    //         'work_type_id'    => $request->work_type_id,
-    //         'area'            => $request->area,
-    //         'work_subtype_id' => $request->work_subtype_id,
-    //         'state'           => $request->state,
-    //         'region'          => $request->region_id,
-    //         'city'            => $request->city_id,
-    //         'budget_id'       => $request->budget,
-    //         'contact_name'    => $request->contact_name,
-    //         'mobile'          => $request->mobile,
-    //         'email'           => $request->email,
-    //         'description'     => $request->description,
-    //         'files'           => json_encode($uploadedFiles),
-    //         'created_at'      => now(),
-    //         'updated_at'      => now(),
-    //     ]);
-
-    //     return response()->json([
-    //         'status' => 'success',
-    //         'message' => 'Project Posted Successfully!',
-    //     ]);
-    // }
  public function store(Request $request)
     {
         $customer_id = Session::get('customer_id');
@@ -1057,148 +990,130 @@ class HomeController extends Controller
 
 
 
-    // public function productenquirystore(Request $request)
-    // {
-    //     // dd($request );
-    //     // Identify user
-    //     $u_id = $request->customer_id
-    //         ? 'c_'.$request->customer_id
-    //         : 'v_'.$request->vendor_id;
+    public function productenquirystore(Request $request)
+    {
+        // dd($request);
+        $u_id = $request->customer_id
+            ? 'c_' . $request->customer_id
+            : 'v_' . $request->vendor_id;
 
-    //     $cart = json_decode($request->cart_data, true);
+        $cart = json_decode($request->cart_data, true);
 
-    //     if (!$cart || count($cart) === 0) {
-    //         return back()->with('error', 'Cart is empty');
-    //     }
-
-    //     DB::beginTransaction();
-
-    //     try {
-
-    //         // Save enquiry master
-    //         $enquiryId = DB::table('supplier_enquiries')->insertGetId([
-    //             'supplier_id'       => $request->supplier_id,
-    //             'user_id'           => $u_id,
-    //             'delivery_location' => $request->delivery_location,
-    //             'required_by'       => $request->required_by,
-    //             'created_at'        => now(),
-    //             'updated_at'        => now(),
-    //         ]);
-
-    //         // Save enquiry items (IDS ONLY)
-    //         foreach ($cart as $item) {
-    //             DB::table('supplier_enquiry_items')->insert([
-    //                 'enquiry_id' => $enquiryId,
-    //                 'category_id'=> $item['category_id'],
-    //                 'product_id' => $item['product_id'],
-    //                 'spec_id'    => $item['spec_id'],
-    //                 'brand_id'   => $item['brand_id'],
-
-    //                 'qty'        => $item['qty'],
-    //                 'created_at' => now(),
-    //                 'updated_at' => now(),
-    //             ]);
-    //         }
-
-    //         DB::commit();
-
-        
-    //         return redirect()
-    //         ->route('supplier.enquiry.index')
-    //         ->with('success', 'Enquiry sent successfully');
-
-
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return back()->with('error', 'Failed to save enquiry');
-    //     }
-    // }
-public function productenquirystore(Request $request)
-{
-    // dd($request);
-    $u_id = $request->customer_id
-        ? 'c_' . $request->customer_id
-        : 'v_' . $request->vendor_id;
-
-    $cart = json_decode($request->cart_data, true);
-
-    if (!is_array($cart) || count($cart) === 0) {
-        return back()->with('error', 'Cart is empty');
-    }
-
-    DB::beginTransaction();
-
-    try {
-
-        $subTotal = 0;
-        $gstTotal = 0;
-
-        $enquiryId = DB::table('supplier_enquiries')->insertGetId([
-            'supplier_id'       => $request->supplier_id,
-            'user_id'           => $u_id,
-            'delivery_location' => $request->delivery_location,
-            'required_by'       => $request->required_by,
-            'status'            => 'pending',
-            'created_at'        => now(),
-            'updated_at'        => now(),
-        ]);
-
-        foreach ($cart as $item) {
-// dd($item);
-            $price   = (float) $item['price'];
-            $qty     = (int)   $item['qty'];
-            $gstPerc = (float) ($item['gst_percent'] ?? 0);
-
-            $amount    = $price * $qty;
-            $gstAmount = ($amount * $gstPerc) / 100;
-            $total     = $amount + $gstAmount;
-
-            $subTotal += $amount;
-            $gstTotal += $gstAmount;
-
-            DB::table('supplier_enquiry_items')->insert([
-                'enquiry_id' => $enquiryId,
-
-                'category_id'=> $item['category_id'] ?? null,
-                'product_id' => $item['product_id'] ?? null,
-                'spec_id'    => $item['spec_id'] ?? null,
-                'brand_id'   => $item['brand_id'] ?? null,
-
-                'price'       => (string) $price,
-                'qty'         => $qty,
-                'amount'      => (string) $amount,
-                'gst_percent' => (string) $gstPerc,
-                'gst_amount'  => (string) $gstAmount,
-                'total'       => (string) $total,
-
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ]);
+        if (!is_array($cart) || count($cart) === 0) {
+            return back()->with('error', 'Cart is empty');
         }
 
-        DB::table('supplier_enquiries')
-            ->where('id', $enquiryId)
-            ->update([
-                'sub_total'   => (string) $subTotal,
-                'gst_total'   => (string) $gstTotal,
-                'grand_total' => (string) ($subTotal + $gstTotal),
-                'updated_at'  => now(),
+        DB::beginTransaction();
+
+        try {
+
+            $subTotal = 0;
+            $gstTotal = 0;
+
+            $enquiryId = DB::table('supplier_enquiries')->insertGetId([
+                'supplier_id'       => $request->supplier_id,
+                'user_id'           => $u_id,
+                'delivery_location' => $request->delivery_location,
+                'required_by'       => $request->required_by,
+                'status'            => 'pending',
+                'created_at'        => now(),
+                'updated_at'        => now(),
             ]);
 
-        DB::commit();
+            foreach ($cart as $item) {
+    // dd($item);
+                $price   = (float) $item['price'];
+                $qty     = (int)   $item['qty'];
+                $gstPerc = (float) ($item['gst_percent'] ?? 0);
 
-        return redirect()
-            ->route('supplier.enquiry.index')
-            ->with('success', 'Enquiry sent successfully');
+                $amount    = $price * $qty;
+                $gstAmount = ($amount * $gstPerc) / 100;
+                $total     = $amount + $gstAmount;
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-        // dd($e->getMessage());
-        return back()->with('error', 'Failed to save enquiry');
+                $subTotal += $amount;
+                $gstTotal += $gstAmount;
+
+                DB::table('supplier_enquiry_items')->insert([
+                    'enquiry_id' => $enquiryId,
+
+                    'category_id'=> $item['category_id'] ?? null,
+                    'product_id' => $item['product_id'] ?? null,
+                    'spec_id'    => $item['spec_id'] ?? null,
+                    'brand_id'   => $item['brand_id'] ?? null,
+
+                    'price'       => (string) $price,
+                    'qty'         => $qty,
+                    'amount'      => (string) $amount,
+                    'gst_percent' => (string) $gstPerc,
+                    'gst_amount'  => (string) $gstAmount,
+                    'total'       => (string) $total,
+
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            }
+
+            DB::table('supplier_enquiries')
+                ->where('id', $enquiryId)
+                ->update([
+                    'sub_total'   => (string) $subTotal,
+                    'gst_total'   => (string) $gstTotal,
+                    'grand_total' => (string) ($subTotal + $gstTotal),
+                    'updated_at'  => now(),
+                ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('supplier.enquiry.index')
+                ->with('success', 'Enquiry sent successfully');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // dd($e->getMessage());
+            return back()->with('error', 'Failed to save enquiry');
+        }
     }
-}
 
 
+     public function viewcustQuotation(){
+
+    }
+     // View quotation
+    // public function viewQuotation($enquiry_id)
+    // {
+    //     $quotationItems = DB::table('quotations')
+    //         ->where('enquiry_id', $enquiry_id)
+    //         ->get();
+
+    //     abort_if($quotationItems->isEmpty(), 404);
+
+    //     $enquiry = DB::table('supplier_enquiries')
+    //         ->where('id', $enquiry_id)
+    //         ->first();
+
+    //     return view('customer.view-quotation', compact('quotationItems', 'enquiry'));
+    // }
+
+    // Accept / Reject
+    // public function quotationAction(Request $request)
+    // {
+    //     $request->validate([
+    //         'enquiry_id' => 'required',
+    //         'action'     => 'required|in:accepted,rejected',
+    //     ]);
+
+    //     DB::table('quotations')
+    //         ->where('enquiry_id', $request->enquiry_id)
+    //         ->update([
+    //             'status' => $request->action,
+    //             'customer_response_at' => now()
+    //         ]);
+
+    //     return redirect()
+    //         ->back()
+    //         ->with('success', 'Your response has been recorded.');
+    // }
 
 
 

@@ -1,4 +1,4 @@
-@extends('layouts.suppliersapp')
+@extends('layouts.customerapp')
 
 @section('title','Quotation Details')
 
@@ -6,12 +6,6 @@
 
 <div class="card-box">
     <h4 class="mb-3">Quotation Details</h4>
-
-    @if($quotationItems->isEmpty())
-        <div class="text-muted text-center">
-            No quotation found
-        </div>
-    @else
 
     <table class="table table-bordered">
         <thead class="table-light">
@@ -36,18 +30,13 @@
                     <td>{{ $item->gst_percent }}%</td>
                     <td>₹ {{ number_format($item->total,2) }}</td>
                     <td>
-                        @if($item->status == 'accepted')
-                            <span class="badge bg-success">Accepted</span>
-                        @elseif($item->status == 'rejected')
-                            <span class="badge bg-danger">Rejected</span>
-                        @else
-                            <span class="badge bg-warning">Pending</span>
-                        @endif
+                        <span class="badge bg-warning">
+                            {{ ucfirst($item->status) }}
+                        </span>
                     </td>
                 </tr>
             @endforeach
         </tbody>
-
         <tfoot>
             <tr>
                 <th colspan="4" class="text-end">Grand Total</th>
@@ -56,17 +45,24 @@
         </tfoot>
     </table>
 
-    {{-- OVERALL STATUS --}}
-    <div class="mt-3 text-end">
-        @if($quotationStatus == 'accepted')
-            <span class="badge bg-success px-3 py-2">Quotation Accepted</span>
-        @elseif($quotationStatus == 'rejected')
-            <span class="badge bg-danger px-3 py-2">Quotation Rejected</span>
-        @else
-            <span class="badge bg-warning px-3 py-2">Quotation Pending</span>
-        @endif
-    </div>
+    {{-- ACTION BUTTONS --}}
+    @if($quotationItems[0]->status === 'pending')
+        <form method="POST" action="{{ route('customer.quotation.action') }}">
+            @csrf
+            <input type="hidden" name="enquiry_id" value="{{ $enquiry->id }}">
 
+            <div class="text-end mt-3">
+                <button name="action" value="accepted"
+                        class="btn btn-success px-4">
+                    Accept Quotation
+                </button>
+
+                <button name="action" value="rejected"
+                        class="btn btn-danger px-4">
+                    Reject Quotation
+                </button>
+            </div>
+        </form>
     @endif
 </div>
 
