@@ -217,124 +217,52 @@ class AdminController extends Controller
         );
     }
 
-    // public function postverification(){
-    //     $work_types = DB::table('work_types')->get();
-    //     $states = DB::table('state')->orderBy('name')->get();
-    //     $budget_range = DB::table('budget_range')->get();
-    //     $posts = DB::table('posts')
-    //         ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
-    //         ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
-    //         ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
-    //         ->leftJoin('region', 'region.id', '=', 'posts.region')
-    //         ->leftJoin('city', 'city.id', '=', 'posts.city')
-    //         ->leftJoin('state', 'state.id', '=', 'posts.state')
-    //         ->select(
-    //                 'posts.*',
+    public function postverification(Request $request)
+    {
+        $work_types = DB::table('work_types')->get();
+        $states = DB::table('state')->orderBy('name')->get();
+        $budget_range = DB::table('budget_range')->get();
 
-    //                 // ✅ IMPORTANT: SEND IDS TO FRONTEND
-    //                 'posts.state as state_id',
-    //                 'posts.region as region_id',
-    //                 'posts.city as city_id',
-                    
+        $query = DB::table('posts')
+            ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
+            ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
+            ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
+            ->leftJoin('region', 'region.id', '=', 'posts.region')
+            ->leftJoin('city', 'city.id', '=', 'posts.city')
+            ->leftJoin('state', 'state.id', '=', 'posts.state')
+            ->select(
+                'posts.*',
+                'state.name as statename',
+                'region.name as regionname',
+                'city.name as cityname',
+                'work_types.work_type as work_type_name',
+                'work_subtypes.work_subtype as work_subtype_name',
+                'budget_range.budget_range'
+            )
+            ->orderBy('posts.id', 'DESC');
 
-    //                 // Names (for table display)
-    //                 'state.name as statename',
-    //                 'region.name as regionname',
-    //                 'city.name as cityname',
+        // 🔍 SEARCH
+        if ($request->filled('search')) {
+            $search = $request->search;
 
-    //                 'work_types.work_type as work_type_name',
-    //                 'work_subtypes.work_subtype as work_subtype_name',
+            $query->where(function ($q) use ($search) {
+                $q->where('posts.title', 'like', "%{$search}%")
+                ->orWhere('work_types.work_type', 'like', "%{$search}%")
+                ->orWhere('state.name', 'like', "%{$search}%")
+                ->orWhere('region.name', 'like', "%{$search}%")
+                ->orWhere('city.name', 'like', "%{$search}%");
+            });
+        }
 
-    //                 // ✅ IMPORTANT FOR EDIT BUDGET
-    //                 'posts.budget_id as budget_id',
-    //                 'budget_range.budget_range as budget_range'
-    //             )
-               
-    //             ->orderBy('posts.id', 'DESC')
-    //             ->get();
-    //     return view('web.verification_post',compact('posts','work_types','states','budget_range'));
-    // }
+        $posts = $query->paginate(10)->withQueryString();
 
-
-    // public function postverification()
-    // {
-    //     $work_types = DB::table('work_types')->get();
-    //     $states = DB::table('state')->orderBy('name')->get();
-    //     $budget_range = DB::table('budget_range')->get();
-
-    //     $posts = DB::table('posts')
-    //         ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
-    //         ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
-    //         ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
-    //         ->leftJoin('region', 'region.id', '=', 'posts.region')
-    //         ->leftJoin('city', 'city.id', '=', 'posts.city')
-    //         ->leftJoin('state', 'state.id', '=', 'posts.state')
-    //         ->select(
-    //             'posts.*',
-    //             'state.name as statename',
-    //             'region.name as regionname',
-    //             'city.name as cityname',
-    //             'work_types.work_type as work_type_name',
-    //             'work_subtypes.work_subtype as work_subtype_name',
-    //             'budget_range.budget_range'
-    //         )
-    //         ->orderBy('posts.id', 'DESC')
-    //         ->paginate(10);   // ✅ REQUIRED
-
-
-    //     return view('web.verification_post', compact(
-    //         'posts',
-    //         'work_types',
-    //         'states',
-    //         'budget_range'
-    //     ));
-    // }
-public function postverification(Request $request)
-{
-    $work_types = DB::table('work_types')->get();
-    $states = DB::table('state')->orderBy('name')->get();
-    $budget_range = DB::table('budget_range')->get();
-
-    $query = DB::table('posts')
-        ->leftJoin('budget_range', 'posts.budget_id', '=', 'budget_range.id')
-        ->leftJoin('work_types', 'posts.work_type_id', '=', 'work_types.id')
-        ->leftJoin('work_subtypes', 'posts.work_subtype_id', '=', 'work_subtypes.id')
-        ->leftJoin('region', 'region.id', '=', 'posts.region')
-        ->leftJoin('city', 'city.id', '=', 'posts.city')
-        ->leftJoin('state', 'state.id', '=', 'posts.state')
-        ->select(
-            'posts.*',
-            'state.name as statename',
-            'region.name as regionname',
-            'city.name as cityname',
-            'work_types.work_type as work_type_name',
-            'work_subtypes.work_subtype as work_subtype_name',
-            'budget_range.budget_range'
-        )
-        ->orderBy('posts.id', 'DESC');
-
-    // 🔍 SEARCH
-    if ($request->filled('search')) {
-        $search = $request->search;
-
-        $query->where(function ($q) use ($search) {
-            $q->where('posts.title', 'like', "%{$search}%")
-              ->orWhere('work_types.work_type', 'like', "%{$search}%")
-              ->orWhere('state.name', 'like', "%{$search}%")
-              ->orWhere('region.name', 'like', "%{$search}%")
-              ->orWhere('city.name', 'like', "%{$search}%");
-        });
+        return view('web.verification_post', compact(
+            'posts',
+            'work_types',
+            'states',
+            'budget_range'
+        ));
     }
-
-    $posts = $query->paginate(10)->withQueryString();
-
-    return view('web.verification_post', compact(
-        'posts',
-        'work_types',
-        'states',
-        'budget_range'
-    ));
-}
 
    
    public function verifyPost(Request $request, $id)

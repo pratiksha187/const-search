@@ -6,7 +6,12 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
+<style>
+    #postModal .modal-body{
+        max-height: 70vh;      /* adjust: 60vh / 75vh */
+        overflow-y: auto;
+    }
+</style>
 <div class="container-fluid py-4">
 
     {{-- ================= HEADER ================= --}}
