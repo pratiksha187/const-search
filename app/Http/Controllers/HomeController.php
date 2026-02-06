@@ -319,7 +319,9 @@ class HomeController extends Controller
             ->leftJoin('region', 'region.id', '=', 'posts.region')
             ->leftJoin('state', 'state.id', '=', 'posts.state')
             ->leftJoin('city', 'city.id', '=', 'posts.city')
-            
+            // ✅ view count for THIS vendor
+           
+
             ->select(
                 'users.name as username',
                 'users.mobile as usersmobile',
@@ -924,11 +926,14 @@ class HomeController extends Controller
                         ->leftJoin('state as s', 's.id', '=', 'p.state')
                         ->leftJoin('region as r', 'r.id', '=', 'p.region')
                         ->leftJoin('city as c', 'c.id', '=', 'p.city')
+                        ->leftJoin('budget_range as br', 'br.id', '=', 'p.budget_id')
                         ->where('p.id', $id)
                         ->select(
                             'p.*',
-                            'u.name as user_name',      // pick only needed user columns
-                            'u.email as user_email',    // example
+                            'u.name as user_name', 
+                               
+                            'u.email as user_email', 
+                             'br.budget_range as budget_range_name',   // example
                             'u.id as cust_id',          // alias user id
                             'wt.work_type as work_typename',
                             's.name as statename',

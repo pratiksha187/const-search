@@ -228,7 +228,7 @@
                         <th>Supplier</th>
                         <th>Category</th>
                         <th>Product</th>
-                        <th>Spec</th>
+                        <th>Specification</th>
                         <th>Brand</th>
                         <th class="text-end" style="width:110px;">Rate</th>
                         <th class="text-center" style="width:80px;">Qty</th>

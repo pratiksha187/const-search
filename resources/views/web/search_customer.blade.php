@@ -228,6 +228,13 @@
    font-weight:600;
    color:#4f46e5;
    }
+
+   .lead-role-range{
+   font-size:15px;
+   font-weight:600;
+   color:#f25c05;
+   }
+   
    .verified-pill{
    background:#22c55e;
    color:#fff;
@@ -634,6 +641,7 @@
                         Vendor Matched
                      </div>
                      @endif -->
+
                      @if($project->get_vendor == 1)
                         <div class="corner-ribbon">
                            Vendor Matched
@@ -657,6 +665,11 @@
                      {{ $project->regionname }},
                      {{ $project->cityname }}
                   </div>
+
+                   <div class="lead-role-range mb-1">
+                     {{ $project->budget_range_name }}
+                  </div>
+                  
                   {{-- TAGS --}}
                   <div class="lead-tags">
                      @foreach(explode(',', $project->work_subtype) as $sub)

@@ -531,12 +531,10 @@ h1,h4,h5{ letter-spacing:-0.3px; }
                 <i class="bi bi-arrow-left"></i> Back
         </a>
 
-        
-
         <span class="verified-badge">
             <i class="bi bi-check-circle-fill"></i> Verified Customer
         </span>
-<!-- <h1 class="mt-4">{{ $customer_data->id }}</h1> -->
+        <!-- <h1 class="mt-4">{{ $customer_data->id }}</h1> -->
         <h1 class="mt-4">{{ $customer_data->title }}</h1>
         <div class="profile-sub">{{ $customer_data->work_typename }}</div>
 
@@ -585,15 +583,15 @@ h1,h4,h5{ letter-spacing:-0.3px; }
         </div>
 
         {{-- ===================== RIGHT ===================== --}}
-        <div class="col-lg-4">
+        <!-- <div class="col-lg-4">
 
             <div class="side-box mb-3">
-                <h5>Project Snapshot</h5>
+                <h5>Project Value</h5>
 
                 <div class="mb-3">
                     <div class="text-muted">Minimum Project Value</div>
                     <div class="value-text">
-                        ₹{{ number_format($customer_data->min_project_value ?? 0) }}
+                        {{$customer_data->budget_range_name}}
                     </div>
                 </div>
 
@@ -614,7 +612,60 @@ h1,h4,h5{ letter-spacing:-0.3px; }
                 Contact details will be shared only after vendor acceptance.
             </div>
 
+        </div> -->
+        @php
+    $files = $customer_data->files ?? '[]';
+    $filesArr = is_array($files) ? $files : json_decode($files, true);
+    if (!is_array($filesArr)) $filesArr = [];
+@endphp
+
+<div class="col-lg-4">
+
+    <div class="side-box mb-3">
+        <h5>Project Value</h5>
+
+        <div class="mb-3">
+            <div class="text-muted">Minimum Project Value</div>
+            <div class="value-text">
+                {{ $customer_data->budget_range_name }}
+            </div>
         </div>
+
+      
+
+        {{-- ✅ FILES SECTION INSIDE SAME BOX --}}
+        @if(count($filesArr) > 0)
+            <hr>
+            <div class="text-muted mb-2">Attachments</div>
+
+            <div class="d-grid gap-2">
+                @foreach($filesArr as $file)
+                    @php
+                        // if file is stored as path
+                        $fileUrl = asset('storage/'.$file); // change if your path is different
+                        $fileName = basename($file);
+                    @endphp
+
+                    <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-paperclip me-1"></i> {{ $fileName }}
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
+    </div>
+
+    <button class="btn-interest mb-2" onclick="handleInterested()">
+        🚀 Show Interest & Unlock Contact
+    </button>
+
+    <div class="note-box">
+        <strong>Note:</strong>
+        Contact details will be shared only after vendor acceptance.
+    </div>
+
+</div>
+
     </div>
 </div>
 
