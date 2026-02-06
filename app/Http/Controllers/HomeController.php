@@ -332,6 +332,7 @@ class HomeController extends Controller
 
                
             )
+            ->where('post_verify',1)
             ->orderBy('posts.id', 'desc')
             ->get();
 

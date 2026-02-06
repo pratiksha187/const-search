@@ -412,7 +412,9 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
         return view('web.login_register');
     })->where(['action' => 'login|register', 'role' => 'customer|vendor|supplier']);
 
-  
+    Route::post('/supplier-quotation/{id}/accept', [SuppliersController::class, 'quotationAccept'])->name('quotation.accept');
+    Route::post('/supplier-quotation/{id}/reject', [SuppliersController::class, 'quotationReject'])->name('quotation.reject');
+
 
     Route::post('/forgot-password/send-otp', [LoginRegController::class, 'sendOtp']);
     Route::post('/forgot-password/verify-otp', [LoginRegController::class, 'verifyOtp']);
