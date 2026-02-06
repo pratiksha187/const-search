@@ -519,119 +519,19 @@ h1,h4,h5{ letter-spacing:-0.3px; }
 </style>
 
 @section('content')
-<!-- <div class="container my-4">
 
-    {{-- ===================== HEADER ===================== --}}
-    <div class="profile-header">
-
-        <button class="btn btn-light btn-sm"
-            style="position:absolute; left:30px; top:30px; border-radius:10px;"
-            onclick="window.history.back()">
-            <i class="bi bi-arrow-left"></i> Back
-        </button>
-
-        <span class="verified-badge">
-            <i class="bi bi-check-circle-fill"></i> Verified Customer
-        </span>
-
-        <h1 class="mt-4">{{ $customer_data->title }}</h1>
-        <div class="profile-sub">{{ $customer_data->work_typename }}</div>
-
-        <div class="profile-location">
-                📍 {{ $customer_data->cityname }},
-                {{ $customer_data->regionname }},
-                {{ $customer_data->statename }}
-            </div>
-        </div>
-
-    <div class="row g-4">
-
-        {{-- ===================== LEFT ===================== --}}
-        <div class="col-lg-8">
-
-            {{-- ABOUT --}}
-            <div class="profile-card">
-                <h4>About Project Description:</h4>
-                <p class="mb-0">
-                    {{ $customer_data->description }}
-                 
-                </p>
-            </div>
-
-            {{-- SERVICES --}}
-            <div class="profile-card">
-                <h4>Services</h4>
-                <ul class="check-list">
-                    @forelse($workSubtypes as $service)
-                        <li><i class="bi bi-check-lg"></i> {{ $service }}</li>
-                    @empty
-                        <li class="text-muted">Services will be updated soon</li>
-                    @endforelse
-                </ul>
-            </div>
-
-            {{-- EXPERIENCE --}}
-            <div class="profile-card">
-                <h4> Work Type</h4>
-                <ul class="check-list">
-                  
-                    <li><i class="bi bi-check-lg"></i>
-                        {{ $customer_data->work_typename }} services
-                    </li>
-
-                    @if(!empty($workSubtypes))
-                        <li><i class="bi bi-check-lg"></i>
-                            Specialized in {{ implode(', ', $workSubtypes) }}
-                        </li>
-                    @endif
-
-                   
-                </ul>
-            </div>
-        </div>
-
-        {{-- ===================== RIGHT ===================== --}}
-        <div class="col-lg-4">
-
-            <div class="side-box">
-                <h5>Project Capacity</h5>
-                <div class="mb-3">
-                    <div class="text-muted">Minimum project value</div>
-                    <div class="value-text">
-                        ₹{{ number_format($customer_data->min_project_value ?? 0) }}
-                    </div>
-                </div>
-
-                <div>
-                    <div class="text-muted">Team size</div>
-                    <div class="value-text">
-                        {{ $customer_data->team_size_data ?? '-' }}
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn-interest" onclick="handleInterested()">
-                Show Interest
-            </button>
-
-
-            <div class="note-box">
-                <strong>Note:</strong>
-                Contact details will be shared only after vendor acceptance.
-            </div>
-        </div>
-    </div>
-</div> -->
 <div class="container my-4 profile-page">
 
     {{-- ===================== HEADER ===================== --}}
     <div class="profile-header mb-4">
 
-        <button class="btn btn-light btn-sm"
-            style="position:absolute; left:24px; top:24px; border-radius:10px;"
-            onclick="window.history.back()">
-            <i class="bi bi-arrow-left"></i> Back
-        </button>
+        <a href="javascript:history.back()"
+            class="btn btn-light btn-sm"
+            style="position:absolute; left:24px; top:24px; border-radius:10px; z-index:9999;">
+                <i class="bi bi-arrow-left"></i> Back
+        </a>
+
+        
 
         <span class="verified-badge">
             <i class="bi bi-check-circle-fill"></i> Verified Customer
