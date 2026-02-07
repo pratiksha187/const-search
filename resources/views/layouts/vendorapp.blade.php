@@ -118,8 +118,9 @@ body{ background:var(--bg); font-family:'Poppins',sans-serif; }
                 <a href="{{ route('search_customer') }}" class="{{ request()->is('search-customer*') ? 'active' : '' }}">Lead Marketplace</a>
                 <a href="{{ route('supplierserch') }}" class="{{ request()->routeIs('supplierserch') ? 'active' : '' }}">Search Suppliers</a>
                 <a href="{{ route('vendorsubscription') }}" class="{{ request()->routeIs('vendorsubscription') ? 'active' : '' }}">Subscription</a>
+                <a href="{{ route('vendor.agreement') }}" class="{{ request()->routeIs('vendor.agreement') ? 'active' : '' }}">Agreement</a>
 
-        <!-- 🔔 Notification -->
+                <!-- 🔔 Notification -->
                 <div class="notification-container" onclick="toggleNotification(event)">
                     <i class="bi bi-bell"></i>
 

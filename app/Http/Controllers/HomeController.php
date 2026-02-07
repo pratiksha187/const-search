@@ -283,80 +283,148 @@ class HomeController extends Controller
         ]);
     }
     
-    public function search_customer(Request $request)
-    {
-        $vendor_id = Session::get('vendor_id');
-        // dd($vendor_id);
-        $vendor = DB::table('vendor_reg')
-                    ->where('id', $vendor_id)
-                    ->first();
-            // dd($vendor);
-         $vendIds = DB::table('vendor_reg')
-                    ->where('id', $vendor_id)
-                    ->pluck('id');
-        //    dd( $vendIds );
-        $notifications = DB::table('customer_interests as ci')
-                ->join('users as u', 'u.id', '=', 'ci.customer_id')
-                ->whereIn('ci.vendor_id', $vendIds)
-                // ->select('v.*','vi.*')
-                 ->select('ci.*','u.*')
-                ->get();
-        //    dd( $notifications );     
-        $notificationCount = $notifications->count();    
-        $states = DB::table('state')->orderBy('name')->get();
+    // public function search_customer(Request $request)
+    // {
+    //     $vendor_id = Session::get('vendor_id');
+    //     // dd($vendor_id);
+    //     $vendor = DB::table('vendor_reg')
+    //                 ->where('id', $vendor_id)
+    //                 ->first();
+    //         // dd($vendor);
+    //      $vendIds = DB::table('vendor_reg')
+    //                 ->where('id', $vendor_id)
+    //                 ->pluck('id');
+    //     //    dd( $vendIds );
+    //     $notifications = DB::table('customer_interests as ci')
+    //             ->join('users as u', 'u.id', '=', 'ci.customer_id')
+    //             ->whereIn('ci.vendor_id', $vendIds)
+    //             // ->select('v.*','vi.*')
+    //              ->select('ci.*','u.*')
+    //             ->get();
+    //     //    dd( $notifications );     
+    //     $notificationCount = $notifications->count();    
+    //     $states = DB::table('state')->orderBy('name')->get();
       
-        $work_types = DB::table('work_types')->get();
-        $work_subtypes = DB::table('work_subtypes')
-                        ->get()
-                        ->groupBy('work_type_id');
+    //     $work_types = DB::table('work_types')->get();
+    //     $work_subtypes = DB::table('work_subtypes')
+    //                     ->get()
+    //                     ->groupBy('work_type_id');
         
-        $projects = DB::table('posts')
-            ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
+    //     $projects = DB::table('posts')
+    //         ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
 
-            ->leftJoin('users','users.id', '=','posts.user_id')
-            ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-            ->leftJoin('region', 'region.id', '=', 'posts.region')
-            ->leftJoin('state', 'state.id', '=', 'posts.state')
-            ->leftJoin('city', 'city.id', '=', 'posts.city')
-            // ✅ view count for THIS vendor
+    //         ->leftJoin('users','users.id', '=','posts.user_id')
+    //         ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+    //         ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
+    //         ->leftJoin('region', 'region.id', '=', 'posts.region')
+    //         ->leftJoin('state', 'state.id', '=', 'posts.state')
+    //         ->leftJoin('city', 'city.id', '=', 'posts.city')
+    //         // ✅ view count for THIS vendor
            
 
-            ->select(
-                'users.name as username',
-                'users.mobile as usersmobile',
-                'users.email as useremail',
-                'work_types.*',
-                'work_subtypes.*',
-                'posts.*',
-                'budget_range.budget_range as budget_range_name',
-                'region.name as regionname','state.name as statename','city.name as cityname'      
+    //         ->select(
+    //             'users.name as username',
+    //             'users.mobile as usersmobile',
+    //             'users.email as useremail',
+    //             'work_types.*',
+    //             'work_subtypes.*',
+    //             'posts.*',
+    //             'budget_range.budget_range as budget_range_name',
+    //             'region.name as regionname','state.name as statename','city.name as cityname'      
 
                
-            )
-            ->where('post_verify',1)
-            ->orderBy('posts.id', 'desc')
-            ->get();
+    //         )
+    //         ->where('post_verify',1)
+    //         ->orderBy('posts.id', 'desc')
+    //         ->get();
 
 
-            $complited_project= DB::table('posts')->where('get_vendor',1)->get();
-            $remaining_projects= DB::table('posts')->where('get_vendor',0)->get();
+    //         $complited_project= DB::table('posts')->where('get_vendor',1)->get();
+    //         $remaining_projects= DB::table('posts')->where('get_vendor',0)->get();
             
-            //    dd($projects);
-        return view('web.search_customer', [
-            'notifications'=>$notifications,
-            'complited_project'=>$complited_project,
-            'remaining_projects'=>$remaining_projects,
-            'notificationCount' => $notificationCount,
-            'work_types' => $work_types,
-            'states' => $states,
-            'projects' => $projects, 
-            'vendor_id' => $vendor_id,
-            'vendor' =>$vendor,
-            'filters' => []        
-        ]);
+    //         //    dd($projects);
+    //     return view('web.search_customer', [
+    //         'notifications'=>$notifications,
+    //         'complited_project'=>$complited_project,
+    //         'remaining_projects'=>$remaining_projects,
+    //         'notificationCount' => $notificationCount,
+    //         'work_types' => $work_types,
+    //         'states' => $states,
+    //         'projects' => $projects, 
+    //         'vendor_id' => $vendor_id,
+    //         'vendor' =>$vendor,
+    //         'filters' => []        
+    //     ]);
+    // }
+
+public function search_customer(Request $request)
+{
+    $vendor_id = Session::get('vendor_id');
+
+    $vendor = DB::table('vendor_reg')
+        ->where('id', $vendor_id)
+        ->first();
+
+    // ✅ If not accepted, redirect to agreement page
+    if (!$vendor || empty($vendor->agreement_accepted_at)) {
+        return redirect()->route('vendor.agreement')
+            ->with('error', 'Please accept the Agreement to access Lead Marketplace.');
     }
 
+    $vendIds = DB::table('vendor_reg')
+        ->where('id', $vendor_id)
+        ->pluck('id');
+
+    $notifications = DB::table('customer_interests as ci')
+        ->join('users as u', 'u.id', '=', 'ci.customer_id')
+        ->whereIn('ci.vendor_id', $vendIds)
+        ->select('ci.*','u.*')
+        ->get();
+
+    $notificationCount = $notifications->count();
+    $states = DB::table('state')->orderBy('name')->get();
+
+    $work_types = DB::table('work_types')->get();
+    $work_subtypes = DB::table('work_subtypes')->get()->groupBy('work_type_id');
+
+    $projects = DB::table('posts')
+        ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
+        ->leftJoin('users','users.id', '=','posts.user_id')
+        ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+        ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
+        ->leftJoin('region', 'region.id', '=', 'posts.region')
+        ->leftJoin('state', 'state.id', '=', 'posts.state')
+        ->leftJoin('city', 'city.id', '=', 'posts.city')
+        ->select(
+            'users.name as username',
+            'users.mobile as usersmobile',
+            'users.email as useremail',
+            'work_types.*',
+            'work_subtypes.*',
+            'posts.*',
+            'budget_range.budget_range as budget_range_name',
+            'region.name as regionname','state.name as statename','city.name as cityname'
+        )
+        ->where('post_verify',1)
+        ->orderBy('posts.id', 'desc')
+        ->get();
+
+    $complited_project= DB::table('posts')->where('get_vendor',1)->get();
+    $remaining_projects= DB::table('posts')->where('get_vendor',0)->get();
+
+    return view('web.search_customer', [
+        'notifications'=>$notifications,
+        'complited_project'=>$complited_project,
+        'remaining_projects'=>$remaining_projects,
+        'notificationCount' => $notificationCount,
+        'work_types' => $work_types,
+        'states' => $states,
+        'projects' => $projects,
+        'vendor_id' => $vendor_id,
+        'vendor' =>$vendor,
+        'filters' => []
+    ]);
+}
 
     public function vendorinterestcheck(Request $request)
     {

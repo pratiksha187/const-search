@@ -582,8 +582,14 @@ h1,h4,h5{ letter-spacing:-0.3px; }
             </div>
         </div>
 
-        {{-- ===================== RIGHT ===================== --}}
-        <!-- <div class="col-lg-4">
+      
+        @php
+            $files = $customer_data->files ?? '[]';
+            $filesArr = is_array($files) ? $files : json_decode($files, true);
+            if (!is_array($filesArr)) $filesArr = [];
+        @endphp
+
+        <div class="col-lg-4">
 
             <div class="side-box mb-3">
                 <h5>Project Value</h5>
@@ -591,16 +597,32 @@ h1,h4,h5{ letter-spacing:-0.3px; }
                 <div class="mb-3">
                     <div class="text-muted">Minimum Project Value</div>
                     <div class="value-text">
-                        {{$customer_data->budget_range_name}}
+                        {{ $customer_data->budget_range_name }}
                     </div>
                 </div>
 
-                <div>
-                    <div class="text-muted">Team Size</div>
-                    <div class="value-text">
-                        {{ $customer_data->team_size_data ?? '-' }}
+            
+
+                {{-- ✅ FILES SECTION INSIDE SAME BOX --}}
+                @if(count($filesArr) > 0)
+                    <hr>
+                    <div class="text-muted mb-2">Attachments</div>
+
+                    <div class="d-grid gap-2">
+                        @foreach($filesArr as $file)
+                            @php
+                                // if file is stored as path
+                                $fileUrl = asset('storage/'.$file); // change if your path is different
+                                $fileName = basename($file);
+                            @endphp
+
+                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-paperclip me-1"></i> {{ $fileName }}
+                            </a>
+                        @endforeach
                     </div>
-                </div>
+                @endif
+
             </div>
 
             <button class="btn-interest mb-2" onclick="handleInterested()">
@@ -612,59 +634,7 @@ h1,h4,h5{ letter-spacing:-0.3px; }
                 Contact details will be shared only after vendor acceptance.
             </div>
 
-        </div> -->
-        @php
-    $files = $customer_data->files ?? '[]';
-    $filesArr = is_array($files) ? $files : json_decode($files, true);
-    if (!is_array($filesArr)) $filesArr = [];
-@endphp
-
-<div class="col-lg-4">
-
-    <div class="side-box mb-3">
-        <h5>Project Value</h5>
-
-        <div class="mb-3">
-            <div class="text-muted">Minimum Project Value</div>
-            <div class="value-text">
-                {{ $customer_data->budget_range_name }}
-            </div>
         </div>
-
-      
-
-        {{-- ✅ FILES SECTION INSIDE SAME BOX --}}
-        @if(count($filesArr) > 0)
-            <hr>
-            <div class="text-muted mb-2">Attachments</div>
-
-            <div class="d-grid gap-2">
-                @foreach($filesArr as $file)
-                    @php
-                        // if file is stored as path
-                        $fileUrl = asset('storage/'.$file); // change if your path is different
-                        $fileName = basename($file);
-                    @endphp
-
-                    <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-paperclip me-1"></i> {{ $fileName }}
-                    </a>
-                @endforeach
-            </div>
-        @endif
-
-    </div>
-
-    <button class="btn-interest mb-2" onclick="handleInterested()">
-        🚀 Show Interest & Unlock Contact
-    </button>
-
-    <div class="note-box">
-        <strong>Note:</strong>
-        Contact details will be shared only after vendor acceptance.
-    </div>
-
-</div>
 
     </div>
 </div>

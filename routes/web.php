@@ -22,6 +22,7 @@ use App\Http\Controllers\StateController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\VendorAgreementController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -419,6 +420,10 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::post('/forgot-password/send-otp', [LoginRegController::class, 'sendOtp']);
     Route::post('/forgot-password/verify-otp', [LoginRegController::class, 'verifyOtp']);
     Route::post('/forgot-password/reset', [LoginRegController::class, 'resetPassword']);
+
+
+    Route::get('/vendor/agreement', [VendorAgreementController::class, 'show'])->name('vendor.agreement');
+    Route::post('/vendor/agreement/accept', [VendorAgreementController::class, 'accept'])->name('vendor.agreement.accept');
 
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
