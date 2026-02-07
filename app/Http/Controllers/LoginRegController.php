@@ -16,8 +16,7 @@ class LoginRegController extends Controller
 {
 
     public function login_register(){
-        // $materialCategories = DB::table('material_categories')->get();
-
+       
         return view('web.login_register');
     }
 
@@ -132,7 +131,7 @@ class LoginRegController extends Controller
         if ($request->role === 'vendor') {
 
             $vendorId = DB::table('vendor_reg')->insertGetId([
-                // 'user_id'       => $user->id,
+                
                 'name'          => $request->name,
                 'mobile'        => $request->mobile,
                 'email'         => $request->email,
@@ -142,6 +141,11 @@ class LoginRegController extends Controller
                 'password'      => Hash::make($request->password),
                 'created_at'    => now(),
                 'updated_at'    => now()
+            ]);
+            $vendorUid = 'CKV-' . str_pad($vendorId, 6, '0', STR_PAD_LEFT);
+            DB::table('vendor_reg')->where('id', $vendorId)->update([
+                'vendor_uid' => $vendorUid,
+                'updated_at' => now(),
             ]);
 
             Session::put('vendor_id', $vendorId);
@@ -175,6 +179,13 @@ class LoginRegController extends Controller
                 'password'       => Hash::make($request->password),
                 'created_at'     => now(),
                 'updated_at'     => now()
+            ]);
+
+            $customerUid = 'CKC-' . str_pad($customerId, 6, '0', STR_PAD_LEFT);
+
+            DB::table('users')->where('id', $customerId)->update([
+                'customer_uid' => $customerUid,
+                'updated_at'   => now(),
             ]);
 
             //  dd($customerId);

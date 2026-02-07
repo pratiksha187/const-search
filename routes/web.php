@@ -24,9 +24,6 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VendorAgreementController;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
 Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');
 Route::get('addmaster', [MasterController::class, 'addmaster'])->name('addmaster');
