@@ -71,34 +71,98 @@ class AdminController extends Controller
     }
 
     
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:approve,reject'
+    // public function updateStatus(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'status' => 'required|in:approve,reject'
+    //     ]);
+
+    //     // 1 = Approved, 2 = Rejected
+    //     $statusValue = ($request->status === 'approve') ? 1 : 2;
+
+    //     $updated = DB::table('vendor_reg')
+    //         ->where('id', $id)
+    //         ->update([
+    //             'requerd_documnet_approve' => $statusValue,
+    //             'updated_at' => now()
+    //         ]);
+
+    //     // Optional safety check
+    //     if (!$updated) {
+    //         return redirect()->back()->with('error', 'Vendor not found or already updated.');
+    //     }
+
+    //     return redirect()->back()->with(
+    //         'success',
+    //         $request->status === 'approve'
+    //             ? 'Vendor approved successfully.'
+    //             : 'Vendor rejected successfully.'
+    //     );
+    // }
+//     public function updateStatus(Request $request, $id)
+// {
+//     $request->validate([
+//         'status' => 'required|in:approve,reject'
+//     ]);
+
+//     // 1 = Approved, 2 = Rejected
+//     $statusValue = ($request->status === 'approve') ? 1 : 2;
+
+//     // ✅ vendor status mapping (change as per your DB values)
+//     // Example: 1 = Active/Approved, 2 = Rejected
+//     $vendorStatus = ($request->status === 'approve') ? 1 : 2;
+//     dd( $vendorStatus);
+//     $updated = DB::table('vendor_reg')
+//         ->where('id', $id)
+//         ->update([
+//             'requerd_documnet_approve' => $statusValue,
+//             'status' => $vendorStatus,          // ✅ here status changes too
+//             'updated_at' => now()
+//         ]);
+
+//     if (!$updated) {
+//         return redirect()->back()->with('error', 'Vendor not found or already updated.');
+//     }
+
+//     return redirect()->back()->with(
+//         'success',
+//         $request->status === 'approve'
+//             ? 'Vendor approved successfully.'
+//             : 'Vendor rejected successfully.'
+//     );
+// }
+
+public function updateStatus(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:approve,reject'
+    ]);
+
+    // 1 = Approved, 2 = Rejected (for your requerd_documnet_approve field)
+    $docApproveValue = ($request->status === 'approve') ? 1 : 2;
+
+    // ✅ enum status in vendor_reg table
+    $vendorStatus = ($request->status === 'approve') ? 'approved' : 'rejected';
+
+    $updated = DB::table('vendor_reg')
+        ->where('id', $id)
+        ->update([
+            'requerd_documnet_approve' => $docApproveValue,
+            'status' => $vendorStatus, // ✅ update enum
+            'updated_at' => now(),
         ]);
 
-        // 1 = Approved, 2 = Rejected
-        $statusValue = ($request->status === 'approve') ? 1 : 2;
-
-        $updated = DB::table('vendor_reg')
-            ->where('id', $id)
-            ->update([
-                'requerd_documnet_approve' => $statusValue,
-                'updated_at' => now()
-            ]);
-
-        // Optional safety check
-        if (!$updated) {
-            return redirect()->back()->with('error', 'Vendor not found or already updated.');
-        }
-
-        return redirect()->back()->with(
-            'success',
-            $request->status === 'approve'
-                ? 'Vendor approved successfully.'
-                : 'Vendor rejected successfully.'
-        );
+    if (!$updated) {
+        return redirect()->back()->with('error', 'Vendor not found or already updated.');
     }
+
+    return redirect()->back()->with(
+        'success',
+        $request->status === 'approve'
+            ? 'Vendor approved successfully.'
+            : 'Vendor rejected successfully.'
+    );
+}
 
     public function updatesupplierStatus(Request $request, $id)
     {

@@ -592,23 +592,23 @@
          <div class="mb-4">
             <div class="d-flex justify-content-between align-items-center">
                <div class="lead-header">
-   <div class="lead-title-wrap">
-      <h2 class="lead-title">
-         {{ $projects->count() }} Professional Leads
-      </h2>
+                  <div class="lead-title-wrap">
+                     <h2 class="lead-title">
+                        {{ $projects->count() }} Professional Leads
+                     </h2>
 
-    <span class="lead-pill completed">
-   <i class="bi bi-check-circle-fill me-1"></i>
-   {{ $complited_project->count() }} Completed
-</span>
+                     <span class="lead-pill completed">
+                        <i class="bi bi-check-circle-fill me-1"></i>
+                        {{ $complited_project->count() }} Completed
+                     </span>
 
-<span class="lead-pill remaining">
-   <i class="bi bi-hourglass-split me-1"></i>
-   {{ $remaining_projects->count() }} Remaining
-</span>
+                     <span class="lead-pill remaining">
+                        <i class="bi bi-hourglass-split me-1"></i>
+                        {{ $remaining_projects->count() }} Remaining
+                     </span>
 
-   </div>
-</div>
+                  </div>
+               </div>
 
             </div>
          </div>
@@ -635,12 +635,6 @@
                      <span class="verified-pill">
                      <i class="bi bi-check-circle-fill"></i> Verified
                      </span>
-
-                     <!-- @if($project->get_vendor == 1)
-                     <div class="corner-ribbon">
-                        Vendor Matched
-                     </div>
-                     @endif -->
 
                      @if($project->get_vendor == 1)
                         <div class="corner-ribbon">
@@ -843,6 +837,23 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+   function requireLogin(callback) {
+    if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return false;
+    }
+    callback();
+}
+
+function viewProfile(id) {
+   if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
+    window.location.href = "{{ url('vendor/profile/id') }}/" + id;
+}
+</script>
 <script>
 document.addEventListener('click', function (e) {
 
@@ -1067,66 +1078,6 @@ document.addEventListener('click', function (e) {
 </script>
 <script>
 
-// function applyFilters() {
-
-//     let selectedCategories = [];
-//     let selectedSubtypes   = [];
-
-//     $('.category-check:checked').each(function () {
-//         selectedCategories.push(this.value);
-//     });
-
-//     $('.subtype-check:checked').each(function () {
-//         selectedSubtypes.push(this.value);
-//     });
-
-//     let stateText  = $('#stateSelect option:selected').text().toLowerCase().trim();
-//     let regionText = $('#regionSelect option:selected').text().toLowerCase().trim();
-//     let cityText   = $('#citySelect option:selected').text().toLowerCase().trim();
-
-//     if (stateText === 'select state') stateText = '';
-//     if (regionText === 'select region') regionText = '';
-//     if (cityText === 'select city') cityText = '';
-
-//     let visible = 0;
-
-//     $('.vendor-col').each(function () {
-
-//         let card = this.querySelector('.vendor-card');
-
-//         let cardTypeId    = card.dataset.workTypeId || '';
-//         let cardSubtypeId = card.dataset.workSubtypeId || '';
-
-//         let cardState  = (card.dataset.state || '').toLowerCase();
-//         let cardRegion = (card.dataset.region || '').toLowerCase();
-//         let cardCity   = (card.dataset.city || '').toLowerCase();
-
-//         /* ===== CATEGORY MATCH ===== */
-//         let categoryMatch = true;
-
-//         if (selectedCategories.length > 0) {
-//             categoryMatch = selectedCategories.includes(cardTypeId);
-//         }
-
-//         if (selectedSubtypes.length > 0) {
-//             categoryMatch = selectedSubtypes.includes(cardSubtypeId);
-//         }
-
-//         /* ===== LOCATION MATCH ===== */
-//         let stateMatch  = !stateText  || cardState.includes(stateText);
-//         let regionMatch = !regionText || cardRegion.includes(regionText);
-//         let cityMatch   = !cityText   || cardCity.includes(cityText);
-
-//         if (categoryMatch && stateMatch && regionMatch && cityMatch) {
-//             this.classList.remove('hidden');
-//             visible++;
-//         } else {
-//             this.classList.add('hidden');
-//         }
-//     });
-
-//     $('#vendorCount').text(visible);
-// }
 function applyFilters() {
 
     let selectedCategories = [];
@@ -1190,64 +1141,6 @@ function applyFilters() {
 }
 
 
-// $('#stateSelect').on('change', function () {
-
-//     let stateId = this.value;
-
-//     $('#regionSelect')
-//         .prop('disabled', true)
-//         .html('<option value="">Loading regions...</option>');
-
-//     $('#citySelect')
-//         .prop('disabled', true)
-//         .html('<option value="">Select City</option>');
-
-//     if (!stateId) {
-//         applyFilters();
-//         return;
-//     }
-
-//     $.get(`/locations/regions/${stateId}`, function (regions) {
-
-//         let options = '<option value="">Select Region</option>';
-//         regions.forEach(r => {
-//             options += `<option value="${r.id}">${r.name}</option>`;
-//         });
-
-//         $('#regionSelect')
-//             .html(options)
-//             .prop('disabled', false);
-
-//         applyFilters();
-//     });
-// });
-// $('#regionSelect').on('change', function () {
-
-//     let regionId = this.value;
-
-//     $('#citySelect')
-//         .prop('disabled', true)
-//         .html('<option value="">Loading cities...</option>');
-
-//     if (!regionId) {
-//         applyFilters();
-//         return;
-//     }
-
-//     $.get(`/locations/cities/${regionId}`, function (cities) {
-
-//         let options = '<option value="">Select City</option>';
-//         cities.forEach(c => {
-//             options += `<option value="${c.id}">${c.name}</option>`;
-//         });
-
-//         $('#citySelect')
-//             .html(options)
-//             .prop('disabled', false);
-
-//         applyFilters();
-//     });
-// });
 $('#stateSelect').on('change', function () {
 
     let stateId = this.value;
@@ -1332,22 +1225,6 @@ document.getElementById('citySelect')?.addEventListener('change', applyFilters);
 document.addEventListener('DOMContentLoaded', applyFilters);
 </script>
 
-<script>
-   function requireLogin(callback) {
-    if (!window.VENDOR_ID) {
-        new bootstrap.Modal(document.getElementById('authModal')).show();
-        return false;
-    }
-    callback();
-}
 
-function viewProfile(id) {
-   if (!window.VENDOR_ID) {
-        new bootstrap.Modal(document.getElementById('authModal')).show();
-        return;
-    }
-    window.location.href = "{{ url('vendor/profile/id') }}/" + id;
-}
-</script>
 
 @endsection

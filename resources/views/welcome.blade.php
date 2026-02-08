@@ -1787,36 +1787,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
         </div>
     </div>
 </div>
-<!-- <div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
 
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">🚧 Coming Soon</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body text-center py-4">
-                <div class="mb-3">
-                    <i class="bi bi-hourglass-split fs-1 text-warning"></i>
-                </div>
-
-                <h6 class="fw-semibold mb-2">Business ERP Module</h6>
-                <p class="text-muted mb-0">
-                    This powerful ERP feature is currently under development.  
-                    It will be available very soon on ConstructKaro.
-                </p>
-            </div>
-
-            <div class="modal-footer border-0 justify-content-center">
-                <button class="btn btn-warning text-white px-4" data-bs-dismiss="modal">
-                    OK, Got it
-                </button>
-            </div>
-
-        </div>
-    </div>
-</div> -->
 <div class="modal fade" id="comingSoonModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content border-0 rounded-4 shadow-lg">
@@ -1879,51 +1850,34 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
             <input class="form-control form-control-lg" name="company_name" required>
           </div>
 
-          <!-- 3 -->
-          <!-- <div class="mb-4">
-            <label class="fw-semibold">
-              <span class="ck-step me-1">3</span> Your Role *
-            </label>
-            <select class="form-select form-select-lg" name="role_in_org" required>
-              <option value="">Select role</option>
-              <option>Owner / Founder</option>
-              <option>Director</option>
-              <option>Project Manager</option>
-              <option>Engineer</option>
-              <option>Procurement</option>
-              <option>Consultant</option>
-              <option>Other</option>
-            </select>
-          </div> -->
+         
+        <div class="mb-4">
+        <label class="fw-semibold">
+            <span class="ck-step me-1">3</span> Your Role *
+        </label>
 
-          <!-- 3 -->
-<div class="mb-4">
-  <label class="fw-semibold">
-    <span class="ck-step me-1">3</span> Your Role *
-  </label>
+        <select class="form-select form-select-lg"
+                name="role_in_org"
+                id="roleSelect"
+                required>
+            <option value="">Select role</option>
+            <option value="Owner / Founder">Owner / Founder</option>
+            <option value="Director">Director</option>
+            <option value="Project Manager">Project Manager</option>
+            <option value="Engineer">Engineer</option>
+            <option value="Procurement">Procurement</option>
+            <option value="Consultant">Consultant</option>
+            <option value="Other">Other</option>
+        </select>
 
-  <select class="form-select form-select-lg"
-          name="role_in_org"
-          id="roleSelect"
-          required>
-    <option value="">Select role</option>
-    <option value="Owner / Founder">Owner / Founder</option>
-    <option value="Director">Director</option>
-    <option value="Project Manager">Project Manager</option>
-    <option value="Engineer">Engineer</option>
-    <option value="Procurement">Procurement</option>
-    <option value="Consultant">Consultant</option>
-    <option value="Other">Other</option>
-  </select>
-
-  <!-- OTHER ROLE TEXTBOX (HIDDEN) -->
-  <div id="roleOtherBox" class="mt-2 d-none">
-    <input type="text"
-           class="form-control form-control-lg"
-           name="role_in_org_other"
-           placeholder="Please specify your role">
-  </div>
-</div>
+        <!-- OTHER ROLE TEXTBOX (HIDDEN) -->
+        <div id="roleOtherBox" class="mt-2 d-none">
+            <input type="text"
+                class="form-control form-control-lg"
+                name="role_in_org_other"
+                placeholder="Please specify your role">
+        </div>
+        </div>
 
           <!-- 4 -->
         <div class="mb-4">

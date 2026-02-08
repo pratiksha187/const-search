@@ -699,6 +699,19 @@ h1,h4,h5{ letter-spacing:-0.3px; }
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content border-0">
+@php
+  $bid = (int) ($customer_data->budget_range_id ?? 0);
+
+  // budget_id => package amount
+  $budgetPackages = [
+      1 => 799,
+      2 => 3999,
+      3 => 7499,
+  ];
+
+  $isHighBudget = in_array($bid, [4,5,6,7], true);
+  $packageAmount = $budgetPackages[$bid] ?? null;
+@endphp
 
       <div class="modal-header">
         <h5 class="modal-title">Show Interest in {{ $customer_data->title }}</h5>
@@ -949,30 +962,7 @@ function handleInterested() {
 </script>
 
 <script>
-// function handleInterested() {
 
-//     if (window.CUSTOMERID === null) {
-//         bootstrap.Modal.getOrCreateInstance(
-//             document.getElementById('authModal')
-//         ).show();
-//         return;
-//     }
-
-//     // Call the checkLeadBalance function before showing the vendor modal
-//     checkLeadBalance().then((hasBalance) => {
-//         if (hasBalance) {
-//             bootstrap.Modal.getOrCreateInstance(
-//                 document.getElementById('vendorModal')
-//             ).show();
-//         } else {
-//             alert('❌ You do not have enough lead balance.');
-//             bootstrap.Modal.getOrCreateInstance(
-//                 document.getElementById('paymentModal')
-//             ).show();
-//             // Optionally, redirect or take another action
-//         }
-//     });
-// }
 function handleInterested() {
 
     if (window.CUSTOMERID === null) {
