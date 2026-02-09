@@ -9,6 +9,10 @@
 <link rel="preload" href="{{ asset('images/logobg.png') }}" as="image">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
+<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
 
 <style>
 /* ===== YOUR ORIGINAL CSS (UNCHANGED) ===== */

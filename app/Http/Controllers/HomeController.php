@@ -175,94 +175,169 @@ class HomeController extends Controller
     }
 
    
+    // public function search_vendor(Request $request)
+    // {
+        
+    //     $customer_id = Session::get('customer_id');
+    //     $postIds = DB::table('posts')
+    //                 ->where('user_id', $customer_id)
+    //                 ->pluck('id');
+    //     $notifications = DB::table('vendor_interests as vi')
+    //                     ->whereIn('vi.customer_id', $postIds)
+    //                     ->get();
+    //     $notificationCount = $notifications->count();
+    //     $cust_data = DB::table('users')->where('id',$customer_id)->first();
+        
+    //     $work_types = DB::table('work_types')->orderBy('work_type')->get();
+    //     $states     = DB::table('state')->orderBy('name')->get();
 
+    //     $allSubtypes = DB::table('work_subtypes')
+    //                     ->pluck('work_subtype', 'id');
+
+    //     $vendor_reg = DB::table('vendor_reg as v')
+    //                 ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+    //                 ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
+    //                 ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
+    //                 ->leftJoin('vendor_ratings as vr', 'vr.vendor_id', '=', 'v.id')
+    //                 ->leftJoin('state as s', 's.id', '=', 'v.state')
+    //                 ->leftJoin('region as r', 'r.id', '=', 'v.region')
+    //                 ->leftJoin('city as c', 'c.id', '=', 'v.city')
+    //                 ->select(
+    //                     'v.*',
+
+    //                     // ✅ AGGREGATES
+    //                     DB::raw('ROUND(AVG(vr.rating), 1) as avg_rating'),
+    //                     DB::raw('COUNT(vr.id) as total_reviews'),
+
+    //                     // work
+    //                     'wt.work_type',
+    //                     'ts.team_size as team_size_data',
+
+    //                     'ey.experiance as experiance',
+
+    //                     // location
+    //                     's.name as statename',
+    //                     'r.name as regionname',
+    //                     'c.name as cityname'
+    //                 )
+
+    //                 // ✅ REQUIRED GROUP BY
+    //                 ->groupBy(
+    //                     'v.id',
+    //                     'wt.work_type',
+    //                     'ts.team_size',
+    //                     's.name',
+    //                     'r.name',
+    //                     'c.name'
+    //                 )
+
+    //                 ->orderBy('v.id', 'desc')
+    //                 ->get();
+
+    //     dd($vendor_reg);
+    //     $vendorsWithProfile = $vendor_reg->map(function ($vendor) {
+    //         $vendor->profile_percent = ProfileCompletionHelper::vendor($vendor);
+    //         return $vendor;
+    //     });
+    //     // dd($vendorsWithProfile);
+    //     $vendorIds = DB::table('vendor_reg')
+    //                 ->pluck('id');
+    //     $vendors = DB::table('vendor_reg as v')->whereIn('id', $vendorIds)->get();
+    //                 // dd($vendors);
+    //     $vendor_reg->transform(function ($vendor) use ($allSubtypes) {
+
+    //         // decode JSON ["16","17","19"]
+    //         $ids = json_decode($vendor->work_subtype_id, true);
+
+    //         if (!is_array($ids)) {
+    //             $ids = [];
+    //         }
+
+    //         // map id -> name
+    //         $vendor->work_subtype_data = collect($ids)
+    //             ->map(fn ($id) => $allSubtypes[$id] ?? null)
+    //             ->filter()
+    //             ->values()
+    //             ->implode(', ');
+
+    //         return $vendor;
+    //     });
+       
+    //     return view('web.search_vendor', [
+    //         'cust_data' =>$cust_data,
+    //         'notifications'=>$notifications,
+    //         'notificationCount'=>$notificationCount,
+    //         'work_types'  => $work_types,
+    //         'states'      => $states,
+    //         'vendor_reg'  => $vendor_reg,
+    //         'customer_id' => $customer_id
+    //     ]);
+    // }
     public function search_vendor(Request $request)
     {
-       
         $customer_id = Session::get('customer_id');
+
+        // notifications
         $postIds = DB::table('posts')
-                    ->where('user_id', $customer_id)
-                    ->pluck('id');
+            ->where('user_id', $customer_id)
+            ->pluck('id');
+
         $notifications = DB::table('vendor_interests as vi')
-                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
-                ->whereIn('vi.customer_id', $postIds)
-            
-                ->get();
+            ->whereIn('vi.customer_id', $postIds)
+            ->get();
+
         $notificationCount = $notifications->count();
-        $cust_data = DB::table('users')->where('id',$customer_id)->first();
-        
+        $cust_data = DB::table('users')->where('id', $customer_id)->first();
+
+        // dropdowns
         $work_types = DB::table('work_types')->orderBy('work_type')->get();
         $states     = DB::table('state')->orderBy('name')->get();
 
-        $allSubtypes = DB::table('work_subtypes')
-            ->pluck('work_subtype', 'id');
+        // subtype map (id => name)
+        $allSubtypes = DB::table('work_subtypes')->pluck('work_subtype', 'id');
 
-       
+        // vendor list
         $vendor_reg = DB::table('vendor_reg as v')
-                    ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
-                    ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
-                    ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+            ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
+            ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
+            ->leftJoin('vendor_ratings as vr', 'vr.vendor_id', '=', 'v.id')
+            ->leftJoin('state as s', 's.id', '=', 'v.state')
+            ->leftJoin('region as r', 'r.id', '=', 'v.region')
+            ->leftJoin('city as c', 'c.id', '=', 'v.city')
+            ->select(
+                'v.*',
+                DB::raw('ROUND(AVG(vr.rating), 1) as avg_rating'),
+                DB::raw('COUNT(vr.id) as total_reviews'),
+                'wt.work_type',
+                'ts.team_size as team_size_data',
+                'ey.experiance as experiance',
+                's.name as statename',
+                'r.name as regionname',
+                'c.name as cityname'
+            )
+            ->groupBy(
+                'v.id',
+                'wt.work_type',
+                'ts.team_size',
+                'ey.experiance',
+                's.name',
+                'r.name',
+                'c.name'
+            )
+            ->orderBy('v.id', 'desc')
+            ->get();
 
+        // ✅ add profile percent + subtype names
+        $vendor_reg = $vendor_reg->map(function ($vendor) use ($allSubtypes) {
 
-                    // ✅ FIXED JOIN
-                    ->leftJoin('vendor_ratings as vr', 'vr.vendor_id', '=', 'v.id')
-
-                    ->leftJoin('state as s', 's.id', '=', 'v.state')
-                    ->leftJoin('region as r', 'r.id', '=', 'v.region')
-                    ->leftJoin('city as c', 'c.id', '=', 'v.city')
-
-                    ->select(
-                        'v.*',
-
-                        // ✅ AGGREGATES
-                        DB::raw('ROUND(AVG(vr.rating), 1) as avg_rating'),
-                        DB::raw('COUNT(vr.id) as total_reviews'),
-
-                        // work
-                        'wt.work_type',
-                        'ts.team_size as team_size_data',
-
-                        'ey.experiance as experiance',
-
-                        // location
-                        's.name as statename',
-                        'r.name as regionname',
-                        'c.name as cityname'
-                    )
-
-                    // ✅ REQUIRED GROUP BY
-                    ->groupBy(
-                        'v.id',
-                        'wt.work_type',
-                        'ts.team_size',
-                        's.name',
-                        'r.name',
-                        'c.name'
-                    )
-
-                    ->orderBy('v.id', 'desc')
-                    ->get();
-
-        // dd($vendor_reg);
-        $vendorsWithProfile = $vendor_reg->map(function ($vendor) {
+            // profile %
             $vendor->profile_percent = ProfileCompletionHelper::vendor($vendor);
-            return $vendor;
-        });
-        // dd($vendorsWithProfile);
-        $vendorIds = DB::table('vendor_reg')
-                    ->pluck('id');
-        $vendors = DB::table('vendor_reg as v')->whereIn('id', $vendorIds)->get();
-                    // dd($vendors);
-        $vendor_reg->transform(function ($vendor) use ($allSubtypes) {
 
-            // decode JSON ["16","17","19"]
+            // subtype names
             $ids = json_decode($vendor->work_subtype_id, true);
+            if (!is_array($ids)) $ids = [];
 
-            if (!is_array($ids)) {
-                $ids = [];
-            }
-
-            // map id -> name
             $vendor->work_subtype_data = collect($ids)
                 ->map(fn ($id) => $allSubtypes[$id] ?? null)
                 ->filter()
@@ -271,18 +346,23 @@ class HomeController extends Controller
 
             return $vendor;
         });
-       
+
+        // ✅ FILTER: only show vendors >= 70%
+        $vendor_reg = $vendor_reg->filter(function ($vendor) {
+            return (int)$vendor->profile_percent >= 70;
+        })->values(); // reindex
+// dd($vendor_reg);
         return view('web.search_vendor', [
-            'cust_data' =>$cust_data,
-            'notifications'=>$notifications,
-            'notificationCount'=>$notificationCount,
-            'work_types'  => $work_types,
-            'states'      => $states,
-            'vendor_reg'  => $vendor_reg,
-            'customer_id' => $customer_id
+            'cust_data'          => $cust_data,
+            'notifications'      => $notifications,
+            'notificationCount'  => $notificationCount,
+            'work_types'         => $work_types,
+            'states'             => $states,
+            'vendor_reg'         => $vendor_reg,
+            'customer_id'        => $customer_id,
         ]);
     }
-    
+
     
     public function search_customer(Request $request)
     {
@@ -325,67 +405,45 @@ class HomeController extends Controller
             $notificationCount = $notifications->count();
         }
 
-        
-        // ✅ PROJECTS ALWAYS SHOW (public listing)
-        // $projects = DB::table('posts')
-        //     ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
-        //     ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-        //     ->leftJoin('users', 'users.id', '=', 'posts.user_id')
-        //     ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-        //     ->leftJoin('region', 'region.id', '=', 'posts.region')
-        //     ->leftJoin('state', 'state.id', '=', 'posts.state')
-        //     ->leftJoin('city', 'city.id', '=', 'posts.city')
-        //     ->select(
-        //         'posts.*',
-        //         'users.name as username',
-        //         'work_types.work_type as work_type',
-        //         'work_subtypes.work_subtype as work_subtype',
-        //         'budget_range.budget_range as budget_range_name',
-        //         'region.name as regionname',
-        //         'state.name as statename',
-        //         'city.name as cityname'
-        //     )
-        //     ->where('posts.post_verify', 1)
-        //     ->orderBy('posts.id', 'desc')
-        //     ->get();
+      
         $projects = DB::table('posts')
-    ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
-    ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-    ->leftJoin('users', 'users.id', '=', 'posts.user_id')
-    ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-    ->leftJoin('region', 'region.id', '=', 'posts.region')
-    ->leftJoin('state', 'state.id', '=', 'posts.state')
-    ->leftJoin('city', 'city.id', '=', 'posts.city')
-    ->select(
-        'posts.*',
-        'users.name as username',
-        'work_types.work_type as work_type',
-        'work_subtypes.work_subtype as work_subtype',
-        'budget_range.budget_range as budget_range_name',
-        'region.name as regionname',
-        'state.name as statename',
-        'city.name as cityname',
-        DB::raw("
-            CASE
-                WHEN posts.budget_id = 1 THEN '30 Credits'
-                WHEN posts.budget_id = 2 THEN '120 Credits'
-                WHEN posts.budget_id = 3 THEN '250 Credits'
-                WHEN posts.budget_id IN (4,5,6,7) THEN 'Prime Lead'
-                ELSE ''
-            END as lead_credit_label
-        "),
-        DB::raw("
-            CASE
-                WHEN posts.budget_id = 1 THEN 30
-                WHEN posts.budget_id = 2 THEN 120
-                WHEN posts.budget_id = 3 THEN 250
-                ELSE NULL
-            END as lead_credit_value
-        ")
-    )
-    ->where('posts.post_verify', 1)
-    ->orderBy('posts.id', 'desc')
-    ->get();
+            ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
+            ->leftJoin('users', 'users.id', '=', 'posts.user_id')
+            ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+            ->leftJoin('region', 'region.id', '=', 'posts.region')
+            ->leftJoin('state', 'state.id', '=', 'posts.state')
+            ->leftJoin('city', 'city.id', '=', 'posts.city')
+            ->select(
+                'posts.*',
+                'users.name as username',
+                'work_types.work_type as work_type',
+                'work_subtypes.work_subtype as work_subtype',
+                'budget_range.budget_range as budget_range_name',
+                'region.name as regionname',
+                'state.name as statename',
+                'city.name as cityname',
+                DB::raw("
+                    CASE
+                        WHEN posts.budget_id = 1 THEN '30 Credits'
+                        WHEN posts.budget_id = 2 THEN '120 Credits'
+                        WHEN posts.budget_id = 3 THEN '250 Credits'
+                        WHEN posts.budget_id IN (4,5,6,7) THEN 'Prime Lead'
+                        ELSE ''
+                    END as lead_credit_label
+                "),
+                DB::raw("
+                    CASE
+                        WHEN posts.budget_id = 1 THEN 30
+                        WHEN posts.budget_id = 2 THEN 120
+                        WHEN posts.budget_id = 3 THEN 250
+                        ELSE NULL
+                    END as lead_credit_value
+                ")
+            )
+            ->where('posts.post_verify', 1)
+            ->orderBy('posts.id', 'desc')
+            ->get();
 // dd($projects);
 
         // optional stats
@@ -409,172 +467,104 @@ class HomeController extends Controller
     }
 
 
-    // public function vendorinterestcheck(Request $request)
-    // {
-    // //    dd($request);
-    //     $cust_id   = $request->cust_id;
-    //     // dd($cust_id );
-    //     $vendor_id = Session::get('vendor_id');
-
-    //     if (!$vendor_id) {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
-
-    //     $already = DB::table('vendor_interests')
-    //         ->where('customer_id', $cust_id)
-    //         ->where('vendor_id', $vendor_id)
-    //         ->exists();
-    //         //  dd($already);
-    //     if ($already) {
-    //         return response()->json([
-    //             'success' => true,
-    //             'already_exists' => true,
-    //             'payment_required' => false,
-    //             'remaining' => null
-    //         ]);
-    //     }
-
-    //     /* ===============================
-    //     2️⃣ CHECK LEAD BALANCE
-    //     ================================ */
-    //     $leadBalance = DB::table('vendor_reg')
-    //         ->where('id', $vendor_id)
-    //         ->value('lead_balance');
-
-    //     if ($leadBalance <= 0) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'already_exists' => false,
-    //             'payment_required' => true,
-    //             'remaining' => 0
-    //         ]);
-    //     }
-
-    //     /* ===============================
-    //     3️⃣ CONSUME 1 LEAD
-    //     ================================ */
-    //     DB::beginTransaction();
-
-    //     DB::table('vendor_interests')->insert([
-    //         'customer_id' => $cust_id,
-    //         'vendor_id'   => $vendor_id,
-    //         'vendor_name' => $request->vendor_name,
-    //         'created_at'  => now()
-    //     ]);
-        
-
-    //     DB::table('vendor_reg')
-    //         ->where('id', $vendor_id)
-    //         ->decrement('lead_balance', 1);
-
-    //     DB::commit();
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'already_exists' => false,
-    //         'payment_required' => false,
-    //         'remaining' => $leadBalance - 1
-    //     ]);
-    // }
     public function vendorinterestcheck(Request $request)
-{
-    $cust_id   = (int) $request->cust_id;
-    $vendor_id = (int) Session::get('vendor_id');
+    {
+        $cust_id   = (int) $request->cust_id;
+        $vendor_id = (int) Session::get('vendor_id');
 
-    if (!$vendor_id) {
-        return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
-    }
+        if (!$vendor_id) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
 
-    // ✅ Required credits + lead type from request
-    $requiredCredits = (int) $request->input('required_credits', 0); // 30/120/250
-    $leadType        = $request->input('lead_type', 'credit');        // credit/prime
+        // ✅ Required credits + lead type from request
+        $requiredCredits = (int) $request->input('required_credits', 0); // 30/120/250
+        $leadType        = $request->input('lead_type', 'credit');        // credit/prime
 
-    // ✅ Prime leads (handle as subscription-only)
-    if ($leadType === 'prime') {
-        return response()->json([
-            'success'          => false,
-            'already_exists'   => false,
-            'payment_required' => true,
-            'remaining'        => null,
-            'message'          => 'Prime Lead requires subscription.',
-            'redirect_url'     => route('vendorsubscription') // make sure this route exists
-        ]);
-    }
+        // ✅ Prime leads (handle as subscription-only)
+        if ($leadType === 'prime') {
+            return response()->json([
+                'success'          => false,
+                'already_exists'   => false,
+                'payment_required' => true,
+                'remaining'        => null,
+                'message'          => 'Prime Lead requires subscription.',
+                'redirect_url'     => route('vendorsubscription') // make sure this route exists
+            ]);
+        }
 
-    // ✅ If required credits is invalid (0 or negative)
-    if ($requiredCredits <= 0) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Invalid required credits.'
-        ], 422);
-    }
+        // ✅ If required credits is invalid (0 or negative)
+        if ($requiredCredits <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid required credits.'
+            ], 422);
+        }
 
-    // ✅ Already interest?
-    $already = DB::table('vendor_interests')
-        ->where('customer_id', $cust_id)
-        ->where('vendor_id', $vendor_id)
-        ->exists();
+        // ✅ Already interest?
+        $already = DB::table('vendor_interests')
+            ->where('customer_id', $cust_id)
+            ->where('vendor_id', $vendor_id)
+            ->exists();
 
-    if ($already) {
-        // optionally return customer contact too if you want
-        return response()->json([
-            'success'          => true,
-            'already_exists'   => true,
-            'payment_required' => false,
-            'remaining'        => null
-        ]);
-    }
+        if ($already) {
+            // optionally return customer contact too if you want
+            return response()->json([
+                'success'          => true,
+                'already_exists'   => true,
+                'payment_required' => false,
+                'remaining'        => null
+            ]);
+        }
 
-    // ✅ Current balance
-    $leadBalance = (int) DB::table('vendor_reg')
-        ->where('id', $vendor_id)
-        ->value('lead_balance');
+        // ✅ Current balance
+        $leadBalance = (int) DB::table('vendor_reg')
+            ->where('id', $vendor_id)
+            ->value('lead_balance');
 
-    // ✅ Not enough credits -> go to subscription/payment
-    if ($leadBalance < $requiredCredits) {
-        return response()->json([
-            'success'          => false,
-            'already_exists'   => false,
-            'payment_required' => true,
-            'remaining'        => $leadBalance,
-            'required'         => $requiredCredits,
-            'message'          => "You need {$requiredCredits} credits, but you have {$leadBalance}.",
-            'redirect_url'     => route('vendorsubscription')
-        ]);
-    }
+        // ✅ Not enough credits -> go to subscription/payment
+        if ($leadBalance < $requiredCredits) {
+            return response()->json([
+                'success'          => false,
+                'already_exists'   => false,
+                'payment_required' => true,
+                'remaining'        => $leadBalance,
+                'required'         => $requiredCredits,
+                'message'          => "You need {$requiredCredits} credits, but you have {$leadBalance}.",
+                'redirect_url'     => route('vendorsubscription')
+            ]);
+        }
 
-    // ✅ Enough credits -> deduct required credits
-    DB::beginTransaction();
+        // ✅ Enough credits -> deduct required credits
+        DB::beginTransaction();
+
+        
+            DB::table('vendor_interests')->insert([
+                'customer_id'   => $cust_id,
+                'vendor_id'     => $vendor_id,
+                'vendor_name'   => $request->vendor_name,
+                // 'work_type'     => $request->work_type ?? null,
+                'location'      => $request->location ?? null,
+                'lead_type'     => $leadType,
+                'credits_used'  => $requiredCredits,
+                'created_at'    => now(),
+                'updated_at'    => now(),
+            ]);
+
+            DB::table('vendor_reg')
+                ->where('id', $vendor_id)
+                ->decrement('lead_balance', $requiredCredits);
+
+            DB::commit();
+
+            return response()->json([
+                'success'          => true,
+                'already_exists'   => false,
+                'payment_required' => false,
+                'remaining'        => $leadBalance - $requiredCredits
+            ]);
 
     
-        DB::table('vendor_interests')->insert([
-            'customer_id'   => $cust_id,
-            'vendor_id'     => $vendor_id,
-            'vendor_name'   => $request->vendor_name,
-            // 'work_type'     => $request->work_type ?? null,
-            'location'      => $request->location ?? null,
-            'lead_type'     => $leadType,
-            'credits_used'  => $requiredCredits,
-            'created_at'    => now(),
-            'updated_at'    => now(),
-        ]);
-
-        DB::table('vendor_reg')
-            ->where('id', $vendor_id)
-            ->decrement('lead_balance', $requiredCredits);
-
-        DB::commit();
-
-        return response()->json([
-            'success'          => true,
-            'already_exists'   => false,
-            'payment_required' => false,
-            'remaining'        => $leadBalance - $requiredCredits
-        ]);
-
-   
-}
-
+    }
 
 
     public function customerinterestcheck(Request $request)
@@ -1048,72 +1038,6 @@ class HomeController extends Controller
         ]);
     }
 
-
-    // public function customerprofileid($id)
-    // {
-        
-    //     $vendor_id  = session('vendor_id');
-     
-    //     $vendor = DB::table('vendor_reg')
-    //                 ->where('id', $vendor_id)
-    //                 ->first();
-    //     $vendIds = DB::table('vendor_reg')
-    //                 ->where('id', $vendor_id)
-    //                 ->pluck('id');
-    //     //    dd( $vendIds );
-    //     $notifications = DB::table('customer_interests as ci')
-    //             ->join('users as u', 'u.id', '=', 'ci.customer_id')
-    //             ->whereIn('ci.vendor_id', $vendIds)
-    //             // ->select('v.*','vi.*')
-    //              ->select('ci.*','u.*')
-    //             ->get();
-    //     //    dd( $notifications );     
-    //     $notificationCount = $notifications->count();
-    //     $customer_data = DB::table('posts as p')
-    //                     ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
-    //                     ->leftJoin('work_types as wt', 'wt.id', '=', 'p.work_type_id')
-    //                     ->leftJoin('state as s', 's.id', '=', 'p.state')
-    //                     ->leftJoin('region as r', 'r.id', '=', 'p.region')
-    //                     ->leftJoin('city as c', 'c.id', '=', 'p.city')
-    //                     ->leftJoin('budget_range as br', 'br.id', '=', 'p.budget_id')
-    //                     ->where('p.id', $id)
-    //                     ->select(
-    //                         'p.*',
-    //                         'u.name as user_name', 
-    //                         'br.id as budget_range_id',
-    //                         'u.email as user_email', 
-    //                         'br.budget_range as budget_range_name',   // example
-    //                         'u.id as cust_id',          // alias user id
-    //                         'wt.work_type as work_typename',
-    //                         's.name as statename',
-    //                         'r.name as regionname',
-    //                         'c.name as cityname'
-    //                     )
-    //                     ->first();
-
-    // //  dd($customer_data);
-    //     $workSubtypes = [];
-    //     if (!empty($customer_data->work_subtype_id)) {
-    //         $subtypeIds = json_decode($customer_data->work_subtype_id, true);
-
-    //         if (is_array($subtypeIds) && count($subtypeIds)) {
-    //             $workSubtypes = DB::table('work_subtypes')
-    //                 ->whereIn('id', $subtypeIds)
-    //                 ->pluck('work_subtype')
-    //                 ->toArray();
-    //         }
-    //     }
-
-    //     $freeLeadPlatforms = DB::table('free_lead_requests')
-    //                         ->where('vendor_id', $vendor_id)
-    //                         ->whereIn('platform', ['instagram','facebook'])
-    //                         ->pluck('platform')
-    //                         ->toArray();
-    //         //  dd($customer_data);           
-    //     return view('web.customer-profile', compact('customer_data','freeLeadPlatforms','workSubtypes','vendor','vendor_id','notifications','notificationCount'));
-    //     // dd($customer_data);
-      
-    // }
 
     public function customerprofileid($id)
     {
