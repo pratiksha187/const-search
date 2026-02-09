@@ -492,7 +492,7 @@ class LoginRegController extends Controller
                             'c.name as cityname')
                     ->orderBy('p.created_at', 'desc') 
                     ->get();       
-        // dd( $projects );
+        // dd(  );
 
         return view('web.vendordashboard',compact('ActiveLeads','profilePercent','projects','vendor','vendor_id','notifications','notificationCount')); 
     }

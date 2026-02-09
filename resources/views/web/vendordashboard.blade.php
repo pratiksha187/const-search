@@ -364,7 +364,7 @@ body{ background:var(--bg); }
                     </div>
 
                     <div class="credits-count">
-                        <div class="credits-number-v2">{{ $credits }}</div>
+                        <div class="credits-number-v2">{{ $vendor->lead_balance }}</div>
                         <div class="credits-available">credits available</div>
                     </div>
                 </div>
