@@ -222,14 +222,7 @@ class VenderController extends Controller
         $vendorId = session('vendor_id');
         //  dd( $vendorId ); 
         $custId   = $request->customer_id;
-        //  dd( $custId ); 
-        // if (!$vendorId) {
-        //     return response()->json([
-        //         'balance' => 0,
-        //         'already_exists' => false
-        //     ]);
-        // }
-
+      
         /* ===============================
         1️⃣ CHECK ALREADY ENQUIRED
         ================================ */

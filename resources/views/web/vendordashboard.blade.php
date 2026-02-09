@@ -25,52 +25,46 @@ body{ background:var(--bg); }
     padding:0 16px;
 }
 
-/* HEADER */
-.dashboard-header-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:24px;
-    margin-bottom:28px;
+/* Small white card wrapper */
+.card-soft{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px 20px;
+    height:100%;
+    box-shadow:0 8px 22px rgba(15,23,42,0.04);
 }
 
-.dashboard-header-left h2{
-    font-size:28px;
+/* HEADER */
+.dash-hero h2{
+    font-size:26px;
     font-weight:900;
     margin-bottom:4px;
 }
-
-.dashboard-header-left p{
+.dash-hero p{
     font-size:14px;
     color:var(--muted);
     margin-bottom:6px;
 }
-
 .how-it-works-link{
-    font-size:16px;
-    font-weight:700;
+    font-size:14px;
+    font-weight:800;
     color:var(--blue);
     text-decoration:none;
 }
-.how-it-works-link:hover{
-    text-decoration:underline;
-}
-
-.dashboard-header-right{
-    display:flex;
-    align-items:center;
-}
+.how-it-works-link:hover{ text-decoration:underline; }
 
 .header-badge{
     background:#ecfeff;
     color:#0369a1;
     font-size:13px;
-    font-weight:700;
-    padding:8px 16px;
+    font-weight:800;
+    padding:8px 14px;
     border-radius:999px;
     display:flex;
     align-items:center;
     gap:8px;
+    white-space:nowrap;
 }
 
 /* KPI */
@@ -93,10 +87,12 @@ body{ background:var(--bg); }
     font-size:12px;
     text-transform:uppercase;
     color:var(--muted);
+    letter-spacing:.5px;
 }
 .kpi-value{
     font-size:26px;
     font-weight:900;
+    color:var(--text);
 }
 .kpi-sub{
     font-size:12px;
@@ -121,39 +117,37 @@ body{ background:var(--bg); }
     background:linear-gradient(135deg,#fff7ed,#ffffff);
     border:1px solid var(--border);
     border-radius:20px;
-    padding:22px 26px;
+    padding:20px 22px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:28px;
-    margin-bottom:28px;
+    gap:18px;
+    margin-bottom:18px;
     box-shadow:0 8px 24px rgba(15,23,42,0.04);
 }
 
 .pc-left{
     display:flex;
     align-items:center;
-    gap:16px;
+    gap:14px;
 }
-
 .pc-icon{
-    width:56px;
-    height:56px;
+    width:54px;
+    height:54px;
     border-radius:16px;
     background:linear-gradient(135deg,#ff9a3c,#f25c05);
     color:#fff;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:26px;
+    font-size:24px;
 }
-
 .pc-left h4{
-    font-weight:800;
+    font-weight:900;
     margin-bottom:4px;
 }
 .pc-left p{
-    font-size:14px;
+    font-size:13px;
     color:var(--muted);
     margin:0;
 }
@@ -164,15 +158,12 @@ body{ background:var(--bg); }
     width:100%;
     text-align:right;
 }
-
-
 .pc-percent{
-    font-size:30px;
+    font-size:26px;
     font-weight:900;
     color:var(--orange);
-    margin-bottom:6px;
+    margin-bottom:8px;
 }
-
 .progress{
     height:8px;
     background:#eef2f7;
@@ -180,33 +171,14 @@ body{ background:var(--bg); }
     overflow:hidden;
     width: 100%;
 }
-
 .progress-bar{
     background:linear-gradient(135deg,#ff9a3c,#f25c05);
     transition: width .6s ease;
 }
-
-
-.pc-btn{
-    display:inline-block;
-    margin-top:10px;
-    padding:8px 18px;
-    border-radius:22px;
-    background:var(--orange);
-    color:#fff;
-    font-size:13px;
-    font-weight:700;
-    text-decoration:none;
-}
-.pc-btn:hover{
-    background:#e45703;
-    color:#fff;
-}
-
 .pc-done{
     margin-top:10px;
     font-size:13px;
-    font-weight:700;
+    font-weight:800;
     color:var(--green);
 }
 
@@ -220,7 +192,7 @@ body{ background:var(--bg); }
 }
 .card-title{
     font-size:16px;
-    font-weight:700;
+    font-weight:900;
     margin-bottom:14px;
     display:flex;
     justify-content:space-between;
@@ -232,39 +204,199 @@ body{ background:var(--bg); }
     font-size:12px;
     text-transform:uppercase;
     color:var(--muted);
+    letter-spacing:.4px;
 }
 
-.kpi-link:hover{
-    border-color:#2563eb;
-    box-shadow:0 12px 30px rgba(37,99,235,.15);
-    transform: translateY(-2px);
-    transition:.25s;
+/* ===================== */
+/* CREDITS CARD (V2)      */
+/* ===================== */
+.credits-card-v2{
+    background: radial-gradient(900px 420px at 20% 0%, #233b5b 0%, #0f243b 45%, #0a1b2f 100%);
+    border-radius:18px;
+    padding:18px 18px 16px;
+    color:#fff;
+    box-shadow:0 14px 34px rgba(2,10,25,.22);
+    border:1px solid rgba(255,255,255,.08);
+    height:100%;
 }
 
+.credit-icon-v2{
+    width:38px;
+    height:38px;
+    border-radius:14px;
+    background: linear-gradient(135deg, #ff3d7f, #ff7aa8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+}
+
+.credits-title-v2{
+    font-weight:900;
+    font-size:18px;
+    line-height:1.1;
+}
+.credits-sub-v2{
+    font-size:12px;
+    color:rgba(255,255,255,.72);
+    margin-top:2px;
+}
+
+.credits-count{ text-align:right; }
+.credits-number-v2{
+    font-size:44px;
+    font-weight:900;
+    line-height:1;
+}
+.credits-available{
+    font-size:12px;
+    color:rgba(255,255,255,.72);
+    margin-top:2px;
+}
+
+.credits-divider-v2{
+    height:1px;
+    background:rgba(255,255,255,.14);
+    margin:12px 0 12px;
+}
+
+.credits-unlock-title{
+    font-size:12px;
+    color:rgba(255,255,255,.72);
+    margin-bottom:8px;
+}
+
+.credits-points .point{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:6px 0;
+    font-size:14px;
+    color:rgba(255,255,255,.92);
+}
+.credits-points i{
+    color:#22c55e;
+    font-size:16px;
+}
+
+.credits-actions-v2{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.btn-credits-primary-v2{
+    flex:1;
+    background:#4f46e5;
+    border:none;
+    color:#fff;
+    font-weight:900;
+    padding:12px 14px;
+    border-radius:14px;
+}
+.btn-credits-primary-v2:hover{ filter:brightness(.95); color:#fff; }
+
+.btn-credits-outline-v2{
+    flex:1;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.22);
+    color:#fff;
+    font-weight:900;
+    padding:12px 14px;
+    border-radius:14px;
+}
+.btn-credits-outline-v2:hover{ background:rgba(255,255,255,.10); color:#fff; }
+
+@media(max-width: 992px){
+    .credits-actions-v2{ flex-direction:column; }
+    .header-badge{ margin-top:6px; }
+    .pc-right{ text-align:left; }
+}
 </style>
 
 <div class="dashboard-wrap">
 
-    <!-- HEADER -->
-    <div class="dashboard-header-row">
-        <div class="dashboard-header-left">
-            <h2>Hi {{ $vendor->name }} 👋</h2>
-            <p>Track your leads, bids and projects at a glance</p>
+@php
+    // Replace with DB value when ready
+    $credits = $credits ?? 70;
+    $smallProjects = floor($credits / 35);
+@endphp
 
-            <a href="javascript:void(0)"
-               class="how-it-works-link"
-               data-bs-toggle="modal"
-               data-bs-target="#howItWorksModal">
-                How it works?
-            </a>
-        </div>
+    <!-- TOP ROW: HEADER + CREDITS -->
+    <div class="row g-3 align-items-stretch mb-4">
 
-        <div class="dashboard-header-right">
-            <div class="header-badge">
-                <i class="bi bi-shield-check"></i>
-                Verified Vendor get more leads
+        <!-- LEFT -->
+        <div class="col-lg-7">
+            <div class="card-soft dash-hero">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                    <div>
+                        <h2>Hi {{ $vendor->name }} 👋</h2>
+                        <p>Track your leads, bids and projects at a glance</p>
+
+                        <a href="javascript:void(0)"
+                           class="how-it-works-link"
+                           data-bs-toggle="modal"
+                           data-bs-target="#howItWorksModal">
+                            How it works?
+                        </a>
+                    </div>
+
+                    <div class="header-badge">
+                        <i class="bi bi-shield-check"></i>
+                        Verified Vendor get more leads
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- RIGHT -->
+        <div class="col-lg-5">
+            <div class="credits-card-v2">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="credit-icon-v2">
+                            <i class="bi bi-ticket-perforated-fill"></i>
+                        </div>
+                        <div>
+                            <div class="credits-title-v2">Your Access Credits</div>
+                            <div class="credits-sub-v2">Use credits to unlock projects</div>
+                        </div>
+                    </div>
+
+                    <div class="credits-count">
+                        <div class="credits-number-v2">{{ $credits }}</div>
+                        <div class="credits-available">credits available</div>
+                    </div>
+                </div>
+
+                <div class="credits-divider-v2"></div>
+
+                <div class="credits-unlock">
+                    <div class="credits-unlock-title">With your credits, you can unlock:</div>
+                    <div class="credits-points">
+                        <div class="point">
+                            <i class="bi bi-check2-circle"></i>
+                            <span><strong>{{ max(1,$smallProjects) }}</strong> small projects</span>
+                        </div>
+                        <div class="point">
+                            <i class="bi bi-check2-circle"></i>
+                            <span>OR save for a mid-size project</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="credits-actions-v2">
+                    <a href="{{ route('search_customer') }}" class="btn btn-credits-primary-v2">
+                        <i class="bi bi-search me-2"></i> Browse Projects
+                    </a>
+
+                    <a href="#" class="btn btn-credits-outline-v2">
+                        <i class="bi bi-plus-lg me-2"></i> Add Credits
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- KPI ROW -->
@@ -293,7 +425,6 @@ body{ background:var(--bg); }
             </a>
         </div>
 
-    
         <div class="col-md-4">
             <div class="kpi-card">
                 <div>
@@ -313,7 +444,7 @@ body{ background:var(--bg); }
                 <i class="bi bi-person-check-fill"></i>
             </div>
             <div>
-                <h4>Complete Your Profile</h4>
+                <h4 class="mb-1">Complete Your Profile</h4>
                 <p>Higher profile completion increases trust & visibility</p>
             </div>
         </div>
@@ -325,14 +456,9 @@ body{ background:var(--bg); }
                 <div class="progress-bar" style="width: {{ $profilePercent }}%"></div>
             </div>
 
-            @if($profilePercent < 100)
-                <div class="progress">
-                    <div class="progress-bar" style="width: {{ $profilePercent }}%"></div>
-                </div>
-            @else
+            @if($profilePercent >= 100)
                 <div class="pc-done">✅ Profile Fully Completed</div>
             @endif
-
         </div>
     </div>
 
@@ -358,7 +484,7 @@ body{ background:var(--bg); }
                 @forelse($projects->take(6) as $project)
                     <tr>
                         <td><strong>{{ $project->title }}</strong></td>
-                        <td>{{ $project->statename }}, {{ $project->regionname }} ,{{$project->cityname}}</td>
+                        <td>{{ $project->statename }}, {{ $project->regionname }}, {{ $project->cityname }}</td>
                         <td>{{ \Carbon\Carbon::parse($project->created_at)->diffForHumans() }}</td>
                     </tr>
                 @empty

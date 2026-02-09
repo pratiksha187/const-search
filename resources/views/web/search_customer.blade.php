@@ -513,6 +513,191 @@
     }
 }
 
+/* ====== PREMIUM LEAD CARD UI ====== */
+.lead-card.vendor-card{
+    background:#fff;
+    border:1px solid #e8eef5;
+    border-radius:16px;
+    padding:18px 18px 16px;
+    box-shadow:0 10px 26px rgba(15,23,42,.06);
+    transition:.25s;
+    position:relative;
+    overflow:hidden;
+}
+
+.lead-card.vendor-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 46px rgba(15,23,42,.10);
+    border-color:#dbe7ff;
+}
+
+/* Left accent line like screenshot */
+.lead-card.vendor-card:before{
+    content:'';
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width:5px;
+    background:linear-gradient(180deg,#3b82f6,#8b5cf6);
+}
+
+/* Header */
+.lead-head{ margin-bottom:8px; }
+
+.lead-title-wrap{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+}
+
+.lead-title{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:.3px;
+    color:#0f172a;
+    text-transform:uppercase;
+    line-height:1.15;
+}
+
+/* Badges (Verified + Credits) */
+.lead-badges{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+
+.verified-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:900;
+    background:#22c55e;
+    color:#fff;
+    white-space:nowrap;
+}
+
+.credits-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:900;
+    background:#eef2ff;
+    color:#3730a3;
+    border:1px solid #c7d2fe;
+    white-space:nowrap;
+}
+.credits-pill.prime{
+    background:#fff7ed;
+    color:#b45309;
+    border-color:#fed7aa;
+}
+.credits-pill i{ font-size:14px; }
+
+/* Role + Location + Budget */
+.lead-role{
+    font-weight:900;
+    color:#4f46e5;
+    font-size:16px;
+}
+
+.lead-location{
+    color:#64748b;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.lead-role-range{
+    margin-top:6px;
+    font-weight:900;
+    color:#f25c05;
+}
+
+/* Tags */
+.lead-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:12px;
+}
+
+.lead-tag{
+    background:#f1f5f9;
+    border:1px solid #e2e8f0;
+    color:#0f172a;
+    font-weight:800;
+    font-size:13px;
+    padding:8px 12px;
+    border-radius:14px;
+}
+
+/* Contact box */
+.contact-box{
+    margin-top:14px;
+    padding:14px 14px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+}
+
+.contact-box strong{ color:#0f172a; }
+
+/* Button */
+.lead-actions{
+    margin-top:14px;
+}
+
+.btn-outline-lead{
+    width:100%;
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    padding:13px 14px;
+    border-radius:14px;
+    font-weight:900;
+    font-size:16px;
+    border:2px solid #8aa1ff;
+    color:#4f46e5;
+    text-decoration:none;
+    transition:.2s;
+    background:#fff;
+}
+.btn-outline-lead:hover{
+    background:#4f46e5;
+    border-color:#4f46e5;
+    color:#fff;
+}
+
+/* Corner ribbons */
+.corner-ribbon, .corner-ribbon-coming{
+    position:absolute;
+    top:43px;
+    right:-46px;
+    transform:rotate(45deg);
+    padding:10px 60px;
+    font-size:12px;
+    font-weight:900;
+    color:#fff;
+    text-transform:uppercase;
+}
+.corner-ribbon{ background:#16a34a; }
+.corner-ribbon-coming{ background:#f59e0b; }
+
+/* Responsive title */
+@media(max-width: 768px){
+    .lead-title{ font-size:22px; }
+}
 
 </style>
 
@@ -615,7 +800,7 @@
          {{-- RESULTS --}}
          <div class="row g-4">
             @foreach($projects as $project)
-            <!-- <div class="col-xl-6 col-lg-6 col-md-12"> -->
+           
                <div class="col-xl-6 col-lg-6 col-md-12 vendor-col">
 
                <div class="lead-card vendor-card"
@@ -628,14 +813,25 @@
                   data-city="{{ strtolower($project->cityname ?? '') }}"
                   data-project-id="{{ $project->id }}">
                   {{-- HEADER --}}
-                  <div class="d-flex justify-content-between align-items-start mb-2">
+                  <!-- <div class="d-flex justify-content-between align-items-start mb-2">
                      <div class="lead-title">
                         {{ strtoupper($project->title) }}
                      </div>
                      <span class="verified-pill">
                      <i class="bi bi-check-circle-fill"></i> Verified
                      </span>
-
+                     {{-- CREDIT / PRIME LEAD --}}
+                     <div class="mt-2 d-flex align-items-center gap-2 flex-wrap">
+                        @if(($project->lead_credit_label ?? '') === 'Prime Lead')
+                           <span class="credit-badge prime">
+                                 <i class="bi bi-lightning-charge-fill me-1"></i> Prime Lead
+                           </span>
+                        @elseif(!empty($project->lead_credit_value))
+                           <span class="credit-badge credits">
+                                 <i class="bi bi-coin me-1"></i> {{ $project->lead_credit_value }} Credits
+                           </span>
+                        @endif
+                     </div>
                      @if($project->get_vendor == 1)
                         <div class="corner-ribbon">
                            Vendor Matched
@@ -647,7 +843,37 @@
                      @endif
 
 
-                  </div>
+                  </div> -->
+                  {{-- HEADER --}}
+<div class="lead-head">
+    <div class="lead-title-wrap">
+        <div class="lead-title">{{ strtoupper($project->title) }}</div>
+
+        <div class="lead-badges">
+            <span class="verified-pill">
+                <i class="bi bi-check-circle-fill"></i> Verified
+            </span>
+
+            @if(($project->lead_credit_label ?? '') === 'Prime Lead')
+                <span class="credits-pill prime">
+                    <i class="bi bi-lightning-charge-fill"></i> Prime Lead
+                </span>
+            @elseif(!empty($project->lead_credit_value))
+                <span class="credits-pill credits">
+                    <i class="bi bi-coin"></i> {{ $project->lead_credit_value }} Credits
+                </span>
+            @endif
+        </div>
+    </div>
+
+    {{-- CORNER RIBBONS --}}
+    @if($project->get_vendor == 1)
+        <div class="corner-ribbon">Vendor Matched</div>
+    @elseif($project->get_vendor == 2)
+        <div class="corner-ribbon-coming">Coming Soon</div>
+    @endif
+</div>
+
                   {{-- ROLE --}}
                   <div class="lead-role mb-1">
                      {{ $project->work_type }}
@@ -663,7 +889,8 @@
                    <div class="lead-role-range mb-1">
                      {{ $project->budget_range_name }}
                   </div>
-                  
+
+
                   {{-- TAGS --}}
                   <div class="lead-tags">
                      @foreach(explode(',', $project->work_subtype) as $sub)

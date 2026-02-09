@@ -1,7 +1,9 @@
 @extends('layouts.vendorapp')
 @section('title','Customer Profile')
 
-{{-- ===================== CSS ===================== --}}
+@section('content')
+
+{{-- (Optional) If your layout already loads Bootstrap, remove these 2 links --}}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -9,80 +11,101 @@
 
 <style>
 :root{
-    --primary:#6c7cf7;
-    --primary-dark:#4f6ef7;
+    --primary:#4f46e5;
+    --primary2:#6366f1;
     --success:#22c55e;
-    --bg:#f5f7fb;
-    --card:#ffffff;
     --border:#e5e7eb;
+    --muted:#64748b;
+    --orange:#f25c05;
 }
 
-/* body{
+.profile-page{
     font-family:'Inter',sans-serif;
-    background:var(--bg);
-} */
-body{
-    font-family:'Inter',sans-serif;
-    background:linear-gradient(180deg,#f8fafc,#eef2ff);
+    background: linear-gradient(180deg,#f8fafc,#eef2ff);
+    min-height:100vh;
 }
-.profile-card,
-.side-box,
-.plan-card,
-.modal-content{
-    box-shadow:0 12px 30px rgba(15,23,42,0.06);
-}
-
-h1,h4,h5{ letter-spacing:-0.3px; }
 
 /* HEADER */
 .profile-header{
-    background:linear-gradient(135deg,#6c7cf7,#7c6fd6);
+    background: linear-gradient(135deg,var(--primary),var(--primary2));
+    border-radius:22px;
+    padding:38px 42px;
     color:#fff;
-    padding:36px 40px;
-    border-radius:20px;
-    margin-bottom:36px;
     position:relative;
+    box-shadow:0 20px 40px rgba(79,70,229,.25);
     overflow:hidden;
+    margin-bottom:22px;
 }
-
-.profile-header::after{
+.profile-header:after{
     content:'';
     position:absolute;
     inset:0;
-    background:url("https://www.transparenttextures.com/patterns/cubes.png");
-    opacity:.08;
+    background: radial-gradient(900px 300px at 20% 20%, rgba(255,255,255,.22), transparent 60%);
+    opacity:.7;
 }
+.profile-header *{ position:relative; z-index:2; }
+
 .profile-header h1{
-    font-size:32px;
-    font-weight:800;
+    font-size:30px;
+    font-weight:900;
+    margin:0 0 8px;
+    letter-spacing:-.3px;
 }
-.profile-sub{ opacity:.9; }
-.profile-location{ margin-top:8px; }
+.profile-sub{ font-size:15px; opacity:.95; font-weight:700; }
+.profile-location{ margin-top:10px; font-size:14px; opacity:.92; }
 
 .verified-badge{
     position:absolute;
-    right:30px;
-    top:30px;
-    background:#22c55e;
+    right:24px;
+    top:24px;
+    background:var(--success);
     padding:8px 14px;
-    border-radius:10px;
-    font-weight:600;
-    font-size:14px;
-    box-shadow:0 8px 20px rgba(34,197,94,.35);
+    border-radius:999px;
+    font-size:13px;
+    font-weight:900;
+    box-shadow:0 8px 20px rgba(34,197,94,.4);
+    z-index:3;
 }
 
-/* CARDS */
+/* CREDIT PILL */
+.credit-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:900;
+    border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.15);
+    color:#fff;
+    backdrop-filter: blur(10px);
+}
+.credit-pill.light{
+    background:#eef2ff;
+    border:1px solid #c7d2fe;
+    color:#3730a3;
+}
+.credit-pill.prime{
+    background:#fff7ed;
+    border:1px solid #fed7aa;
+    color:#b45309;
+}
+
+/* CONTENT CARDS */
 .profile-card{
     background:#fff;
-    border:1px solid var(--border);
     border-radius:18px;
-    padding:24px 26px;
-    margin-bottom:24px;
+    padding:26px;
+    border:1px solid var(--border);
+    box-shadow:0 12px 28px rgba(15,23,42,.06);
+    margin-bottom:18px;
 }
 .profile-card h4{
-    font-size:22px;
-    font-weight:700;
+    font-size:18px;
+    font-weight:900;
     margin-bottom:14px;
+    color:#111827;
 }
 
 /* LIST */
@@ -92,9 +115,10 @@ h1,h4,h5{ letter-spacing:-0.3px; }
     align-items:center;
     font-size:15px;
     margin-bottom:10px;
+    color:#0f172a;
+    font-weight:600;
 }
-
-.check-list li i{
+.check-list i{
     color:var(--success);
     font-size:18px;
     margin-right:10px;
@@ -103,404 +127,30 @@ h1,h4,h5{ letter-spacing:-0.3px; }
 /* RIGHT PANEL */
 .side-box{
     background:#fff;
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:26px;
-    margin-bottom:22px;
-    text-align:center;
-}
-.value-text{
-    font-size:20px;
-    font-weight:700;
-    color:#1e293b;
-}
-.btn-interest{
-    width:100%;
-    background:var(--primary);
-    color:#fff;
-    padding:15px;
-    border-radius:16px;
-    font-weight:700;
-    border:none;
-    box-shadow:0 14px 28px rgba(108,124,247,.35);
-    transition:.3s;
-}
-
-.btn-interest:hover{
-    background:var(--primary-dark);
-    transform:translateY(-2px);
-}
-
-.note-box{
-    border:none;
-    border-radius:16px;
-    padding:16px;
-    background:#eef2ff;
-    color:#4338ca;
-    font-size:14px;
-}
-
- /* PRICING SECTION */
-   .pricing-section{
-   background:#ffffff;
-   border:1px solid #e5e7eb;
-   border-radius:18px;
-   padding:32px;
-   }
-   .pricing-header{
-   text-align:center;
-   margin-bottom:28px;
-   }
-   .pricing-header h4{
-   font-weight:700;
-   }
-   .pricing-header p{
-   color:#6b7280;
-   margin-bottom:0;
-   }
-   /* PLAN CARDS */
-   .plan-card{
-   background:#ffffff;
-   border:1px solid #e5e7eb;
-   border-radius:16px;
-   padding:24px;
-   height:100%;
-   position:relative;
-   }
-   .plan-card.recommended{
-   border:2px solid #f25c05;
-   box-shadow:0 10px 25px rgba(0,0,0,0.08);
-   }
-   /* BADGE */
-   .recommended-badge{
-   position:absolute;
-   top:-12px;
-   left:50%;
-   transform:translateX(-50%);
-   background:#f25c05;
-   color:#fff;
-   padding:5px 14px;
-   font-size:12px;
-   border-radius:20px;
-   font-weight:600;
-   }
-   /* TEXT */
-   .plan-title{
-   font-size:13px;
-   font-weight:600;
-   text-transform:uppercase;
-   color:#374151;
-   }
-   .plan-price{
-   font-size:34px;
-   font-weight:700;
-   margin:12px 0 6px;
-   }
-   .gst{
-   font-size:14px;
-   color:#6b7280;
-   }
-   .plan-meta{
-   font-size:14px;
-   color:#6b7280;
-   margin-bottom:16px;
-   }
-   /* FEATURES */
-   .plan-features{
-   list-style:none;
-   padding:0;
-   margin-bottom:20px;
-   }
-   .plan-features li{
-   margin-bottom:8px;
-   font-size:14px;
-   }
-   /* BUTTONS */
-   .btn-primary{
-   background:#f25c05;
-   border:none;
-   border-radius:10px;
-   padding:10px;
-   font-weight:600;
-   }
-   .btn-outline{
-   background:#ffffff;
-   border:1px solid #d1d5db;
-   border-radius:10px;
-   padding:10px;
-   font-weight:600;
-   }
-
-   .contact-card{
-    background:#f8fafc;
-    border-radius:14px;
-    padding:14px;
-}
-   @media (min-width: 576px) {
-    .modal {
-        --bs-modal-margin: 7.75rem;
-        --bs-modal-box-shadow: var(--bs-box-shadow);
-    }
-}
-
-
-.lead-page{
-    max-width:1200px;
-    margin:40px auto 80px;
-}
-
-/* ================= FREE LEADS ================= */
-.free-leads-box{
-    background:linear-gradient(135deg,#e0f7ff,#f8fdff);
-    border:1px solid #bae6fd;
-    border-radius:20px;
-    padding:28px;
-    margin-bottom:50px;
-}
-
-.free-leads-box h5{
-    font-weight:900;
-    color:var(--dark);
-}
-
-.free-card{
-    background:#fff;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:22px;
-    text-align:center;
-    height:100%;
-    transition:.25s;
-}
-
-.free-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 10px 28px rgba(15,23,42,.08);
-}
-
-.free-card h6{
-    font-weight:800;
-    margin-bottom:6px;
-}
-
-.free-card p{
-    font-size:14px;
-    color:var(--muted);
-}
-
-.free-btn{
-    display:inline-block;
-    margin-top:10px;
-    padding:10px 22px;
-    color:#000  !important; 
-    border-radius:999px;
-    background:var(--blue);
-    color:#fff;
-    font-weight:800;
-    font-size:13px;
-    text-decoration:none;
-    cursor:pointer;
-}
-
-.upload-box{
-    margin-top:14px;
-    text-align:left;
-}
-
-/* ================= PLAN CARDS ================= */
-.plan-card{
-    background:#ffffff;
-    border:1px solid var(--border);
-    border-radius:22px;
-    padding:30px 26px;
-    height:100%;
-    position:relative;
-    text-align:center;
-    transition:.3s;
-}
-
-.plan-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 20px 45px rgba(15,23,42,.12);
-}
-
-.plan-card.recommended{
-    border:2px solid var(--orange);
-    box-shadow:0 18px 45px rgba(242,92,5,.18);
-}
-
-.recommended-badge{
-    position:absolute;
-    top:-16px;
-    left:50%;
-    transform:translateX(-50%);
-    background:var(--orange);
-    color:#fff;
-    padding:6px 18px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:900;
-}
-
-.plan-title{
-    font-size:14px;
-    font-weight:800;
-    color:#334155;
-}
-
-.plan-price{
-    font-size:36px;
-    font-weight:900;
-    color:var(--dark);
-    margin:8px 0;
-}
-
-.plan-meta{
-    font-size:14px;
-    color:var(--muted);
-}
-
-.plan-features{
-    list-style:none;
-    padding:0;
-    margin:20px 0;
-    text-align:left;
-}
-
-.plan-features li{
-    font-size:14px;
-    margin-bottom:10px;
-}
-
-@media(max-width:768px){
-    .plan-price{ font-size:30px; }
-}
-#paymentModal .modal-dialog {
-    margin-top: 80px;   /* push modal downward */
-}
-
-.free-btn.disabled{
-    background:#cbd5f5;
-    color:#64748b;
-    cursor:not-allowed;
-}
-
-/* ===== PAGE WRAPPER ===== */
-.profile-page{
-    background: linear-gradient(180deg,#f8fafc,#eef2ff);
-}
-
-/* ===== HEADER ===== */
-.profile-header{
-    background: linear-gradient(135deg,#4f46e5,#6366f1);
-    border-radius:20px;
-    padding:36px 40px;
-    color:#fff;
-    position:relative;
-    box-shadow:0 20px 40px rgba(79,70,229,.25);
-}
-
-.profile-header h1{
-    font-size:32px;
-    font-weight:800;
-    margin-bottom:6px;
-}
-
-.profile-sub{
-    font-size:16px;
-    opacity:.95;
-}
-
-.profile-location{
-    margin-top:10px;
-    font-size:14px;
-    opacity:.9;
-}
-
-.verified-badge{
-    position:absolute;
-    right:24px;
-    top:24px;
-    background:#22c55e;
-    padding:8px 14px;
-    border-radius:999px;
-    font-size:13px;
-    font-weight:600;
-    box-shadow:0 8px 20px rgba(34,197,94,.4);
-}
-
-/* ===== CONTENT CARDS ===== */
-.profile-card{
-    background:#fff;
-    border-radius:18px;
-    padding:26px;
-    border:1px solid #e5e7eb;
-    box-shadow:0 12px 28px rgba(15,23,42,.06);
-}
-
-.profile-card h4{
-    font-size:18px;
-    font-weight:700;
-    margin-bottom:14px;
-    color:#111827;
-}
-
-/* ===== LIST ===== */
-.check-list{
-    list-style:none;
-    padding:0;
-    margin:0;
-}
-.check-list li{
-    display:flex;
-    align-items:center;
-    font-size:15px;
-    margin-bottom:10px;
-}
-.check-list i{
-    color:#22c55e;
-    font-size:18px;
-    margin-right:10px;
-}
-
-/* ===== RIGHT PANEL ===== */
-.side-box{
-    background:#fff;
     border-radius:20px;
     padding:26px;
-    border:1px solid #e5e7eb;
+    border:1px solid var(--border);
     box-shadow:0 16px 30px rgba(15,23,42,.08);
+    position:sticky;
+    top:90px;
 }
+.side-box h5{ font-weight:900; margin-bottom:16px; }
+.value-text{ font-size:20px; font-weight:900; color:#1e293b; }
 
-.side-box h5{
-    font-weight:700;
-    margin-bottom:16px;
-}
-
-.value-text{
-    font-size:22px;
-    font-weight:800;
-    color:#1e293b;
-}
-
-/* ===== CTA ===== */
+/* CTA */
 .btn-interest{
     width:100%;
     background: linear-gradient(135deg,#f97316,#fb923c);
     border:none;
     color:#fff;
-    font-weight:700;
+    font-weight:900;
     padding:16px;
     border-radius:16px;
     box-shadow:0 16px 32px rgba(249,115,22,.35);
-    transition:.3s;
+    transition:.25s;
 }
-.btn-interest:hover{
-    transform:translateY(-2px);
-    box-shadow:0 20px 36px rgba(249,115,22,.45);
-}
+.btn-interest:hover{ transform:translateY(-2px); }
 
-/* ===== NOTE ===== */
 .note-box{
     margin-top:14px;
     background:#fff7ed;
@@ -510,49 +160,62 @@ h1,h4,h5{ letter-spacing:-0.3px; }
     font-size:14px;
     color:#9a3412;
 }
-
-/* ===== SPACING ===== */
-.profile-card + .profile-card{
-    margin-top:22px;
+.file-btn{
+    border-radius:12px;
+    font-weight:800;
 }
-
 </style>
 
-@section('content')
+@php
+    $files = $customer_data->files ?? '[]';
+    $filesArr = is_array($files) ? $files : json_decode($files, true);
+    if (!is_array($filesArr)) $filesArr = [];
+@endphp
 
-<div class="container my-4 profile-page">
+<div class="profile-page">
+<div class="container py-4">
 
-    {{-- ===================== HEADER ===================== --}}
-    <div class="profile-header mb-4">
+    {{-- HEADER --}}
+    <div class="profile-header">
 
         <a href="javascript:history.back()"
-            class="btn btn-light btn-sm"
-            style="position:absolute; left:24px; top:24px; border-radius:10px; z-index:9999;">
-                <i class="bi bi-arrow-left"></i> Back
+           class="btn btn-light btn-sm"
+           style="position:absolute; left:24px; top:24px; border-radius:12px; z-index:5;">
+            <i class="bi bi-arrow-left"></i> Back
         </a>
 
         <span class="verified-badge">
             <i class="bi bi-check-circle-fill"></i> Verified Customer
         </span>
-        <!-- <h1 class="mt-4">{{ $customer_data->id }}</h1> -->
+
+        {{-- Credits Badge under Verified --}}
+        <div style="position:absolute; right:24px; top:64px; z-index:5;">
+            @if(($customer_data->lead_credit_label ?? '') === 'Prime Lead')
+                <span class="credit-pill prime">
+                    <i class="bi bi-lightning-charge-fill"></i> Prime Lead
+                </span>
+            @elseif(!empty($customer_data->lead_credit_value))
+                <span class="credit-pill">
+                    <i class="bi bi-coin"></i> {{ $customer_data->lead_credit_value }} Credits
+                </span>
+            @endif
+        </div>
+
         <h1 class="mt-4">{{ $customer_data->title }}</h1>
         <div class="profile-sub">{{ $customer_data->work_typename }}</div>
 
         <div class="profile-location">
-            📍 {{ $customer_data->cityname }},
-            {{ $customer_data->regionname }},
-            {{ $customer_data->statename }}
+            📍 {{ $customer_data->cityname }}, {{ $customer_data->regionname }}, {{ $customer_data->statename }}
         </div>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 mt-1">
 
-        {{-- ===================== LEFT ===================== --}}
+        {{-- LEFT --}}
         <div class="col-lg-8">
-
             <div class="profile-card">
                 <h4>About Project</h4>
-                <p class="mb-0">{{ $customer_data->description }}</p>
+                <p class="mb-0 text-muted">{{ $customer_data->description }}</p>
             </div>
 
             <div class="profile-card">
@@ -569,60 +232,53 @@ h1,h4,h5{ letter-spacing:-0.3px; }
             <div class="profile-card">
                 <h4>Work Type</h4>
                 <ul class="check-list">
-                    <li><i class="bi bi-check-lg"></i>
-                        {{ $customer_data->work_typename }} services
-                    </li>
-
+                    <li><i class="bi bi-check-lg"></i> {{ $customer_data->work_typename }} services</li>
                     @if(!empty($workSubtypes))
-                        <li><i class="bi bi-check-lg"></i>
-                            Specialized in {{ implode(', ', $workSubtypes) }}
-                        </li>
+                        <li><i class="bi bi-check-lg"></i> Specialized in {{ implode(', ', $workSubtypes) }}</li>
                     @endif
                 </ul>
             </div>
         </div>
 
-      
-        @php
-            $files = $customer_data->files ?? '[]';
-            $filesArr = is_array($files) ? $files : json_decode($files, true);
-            if (!is_array($filesArr)) $filesArr = [];
-        @endphp
-
+        {{-- RIGHT --}}
         <div class="col-lg-4">
-
             <div class="side-box mb-3">
                 <h5>Project Value</h5>
 
-                <div class="mb-3">
+                <div class="mb-2">
                     <div class="text-muted">Minimum Project Value</div>
-                    <div class="value-text">
-                        {{ $customer_data->budget_range_name }}
+                    <div class="value-text">{{ $customer_data->budget_range_name }}</div>
+
+                    {{-- Credits Required --}}
+                    <div class="mt-2">
+                        @if(($customer_data->lead_credit_label ?? '') === 'Prime Lead')
+                            <span class="credit-pill light prime">
+                                <i class="bi bi-lightning-charge-fill"></i> Prime Lead
+                            </span>
+                        @elseif(!empty($customer_data->lead_credit_value))
+                            <span class="credit-pill light">
+                                <i class="bi bi-coin"></i> {{ $customer_data->lead_credit_value }} Credits Required
+                            </span>
+                        @endif
                     </div>
                 </div>
 
-            
-
-                {{-- ✅ FILES SECTION INSIDE SAME BOX --}}
+                {{-- Attachments --}}
                 @if(count($filesArr) > 0)
                     <hr>
-                    <div class="text-muted mb-2">Attachments</div>
-
+                    <div class="text-muted mb-2 fw-semibold">Attachments</div>
                     <div class="d-grid gap-2">
                         @foreach($filesArr as $file)
                             @php
-                                // if file is stored as path
-                                $fileUrl = asset('storage/'.$file); // change if your path is different
+                                $fileUrl = asset('storage/'.$file);
                                 $fileName = basename($file);
                             @endphp
-
-                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm file-btn">
                                 <i class="bi bi-paperclip me-1"></i> {{ $fileName }}
                             </a>
                         @endforeach
                     </div>
                 @endif
-
             </div>
 
             <button class="btn-interest mb-2" onclick="handleInterested()">
@@ -630,14 +286,16 @@ h1,h4,h5{ letter-spacing:-0.3px; }
             </button>
 
             <div class="note-box">
-                <strong>Note:</strong>
-                Contact details will be shared only after vendor acceptance.
+                <strong>Note:</strong> Contact details will be shared only after vendor acceptance.
             </div>
-
         </div>
 
     </div>
 </div>
+</div>
+
+{{-- Your existing modals go here (vendorModal, paymentModal, customerContactModal) --}}
+{{-- Keep them exactly as you already have. --}}
 
 {{-- ===================== request MODAL ===================== --}}
 <div class="modal fade" id="vendorModal" tabindex="-1" aria-hidden="true">
@@ -660,6 +318,11 @@ h1,h4,h5{ letter-spacing:-0.3px; }
         <form id="interestForm">
           @csrf
           <input type="hidden" name="cust_id" value="{{ $customer_data->id }}">
+    <input type="hidden" name="required_credits" id="required_credits"
+        value="{{ $customer_data->lead_credit_value ?? 0 }}">
+
+    <input type="hidden" name="lead_type" id="lead_type"
+        value="{{ ($customer_data->lead_credit_label ?? '') === 'Prime Lead' ? 'prime' : 'credit' }}">
 
           <div class="mb-3">
             <label class="form-label">Your Name *</label>
@@ -935,43 +598,44 @@ h1,h4,h5{ letter-spacing:-0.3px; }
     </div>
 </div>
 
-{{-- ===================== JS ===================== --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{{-- JS LIBS (keep only if not already in layout) --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    window.CUSTOMERID = {{ $customer_data->cust_id }};
-    // alert( window.CUSTOMERID);
+    // ✅ Customer user id (login check)
+    window.CUSTOMERID = {{ (int)($customer_data->cust_id ?? 0) }};
 </script>
 
-
 <script>
-function handleInterested() {
+/* ===================== HELPERS ===================== */
 
-    if (window.CUSTOMERID === null) {
-        bootstrap.Modal.getOrCreateInstance(
-            document.getElementById('authModal')
-        ).show();
-        return;
-    }
-
-    bootstrap.Modal.getOrCreateInstance(
-        document.getElementById('vendorModal')
-    ).show();
+function openModal(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    bootstrap.Modal.getOrCreateInstance(el).show();
 }
-</script>
 
-<script>
+function hideModal(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const inst = bootstrap.Modal.getInstance(el);
+    if(inst) inst.hide();
+}
 
+/* ===================== MAIN: HANDLE INTEREST ===================== */
 function handleInterested() {
 
-    if (window.CUSTOMERID === null) {
-        bootstrap.Modal.getOrCreateInstance(
-            document.getElementById('authModal')
-        ).show();
+    // ✅ If not logged in -> open auth modal
+    if (!window.CUSTOMERID || window.CUSTOMERID === 0) {
+        openModal('authModal');
         return;
     }
 
+    // ✅ Check lead balance / already unlocked
     $.ajax({
         url: "{{ route('vendor.check_lead_balance') }}",
         method: "GET",
@@ -979,187 +643,182 @@ function handleInterested() {
 
         success: function (res) {
 
-            // 🔁 ALREADY ENQUIRED → DIRECT CONTACT MODAL
+            // ✅ Already unlocked
             if (res.already_exists === true) {
 
-                $('#customerMobile').text(res.customer_mobile);
-                $('#customerEmail').text(res.customer_email);
+                if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+                if (res.customer_email)  $('#customerEmail').text(res.customer_email);
 
-                alert('ℹ️ You have already unlocked this customer.');
-
-                new bootstrap.Modal(
-                    document.getElementById('customerContactModal')
-                ).show();
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already Unlocked',
+                    text: 'You have already unlocked this customer.',
+                    confirmButtonColor: '#2563eb'
+                }).then(() => {
+                    openModal('customerContactModal');
+                });
 
                 return;
             }
 
-            // 💰 HAS LEAD BALANCE
-            if (res.balance > 0) {
-
-                bootstrap.Modal.getOrCreateInstance(
-                    document.getElementById('vendorModal')
-                ).show();
-
-            } else {
-                alert('❌ You do not have enough lead balance.');
-                bootstrap.Modal.getOrCreateInstance(
-                    document.getElementById('paymentModal')
-                ).show();
+            // ✅ Has balance (or enough credits)
+            if ((res.balance ?? 0) > 0) {
+                openModal('vendorModal');
+                return;
             }
+
+            // ❌ No balance
+            Swal.fire({
+                icon: 'warning',
+                title: 'Insufficient Balance',
+                text: 'You do not have enough lead balance. Please add credits.',
+                confirmButtonColor: '#f25c05'
+            }).then(() => {
+                openModal('paymentModal');
+            });
         },
 
         error: function () {
-            alert('❌ Failed to check lead balance');
+            Swal.fire('Error','Failed to check lead balance','error');
         }
     });
 }
 
-
-// Function to check lead balance via AJAX
-function checkLeadBalance() {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: "{{ route('vendor.check_lead_balance') }}", // your backend route
-            method: "GET", // or POST if needed
-            data: { customer_id: window.CUSTOMERID },
-            success: function(res) {
-                // Assuming your backend returns { balance: number }
-                if (res.balance > 0) {
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            },
-            error: function() {
-                alert('❌ Failed to check lead balance');
-                resolve(false);
-            }
-        });
-    });
-}
-</script>
-<script>
+/* ===================== FREE LEAD UPLOAD TOGGLE ===================== */
 function toggleUpload(platform) {
-    // Hide all upload boxes first (optional safety)
-    document.querySelectorAll('.upload-box').forEach(box => {
-        box.classList.add('d-none');
-    });
-
-    // Show selected platform upload box
-    let box = document.getElementById('upload-' + platform);
-    if (box) {
-        box.classList.toggle('d-none');
-    }
+    document.querySelectorAll('.upload-box').forEach(box => box.classList.add('d-none'));
+    const box = document.getElementById('upload-' + platform);
+    if (box) box.classList.toggle('d-none');
 }
-</script>
 
-<script>
+/* ===================== SUBMIT INTEREST FORM ===================== */
+// function submitInterest() {
 
+//     $.ajax({
+//         url: "{{ route('vendor.interest.check') }}",
+//         method: "POST",
+//         data: $('#interestForm').serialize(),
 
+//         success: function (res) {
+
+//             Swal.fire({
+//                 icon: 'success',
+//                 title: 'Enquiry Submitted',
+//                 text: 'Your enquiry has been submitted successfully.',
+//                 confirmButtonColor: '#10b981'
+//             });
+
+//             // Close vendor modal
+//             hideModal('vendorModal');
+
+//             // Fill and open contact modal
+//             if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+//             if (res.customer_email)  $('#customerEmail').text(res.customer_email);
+
+//             openModal('customerContactModal');
+//         },
+
+//         error: function () {
+//             Swal.fire('Error','Something went wrong','error');
+//         }
+//     });
+// }
 function submitInterest() {
+
+    // ✅ read required credits from hidden field
+    const requiredCredits = parseInt($('#required_credits').val() || 0);
+    const leadType        = $('#lead_type').val() || 'credit';
+
+    // ✅ Create payload from form
+    const payload = $('#interestForm').serialize() +
+        '&required_credits=' + encodeURIComponent(requiredCredits) +
+        '&lead_type=' + encodeURIComponent(leadType);
 
     $.ajax({
         url: "{{ route('vendor.interest.check') }}",
         method: "POST",
-        data: $('#interestForm').serialize(),
+        data: payload,
+
+        // success: function (res) {
+
+        //     Swal.fire({
+        //         icon: 'success',
+        //         title: 'Enquiry Submitted',
+        //         text: 'Your enquiry has been submitted successfully.',
+        //         confirmButtonColor: '#10b981'
+        //     });
+
+        //     hideModal('vendorModal');
+
+        //     if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+        //     if (res.customer_email)  $('#customerEmail').text(res.customer_email);
+
+        //     openModal('customerContactModal');
+        // },
         success: function (res) {
 
-            alert('✅ Enquiry submitted successfully');
+            // ✅ If backend says redirect (not enough credits / prime lead)
+            if(res.payment_required === true && res.redirect_url){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Not enough credits',
+                    text: res.message || 'Please buy credits to unlock.',
+                    confirmButtonText: 'Buy Credits',
+                    confirmButtonColor: '#f25c05'
+                }).then(() => {
+                    window.location.href = res.redirect_url;
+                });
+                return;
+            }
 
-            // Close vendor modal
-            bootstrap.Modal.getInstance(
-                document.getElementById('vendorModal')
-            ).hide();
+            // ✅ Normal success
+            Swal.fire({
+                icon: 'success',
+                title: 'Enquiry Submitted',
+                text: 'Your enquiry has been submitted successfully.',
+                confirmButtonColor: '#10b981'
+            });
 
-            // Set data inside contact modal
-            $('#customerMobile').text(res.customer_mobile);
-            $('#customerEmail').text(res.customer_email);
+            hideModal('vendorModal');
 
-            // Open contact modal
-            new bootstrap.Modal(
-                document.getElementById('customerContactModal')
-            ).show();
+            if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+            if (res.customer_email)  $('#customerEmail').text(res.customer_email);
 
+            openModal('customerContactModal');
         },
+
+
         error: function () {
-            alert('❌ Something went wrong');
+            Swal.fire('Error','Something went wrong','error');
         }
     });
 }
 
-const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-const csrfToken = csrfMeta ? csrfMeta.content : '';
-
-document.querySelectorAll('.claim-lead-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const { platform, cust } = btn.dataset;
-
-        btn.disabled = true;
-        btn.textContent = 'Claiming...';
-
-        fetch("{{ route('claim_free_lead') }}", {
-            method: "POST",
-            headers: {
-                'X-CSRF-TOKEN': csrfToken,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ platform })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status) {
-                alert(`✅ 1 free lead added for ${platform}`);
-                btn.textContent = 'Claimed';
-            } else {
-                alert(data.message || '❌ Could not claim lead');
-                btn.disabled = false;
-                btn.textContent = 'Claim Free Lead';
-            }
-        })
-        .catch(() => {
-            alert('❌ Server error. Please try again.');
-            btn.disabled = false;
-            btn.textContent = 'Claim Free Lead';
-        });
-    });
-});
-
-
-</script>
-<script>
+/* ===================== DOCUMENT READY ===================== */
 $(document).ready(function () {
 
-    // ----- FUNCTION: Show Payment Modal -----
-    function showPaymentModal(custId) {
-        $('#paymentModal').data('cust', custId);
-        // show modal
-        new bootstrap.Modal(document.getElementById('paymentModal')).show();
-        // show payment section
-        $('#paymentSection').removeClass('d-none');
-    }
-
-    // ----- CLAIM FREE LEAD -----
+    // ✅ CLAIM FREE LEAD (only if .claim-lead-btn exists)
     $(document).on('click', '.claim-lead-btn', function() {
         const platform = $(this).data('platform');
-        const custId = $(this).data('cust');
 
-        $.post("/claim-lead", {
+        $.post("{{ route('claim_free_lead') }}", {
             _token: "{{ csrf_token() }}",
-            platform: platform,
-            cust_id: custId
+            platform: platform
         }, function(res){
-            if(res.success) {
-                Swal.fire('Success', 'Your free lead has been added!', 'success');
-            } else {
-                Swal.fire('Oops!', res.message || 'Failed to claim lead.', 'error');
+            if(res.status || res.success){
+                Swal.fire('Success', '1 free lead added!', 'success').then(()=>location.reload());
+            }else{
+                Swal.fire('Oops', res.message || 'Failed to claim lead', 'error');
             }
+        }).fail(function(){
+            Swal.fire('Error','Server error','error');
         });
     });
 
-    // ----- BUY PLAN / PAYMENT -----
+    // ✅ BUY PLAN (Razorpay)
     $(document).on('click', '.buy-plan-btn', function() {
-        const custId = $(this).data('cust');
+
+        const custId = $(this).data('cust');   // post id OR customer id (as per your backend)
         const amount = $(this).data('amount');
         const plan   = $(this).data('plan');
 
@@ -1169,6 +828,7 @@ $(document).ready(function () {
             plan: plan,
             amount: amount
         }, function(res) {
+
             if(!res.success){
                 Swal.fire('Error', 'Order creation failed', 'error');
                 return;
@@ -1179,14 +839,10 @@ $(document).ready(function () {
                 amount: res.amount,
                 currency: "INR",
                 name: "ConstructKaro",
-                description: `₹${amount} Lead Unlock`,
+                description: plan + " package",
                 order_id: res.order_id,
-                prefill: {
-                    name: "ConstructKaro",
-                    email: "connect@constructkaro.com",
-                    contact: "8806561819"
-                },
-                handler: function(response) {
+                handler: function (response) {
+
                     $.post("{{ route('razorpay.verify') }}", {
                         _token: "{{ csrf_token() }}",
                         razorpay_payment_id: response.razorpay_payment_id,
@@ -1195,32 +851,37 @@ $(document).ready(function () {
                         cust_id: btoa(custId),
                         plan: plan,
                         amount: amount
-                    }, function(verifyRes) {
-                        if(verifyRes.success) {
-                            bootstrap.Modal.getInstance(document.getElementById('paymentModal')).hide();
+                    }, function(v) {
+
+                        if(v.success){
+                            hideModal('paymentModal');
+
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Payment Successful',
-                                text: `₹${amount} payment completed. Lead unlocked!`,
+                                text: 'Credits added successfully.',
                                 confirmButtonColor: '#10b981'
-                            }).then(() => location.reload());
-                        } else {
-                            Swal.fire('Error', 'Verification failed', 'error');
+                            }).then(()=>location.reload());
+
+                        }else{
+                            Swal.fire('Error','Verification failed','error');
                         }
+                    }).fail(function(){
+                        Swal.fire('Error','Verification failed','error');
                     });
                 },
                 theme: { color: "#2563eb" }
             };
 
             new Razorpay(options).open();
+
+        }).fail(function(){
+            Swal.fire('Error', 'Order creation failed', 'error');
         });
     });
 
-    // ----- OPTIONAL: Show modal automatically if payment required -----
-    if(typeof res !== 'undefined' && (res.payment_required === true || res.remaining <= 0)){
-        showPaymentModal(res.cust_id);
-    }
 });
 </script>
+
 
 @endsection
