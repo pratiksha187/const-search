@@ -259,7 +259,7 @@ public function updateStatus(Request $request, $id)
             // Credit 1 lead
             DB::table('vendor_reg')
                 ->where('id', $freeLead->vendor_id)
-                ->increment('lead_balance', 1);
+                ->increment('lead_balance', 30);
 
             $status = 'approved';
 
