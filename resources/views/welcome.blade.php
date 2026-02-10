@@ -651,8 +651,6 @@ body {
     margin-bottom: 12px;
 }
 
-
-
 .section-after-hero {
     padding-top: 29px;
 }
@@ -839,13 +837,6 @@ body {
         font-size: 1.5rem;
     }
 }
-/* 
-:root{
-  --ck-navy:#0f172a;
-  --ck-orange:#f25c05;
-  --ck-bg:#f6f8fb;
-  --ck-border:#e5e7eb;
-} */
 
 .modal-xl{
   max-width:1200px;
@@ -1010,9 +1001,6 @@ body {
 }
 
 
-/* .ck-submit:hover{
-  background:#fff7ed;
-} */
 </style>
 
 @if(session('success'))
@@ -1069,6 +1057,8 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <span class="trusted-pill"><i class="bi bi-building"></i> <strong>{{$vendors}}+ Vendors</strong></span>
                     <span class="trusted-pill"><i class="bi bi-geo-alt"></i> <strong> {{$cities}}+ Cities</strong></span>
                     <span class="trusted-pill"><i class="bi bi-clipboard-check"></i> <strong>{{$posts}}+ Projects</strong></span>
+                    <span class="trusted-pill"><i class="bi bi-award-fill"></i><strong>{{$supplier}}+ Supplier</strong></span>
+                    
                 </div>
 
             </div>
@@ -1162,56 +1152,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
 <!-- add spacing because cards overlap -->
 <div class="section-after-hero"></div>
 
-<!-- ================= POPULAR CATEGORIES ================= -->
-<!-- <section class="section-wrapper py-5">
-    <div class="container">
 
-        <h2 class="section-title text-center mb-2">Popular Vendor Categories</h2>
-        <p class="text-center text-muted mb-5">
-            Find trusted professionals for your construction needs
-        </p>
-
-        <div class="vendor-row">
-
-            <div class="category-box">
-                <div class="category-icon"><i class="bi bi-building"></i></div>
-                <p class="category-title">Building Contractor</p>
-            </div>
-
-            <div class="category-box">
-                <div class="category-icon"><i class="bi bi-house-heart"></i></div>
-                <p class="category-title">Residential Interiors</p>
-            </div>
-
-            <div class="category-box">
-                <div class="category-icon"><i class="bi bi-rulers"></i></div>
-                <p class="category-title">Residential Architect</p>
-            </div>
-
-            <div class="category-box">
-                <div class="category-icon"><i class="bi bi-building-gear"></i></div>
-                <p class="category-title">Industrial Contractor</p>
-            </div>
-
-            <div class="category-box">
-                <div class="category-icon"><i class="bi bi-gem"></i></div>
-                <p class="category-title">Luxury Interiors</p>
-            </div>
-
-            <div class="category-box">
-                <div class="category-icon"><i class="bi bi-people"></i></div>
-                <p class="category-title">Labour Contractor</p>
-            </div>
-
-            <div class="category-box">
-                <div class="category-icon"><i class="bi bi-buildings"></i></div>
-                <p class="category-title">Commercial Architect</p>
-            </div>
-
-        </div>
-
-    </div>
-</section> -->
 <section class="section-wrapper py-5">
     <div class="container">
 

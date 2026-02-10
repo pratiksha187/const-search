@@ -425,7 +425,7 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
         <div class="kpi-card">
           <div>
             <div class="kpi-title">Lead History</div>
-            <div class="kpi-value">{{ $BidsSubmitted ?? 0 }}</div>
+            <div class="kpi-value">{{ $countleadhistory  }}</div>
             <div class="kpi-sub">Under review</div>
           </div>
           <div class="kpi-icon bg-blue"><i class="bi bi-file-earmark-text"></i></div>

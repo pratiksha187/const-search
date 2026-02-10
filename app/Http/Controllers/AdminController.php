@@ -71,67 +71,7 @@ class AdminController extends Controller
     }
 
     
-    // public function updateStatus(Request $request, $id)
-    // {
-    //     $request->validate([
-    //         'status' => 'required|in:approve,reject'
-    //     ]);
-
-    //     // 1 = Approved, 2 = Rejected
-    //     $statusValue = ($request->status === 'approve') ? 1 : 2;
-
-    //     $updated = DB::table('vendor_reg')
-    //         ->where('id', $id)
-    //         ->update([
-    //             'requerd_documnet_approve' => $statusValue,
-    //             'updated_at' => now()
-    //         ]);
-
-    //     // Optional safety check
-    //     if (!$updated) {
-    //         return redirect()->back()->with('error', 'Vendor not found or already updated.');
-    //     }
-
-    //     return redirect()->back()->with(
-    //         'success',
-    //         $request->status === 'approve'
-    //             ? 'Vendor approved successfully.'
-    //             : 'Vendor rejected successfully.'
-    //     );
-    // }
-//     public function updateStatus(Request $request, $id)
-// {
-//     $request->validate([
-//         'status' => 'required|in:approve,reject'
-//     ]);
-
-//     // 1 = Approved, 2 = Rejected
-//     $statusValue = ($request->status === 'approve') ? 1 : 2;
-
-//     // ✅ vendor status mapping (change as per your DB values)
-//     // Example: 1 = Active/Approved, 2 = Rejected
-//     $vendorStatus = ($request->status === 'approve') ? 1 : 2;
-//     dd( $vendorStatus);
-//     $updated = DB::table('vendor_reg')
-//         ->where('id', $id)
-//         ->update([
-//             'requerd_documnet_approve' => $statusValue,
-//             'status' => $vendorStatus,          // ✅ here status changes too
-//             'updated_at' => now()
-//         ]);
-
-//     if (!$updated) {
-//         return redirect()->back()->with('error', 'Vendor not found or already updated.');
-//     }
-
-//     return redirect()->back()->with(
-//         'success',
-//         $request->status === 'approve'
-//             ? 'Vendor approved successfully.'
-//             : 'Vendor rejected successfully.'
-//     );
-// }
-
+ 
 public function updateStatus(Request $request, $id)
 {
     $request->validate([
@@ -351,5 +291,46 @@ public function updateStatus(Request $request, $id)
 }
 
 
-   
+public function primium_lead_intrested(Request $request)
+{
+    $query = DB::table('vendor_talk_requests as vtr')
+        ->join('vendor_reg as v', 'v.id', '=', 'vtr.vendor_id')
+        ->select(
+            'vtr.*',
+            'v.name',
+            'v.mobile',
+            'v.email',
+            'v.company_name',
+            'v.business_name',
+            'v.lead_balance'
+        )
+        ->orderBy('vtr.created_at', 'desc');
+
+    // 🔎 Search
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('v.name', 'like', "%{$search}%")
+              ->orWhere('v.mobile', 'like', "%{$search}%")
+              ->orWhere('v.email', 'like', "%{$search}%")
+              ->orWhere('vtr.message', 'like', "%{$search}%");
+        });
+    }
+
+    $requests = $query->paginate(10)->withQueryString();
+
+    return view('web.talk_requests', compact('requests'));
+}
+
+  public function updateTalkStatus(Request $request)
+{
+    DB::table('vendor_talk_requests')
+        ->where('id', $request->id)
+        ->update(['status' => $request->status]);
+
+    return redirect()->back()->with('success', 'Status updated successfully');
+}
+
+
 }

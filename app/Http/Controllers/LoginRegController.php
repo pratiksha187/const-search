@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
 use App\Helpers\ProfileCompletionHelper;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 
 class LoginRegController extends Controller
 {
@@ -139,6 +141,7 @@ class LoginRegController extends Controller
                 'gst_number'    => $request->gst_number ?? null,
                 'status'        => 'pending',
                 'password'      => Hash::make($request->password),
+                'lead_balance'  =>150,
                 'created_at'    => now(),
                 'updated_at'    => now()
             ]);
@@ -462,10 +465,13 @@ class LoginRegController extends Controller
         }
         $vendor_id = Session::get('vendor_id');
 
+        
         //   dd($vendor_id);
         $vendor = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->first();
+                    //   dd($vendor);
+        $credits=$vendor->lead_balance;       
         $profilePercent = ProfileCompletionHelper::vendor($vendor);
         // dd($profilePercent);
         $vendIds = DB::table('vendor_reg')
@@ -482,6 +488,12 @@ class LoginRegController extends Controller
         $notificationCount = $notifications->count();
             //  dd($vendor_details);        
         $ActiveLeads  = DB::table('posts')->count();   
+
+        $leadhistory =  DB::table('vendor_interests as vi')
+                    ->leftJoin('users as u', 'u.id', '=', 'vi.customer_id')
+                    ->where('vi.vendor_id', $vendor_id)->get();
+                    // dd($leadhistory );
+        $countleadhistory = count($leadhistory);
         $projects  = DB::table('posts as p')
                     ->leftJoin('state as s', 's.id', '=', 'p.state')
                     ->leftJoin('region as r', 'r.id', '=', 'p.region')
@@ -494,7 +506,7 @@ class LoginRegController extends Controller
                     ->get();       
         // dd(  );
 
-        return view('web.vendordashboard',compact('ActiveLeads','profilePercent','projects','vendor','vendor_id','notifications','notificationCount')); 
+        return view('web.vendordashboard',compact('ActiveLeads','credits','countleadhistory','profilePercent','projects','vendor','vendor_id','notifications','notificationCount')); 
     }
 
  
@@ -619,103 +631,87 @@ class LoginRegController extends Controller
 
 
     
-     /* ===========================
-       SEND OTP (MOBILE / EMAIL)
-    ============================*/
    
 public function sendOtp(Request $request)
 {
     $request->validate([
-        'mobile' => 'required|digits:10'
+        'mobile' => 'required|regex:/^[0-9+]{10,13}$/',
+        'role'   => 'required|in:customer,vendor,supplier'
     ]);
+
+    $mobile = preg_replace('/[^0-9]/', '', $request->mobile);
+
+    if (strlen($mobile) == 12 && substr($mobile, 0, 2) == '91') {
+        $mobile = substr($mobile, 2);
+    }
 
     $otp = rand(100000, 999999);
 
-    Session::put('otp', $otp);
-    Session::put('mobile', $request->mobile);
+    Cache::put('otp_'.$mobile, [
+        'otp' => $otp,
+        'role' => $request->role
+    ], now()->addMinutes(5));
+
+    $sid   = config('services.twilio.sid');
+    $token = config('services.twilio.token');
+    $from  = config('services.twilio.from');
 
     try {
-        $client = new Client(
-            config('services.twilio.sid'),
-            config('services.twilio.token')
-        );
-
+        $client = new Client($sid, $token);
         $client->messages->create(
-            '+91'.$request->mobile,
+            '+91'.$mobile,
             [
-                'from' => config('services.twilio.from'),
-                'body' => "Your ConstructKaro OTP is $otp"
+                'from' => $from,
+                'body' => "Your ConstructKaro OTP is {$otp}. Valid for 5 minutes."
             ]
         );
-
-        return response()->json([
-            'status' => true,
-            'message' => 'OTP sent successfully'
-        ]);
-
     } catch (\Exception $e) {
         return response()->json([
             'status' => false,
             'message' => $e->getMessage()
         ]);
     }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'OTP sent successfully'
+    ]);
 }
 
     /* ===========================
        VERIFY OTP
     ============================*/
-    public function verifyOtp(Request $request)
-    {
-        $request->validate([
-            'otp' => 'required|digits:6'
-        ]);
+public function verifyOtp(Request $request)
+{
+    $request->validate([
+        'otp' => 'required|digits:6'
+    ]);
 
-        if ($request->otp == Session::get('fp_otp')) {
-            return response()->json(['status' => true]);
-        }
-
+    if (!Session::has('otp')) {
         return response()->json([
             'status' => false,
-            'message' => 'Invalid OTP'
+            'message' => 'OTP expired'
         ]);
     }
 
-    /* ===========================
-       RESET PASSWORD
-    ============================*/
-    public function resetPassword(Request $request)
-    {
-        $request->validate([
-            'password' => 'required|min:6'
-        ]);
-
-        $login = Session::get('fp_login');
-        $role  = Session::get('fp_role');
-
-        $user = User::where('role', $role)
-            ->where(function ($q) use ($login) {
-                $q->where('email', $login)
-                  ->orWhere('mobile', $login);
-            })
-            ->first();
-
-        if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ]);
-        }
-
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        Session::forget(['fp_otp','fp_login','fp_role']);
-
+    if (now()->gt(Session::get('otp_expire'))) {
+        Session::forget(['otp','otp_expire']);
         return response()->json([
-            'status' => true,
-            'message' => 'Password updated successfully'
+            'status' => false,
+            'message' => 'OTP expired'
         ]);
     }
+
+    if ($request->otp == Session::get('otp')) {
+        return response()->json(['status' => true]);
+    }
+
+    return response()->json([
+        'status' => false,
+        'message' => 'Invalid OTP'
+    ]);
+}
+
 
 
 }

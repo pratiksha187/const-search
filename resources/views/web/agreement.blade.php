@@ -22,9 +22,15 @@ body{background:var(--bg);}
 </head>
 
 <body>
+  
 <div class="container py-5" style="max-width:1290px;">
+ 
+
   <div class="card border-0 shadow-sm">
     <div class="card-body p-4 p-md-5">
+      <a href="{{ route('vendordashboard') }}" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left"></i> Back
+      </a>
 
       <div class="d-flex justify-content-between flex-wrap gap-3">
         <div>

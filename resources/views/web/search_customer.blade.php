@@ -813,66 +813,36 @@
                   data-city="{{ strtolower($project->cityname ?? '') }}"
                   data-project-id="{{ $project->id }}">
                   {{-- HEADER --}}
-                  <!-- <div class="d-flex justify-content-between align-items-start mb-2">
-                     <div class="lead-title">
-                        {{ strtoupper($project->title) }}
-                     </div>
-                     <span class="verified-pill">
-                     <i class="bi bi-check-circle-fill"></i> Verified
-                     </span>
-                     {{-- CREDIT / PRIME LEAD --}}
-                     <div class="mt-2 d-flex align-items-center gap-2 flex-wrap">
-                        @if(($project->lead_credit_label ?? '') === 'Prime Lead')
-                           <span class="credit-badge prime">
-                                 <i class="bi bi-lightning-charge-fill me-1"></i> Prime Lead
-                           </span>
-                        @elseif(!empty($project->lead_credit_value))
-                           <span class="credit-badge credits">
-                                 <i class="bi bi-coin me-1"></i> {{ $project->lead_credit_value }} Credits
-                           </span>
-                        @endif
-                     </div>
-                     @if($project->get_vendor == 1)
-                        <div class="corner-ribbon">
-                           Vendor Matched
-                        </div>
-                     @elseif($project->get_vendor == 2)
-                        <div class="corner-ribbon-coming">
-                           Coming Soon
-                        </div>
-                     @endif
-
-
-                  </div> -->
+               
                   {{-- HEADER --}}
-<div class="lead-head">
-    <div class="lead-title-wrap">
-        <div class="lead-title">{{ strtoupper($project->title) }}</div>
+                    <div class="lead-head">
+                        <div class="lead-title-wrap">
+                            <div class="lead-title">{{ strtoupper($project->title) }}</div>
 
-        <div class="lead-badges">
-            <span class="verified-pill">
-                <i class="bi bi-check-circle-fill"></i> Verified
-            </span>
+                            <div class="lead-badges">
+                                <span class="verified-pill">
+                                    <i class="bi bi-check-circle-fill"></i> Verified
+                                </span>
 
-            @if(($project->lead_credit_label ?? '') === 'Prime Lead')
-                <span class="credits-pill prime">
-                    <i class="bi bi-lightning-charge-fill"></i> Prime Lead
-                </span>
-            @elseif(!empty($project->lead_credit_value))
-                <span class="credits-pill credits">
-                    <i class="bi bi-coin"></i> {{ $project->lead_credit_value }} Credits
-                </span>
-            @endif
-        </div>
-    </div>
+                                @if(($project->lead_credit_label ?? '') === 'Prime Lead')
+                                    <span class="credits-pill prime">
+                                        <i class="bi bi-lightning-charge-fill"></i> Prime Lead
+                                    </span>
+                                @elseif(!empty($project->lead_credit_value))
+                                    <span class="credits-pill credits">
+                                        <i class="bi bi-coin"></i> {{ $project->lead_credit_value }} Credits
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
 
-    {{-- CORNER RIBBONS --}}
-    @if($project->get_vendor == 1)
-        <div class="corner-ribbon">Vendor Matched</div>
-    @elseif($project->get_vendor == 2)
-        <div class="corner-ribbon-coming">Coming Soon</div>
-    @endif
-</div>
+                        {{-- CORNER RIBBONS --}}
+                        @if($project->get_vendor == 1)
+                            <div class="corner-ribbon">Vendor Matched</div>
+                        @elseif($project->get_vendor == 2)
+                            <div class="corner-ribbon-coming">Coming Soon</div>
+                        @endif
+                    </div>
 
                   {{-- ROLE --}}
                   <div class="lead-role mb-1">

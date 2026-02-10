@@ -26,28 +26,7 @@ class VendorAgreementController extends Controller
         ]);
     }
 
-    // public function accept(Request $request)
-    // {
-    //     $vendorId = session('vendor_id');
-
-    //     if(!$vendorId){
-    //         return redirect()->route('login_register');
-    //     }
-
-    //     $request->validate([
-    //         'agree' => 'required|in:1',
-    //         'version' => 'required|string',
-    //     ]);
-
-    //     DB::table('vendor_reg')->where('id', $vendorId)->update([
-    //         'agreement_accepted_at' => now(),
-    //         'agreement_version' => $request->version,
-    //         'updated_at' => now(), // only if your table has timestamps
-    //     ]);
-
-    //     return redirect()->route('vendordashboard')->with('success', 'Agreement accepted successfully.');
-    // }
-
+ 
    public function accept(Request $request)
     {
         $vendorId = session('vendor_id');

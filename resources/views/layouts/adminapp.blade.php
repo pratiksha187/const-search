@@ -179,9 +179,16 @@
             </a>
 
             <a href="{{ route('supplier_verification') }}" class="menu-item">
-                <i class="bi bi-journal-bookmark-fill"></i>
+                <i class="bi bi-file-earmark-check-fill"></i>
                  Supplier Verification
             </a>
+
+            <a href="{{ route('primium_lead_intrested') }}" class="menu-item">
+                <i class="bi bi-file-earmark-check-fill"></i>
+                 Supplier Verification
+            </a>
+
+
 
         </nav>
 

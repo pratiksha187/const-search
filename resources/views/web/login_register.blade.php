@@ -194,27 +194,6 @@
 
 </div>
 
-<!-- FORGOT PASSWORD MODAL -->
-<!-- <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content rounded-4">
-            <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">Change Password</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-                <input class="form-control mb-3" id="fp-login" placeholder="Registered Mobile / Email">
-                <input type="password" class="form-control mb-3" id="fp-password" placeholder="New Password">
-                <input type="password" class="form-control mb-3" id="fp-confirm" placeholder="Confirm Password">
-
-                <button class="btn btn-primary w-100" id="change-password-btn">
-                    Change Password
-                </button>
-            </div>
-        </div>
-    </div>
-</div> -->
 <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4">
@@ -408,63 +387,29 @@ $(function(){
 </script>
 <script>
 $('#send-otp-btn').click(function () {
-    fetch('/forgot-password/send-otp', {
+
+    $.ajax({
+        url: '/forgot-password/send-otp',
         method: 'POST',
-        headers: {
-            'Content-Type':'application/json',
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        data: {
+            mobile: $('#fp-login').val(),
+            role: $('#fp-role').val(),
+            _token: $('meta[name="csrf-token"]').attr('content')
         },
-        body: JSON.stringify({
-            login: $('#fp-login').val(),
-            role: $('#fp-role').val()
-        })
-    }).then(r=>r.json()).then(res=>{
-        if(res.status){
-            $('#fp-step-1').addClass('d-none');
-            $('#fp-step-2').removeClass('d-none');
-        }else alert(res.message);
-    });
-});
-
-
-$('#verify-otp-btn').click(function () {
-    fetch('/forgot-password/verify-otp', {
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+        success: function(res){
+            if(res.status){
+                $('#fp-step-1').addClass('d-none');
+                $('#fp-step-2').removeClass('d-none');
+            } else {
+                alert(res.message);
+            }
         },
-        body:JSON.stringify({ otp: $('#fp-otp').val() })
-    }).then(r=>r.json()).then(res=>{
-        if(res.status){
-            $('#fp-step-2').addClass('d-none');
-            $('#fp-step-3').removeClass('d-none');
-        }else alert('Invalid OTP');
+        error: function(xhr){
+            console.log(xhr.responseText);
+            alert('Something went wrong');
+        }
     });
-});
 
-
-$('#reset-password-btn').click(function () {
-
-    let p = $('#fp-password').val();
-    let c = $('#fp-confirm').val();
-
-    if(p !== c){
-        alert('Passwords do not match');
-        return;
-    }
-
-    fetch('/forgot-password/reset', {
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-            'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-        },
-        body:JSON.stringify({ password: p })
-    }).then(r=>r.json()).then(res=>{
-        alert(res.message);
-        if(res.status) location.reload();
-    });
 });
 
 </script>

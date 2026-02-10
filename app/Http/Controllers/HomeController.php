@@ -16,8 +16,9 @@ class HomeController extends Controller
         $vendors = DB::table('vendor_reg')->count();
         $cities =DB::table('city')->count();
         $posts= DB::table('posts')->count();
+        $supplier = DB::table('supplier_reg')->count();
         //  dd( $vendors);
-        return view('welcome',compact('vendors','posts','cities'));
+        return view('welcome',compact('vendors','posts','cities','supplier'));
     }
 
     public function aboutus(){
@@ -471,7 +472,7 @@ class HomeController extends Controller
     {
         $cust_id   = (int) $request->cust_id;
         $vendor_id = (int) Session::get('vendor_id');
-
+// dd($cust_id );
         if (!$vendor_id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\VendorTalkRequest;
 use App\Helpers\ProfileCompletionHelper;
 class VenderController extends Controller
 {
@@ -220,9 +220,9 @@ class VenderController extends Controller
     public function checkLeadBalance(Request $request)
     {
         $vendorId = session('vendor_id');
-        //  dd( $vendorId ); 
-        $custId   = $request->customer_id;
       
+        $custId   = $request->customer_id;
+    //    dd( $custId ); 
         /* ===============================
         1️⃣ CHECK ALREADY ENQUIRED
         ================================ */
@@ -230,7 +230,7 @@ class VenderController extends Controller
             ->where('vendor_id', $vendorId)
             ->where('customer_id', $custId)
             ->exists();
-        // dd($already);
+       
         if ($already) {
 
             $customer = DB::table('users')->where('id', $custId)->first();
@@ -391,5 +391,40 @@ class VenderController extends Controller
             'success' => true,
             'message' => 'Rating submitted successfully'
         ]);
+    }
+
+    public function talkSubmit(Request $request)
+    {
+        // dd($request);
+        $request->validate([
+            'message'   => 'required|string',
+            'call_time' => 'nullable|string',
+        ]);
+
+        $vendor_id   = Session::get('vendor_id');
+        $post_id = $request->post_id;
+
+        if (!$vendor_id) {
+            return redirect()->back()->with('error', 'Please login first.');
+        }
+
+        // Prevent duplicate requests
+        $alreadyExists = VendorTalkRequest::where('vendor_id', $vendor_id)
+            ->where('post_id', $post_id)
+            ->exists();
+
+        if ($alreadyExists) {
+            return redirect()->back()->with('already_exists', 1);
+        }
+
+        VendorTalkRequest::create([
+            'vendor_id'   => $vendor_id,
+            'post_id' => $post_id,
+            'message'     => $request->message,
+            'call_time'   => $request->call_time,
+            'status'      => 'pending'
+        ]);
+
+        return redirect()->back()->with('success', 1);
     }
 }

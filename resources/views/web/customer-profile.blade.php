@@ -10,6 +10,26 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
+    /* ✅ sticky wrapper for full right side */
+.sticky-right{
+    position: sticky;
+    top: 95px; /* header fixed height */
+    align-self: flex-start;
+}
+
+/* ✅ IMPORTANT: don't keep sticky inside another sticky */
+.side-box{
+    position: static; /* remove sticky from here */
+}
+
+/* Mobile: disable sticky */
+@media(max-width: 992px){
+    .sticky-right{
+        position: static;
+        top: auto;
+    }
+}
+
 :root{
     --primary:#4f46e5;
     --primary2:#6366f1;
@@ -164,6 +184,12 @@
     border-radius:12px;
     font-weight:800;
 }
+@media (min-width: 576px) {
+    .modal {
+        --bs-modal-margin: 10.75rem;
+        --bs-modal-box-shadow: var(--bs-box-shadow);
+    }
+}
 </style>
 
 @php
@@ -241,54 +267,74 @@
         </div>
 
         {{-- RIGHT --}}
-        <div class="col-lg-4">
-            <div class="side-box mb-3">
-                <h5>Project Value</h5>
+       {{-- RIGHT --}}
+<div class="col-lg-4">
+    <div class="sticky-right">  {{-- ✅ wrapper sticky --}}
 
-                <div class="mb-2">
-                    <div class="text-muted">Minimum Project Value</div>
-                    <div class="value-text">{{ $customer_data->budget_range_name }}</div>
+        <div class="side-box mb-3">
+            <h5>Project Value</h5>
 
-                    {{-- Credits Required --}}
-                    <div class="mt-2">
-                        @if(($customer_data->lead_credit_label ?? '') === 'Prime Lead')
-                            <span class="credit-pill light prime">
-                                <i class="bi bi-lightning-charge-fill"></i> Prime Lead
-                            </span>
-                        @elseif(!empty($customer_data->lead_credit_value))
-                            <span class="credit-pill light">
-                                <i class="bi bi-coin"></i> {{ $customer_data->lead_credit_value }} Credits Required
-                            </span>
-                        @endif
-                    </div>
+            <div class="mb-2">
+                <div class="text-muted">Minimum Project Value</div>
+                <div class="value-text">{{ $customer_data->budget_range_name }}</div>
+
+                {{-- Credits Required --}}
+                <div class="mt-2">
+                    @if(($customer_data->lead_credit_label ?? '') === 'Prime Lead')
+                        <span class="credit-pill light prime">
+                            <i class="bi bi-lightning-charge-fill"></i> Prime Lead
+                        </span>
+                    @elseif(!empty($customer_data->lead_credit_value))
+                        <span class="credit-pill light">
+                            <i class="bi bi-coin"></i> {{ $customer_data->lead_credit_value }} Credits Required
+                        </span>
+                    @endif
                 </div>
-
-                {{-- Attachments --}}
-                @if(count($filesArr) > 0)
-                    <hr>
-                    <div class="text-muted mb-2 fw-semibold">Attachments</div>
-                    <div class="d-grid gap-2">
-                        @foreach($filesArr as $file)
-                            @php
-                                $fileUrl = asset('storage/'.$file);
-                                $fileName = basename($file);
-                            @endphp
-                            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm file-btn">
-                                <i class="bi bi-paperclip me-1"></i> {{ $fileName }}
-                            </a>
-                        @endforeach
-                    </div>
-                @endif
             </div>
 
-            <button class="btn-interest mb-2" onclick="handleInterested()">
+            {{-- Attachments --}}
+            @if(count($filesArr) > 0)
+                <hr>
+                <div class="text-muted mb-2 fw-semibold">Attachments</div>
+                <div class="d-grid gap-2">
+                    @foreach($filesArr as $file)
+                        @php
+                            $fileUrl = asset('storage/'.$file);
+                            $fileName = basename($file);
+                        @endphp
+                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm file-btn">
+                            <i class="bi bi-paperclip me-1"></i> {{ $fileName }}
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+
+        {{-- Button Logic --}}
+        @if(($customer_data->lead_credit_label ?? '') === 'Prime Lead')
+
+            <button class="btn btn-success mb-2 w-100"
+                    data-bs-toggle="modal"
+                    data-bs-target="#talkModal">
+                💬 Talk To Us
+            </button>
+
+        @else
+
+            <button class="btn-interest mb-2"
+                    onclick="handleInterested()">
                 🚀 Show Interest & Unlock Contact
             </button>
 
-            <div class="note-box">
-                <strong>Note:</strong> Contact details will be shared only after vendor acceptance.
-            </div>
+        @endif
+
+        <div class="note-box">
+            <strong>Note:</strong> Contact details will be shared only after vendor acceptance.
         </div>
+
+    </div>
+</div>
+
 
     </div>
 </div>
@@ -359,207 +405,7 @@
 </div>
 
 {{-- ===================== PAYMENT MODAL ===================== --}}
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
-    <div class="modal-content border-0">
-@php
-  $bid = (int) ($customer_data->budget_range_id ?? 0);
 
-  // budget_id => package amount
-  $budgetPackages = [
-      1 => 799,
-      2 => 3999,
-      3 => 7499,
-  ];
-
-  $isHighBudget = in_array($bid, [4,5,6,7], true);
-  $packageAmount = $budgetPackages[$bid] ?? null;
-@endphp
-
-      <div class="modal-header">
-        <h5 class="modal-title">Show Interest in {{ $customer_data->title }}</h5>
-        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <div class="modal-body">
-        <!-- Social sharing incentive section -->
-        <div class="alert alert-info mb-4">
-          <h6>🎁 Earn Free Leads!</h6>
-          <p>Share your interest on social media to get free leads:</p>
-
-          <div class="row g-3">
-            <!-- Instagram -->
-          
-            <div class="col-md-6">
-                <div class="free-card">
-                    <h6>📸 Instagram</h6>
-                    <p>Add a story & tag us</p>
-
-                    @if(in_array('instagram', $freeLeadPlatforms))
-                        {{-- ALREADY APPLIED --}}
-                        <button class="free-btn disabled" disabled>
-                            Already Applied
-                        </button>
-
-                        <div class="text-success small fw-semibold mt-2">
-                            ✔ Screenshot already submitted
-                        </div>
-                    @else
-                        {{-- NOT APPLIED --}}
-                        <button class="free-btn" onclick="toggleUpload('instagram')">
-                            Claim Free Lead
-                        </button>
-
-                        <form class="upload-box d-none"
-                            id="upload-instagram"
-                            method="POST"
-                            enctype="multipart/form-data"
-                            action="{{ route('vendor.freelead.upload') }}">
-                            @csrf
-                            <input type="hidden" name="platform" value="instagram">
-
-                            <label class="form-label small fw-semibold mt-2">
-                                Upload Screenshot
-                            </label>
-                            <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
-
-                            <button class="btn btn-success btn-sm w-100">
-                                Submit Screenshot
-                            </button>
-                        </form>
-                    @endif
-                </div>
-            </div>
-            <!-- Facebook -->
-          
-             <div class="col-md-6">
-            <div class="free-card">
-                <h6>👍 Facebook</h6>
-                <p>Share on Facebook</p>
-
-                @if(in_array('facebook', $freeLeadPlatforms))
-                    {{-- ALREADY APPLIED --}}
-                    <button class="free-btn disabled" disabled>
-                        Already Applied
-                    </button>
-
-                    <div class="text-success small fw-semibold mt-2">
-                        ✔ Screenshot already submitted
-                    </div>
-                @else
-                    {{-- NOT APPLIED --}}
-                    <button class="free-btn" onclick="toggleUpload('facebook')">
-                        Claim Free Lead
-                    </button>
-
-                    <form class="upload-box d-none"
-                        id="upload-facebook"
-                        method="POST"
-                        enctype="multipart/form-data"
-                        action="{{ route('vendor.freelead.upload') }}">
-                        @csrf
-                        <input type="hidden" name="platform" value="facebook">
-
-                        <label class="form-label small fw-semibold mt-2">
-                            Upload Screenshot
-                        </label>
-                        <input type="file"
-                            name="screenshot"
-                            class="form-control mb-2"
-                            required
-                            accept="image/*">
-
-                        <button class="btn btn-success btn-sm w-100">
-                            Submit Screenshot
-                        </button>
-                    </form>
-                @endif
-            </div>
-        </div>
-          </div>
-        </div>
-
-        <!-- Pricing section -->
-        <div class="pricing-header">
-          <h4>Choose Your Lead Package</h4>
-          <p>Pay once • No commission • Verified leads only</p>
-        </div>
-
-        <div class="payment-section-modern " id="paymentSection">
-          <div class="row g-4">
-            <!-- SINGLE LEAD -->
-            <div class="col-12 col-md-4">
-              <div class="plan-card">
-                <div class="plan-title">Single Lead</div>
-                <div class="plan-price">₹499<span class="gst">+ GST</span></div>
-                <p class="plan-meta">1 verified lead</p>
-                <ul class="plan-features">
-                  <li>✔ Full customer contact</li>
-                  <li>✔ Genuine requirement</li>
-                  <li>✔ No commission</li>
-                </ul>
-                <button
-                  class="btn btn-outline w-100 buy-plan-btn"
-                  data-plan="single"
-                  data-amount="499"
-                  data-cust="{{ $customer_data->id }}">
-                  Pay & Unlock
-                </button>
-              </div>
-            </div>
-
-            <!-- STARTER PACKAGE (RECOMMENDED) -->
-            <div class="col-12 col-md-4">
-              <div class="plan-card recommended">
-                <div class="recommended-badge">Best Value</div>
-                <div class="plan-title">Starter Package</div>
-                <div class="plan-price">₹1,999 <span class="gst">+ GST</span></div>
-                <p class="plan-meta">10 verified leads • <strong>You save ₹2,991</strong></p>
-                <ul class="plan-features">
-                  <li>✔ ₹199 per lead</li>
-                  <li>✔ Priority access</li>
-                  <li>✔ No middleman</li>
-                </ul>
-                <button
-                  class="btn btn-primary w-100 buy-plan-btn"
-                  data-plan="starter"
-                  data-amount="1999"
-                  data-cust="{{ $customer_data->id }}">
-                  Buy Starter Pack
-                </button>
-              </div>
-            </div>
-
-            <!-- GROW PACKAGE -->
-            <div class="col-12 col-md-4">
-              <div class="plan-card">
-                <div class="plan-title">Grow Package</div>
-                <div class="plan-price">₹2,999 <span class="gst">+ GST</span></div>
-                <p class="plan-meta">25 verified leads • <strong>You save ₹9,476</strong></p>
-                <ul class="plan-features">
-                  <li>✔ ₹120 per lead</li>
-                  <li>✔ Maximum savings</li>
-                  <li>✔ Business growth pack</li>
-                </ul>
-                <button
-                  class="btn btn-outline w-100 buy-plan-btn"
-                  data-plan="grow"
-                  data-amount="2999"
-                  data-cust="{{ $customer_data->id }}">
-                  Buy Grow Pack
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="modal fade" id="customerContactModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -597,7 +443,47 @@
         </div>
     </div>
 </div>
+<!-- Talk To Us Modal -->
+<div class="modal fade" id="talkModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title">Talk To Us</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
+      <form action="{{route('vendor.talk.submit')}}" method="POST">
+        @csrf
+        <input type="hidden" 
+            name="post_id" 
+            value="{{ $customer_data->id }}">
+
+        <div class="modal-body">
+          
+          <div class="mb-3">
+            <label class="form-label">Your Message</label>
+            <textarea name="message" class="form-control" rows="4" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Preferred Call Time</label>
+            <input type="text" name="call_time" class="form-control" placeholder="e.g. 4 PM - 6 PM">
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">
+              Submit Request
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>
 
 {{-- JS LIBS (keep only if not already in layout) --}}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -606,282 +492,234 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+
     // ✅ Customer user id (login check)
     window.CUSTOMERID = {{ (int)($customer_data->cust_id ?? 0) }};
-</script>
 
-<script>
-/* ===================== HELPERS ===================== */
+    /* ===================== HELPERS ===================== */
 
-function openModal(id){
-    const el = document.getElementById(id);
-    if(!el) return;
-    bootstrap.Modal.getOrCreateInstance(el).show();
-}
-
-function hideModal(id){
-    const el = document.getElementById(id);
-    if(!el) return;
-    const inst = bootstrap.Modal.getInstance(el);
-    if(inst) inst.hide();
-}
-
-/* ===================== MAIN: HANDLE INTEREST ===================== */
-function handleInterested() {
-
-    // ✅ If not logged in -> open auth modal
-    if (!window.CUSTOMERID || window.CUSTOMERID === 0) {
-        openModal('authModal');
-        return;
+    function openModal(id){
+        const el = document.getElementById(id);
+        if(!el) return;
+        bootstrap.Modal.getOrCreateInstance(el).show();
     }
 
-    // ✅ Check lead balance / already unlocked
-    $.ajax({
-        url: "{{ route('vendor.check_lead_balance') }}",
-        method: "GET",
-        data: { customer_id: window.CUSTOMERID },
+    function hideModal(id){
+        const el = document.getElementById(id);
+        if(!el) return;
+        const inst = bootstrap.Modal.getInstance(el);
+        if(inst) inst.hide();
+    }
 
-        success: function (res) {
+    /* ===================== MAIN: HANDLE INTEREST ===================== */
+    function handleInterested() {
 
-            // ✅ Already unlocked
-            if (res.already_exists === true) {
+        if (!window.CUSTOMERID || window.CUSTOMERID === 0) {
+            openModal('authModal');
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('vendor.check_lead_balance') }}",
+            method: "GET",
+            data: { customer_id: window.CUSTOMERID },
+
+            success: function (res) {
+
+                if (res.already_exists === true) {
+
+                    if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+                    if (res.customer_email)  $('#customerEmail').text(res.customer_email);
+
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Already Unlocked',
+                        text: 'You have already unlocked this customer.',
+                        confirmButtonColor: '#2563eb'
+                    }).then(() => {
+                        openModal('customerContactModal');
+                    });
+
+                    return;
+                }
+
+                if ((res.balance ?? 0) > 0) {
+                    openModal('vendorModal');
+                    return;
+                }
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Insufficient Balance',
+                    text: 'You do not have enough lead balance. Please add credits.',
+                    confirmButtonColor: '#f25c05'
+                }).then(() => {
+                    openModal('paymentModal');
+                });
+            },
+
+            error: function () {
+                Swal.fire('Error','Failed to check lead balance','error');
+            }
+        });
+    }
+
+    /* ===================== FREE LEAD UPLOAD TOGGLE ===================== */
+    function toggleUpload(platform) {
+        document.querySelectorAll('.upload-box').forEach(box => box.classList.add('d-none'));
+        const box = document.getElementById('upload-' + platform);
+        if (box) box.classList.toggle('d-none');
+    }
+
+    /* ===================== SUBMIT INTEREST FORM ===================== */
+    function submitInterest() {
+
+        const requiredCredits = parseInt($('#required_credits').val() || 0);
+       
+        const leadType        = $('#lead_type').val() || 'credit';
+        //  alert(leadType);
+        const payload = $('#interestForm').serialize() +
+            '&required_credits=' + encodeURIComponent(requiredCredits) +
+            '&lead_type=' + encodeURIComponent(leadType);
+
+        $.ajax({
+            url: "{{ route('vendor.interest.check') }}",
+            method: "POST",
+            data: payload,
+
+            success: function (res) {
+
+                if(res.payment_required === true && res.redirect_url){
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Not enough credits',
+                        text: res.message || 'Please buy credits to unlock.',
+                        confirmButtonText: 'Buy Credits',
+                        confirmButtonColor: '#f25c05'
+                    }).then(() => {
+                        window.location.href = res.redirect_url;
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Enquiry Submitted',
+                    text: 'Your enquiry has been submitted successfully.',
+                    confirmButtonColor: '#10b981'
+                });
+
+                hideModal('vendorModal');
 
                 if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
                 if (res.customer_email)  $('#customerEmail').text(res.customer_email);
 
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Already Unlocked',
-                    text: 'You have already unlocked this customer.',
-                    confirmButtonColor: '#2563eb'
-                }).then(() => {
-                    openModal('customerContactModal');
-                });
+                openModal('customerContactModal');
+            },
 
-                return;
+            error: function () {
+                Swal.fire('Error','Something went wrong','error');
             }
-
-            // ✅ Has balance (or enough credits)
-            if ((res.balance ?? 0) > 0) {
-                openModal('vendorModal');
-                return;
-            }
-
-            // ❌ No balance
-            Swal.fire({
-                icon: 'warning',
-                title: 'Insufficient Balance',
-                text: 'You do not have enough lead balance. Please add credits.',
-                confirmButtonColor: '#f25c05'
-            }).then(() => {
-                openModal('paymentModal');
-            });
-        },
-
-        error: function () {
-            Swal.fire('Error','Failed to check lead balance','error');
-        }
-    });
-}
-
-/* ===================== FREE LEAD UPLOAD TOGGLE ===================== */
-function toggleUpload(platform) {
-    document.querySelectorAll('.upload-box').forEach(box => box.classList.add('d-none'));
-    const box = document.getElementById('upload-' + platform);
-    if (box) box.classList.toggle('d-none');
-}
-
-/* ===================== SUBMIT INTEREST FORM ===================== */
-// function submitInterest() {
-
-//     $.ajax({
-//         url: "{{ route('vendor.interest.check') }}",
-//         method: "POST",
-//         data: $('#interestForm').serialize(),
-
-//         success: function (res) {
-
-//             Swal.fire({
-//                 icon: 'success',
-//                 title: 'Enquiry Submitted',
-//                 text: 'Your enquiry has been submitted successfully.',
-//                 confirmButtonColor: '#10b981'
-//             });
-
-//             // Close vendor modal
-//             hideModal('vendorModal');
-
-//             // Fill and open contact modal
-//             if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
-//             if (res.customer_email)  $('#customerEmail').text(res.customer_email);
-
-//             openModal('customerContactModal');
-//         },
-
-//         error: function () {
-//             Swal.fire('Error','Something went wrong','error');
-//         }
-//     });
-// }
-function submitInterest() {
-
-    // ✅ read required credits from hidden field
-    const requiredCredits = parseInt($('#required_credits').val() || 0);
-    const leadType        = $('#lead_type').val() || 'credit';
-
-    // ✅ Create payload from form
-    const payload = $('#interestForm').serialize() +
-        '&required_credits=' + encodeURIComponent(requiredCredits) +
-        '&lead_type=' + encodeURIComponent(leadType);
-
-    $.ajax({
-        url: "{{ route('vendor.interest.check') }}",
-        method: "POST",
-        data: payload,
-
-        // success: function (res) {
-
-        //     Swal.fire({
-        //         icon: 'success',
-        //         title: 'Enquiry Submitted',
-        //         text: 'Your enquiry has been submitted successfully.',
-        //         confirmButtonColor: '#10b981'
-        //     });
-
-        //     hideModal('vendorModal');
-
-        //     if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
-        //     if (res.customer_email)  $('#customerEmail').text(res.customer_email);
-
-        //     openModal('customerContactModal');
-        // },
-        success: function (res) {
-
-            // ✅ If backend says redirect (not enough credits / prime lead)
-            if(res.payment_required === true && res.redirect_url){
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Not enough credits',
-                    text: res.message || 'Please buy credits to unlock.',
-                    confirmButtonText: 'Buy Credits',
-                    confirmButtonColor: '#f25c05'
-                }).then(() => {
-                    window.location.href = res.redirect_url;
-                });
-                return;
-            }
-
-            // ✅ Normal success
-            Swal.fire({
-                icon: 'success',
-                title: 'Enquiry Submitted',
-                text: 'Your enquiry has been submitted successfully.',
-                confirmButtonColor: '#10b981'
-            });
-
-            hideModal('vendorModal');
-
-            if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
-            if (res.customer_email)  $('#customerEmail').text(res.customer_email);
-
-            openModal('customerContactModal');
-        },
-
-
-        error: function () {
-            Swal.fire('Error','Something went wrong','error');
-        }
-    });
-}
-
-/* ===================== DOCUMENT READY ===================== */
-$(document).ready(function () {
-
-    // ✅ CLAIM FREE LEAD (only if .claim-lead-btn exists)
-    $(document).on('click', '.claim-lead-btn', function() {
-        const platform = $(this).data('platform');
-
-        $.post("{{ route('claim_free_lead') }}", {
-            _token: "{{ csrf_token() }}",
-            platform: platform
-        }, function(res){
-            if(res.status || res.success){
-                Swal.fire('Success', '1 free lead added!', 'success').then(()=>location.reload());
-            }else{
-                Swal.fire('Oops', res.message || 'Failed to claim lead', 'error');
-            }
-        }).fail(function(){
-            Swal.fire('Error','Server error','error');
         });
-    });
+    }
 
-    // ✅ BUY PLAN (Razorpay)
-    $(document).on('click', '.buy-plan-btn', function() {
+    /* ===================== DOCUMENT READY ===================== */
+    $(document).ready(function () {
 
-        const custId = $(this).data('cust');   // post id OR customer id (as per your backend)
-        const amount = $(this).data('amount');
-        const plan   = $(this).data('plan');
+        // ✅ CLAIM FREE LEAD
+        $(document).on('click', '.claim-lead-btn', function() {
+            const platform = $(this).data('platform');
 
-        $.post("{{ route('razorpay.createOrder') }}", {
-            _token: "{{ csrf_token() }}",
-            cust_id: custId,
-            plan: plan,
-            amount: amount
-        }, function(res) {
-
-            if(!res.success){
-                Swal.fire('Error', 'Order creation failed', 'error');
-                return;
-            }
-
-            const options = {
-                key: res.key,
-                amount: res.amount,
-                currency: "INR",
-                name: "ConstructKaro",
-                description: plan + " package",
-                order_id: res.order_id,
-                handler: function (response) {
-
-                    $.post("{{ route('razorpay.verify') }}", {
-                        _token: "{{ csrf_token() }}",
-                        razorpay_payment_id: response.razorpay_payment_id,
-                        razorpay_order_id: response.razorpay_order_id,
-                        razorpay_signature: response.razorpay_signature,
-                        cust_id: btoa(custId),
-                        plan: plan,
-                        amount: amount
-                    }, function(v) {
-
-                        if(v.success){
-                            hideModal('paymentModal');
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Payment Successful',
-                                text: 'Credits added successfully.',
-                                confirmButtonColor: '#10b981'
-                            }).then(()=>location.reload());
-
-                        }else{
-                            Swal.fire('Error','Verification failed','error');
-                        }
-                    }).fail(function(){
-                        Swal.fire('Error','Verification failed','error');
-                    });
-                },
-                theme: { color: "#2563eb" }
-            };
-
-            new Razorpay(options).open();
-
-        }).fail(function(){
-            Swal.fire('Error', 'Order creation failed', 'error');
+            $.post("{{ route('claim_free_lead') }}", {
+                _token: "{{ csrf_token() }}",
+                platform: platform
+            }, function(res){
+                if(res.status || res.success){
+                    Swal.fire('Success', '1 free lead added!', 'success')
+                        .then(()=>location.reload());
+                }else{
+                    Swal.fire('Oops', res.message || 'Failed to claim lead', 'error');
+                }
+            }).fail(function(){
+                Swal.fire('Error','Server error','error');
+            });
         });
+
+        // ✅ BUY PLAN (Razorpay)
+        $(document).on('click', '.buy-plan-btn', function() {
+
+            const custId = $(this).data('cust');
+            const amount = $(this).data('amount');
+            const plan   = $(this).data('plan');
+
+            $.post("{{ route('razorpay.createOrder') }}", {
+                _token: "{{ csrf_token() }}",
+                cust_id: custId,
+                plan: plan,
+                amount: amount
+            }, function(res) {
+
+                if(!res.success){
+                    Swal.fire('Error', 'Order creation failed', 'error');
+                    return;
+                }
+
+                const options = {
+                    key: res.key,
+                    amount: res.amount,
+                    currency: "INR",
+                    name: "ConstructKaro",
+                    description: plan + " package",
+                    order_id: res.order_id,
+                    handler: function (response) {
+
+                        $.post("{{ route('razorpay.verify') }}", {
+                            _token: "{{ csrf_token() }}",
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                            cust_id: btoa(custId),
+                            plan: plan,
+                            amount: amount
+                        }, function(v) {
+
+                            if(v.success){
+                                hideModal('paymentModal');
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Payment Successful',
+                                    text: 'Credits added successfully.',
+                                    confirmButtonColor: '#10b981'
+                                }).then(()=>location.reload());
+
+                            }else{
+                                Swal.fire('Error','Verification failed','error');
+                            }
+                        });
+                    },
+                    theme: { color: "#2563eb" }
+                };
+
+                new Razorpay(options).open();
+
+            });
+        });
+
+        /* ===================== TALK TO US NORMAL ALERT ===================== */
+
+        @if(session('already_exists'))
+            alert("You have already submitted a Talk To Us request for this Prime Lead.");
+        @endif
+
+        @if(session('success'))
+            alert("Your Talk To Us request has been submitted successfully.");
+        @endif
+
     });
 
-});
 </script>
+
 
 
 @endsection

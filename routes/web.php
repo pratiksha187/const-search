@@ -179,6 +179,8 @@ Route::get('/supplier-filter', [SuppliersController::class, 'supplierFilter'])
 
 Route::get('/productenquiry', [SuppliersController::class, 'productenquiry'])->name('productenquiry');
 Route::get('/check_lead_balance', [VenderController::class, 'checkLeadBalance'])->name('vendor.check_lead_balance');
+
+
 Route::get('/vendor/check-already-interest', [VenderController::class, 'checkAlreadyInterest'])
     ->name('vendor.check_already_interest');
 
@@ -217,7 +219,10 @@ Route::get('/supplier/profile/{id}', [SuppliersController::class, 'supplierprofi
     
 Route::get('/vendor/profile/id/{id}', [VenderController::class, 'vendorprofileid'])
     ->name('vendor.profile.id');
- 
+ Route::post('/vendor/talk-submit', 
+    [VenderController::class, 'talkSubmit']
+)->name('vendor.talk.submit');
+
     
 Route::get('/customer/profile/id/{id}', [HomeController::class, 'customerprofileid'])
     ->name('customer.profile.id');    
@@ -391,6 +396,12 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::get('vendor_verification', [AdminController::class, 'vendor_verification'])->name('vendor_verification');
     Route::get('supplier_verification', [AdminController::class, 'supplier_verification'])->name('supplier_verification');
 
+    Route::get('primium_lead_intrested', [AdminController::class, 'primium_lead_intrested'])->name('primium_lead_intrested');
+Route::post('/admin/talk-status-update', 
+    [AdminController::class, 'updateTalkStatus']
+)->name('admin.talk.status.update');
+
+    
     Route::post('/send-suppliersenquiry', [HomeController::class, 'suppliersenquirystore'])
      ->name('enquiry.store');
 
@@ -425,7 +436,7 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "123456789";
+    $password = "8660730031";
     $hash = Hash::make($password);
 
     return $hash; 

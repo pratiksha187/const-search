@@ -783,25 +783,418 @@ class SuppliersController extends Controller
     }
 
 
+// public function supplierserch()
+// {
+//     $notificationCount =0;
+//     $notifications =0;
+//     $customer_id = Session::get('customer_id');
+//     $cust_data = DB::table('users')->where('id',$customer_id)->first();
+//     $vendor_id   = Session::get('vendor_id');
+//     $supplier_id = Session::get('supplier_id');
+//     // dd($customer_id);
+//     /* ===============================
+//        MASTER DATA
+//     =============================== */
+//     $credit_days       = DB::table('credit_days')->get();
+//     $states = DB::table('state')->orderBy('name')->get();
+
+//     $delivery_type     = DB::table('delivery_type')->get();
+//     $maximum_distances = DB::table('maximum_distances')->get();
+//     $material_categories = DB::table('material_categories')->get();
+//     // dd($credit_days);
+//     /* ===============================
+//        SUPPLIERS + CATEGORIES
+//     =============================== */
+//     $supplier_data = DB::table('supplier_reg as s')
+//         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+//         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+//           ->leftJoin('city as c', 'c.id', '=', 's.city_id')
+//             ->leftJoin('region as r', 'r.id', '=', 's.region_id')
+//             ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
+//         ->select(
+//             's.*',
+//             'cd.days as credit_days_value','c.name as cityname','r.name as regionname','sn.name as statename',
+//             DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
+//             DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
+//         )
+//         ->groupBy('s.id', 'cd.days')
+//         ->orderBy('s.id', 'desc')
+//         ->get();
+//         // dd($supplier_data);
+//     /* ===============================
+//        NORMALIZE CATEGORY DATA
+//     =============================== */
+//     foreach ($supplier_data as $supplier) {
+
+//         $ids   = $supplier->material_category_ids
+//             ? explode(',', $supplier->material_category_ids)
+//             : [];
+
+//         $names = $supplier->material_category_names
+//             ? explode(',', $supplier->material_category_names)
+//             : [];
+
+//         $supplier->material_categories = [];
+
+//         foreach ($ids as $i => $id) {
+//             $supplier->material_categories[] = [
+//                 'id'   => (int) $id,
+//                 'name' => $names[$i] ?? null
+//             ];
+//         }
+
+//         unset($supplier->material_category_ids, $supplier->material_category_names);
+//     }
+
+//     /* ===============================
+//        ✅ FETCH VENDOR IF LOGGED IN
+//     =============================== */
+//     $vendor = null;
+
+//     if ($vendor_id) {
+//         $vendor = DB::table('vendor_reg')
+//             ->where('id', $vendor_id)
+//             ->first();
+//     }
+
+//     /* ===============================
+//        LAYOUT
+//     =============================== */
+//     $layout = 'layouts.guest';
+//     if ($customer_id) {
+       
+//         $postIds = DB::table('posts')
+//                     ->where('user_id', $customer_id)
+//                     ->pluck('id');
+//         $notifications = DB::table('vendor_interests as vi')
+                
+//                 ->whereIn('vi.customer_id', $postIds)
+            
+//                 ->get();
+//         $notificationCount = $notifications->count();
+//         $layout = 'layouts.custapp';
+//     } elseif ($vendor_id) {
+//         // $vendor = DB::table('vendor_reg')
+//         //             ->where('id', $vendor_id)
+//         //             ->first();
+//         $vendIds = DB::table('vendor_reg')
+//                     ->where('id', $vendor_id)
+//                     ->pluck('id');
+//         //    dd( $vendIds );
+//         $notifications = DB::table('customer_interests as ci')
+//                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
+//                 ->whereIn('ci.vendor_id', $vendIds)
+//                 // ->select('v.*','vi.*')
+//                  ->select('ci.*','u.*')
+//                 ->get();
+//         //    dd( $notifications );     
+//         $notificationCount = $notifications->count();
+//         // dd('tsest');
+//         $layout = 'layouts.vendorapp';
+//     }
+
+//     $brands = DB::table('brands')
+          
+//             ->orderBy('name')
+//             ->get();
+//     // ✅ LOGIN CHECK FLAG
+//     $isLoggedIn = false;
+
+//     if ($customer_id || $vendor_id) {
+//         $isLoggedIn = true;
+//     }
+
+//    // ================= PROFILE COMPLETION LOGIC =================
+//         $profileCompletion = 0;
+
+//         $profileSteps = [
+//             'basic'   => false,
+//             'material'=> false,
+//             'uploads' => false,
+//             'bank'    => false,
+//         ];
+
+//         // STEP 1: BASIC DETAILS
+//         if (
+//             !empty($supplier->name) &&
+//             !empty($supplier->mobile) &&
+//             !empty($supplier->email) &&
+//             !empty($supplier->business_name)
+//         ) {
+//             $profileSteps['basic'] = true;
+//             $profileCompletion += 25;
+//         }
+//     // dd($profileCompletion);
+//         // STEP 2: MATERIAL SELECTED
+//         if (!empty($supplier->material_category)) {
+//             $profileSteps['material'] = true;
+//             $profileCompletion += 25;
+//         }
+
+//         // STEP 3: DOCUMENT UPLOADS (MIN REQUIRED)
+//         if (
+//             !empty($supplier->gst_certificate_path) &&
+//             !empty($supplier->pan_card_path)
+//         ) {
+//             $profileSteps['uploads'] = true;
+//             $profileCompletion += 25;
+//         }
+
+//         // STEP 4: BANK DETAILS
+//         if (
+//             !empty($supplier->bank_name) &&
+//             !empty($supplier->account_number) &&
+//             !empty($supplier->ifsc_code)
+//         ) {
+//             $profileSteps['bank'] = true;
+//             $profileCompletion += 25;
+//         }
+//     $profileBadge = [
+//         'label' => 'Incomplete',
+//         'class' => 'incomplete'
+//     ];
+
+//     if ($profileCompletion == 100) {
+//         $profileBadge = [
+//             'label' => 'Verified',
+//             'class' => 'verified'
+//         ];
+//     } elseif ($profileCompletion >= 75) {
+//         $profileBadge = [
+//             'label' => 'Trusted',
+//             'class' => 'trusted'
+//         ];
+//     } elseif ($profileCompletion >= 50) {
+//         $profileBadge = [
+//             'label' => 'Partially Verified',
+//             'class' => 'partial'
+//         ];
+//     }
+
+//     // dd($supplier_data);
+//     return view('web.supplierserch', compact(
+//         'credit_days','material_categories','notificationCount','notifications',
+//         'delivery_type',
+//         'maximum_distances','states','profileBadge',
+//         'supplier_data',
+//         'layout','cust_data',
+//         'customer_id','profileCompletion',
+//         'brands',
+//         'vendor_id',
+//         'supplier_id',
+//         'isLoggedIn',
+//         'vendor' 
+//     ));
+// }
+
+// public function supplierserch()
+// {
+//     $notificationCount = 0;
+//     $notifications = collect();
+
+//     $customer_id  = Session::get('customer_id');
+//     $cust_data    = $customer_id ? DB::table('users')->where('id', $customer_id)->first() : null;
+
+//     $vendor_id    = Session::get('vendor_id');
+//     $supplier_id  = Session::get('supplier_id');
+
+//     /* ===============================
+//        MASTER DATA
+//     =============================== */
+//     $credit_days         = DB::table('credit_days')->get();
+//     $states              = DB::table('state')->orderBy('name')->get();
+//     $delivery_type       = DB::table('delivery_type')->get();
+//     $maximum_distances   = DB::table('maximum_distances')->get();
+//     $material_categories = DB::table('material_categories')->get();
+
+//     /* ===============================
+//        SUPPLIERS + CATEGORIES
+//     =============================== */
+//     $supplier_data = DB::table('supplier_reg as s')
+//         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+//         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+//         ->leftJoin('city as c', 'c.id', '=', 's.city_id')
+//         ->leftJoin('region as r', 'r.id', '=', 's.region_id')
+//         ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
+//         ->select(
+//             's.*',
+//             'cd.days as credit_days_value',
+//             'c.name as cityname',
+//             'r.name as regionname',
+//             'sn.name as statename',
+//             DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
+//             DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
+//         )
+//         // IMPORTANT: groupBy must include all non-aggregated columns in strict mode,
+//         // but keeping your original style:
+//         ->groupBy('s.id', 'cd.days', 'c.name', 'r.name', 'sn.name')
+//         ->orderBy('s.id', 'desc')
+//         ->get();
+
+//     /* ===============================
+//        NORMALIZE CATEGORY DATA + PROFILE COMPLETION PER SUPPLIER ✅
+//     =============================== */
+//     foreach ($supplier_data as $supplier) {
+// // dd($supplier);
+//         // ---- categories normalize ----
+//         $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
+//         $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
+
+//         $supplier->material_categories = [];
+
+//         foreach ($ids as $i => $id) {
+//             $supplier->material_categories[] = [
+//                 'id'   => (int) $id,
+//                 'name' => $names[$i] ?? null
+//             ];
+//         }
+
+//         unset($supplier->material_category_ids, $supplier->material_category_names);
+
+//         // ---- profile completion ✅ ----
+//         $profileCompletion = 0;
+
+//         // STEP 1: BASIC DETAILS
+//         if (
+//             !empty($supplier->contact_person) &&
+//             !empty($supplier->mobile) &&
+//             !empty($supplier->email) &&
+//             !empty($supplier->shop_name)
+//         ) {
+//             $profileCompletion += 25;
+//         }
+// // dd($profileCompletion);
+//         // STEP 2: MATERIAL SELECTED
+//         // You were checking $supplier->material_category (not exists).
+//         // Correct: if supplier has any categories in $supplier->material_categories
+//         if (!empty($supplier->material_category) ) {
+//             $profileCompletion += 25;
+//         }
+
+//         // STEP 3: DOCUMENT UPLOADS
+//         if (
+//             !empty($supplier->gst_certificate_path) &&
+//              !empty($supplier->gst_number) && !empty($supplier->pan_number) &&
+//             !empty($supplier->pan_card_path)
+//         ) {
+//             $profileCompletion += 25;
+//         }
+
+//         // STEP 4: BANK DETAILS
+//         if (
+//             !empty($supplier->bank_name) &&
+//             !empty($supplier->account_number) &&
+//             !empty($supplier->ifsc_code)
+//         ) {
+//             $profileCompletion += 25;
+//         }
+
+//         $supplier->profileCompletion = $profileCompletion;
+
+//         // badge
+//         $profileBadge = [
+//             'label' => 'Incomplete',
+//             'class' => 'incomplete'
+//         ];
+
+//         if ($profileCompletion >= 100) {
+//             $profileBadge = ['label' => 'Verified', 'class' => 'verified'];
+//         } elseif ($profileCompletion >= 75) {
+//             $profileBadge = ['label' => 'Trusted', 'class' => 'trusted'];
+//         } elseif ($profileCompletion >= 50) {
+//             $profileBadge = ['label' => 'Partially Verified', 'class' => 'partial'];
+//         }
+
+//         $supplier->profileBadge = $profileBadge;
+//     }
+
+//     /* ===============================
+//        ✅ FETCH VENDOR IF LOGGED IN
+//     =============================== */
+//     $vendor = null;
+//     if ($vendor_id) {
+//         $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+//     }
+
+//     /* ===============================
+//        LAYOUT + NOTIFICATIONS
+//     =============================== */
+//     $layout = 'layouts.guest';
+
+//     if ($customer_id) {
+//         $postIds = DB::table('posts')
+//             ->where('user_id', $customer_id)
+//             ->pluck('id');
+
+//         $notifications = DB::table('vendor_interests as vi')
+//             ->whereIn('vi.customer_id', $postIds)
+//             ->get();
+
+//         $notificationCount = $notifications->count();
+//         $layout = 'layouts.custapp';
+
+//     } elseif ($vendor_id) {
+
+//         $vendIds = DB::table('vendor_reg')
+//             ->where('id', $vendor_id)
+//             ->pluck('id');
+
+//         $notifications = DB::table('customer_interests as ci')
+//             ->join('users as u', 'u.id', '=', 'ci.customer_id')
+//             ->whereIn('ci.vendor_id', $vendIds)
+//             ->select('ci.*', 'u.*')
+//             ->get();
+
+//         $notificationCount = $notifications->count();
+//         $layout = 'layouts.vendorapp';
+//     }
+
+//     $brands = DB::table('brands')->orderBy('name')->get();
+
+//     // ✅ LOGIN CHECK FLAG
+//     $isLoggedIn = ($customer_id || $vendor_id) ? true : false;
+// // dd($profileCompletion);
+//     return view('web.supplierserch', compact(
+//         'credit_days',
+//         'material_categories',
+//         'notificationCount',
+//         'notifications',
+//         'delivery_type',
+//         'maximum_distances',
+//         'states',
+//         'supplier_data',
+//         'layout','profileCompletion',
+//         'cust_data',
+//         'customer_id',
+//         'brands',
+//         'vendor_id',
+//         'supplier_id',
+//         'isLoggedIn',
+//         'vendor'
+//     ));
+// }
 public function supplierserch()
 {
-    $notificationCount =0;
-    $notifications =0;
-    $customer_id = Session::get('customer_id');
-    $cust_data = DB::table('users')->where('id',$customer_id)->first();
-    $vendor_id   = Session::get('vendor_id');
-    $supplier_id = Session::get('supplier_id');
-    // dd($customer_id);
+    $notificationCount = 0;
+    $notifications = collect();
+
+    $customer_id  = Session::get('customer_id');
+    $cust_data    = $customer_id ? DB::table('users')->where('id', $customer_id)->first() : null;
+
+    $vendor_id    = Session::get('vendor_id');
+    $supplier_id  = Session::get('supplier_id');
+
     /* ===============================
        MASTER DATA
     =============================== */
-    $credit_days       = DB::table('credit_days')->get();
-    $states = DB::table('state')->orderBy('name')->get();
-
-    $delivery_type     = DB::table('delivery_type')->get();
-    $maximum_distances = DB::table('maximum_distances')->get();
+    $credit_days         = DB::table('credit_days')->get();
+    $states              = DB::table('state')->orderBy('name')->get();
+    $delivery_type       = DB::table('delivery_type')->get();
+    $maximum_distances   = DB::table('maximum_distances')->get();
     $material_categories = DB::table('material_categories')->get();
-    // dd($credit_days);
+
     /* ===============================
        SUPPLIERS + CATEGORIES
     =============================== */
@@ -809,34 +1202,32 @@ public function supplierserch()
         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-          ->leftJoin('city as c', 'c.id', '=', 's.city_id')
-            ->leftJoin('region as r', 'r.id', '=', 's.region_id')
-            ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
+        ->leftJoin('city as c', 'c.id', '=', 's.city_id')
+        ->leftJoin('region as r', 'r.id', '=', 's.region_id')
+        ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
         ->select(
             's.*',
-            'cd.days as credit_days_value','c.name as cityname','r.name as regionname','sn.name as statename',
+            'cd.days as credit_days_value',
+            'c.name as cityname',
+            'r.name as regionname',
+            'sn.name as statename',
             DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
             DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
         )
-        ->groupBy('s.id', 'cd.days')
+        ->groupBy('s.id', 'cd.days', 'c.name', 'r.name', 'sn.name')
         ->orderBy('s.id', 'desc')
         ->get();
-        // dd($supplier_data);
+
     /* ===============================
-       NORMALIZE CATEGORY DATA
+       NORMALIZE CATEGORY DATA + PROFILE COMPLETION PER SUPPLIER ✅
     =============================== */
     foreach ($supplier_data as $supplier) {
 
-        $ids   = $supplier->material_category_ids
-            ? explode(',', $supplier->material_category_ids)
-            : [];
-
-        $names = $supplier->material_category_names
-            ? explode(',', $supplier->material_category_names)
-            : [];
+        // ---- normalize categories ----
+        $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
+        $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
 
         $supplier->material_categories = [];
-
         foreach ($ids as $i => $id) {
             $supplier->material_categories[] = [
                 'id'   => (int) $id,
@@ -845,146 +1236,117 @@ public function supplierserch()
         }
 
         unset($supplier->material_category_ids, $supplier->material_category_names);
+
+        // ---- profile completion ----
+        $profileCompletion = 0;
+
+        // STEP 1: BASIC DETAILS
+        if (
+            !empty($supplier->contact_person) &&
+            !empty($supplier->mobile) &&
+            !empty($supplier->email) &&
+            !empty($supplier->shop_name)
+        ) {
+            $profileCompletion += 25;
+        }
+
+        // STEP 2: MATERIAL SELECTED (✅ correct)
+        if (!empty($supplier->material_categories) && count($supplier->material_categories) > 0) {
+            $profileCompletion += 25;
+        }
+
+        // STEP 3: DOCS + GST/PAN
+        if (
+            !empty($supplier->gst_certificate_path) &&
+            !empty($supplier->pan_card_path) &&
+            !empty($supplier->gst_number) &&
+            !empty($supplier->pan_number)
+        ) {
+            $profileCompletion += 25;
+        }
+
+        // STEP 4: BANK
+        if (
+            !empty($supplier->bank_name) &&
+            !empty($supplier->account_number) &&
+            !empty($supplier->ifsc_code)
+        ) {
+            $profileCompletion += 25;
+        }
+
+        $supplier->profileCompletion = $profileCompletion;
+
+        // badge
+        $profileBadge = ['label' => 'Incomplete', 'class' => 'incomplete'];
+
+        if ($profileCompletion >= 100) {
+            $profileBadge = ['label' => 'Verified', 'class' => 'verified'];
+        } elseif ($profileCompletion >= 75) {
+            $profileBadge = ['label' => 'Trusted', 'class' => 'trusted'];
+        } elseif ($profileCompletion >= 50) {
+            $profileBadge = ['label' => 'Partially Verified', 'class' => 'partial'];
+        }
+
+        $supplier->profileBadge = $profileBadge;
     }
 
     /* ===============================
        ✅ FETCH VENDOR IF LOGGED IN
     =============================== */
     $vendor = null;
-
     if ($vendor_id) {
-        $vendor = DB::table('vendor_reg')
-            ->where('id', $vendor_id)
-            ->first();
+        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
     }
 
     /* ===============================
-       LAYOUT
+       LAYOUT + NOTIFICATIONS
     =============================== */
     $layout = 'layouts.guest';
+
     if ($customer_id) {
-       
-        $postIds = DB::table('posts')
-                    ->where('user_id', $customer_id)
-                    ->pluck('id');
+        $postIds = DB::table('posts')->where('user_id', $customer_id)->pluck('id');
+
         $notifications = DB::table('vendor_interests as vi')
-                
-                ->whereIn('vi.customer_id', $postIds)
-            
-                ->get();
+            ->whereIn('vi.customer_id', $postIds)
+            ->get();
+
         $notificationCount = $notifications->count();
         $layout = 'layouts.custapp';
+
     } elseif ($vendor_id) {
-        // $vendor = DB::table('vendor_reg')
-        //             ->where('id', $vendor_id)
-        //             ->first();
-        $vendIds = DB::table('vendor_reg')
-                    ->where('id', $vendor_id)
-                    ->pluck('id');
-        //    dd( $vendIds );
+
+        $vendIds = DB::table('vendor_reg')->where('id', $vendor_id)->pluck('id');
+
         $notifications = DB::table('customer_interests as ci')
-                ->join('users as u', 'u.id', '=', 'ci.customer_id')
-                ->whereIn('ci.vendor_id', $vendIds)
-                // ->select('v.*','vi.*')
-                 ->select('ci.*','u.*')
-                ->get();
-        //    dd( $notifications );     
+            ->join('users as u', 'u.id', '=', 'ci.customer_id')
+            ->whereIn('ci.vendor_id', $vendIds)
+            ->select('ci.*', 'u.*')
+            ->get();
+
         $notificationCount = $notifications->count();
-        // dd('tsest');
         $layout = 'layouts.vendorapp';
     }
 
-    $brands = DB::table('brands')
-          
-            ->orderBy('name')
-            ->get();
-    // ✅ LOGIN CHECK FLAG
-    $isLoggedIn = false;
+    $brands = DB::table('brands')->orderBy('name')->get();
+    $isLoggedIn = ($customer_id || $vendor_id) ? true : false;
 
-    if ($customer_id || $vendor_id) {
-        $isLoggedIn = true;
-    }
-
-   // ================= PROFILE COMPLETION LOGIC =================
-        $profileCompletion = 0;
-
-        $profileSteps = [
-            'basic'   => false,
-            'material'=> false,
-            'uploads' => false,
-            'bank'    => false,
-        ];
-
-        // STEP 1: BASIC DETAILS
-        if (
-            !empty($supplier->shop_name) &&
-            !empty($supplier->mobile) &&
-            !empty($supplier->state_id) &&
-            !empty($supplier->city_id)
-        ) {
-            $profileSteps['basic'] = true;
-            $profileCompletion += 25;
-        }
-
-        // STEP 2: MATERIAL SELECTED
-        if (!empty($supplier->material_category)) {
-            $profileSteps['material'] = true;
-            $profileCompletion += 25;
-        }
-
-        // STEP 3: DOCUMENT UPLOADS (MIN REQUIRED)
-        if (
-            !empty($supplier->gst_certificate_path) &&
-            !empty($supplier->pan_card_path)
-        ) {
-            $profileSteps['uploads'] = true;
-            $profileCompletion += 25;
-        }
-
-        // STEP 4: BANK DETAILS
-        if (
-            !empty($supplier->bank_name) &&
-            !empty($supplier->account_number) &&
-            !empty($supplier->ifsc_code)
-        ) {
-            $profileSteps['bank'] = true;
-            $profileCompletion += 25;
-        }
-$profileBadge = [
-    'label' => 'Incomplete',
-    'class' => 'incomplete'
-];
-
-if ($profileCompletion == 100) {
-    $profileBadge = [
-        'label' => 'Verified',
-        'class' => 'verified'
-    ];
-} elseif ($profileCompletion >= 75) {
-    $profileBadge = [
-        'label' => 'Trusted',
-        'class' => 'trusted'
-    ];
-} elseif ($profileCompletion >= 50) {
-    $profileBadge = [
-        'label' => 'Partially Verified',
-        'class' => 'partial'
-    ];
-}
-
-    // dd($supplier_data);
     return view('web.supplierserch', compact(
-        'credit_days','material_categories','notificationCount','notifications',
+        'credit_days',
+        'material_categories',
+        'notificationCount',
+        'notifications',
         'delivery_type',
-        'maximum_distances','states','profileBadge',
+        'maximum_distances',
+        'states',
         'supplier_data',
-        'layout','cust_data',
-        'customer_id','profileCompletion',
+        'layout',
+        'cust_data',
+        'customer_id',
         'brands',
         'vendor_id',
         'supplier_id',
         'isLoggedIn',
-        'vendor' 
+        'vendor'
     ));
 }
 

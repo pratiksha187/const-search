@@ -108,28 +108,41 @@
 
         </div>
 
-        <div class="badges">
+        @php
+    $pc = (int)($supplier->profileCompletion ?? 0);
+@endphp
 
-            {{-- FEATURED --}}
-            @if($supplier->featured ?? false)
-                <span class="badge featured">FEATURED</span>
-            @endif
+<div class="badges">
 
-            {{-- PROFILE COMPLETION BADGE --}}
-            @if($profileCompletion == 100)
-                <span class="badge verified">✔ Verified</span>
+    {{-- FEATURED --}}
+    @if(!empty($supplier->featured))
+        <span class="badge featured">FEATURED</span>
+    @endif
 
-            @elseif($profileCompletion >= 75)
-                <span class="badge trusted">⭐ Trusted</span>
+    {{-- Verified / Trusted / Partial (show based on % range) --}}
+    @if($pc >= 100)
+        <span class="badge verified">✔ Verified</span>
+    @endif
 
-            @elseif($profileCompletion >= 50)
-                <span class="badge partial">🟡 Partially Verified</span>
+    @if($pc >= 75)
+        <span class="badge trusted">⭐ Trusted</span>
+    @endif
 
-            @else
-                <span class="badge incomplete">⚠ Incomplete Profile</span>
-            @endif
+    @if($pc >= 50)
+        <span class="badge partial">🟡 Partially Verified</span>
+    @endif
 
-        </div>
+    {{-- If no badge matched then show Incomplete --}}
+    @if($pc < 50)
+        <span class="badge incomplete">⚪ Incomplete</span>
+    @endif
+
+    {{-- OPTIONAL: show percent text badge always --}}
+    <span class="badge percent">{{ $pc }}%</span>
+
+</div>
+
+
 
     </div>
 
