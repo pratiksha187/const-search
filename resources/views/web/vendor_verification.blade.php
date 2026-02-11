@@ -29,6 +29,7 @@
                         <th>Company</th>
                         <th>Contact</th>
                         <th>Category</th>
+                        <th>Lead Balance</th>
                         <th>Agreement Accepted</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -54,7 +55,13 @@
                                     <span class="badge bg-success mt-1">
                                         ✅ Agreement Accepted
                                     </span>
-                                @endif</td>
+                                @endif
+                            </td>
+
+                            <td>
+                                {{ $vendor->lead_balance }}
+                               
+                            </td>
  
                             <td>
                               
