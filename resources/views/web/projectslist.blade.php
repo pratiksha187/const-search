@@ -45,14 +45,14 @@
                             <td>
                                 <strong>{{ strtoupper($project->title) }}</strong><br>
                                 <small class="text-muted">
-                                    Work Type: {{ $project->work_type_id }}
+                                    Work Type: {{ $project->work_typename }}
                                 </small>
                             </td>
 
                             <td>
-                                {{ $project->state }},
-                                {{ $project->region }},
-                                {{ $project->city }}
+                                {{ $project->statename }},
+                                {{ $project->regionname }},
+                                {{ $project->cityname }}
                             </td>
 
                             <td>

@@ -99,13 +99,20 @@
     <div>
         <h3 class="mb-1">{{ $vendor->company_name }}</h3>
         <div class="text-muted">{{ $vendor->work_type_name }}</div>
+
+        {{-- Agreement Status --}}
+        @if(!empty($vendor->agreement_accepted_at))
+            <span class="badge bg-success mt-1">
+                ✅ Agreement Accepted
+            </span>
+        @endif
     </div>
 
     <span class="status-badge {{ $vendor->lead_balance > 0 ? 'status-active' : 'status-empty' }}">
-    {{ $vendor->lead_balance }} Leads
-</span>
-
+        {{ $vendor->lead_balance }} Leads
+    </span>
 </div>
+
 
 {{-- ================= BASIC INFO ================= --}}
 <div class="profile-card">
@@ -117,7 +124,7 @@
         <div class="col-md-4"><div class="label">Email</div><div class="value">{{ $vendor->email }}</div></div>
         <div class="col-md-4"><div class="label">Business Name</div><div class="value">{{ $vendor->business_name }}</div></div>
         <div class="col-md-4"><div class="label">Experience</div><div class="value">{{ $vendor->experience_years }} Years</div></div>
-        <div class="col-md-4"><div class="label">Team Size</div><div class="value">{{ $vendor->team_size }}</div></div>
+        <div class="col-md-4"><div class="label">Team Size</div><div class="value">{{ $vendor->team_size_data }}</div></div>
         <div class="col-md-4"><div class="label">Lead Balence</div><div class="value">{{ $vendor->lead_balance }}</div></div>
 
         

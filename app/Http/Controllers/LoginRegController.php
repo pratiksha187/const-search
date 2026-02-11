@@ -85,11 +85,12 @@ class LoginRegController extends Controller
         /* ================= DUPLICATE CHECK ================= */
 
         if ($request->role === 'vendor') {
+           
             $exists = DB::table('vendor_reg')
                 ->where('mobile', $request->mobile)
                 ->orWhere('email', $request->email)
                 ->exists();
-
+        //  dd($exists);
             if ($exists) {
                 return response()->json([
                     'status'  => false,
@@ -419,7 +420,7 @@ class LoginRegController extends Controller
         $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');
-    //    dd( $vendIds );
+        //    dd( $vendIds );
         $notifications = DB::table('customer_interests as ci')
                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
                 ->whereIn('ci.vendor_id', $vendIds)
@@ -536,10 +537,7 @@ class LoginRegController extends Controller
             ->latest()
             ->value('price');
 
-        // $supp_enq_data= DB::table('supplier_enquiries as se')
-        //                 ->leftJoin('users as u', 'u.id', '=', 'se.user_id')
-        //                 ->where('supplier_id', $supplier_id)
-        //                 ->get();
+      
         $supp_enq_data = DB::table('supplier_enquiries as se')
                             ->leftJoin('users as u', function ($join) {
                                 $join->on(DB::raw("SUBSTRING(se.user_id, 3)"), '=', 'u.id')

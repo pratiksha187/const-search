@@ -205,6 +205,8 @@
             <!-- ✅ Normal Links (NO More dropdown) -->
             <a href="{{ route('supplier.enquiry.index') }}">Request Quote (RFQ)</a>
             <a href="{{ route('postsubscription') }}">Subscription Packages</a>
+            <a href="{{ route('customer.agreement') }}">Agreement</a>
+
         @endif
 
         @if($cust_data)

@@ -41,11 +41,21 @@ class AdminController extends Controller
          $vendor = DB::table('vendor_reg as v')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
             ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
+            ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
+            ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
+            ->leftJoin('state as s', 's.id', '=', 'v.state')
+            ->leftJoin('region as r', 'r.id', '=', 'v.region')
+            ->leftJoin('city as c', 'c.id', '=', 'v.city')
            
             ->select(
                 'v.*',
                 'wt.work_type as work_type_name',
-                'wst.work_subtype as work_subtype_name'
+                'wst.work_subtype as work_subtype_name',
+                'ts.team_size as team_size_data',
+                'ey.experiance as experiance',
+                's.name as statename',
+                'r.name as regionname',
+                'c.name as cityname'
                
             )
             ->where('v.id', $id)

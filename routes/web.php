@@ -22,7 +22,7 @@ use App\Http\Controllers\StateController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\VendorAgreementController;
+use App\Http\Controllers\AgreementController;
 
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
 Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');
@@ -397,9 +397,9 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::get('supplier_verification', [AdminController::class, 'supplier_verification'])->name('supplier_verification');
 
     Route::get('primium_lead_intrested', [AdminController::class, 'primium_lead_intrested'])->name('primium_lead_intrested');
-Route::post('/admin/talk-status-update', 
-    [AdminController::class, 'updateTalkStatus']
-)->name('admin.talk.status.update');
+    Route::post('/admin/talk-status-update', 
+        [AdminController::class, 'updateTalkStatus']
+    )->name('admin.talk.status.update');
 
     
     Route::post('/send-suppliersenquiry', [HomeController::class, 'suppliersenquirystore'])
@@ -430,8 +430,13 @@ Route::post('/admin/talk-status-update',
     Route::post('/forgot-password/reset', [LoginRegController::class, 'resetPassword']);
 
 
-    Route::get('/vendor/agreement', [VendorAgreementController::class, 'show'])->name('vendor.agreement');
-    Route::post('/vendor/agreement/accept', [VendorAgreementController::class, 'accept'])->name('vendor.agreement.accept');
+    Route::get('/vendor/agreement', [AgreementController::class, 'vendorshow'])->name('vendor.agreement');
+    Route::post('/vendor/agreement/accept', [AgreementController::class, 'vendoraccept'])->name('vendor.agreement.accept');
+
+
+    
+    Route::get('/customer/agreement', [AgreementController::class, 'customershow'])->name('customer.agreement');
+    Route::post('/customer/agreement/accept', [AgreementController::class, 'customeraccept'])->name('customer.agreement.accept');
 
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

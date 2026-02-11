@@ -943,18 +943,59 @@ class HomeController extends Controller
 
 
     public function projectslist(){
-        $projects = DB::table('posts')
-                ->orderBy('created_at', 'desc')
-                ->get();
+        $projects = DB::table('posts as p')
+            ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'p.work_type_id')
+            ->leftJoin('state as s', 's.id', '=', 'p.state')
+            ->leftJoin('region as r', 'r.id', '=', 'p.region')
+            ->leftJoin('city as c', 'c.id', '=', 'p.city')
+            ->leftJoin('budget_range as br', 'br.id', '=', 'p.budget_id')
+          
+            ->select(
+                'p.*',
+                'u.name as user_name',
+                'u.email as user_email',
+                'u.mobile as mobile',
+                'u.id as cust_id',
+                'wt.work_type as work_typename',
+                's.name as statename',
+                'r.name as regionname',
+                'c.name as cityname',
+                'br.id as budget_range_id',
+                'br.budget_range as budget_range_name'
+            )
+            ->get();
+            // dd($projects);
         return view('web.projectslist', compact('projects'));
     }
 
     public function projectsshow($id)
     {
-        $project = DB::table('posts')
-            ->where('id', $id)
+        // $project = DB::table('posts')
+        //     ->where('id', $id)
+        //     ->first();
+        $project =DB::table('posts as p')
+            ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
+            ->leftJoin('work_types as wt', 'wt.id', '=', 'p.work_type_id')
+            ->leftJoin('state as s', 's.id', '=', 'p.state')
+            ->leftJoin('region as r', 'r.id', '=', 'p.region')
+            ->leftJoin('city as c', 'c.id', '=', 'p.city')
+            ->leftJoin('budget_range as br', 'br.id', '=', 'p.budget_id')
+            ->where('p.id', $id)
+            ->select(
+                'p.*',
+                'u.name as user_name',
+                'u.email as user_email',
+                'u.mobile as mobile',
+                'u.id as cust_id',
+                'wt.work_type as work_typename',
+                's.name as statename',
+                'r.name as regionname',
+                'c.name as cityname',
+                'br.id as budget_range_id',
+                'br.budget_range as budget_range_name'
+            )
             ->first();
-
         if (!$project) {
             abort(404);
         }

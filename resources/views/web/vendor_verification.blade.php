@@ -29,6 +29,7 @@
                         <th>Company</th>
                         <th>Contact</th>
                         <th>Category</th>
+                        <th>Agreement Accepted</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -49,7 +50,12 @@
                             </td>
 
                             <td>{{ $vendor->work_type_name ?? '—' }}</td>
-
+                            <td> @if(!empty($vendor->agreement_accepted_at))
+                                    <span class="badge bg-success mt-1">
+                                        ✅ Agreement Accepted
+                                    </span>
+                                @endif</td>
+ 
                             <td>
                               
 

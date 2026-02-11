@@ -25,12 +25,12 @@
                 </div>
 
                 <div class="col-md-6">
-                    <strong>Work Type ID:</strong> {{ $project->work_type_id }}
+                    <strong>Work Type ID:</strong> {{ $project->work_typename }}
                 </div>
 
                 <div class="col-md-6">
                     <strong>Location:</strong>
-                    {{ $project->state }}, {{ $project->region }}, {{ $project->city }}
+                    {{ $project->statename }}, {{ $project->regionname }}, {{ $project->cityname }}
                 </div>
 
                 <div class="col-md-6">
