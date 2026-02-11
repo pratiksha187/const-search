@@ -306,6 +306,7 @@ class HomeController extends Controller
             ->leftJoin('state as s', 's.id', '=', 'v.state')
             ->leftJoin('region as r', 'r.id', '=', 'v.region')
             ->leftJoin('city as c', 'c.id', '=', 'v.city')
+            // ->where('v.status','approved')
             ->select(
                 'v.*',
                 DB::raw('ROUND(AVG(vr.rating), 1) as avg_rating'),

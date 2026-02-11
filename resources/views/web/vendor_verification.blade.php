@@ -87,6 +87,21 @@
                                             </a>
                                         </li>
 
+                                        <li>
+                                            <form method="POST"
+                                                action="{{ route('vendors.destroy', $vendor->id) }}"
+                                                class="deleteVendorForm">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            </form>
+                                        </li>
+
+
+
                                         {{-- Pending only --}}
                                         @if($vendor->requerd_documnet_approve != 1 && $vendor->requerd_documnet_approve != 2)
 
@@ -177,5 +192,19 @@ $(function () {
     $('#exportExcel').click(() => table.button('.buttons-excel').trigger());
     $('#exportPdf').click(() => table.button('.buttons-pdf').trigger());
 });
+
+
+$.ajax({
+    url: '/vendors/' + id,
+    type: 'DELETE',   // 🔥 VERY IMPORTANT
+    data: {
+        _token: '{{ csrf_token() }}'
+    },
+    success: function(response){
+        location.reload();
+    }
+});
+
 </script>
+
 @endsection

@@ -342,5 +342,24 @@ public function primium_lead_intrested(Request $request)
     return redirect()->back()->with('success', 'Status updated successfully');
 }
 
+public function destroy($id)
+{
+    // $vendor = Vendor::findOrFail($id);
+   $deleted = DB::table('vendor_reg')
+            ->where('id', $id)
+            ->delete();
+
+    if ($deleted) {
+        return back()->with('success', 'Vendor deleted successfully.');
+    } else {
+        return back()->with('error', 'Vendor not found.');
+    }
+
+
+
+    // return redirect()->back()->with('success', 'Vendor deleted successfully.');
+}
+
+
 
 }

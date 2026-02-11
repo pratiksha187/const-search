@@ -395,6 +395,8 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
    
     Route::get('vendor_verification', [AdminController::class, 'vendor_verification'])->name('vendor_verification');
     Route::get('supplier_verification', [AdminController::class, 'supplier_verification'])->name('supplier_verification');
+    Route::delete('/vendors/{id}', [AdminController::class, 'destroy'])
+    ->name('vendors.destroy');
 
     Route::get('primium_lead_intrested', [AdminController::class, 'primium_lead_intrested'])->name('primium_lead_intrested');
     Route::post('/admin/talk-status-update', 
@@ -441,7 +443,7 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "8660730031";
+    $password = "9845073050";
     $hash = Hash::make($password);
 
     return $hash; 
