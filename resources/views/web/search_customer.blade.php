@@ -698,6 +698,35 @@
 @media(max-width: 768px){
     .lead-title{ font-size:22px; }
 }
+/* ===============================
+   INDUSTRIAL CONSTRUCTION BACKGROUND
+================================ */
+
+body{
+    background:
+        linear-gradient(rgba(244,246,251,0.95), rgba(244,246,251,0.95)),
+        url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=60');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+/* Add subtle overlay texture */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image: url('https://www.transparenttextures.com/patterns/concrete-wall.png');
+    opacity:0.08;
+    pointer-events:none;
+}
+.lead-title{
+    font-weight:900;
+    font-size:28px;
+    color:#1c2c3e;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
 
 </style>
 
@@ -779,8 +808,9 @@
                <div class="lead-header">
                   <div class="lead-title-wrap">
                      <h2 class="lead-title">
-                        {{ $projects->count() }} Professional Leads
-                     </h2>
+                        <i class="bi bi-building-fill text-warning me-2"></i>
+                        {{ $projects->count() }} Professional Construction Leads
+                    </h2>   
 
                      <span class="lead-pill completed">
                         <i class="bi bi-check-circle-fill me-1"></i>
@@ -799,6 +829,7 @@
          </div>
          {{-- RESULTS --}}
          <div class="row g-4">
+            
             @foreach($projects as $project)
            
                <div class="col-xl-6 col-lg-6 col-md-12 vendor-col">

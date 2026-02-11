@@ -105,7 +105,7 @@
    box-shadow:0 0 0 4px rgba(37,99,235,.1);
    }
    /* ================= VENDOR CARD ================= */
-   /* .vendor-card{
+   .vendor-card{
    background:#fff;
    border-radius:16px;
    border:1px solid #e2e8f0;
@@ -113,17 +113,7 @@
    margin-bottom:14px;
    position:relative;
    transition:.3s ease;
-   } */
-   .vendor-card{
-    position:relative;
-    background:#fff;
-    border-radius:18px;
-    box-shadow:0 12px 28px rgba(0,0,0,.08);
-    padding:22px 24px;
-    margin-bottom:24px;
-    display:flex;
-    gap:20px;
-}
+   }
    .vendor-card:hover{
    transform:translateY(-2px);
    box-shadow:0 20px 60px rgba(15,23,42,.15);
@@ -356,16 +346,121 @@
    .text-indigo { color:#4f46e5 }
    .text-orange { color:#f97316 }
 
-   .vendor-left-border{
-    width:6px;
-    border-radius:6px;
-    background:#4f6ef7;
-}
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
-/* ===== 3 CARD GRID LAYOUT ===== */
+    /* body {
+      background: #f4f6fb;
+      padding: 40px;
+    } */
+
+    .card {
+      width: 420px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border-left: 5px solid #5b6cff;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .verified {
+      background: #22c55e;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: #4f46e5;
+      font-weight: 600;
+    }
+
+    .location {
+      margin-top: 6px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .tags {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .details {
+      margin-top: 16px;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .details p {
+      margin: 6px 0;
+    }
+
+    .actions {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .btn-outline {
+      background: #fff;
+      border: 2px solid #5b6cff;
+      color: #5b6cff;
+    }
+
+    .btn-outline:hover {
+      background: #5b6cff;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: #5b6cff;
+      border: none;
+      color: #fff;
+    }
+
+    /* ===== FORCE 2 CARDS PER ROW ===== */
 .vendor-grid{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(2, minmax(0, 1fr));
     gap:24px;
 }
 
@@ -383,401 +478,642 @@
     }
 }
 
-/* ===== CARD STYLE MATCHING IMAGE ===== */
+/* Card should fill grid cell */
 .vendor-card{
-    display:block;              /* remove flex row look */
-    padding:24px;
-    border-radius:18px;
-    background:#fff;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
-    transition:.25s ease;
+    width:100%;
+    max-width:100%;
 }
 
-.vendor-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 20px 45px rgba(15,23,42,.15);
-}
+    .btn-primary:hover {
+      background: #434eea;
+    }
 
-.vendor-left-border{display:none;} /* not in image */
-
-/* Buttons row */
-.vendor-actions{
+    .tags{
     display:flex;
-    gap:14px;
-    margin-top:18px;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:10px 0 14px;
 }
 
-.vendor-actions a,
-.vendor-actions button{
-    flex:1;
-    padding:14px;
-    border-radius:14px;
-    font-weight:600;
-    text-align:center;
-}
-
-/* Hide contact footer (not in image) */
-.vendor-footer,
-.vendor-contact{
-    display:none;
-}
-
-/* .vendor-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-}
-
-.vendor-title{
-    font-size:20px;
-    font-weight:700;
+.tag-chip{
+    background:#f1f5f9;
     color:#0f172a;
-    margin:0;
+    font-size:13px;
+    font-weight:500;
+    padding:6px 10px;
+    border-radius:8px;
+    white-space:nowrap;
+    box-shadow:inset 0 0 0 1px #e5e7eb;
+}
+.badge-wrapper{
+    display:flex;
+    gap:6px;
+    align-items:center;
 }
 
-.vendor-subtitle{
-    color:#4f6ef7;
+.badge{
+    font-size:12px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+}
+
+/* VERIFIED */
+.badge.verified{
+    background:#ecfdf5;
+    color:#065f46;
+    border:1px solid #10b981;
+}
+
+/* TRUSTED */
+.badge.trusted{
+    background:#fff7ed;
+    color:#9a3412;
+    border:1px solid #f97316;
+}
+
+.actions{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+/* Existing outline button stays same */
+
+/* Rating Button */
+.btn-rating{
+    border:1px solid #f59e0b;
+    background:#fff7ed;
+    color:#9a3412;
+    font-size:13px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:8px;
+    transition:.2s;
+}
+
+.btn-rating:hover{
+    background:#f59e0b;
+    color:#fff;
+}
+.star-rating{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    font-size:34px;
+    cursor:pointer;
+}
+
+.star-rating i{
+    color:#d1d5db;
+    transition:.2s;
+}
+
+.star-rating i.active,
+.star-rating i.hover{
+    color:#f59e0b;
+}
+
+.rating-text{
     font-size:14px;
+    font-weight:600;
+    color:#6b7280;
+}
+.rating-display{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:14px;
+    font-weight:600;
+    color:#374151;
+}
+
+.rating-display i{
+    color:#f59e0b;
+}
+
+.rating-text small{
+    color:#6b7280;
     font-weight:500;
+}
+
+.vendor-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.logo-placeholder {
+    width: 100%;
+    height: 100%;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+    background: #1c2c3e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.vendor-card{
+    background:#fff;
+    border-radius:12px;
+    padding:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.06);
+}
+
+.card-header{
+    margin-bottom:10px;
+}
+
+.vendor-logo{
+    width:48px;
+    height:48px;
+    border-radius:8px;
+    overflow:hidden;
+    background:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.logo-img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.logo-placeholder{
+    width:100%;
+    height:100%;
+    background:#1c2c3e;
+    color:#fff;
+    font-weight:700;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.title{
+    font-weight:800;
+    font-size:15px;
+}
+
+.subtitle{
+    font-size:14px;
+    color:#555;
+    margin-top:6px;
+}
+
+.location{
+    font-size:13px;
+    color:#777;
     margin-top:4px;
 }
 
-.vendor-badge{
-    background:#16a34a;
-    color:#fff;
-    font-size:13px;
-    font-weight:600;
-    padding:6px 12px;
-    border-radius:8px;
-}
-
-.vendor-location{
-    margin:12px 0;
-    color:#475569;
-    font-size:14px;
-}
-
-.vendor-tags{
+.tags{
     display:flex;
-    gap:10px;
     flex-wrap:wrap;
-    margin-bottom:14px;
+    gap:6px;
+    margin-top:8px;
 }
 
-.vendor-tags span{
-    background:#f1f5f9;
-    padding:6px 10px;
-    border-radius:8px;
+.tag-chip{
+    background:#eef2ff;
+    color:#1c2c3e;
+    font-size:12px;
+    padding:4px 8px;
+    border-radius:6px;
+}
+
+.details{
     font-size:13px;
-    font-weight:500;
+    margin-top:10px;
 }
 
-.vendor-meta{
-    font-size:14px;
-    color:#334155;
-    margin-bottom:18px;
-}
-
-.vendor-footer{
+.actions{
+    margin-top:14px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    border-top:1px solid #e5e7eb;
-    padding-top:14px;
 }
 
-.vendor-contact{
-    font-size:14px;
-    color:#334155;
+.badge{
+    font-size:11px;
+    padding:3px 6px;
+    border-radius:4px;
 }
 
-.vendor-contact div{
-    margin-bottom:4px;
+.badge.verified{
+    background:#dcfce7;
+    color:#166534;
 }
 
-.btn-interest{
-    background:#6c7cf7;
-    color:#fff;
-    border:none;
-    padding:12px 20px;
-    border-radius:12px;
-    font-weight:600;
+.badge.trusted{
+    background:#fff7ed;
+    color:#9a3412;
 }
 
-.btn-interest:hover{
-    background:#4f6ef7;
-} */
 </style>
-{{-- ================= MAIN CONTENT ================= --}}
-<div class="container-fluid px-4 py-4">
-   <div class="row g-4">
-      {{-- ================= SIDEBAR ================= --}}
-      <div class="col-lg-3">
-         <div class="filter-sidebar">
-            <div class="filter-header">
-               <div class="filter-icon-box">
-                  <i class="bi bi-funnel-fill"></i>
-               </div>
-               <div>
-                  <h5 class="mb-0 fw-bold">Smart Filters</h5>
-                  <small class="text-muted">Refine your search</small>
-               </div>
-            </div>
-            <div class="mb-4">
-               <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h6 class="fw-bold mb-0">Work Category</h6>
-                  <span class="badge bg-primary rounded-pill" id="categoryCount">0</span>
-               </div>
-               @foreach($work_types as $work)
-               <div class="mb-2">
-                  <label class="filter-category-item d-flex align-items-center gap-3">
-                  <input type="checkbox" class="form-check-input m-0 category-check" value="{{ $work->id }}">
-                  <span class="fw-semibold">{{ $work->work_type }}</span>
-                  </label>
-                  <div class="ms-5 mt-2 d-none subtype-box" data-type="{{ $work->id }}">
-                     @foreach(DB::table('work_subtypes')->where('work_type_id',$work->id)->get() as $sub)
-                     <label class="d-flex align-items-center gap-2 mb-1 small">
-                     <input type="checkbox" class="form-check-input subtype-check" value="{{ $sub->id }}">
-                     {{ $sub->work_subtype }}
-                     </label>
+<script>
+    window.CUSTOMERID = @json($cust_data->id ?? null);
+</script>
+
+      {{-- ================= MAIN CONTENT ================= --}}
+      <div class="container-fluid px-4 py-4">
+         <div class="row g-4">
+            {{-- ================= SIDEBAR ================= --}}
+            <div class="col-lg-3">
+               <div class="filter-sidebar">
+                  <div class="filter-header">
+                     <div class="filter-icon-box">
+                        <i class="bi bi-funnel-fill"></i>
+                     </div>
+                     <div>
+                        <h5 class="mb-0 fw-bold">Smart Filters</h5>
+                        <small class="text-muted">Refine your search</small>
+                     </div>
+                  </div>
+                  <div class="mb-4">
+                     <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">Work Category</h6>
+                        <span class="badge bg-primary rounded-pill" id="categoryCount">0</span>
+                     </div>
+                     @foreach($work_types as $work)
+                     <div class="mb-2">
+                        <label class="filter-category-item d-flex align-items-center gap-3">
+                        <input type="checkbox" class="form-check-input m-0 category-check" value="{{ $work->id }}">
+                        <span class="fw-semibold">{{ $work->work_type }}</span>
+                        </label>
+                        <div class="ms-5 mt-2 d-none subtype-box" data-type="{{ $work->id }}">
+                           @foreach(DB::table('work_subtypes')->where('work_type_id',$work->id)->get() as $sub)
+                           <label class="d-flex align-items-center gap-2 mb-1 small">
+                           <input type="checkbox" class="form-check-input subtype-check" value="{{ $sub->id }}">
+                           {{ $sub->work_subtype }}
+                           </label>
+                           @endforeach
+                        </div>
+                     </div>
                      @endforeach
                   </div>
                </div>
-               @endforeach
             </div>
-         </div>
-      </div>
-      {{-- ================= MAIN LIST ================= --}}
-      <div class="col-lg-9">
-         {{-- ================= LOCATION FILTER ================= --}}
-         <div class="search-section mb-4">
-            <div class="row g-3">
-               <div class="col-md-4">
-                  <label class="form-label fw-semibold small text-muted">State</label>
-                  <select id="stateSelect" class="form-select form-select-custom">
-                     <option value="">Select State</option>
-                     @foreach($states as $state)
-                     <option value="{{ $state->id }}">{{ $state->name }}</option>
-                     @endforeach
-                  </select>
+            {{-- ================= MAIN LIST ================= --}}
+            <div class="col-lg-9">
+               {{-- ================= LOCATION FILTER ================= --}}
+               <div class="search-section mb-4">
+                  <div class="row g-3">
+                     <div class="col-md-4">
+                        <label class="form-label fw-semibold small text-muted">State</label>
+                        <select id="stateSelect" class="form-select form-select-custom">
+                           <option value="">Select State</option>
+                           @foreach($states as $state)
+                           <option value="{{ $state->id }}">{{ $state->name }}</option>
+                           @endforeach
+                        </select>
+                     </div>
+                     <div class="col-md-4">
+                        <label class="form-label fw-semibold small text-muted">District</label>
+                        <select id="regionSelect" class="form-select form-select-custom" disabled>
+                           <option value="">Select District</option>
+                        </select>
+                     </div>
+                     <div class="col-md-4">
+                        <label class="form-label fw-semibold small text-muted">Region</label>
+                        <select id="citySelect" class="form-select form-select-custom" disabled>
+                           <option value="">Select Region</option>
+                        </select>
+                     </div>
+                  </div>
                </div>
-               <div class="col-md-4">
-                  <label class="form-label fw-semibold small text-muted">Region</label>
-                  <select id="regionSelect" class="form-select form-select-custom" disabled>
-                     <option value="">Select Region</option>
-                  </select>
-               </div>
-               <div class="col-md-4">
-                  <label class="form-label fw-semibold small text-muted">City</label>
-                  <select id="citySelect" class="form-select form-select-custom" disabled>
-                     <option value="">Select City</option>
-                  </select>
-               </div>
-            </div>
-         </div>
-         <h3 class="fw-bold mb-3">
-            <span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
-         </h3>
-         {{-- ================= VENDORS ================= --}}
-        @foreach($vendor_reg as $vendor)
-    <div class="vendor-card"
-     data-vendor-id="{{ $vendor->id }}"
-     data-business="{{ $vendor->business_name }}"
-     data-fullname="{{ $vendor->name }}"
-     data-contact-name="{{ $vendor->contact_person_name }}"
-     data-mobile="{{ $vendor->mobile }}"
-     data-email="{{ $vendor->email }}"
-     data-work-type-id="{{ $vendor->work_type_id }}"
-     data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
-     data-work-type="{{ strtolower($vendor->work_type) }}"
-     data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
-     data-experience="{{ $vendor->experience_years }}"
-     data-team-size="{{ $vendor->team_size_data }}"
-     data-min-project="{{ $vendor->min_project_value }}"
-     data-company-name="{{ $vendor->company_name }}"
-     data-entity-type="{{ $vendor->entity_type }}"
-     data-gst="{{ $vendor->gst_number }}"
-     data-pan="{{ $vendor->pan_number }}"
-     data-msme="{{ $vendor->msme_registered }}"
-     data-state-id="{{ $vendor->state }}"
-     data-region-id="{{ $vendor->region }}"
-     data-city-id="{{ $vendor->city }}"
-     data-bank-name="{{ $vendor->bank_name }}"
-     data-account-type="{{ $vendor->account_type }}"
+               <h3 class="fw-bold mb-3">
+                  <span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
+               </h3>
+               {{-- ================= VENDORS ================= --}}
+               <!-- <div class="vendor-grid">
+                  @foreach($vendor_reg as $vendor)
+                     <div class="card vendor-card"
+                        data-vendor-id="{{ $vendor->id }}"
+                        {{-- BASIC --}}
+                        data-business="{{ $vendor->business_name }}"
+                        data-fullname="{{ $vendor->name }}"
+                        data-contact-name="{{ $vendor->contact_person_name }}"
+                        data-mobile="{{ $vendor->mobile }}"
+                        data-email="{{ $vendor->email }}"
+                        {{-- WORK --}}
+                        data-work-type-id="{{ $vendor->work_type_id }}"
+                        data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
+                        data-work-type="{{ strtolower($vendor->work_type) }}"
+                        data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
+                        data-experience="{{ $vendor->experience_years }}"
+                        data-team-size="{{ $vendor->team_size_data }}"
+                        data-min-project="{{ $vendor->min_project_value }}"
+                        {{-- COMPANY --}}
+                        data-company-name="{{ $vendor->company_name }}"
+                        data-entity-type="{{ $vendor->entity_type }}"
+                        data-gst="{{ $vendor->gst_number }}"
+                        data-pan="{{ $vendor->pan_number }}"
+                        data-msme="{{ $vendor->msme_registered }}"
+                        {{-- LOCATION --}}
+                        data-state-id="{{ $vendor->state }}"
+                        data-region-id="{{ $vendor->region }}"
+                        data-city-id="{{ $vendor->city }}"
+                        {{-- BANK (OPTIONAL) --}}
+                        data-bank-name="{{ $vendor->bank_name }}"
+                        data-account-type="{{ $vendor->account_type }}">
+                        
+                        <div class="card-header">
+                            <div class="vendor-logo">
+                                @if(!empty($vendor->company_logo))
+                                    <img src="{{ asset('storage/'.$vendor->company_logo) }}"
+                                        alt="{{ $vendor->business_name }}"
+                                        class="logo-img">
+                                @else
+                                    <div class="logo-placeholder">
+                                        {{ strtoupper(substr($vendor->business_name, 0, 1)) }}
+                                    </div>
+                                @endif
+                            </div>
+                           <div class="title">{{ strtoupper($vendor->business_name) }}</div>
+
+                           <div class="badge-wrapper">
+                              @if($vendor->profile_percent >= 90)
+                                    <span class="badge verified">✔ Verified</span>
+                                    <span class="badge trusted">⭐ Trusted</span>
+                              @elseif($vendor->profile_percent >= 60)
+                                    <span class="badge verified">✔ Verified</span>
+                              @endif
+                           </div>
+                        </div>
+
+
+                        <div class="subtitle">{{ $vendor->work_type }}</div>
+                        <div class="location">📍  {{ $vendor->statename ?? '' }},
+                              {{ $vendor->regionname ?? '' }},
+                              {{ $vendor->cityname ?? '' }}</div>
+
+                        
+                        <div class="tags">
+                           @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
+                              <span class="tag-chip">
+                                    ✔ {{ trim($subtype) }}
+                              </span>
+                           @endforeach
+                        </div>
+
+
+                        <div class="details">
+                           <p>✔ {{ $vendor->experiance }} years experience</p>
+                           <p>✔ Premium {{$vendor->work_type}}</p>
+                        </div>
+
+                       
+                        <div class="actions">
+
+                           <button class="btn btn-outline"
+                              onclick="viewProfile({{ $vendor->id }})">
+                              View Profile
+                           </button>
+
+                           @if(($vendor->total_reviews ?? 0) > 0)
+                              <div class="rating-display">
+                                 <div class="rating-stars">
+                                       @php $r = (int) round($vendor->avg_rating ?? 0); @endphp
+                                       @for($i = 1; $i <= 5; $i++)
+                                          @if($i <= $r)
+                                             <i class="bi bi-star-fill"></i>
+                                          @else
+                                             <i class="bi bi-star"></i>
+                                          @endif
+                                       @endfor
+                                 </div>
+
+                                 <span class="rating-text">
+                                       {{ number_format((float)($vendor->avg_rating ?? 0), 1) }} / 5
+                                       <small>({{ $vendor->total_reviews ?? 0 }})</small>
+                                 </span>
+                              </div>
+                           @else
+                              <button class="btn btn-rating" onclick="openRatingModal({{ $vendor->id }})">
+                                 ⭐ Add Rating
+                              </button>
+                           @endif
+
+
+                        </div>
+
+
+                     </div>
+                  @endforeach
+               </div> -->
+               <div class="vendor-grid">
+@foreach($vendor_reg as $vendor)
+
+<div class="card vendor-card"
+    data-vendor-id="{{ $vendor->id }}"
+    data-business="{{ $vendor->business_name }}"
+    data-fullname="{{ $vendor->name }}"
+    data-contact-name="{{ $vendor->contact_person_name }}"
+    data-mobile="{{ $vendor->mobile }}"
+    data-email="{{ $vendor->email }}"
+    data-work-type-id="{{ $vendor->work_type_id }}"
+    data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
+    data-work-type="{{ strtolower($vendor->work_type) }}"
+    data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
+    data-experience="{{ $vendor->experience_years }}"
+    data-team-size="{{ $vendor->team_size_data }}"
+    data-min-project="{{ $vendor->min_project_value }}"
+    data-company-name="{{ $vendor->company_name }}"
+    data-entity-type="{{ $vendor->entity_type }}"
+    data-gst="{{ $vendor->gst_number }}"
+    data-pan="{{ $vendor->pan_number }}"
+    data-msme="{{ $vendor->msme_registered }}"
+    data-state-id="{{ $vendor->state }}"
+    data-region-id="{{ $vendor->region }}"
+    data-city-id="{{ $vendor->city }}"
+    data-bank-name="{{ $vendor->bank_name }}"
+    data-account-type="{{ $vendor->account_type }}"
 >
 
-    <div class="vendor-left-border"></div>
+    {{-- ================= HEADER ================= --}}
+    <div class="card-header d-flex align-items-center gap-3">
 
-    <div class="vendor-main">
-
-        {{-- HEADER --}}
-        <div class="vendor-header">
-            <div>
-                <h3 class="vendor-title">{{ strtoupper($vendor->business_name) }}</h3>
-                <div class="vendor-subtitle">
-                    {{ $vendor->work_type }} – {{ $vendor->work_subtype_data }}
+        {{-- LOGO --}}
+        <div class="vendor-logo">
+            @if(!empty($vendor->company_logo))
+                <img src="{{ asset('storage/'.$vendor->company_logo) }}"
+                     alt="{{ $vendor->business_name }}"
+                     class="logo-img">
+            @else
+                <div class="logo-placeholder">
+                    {{ strtoupper(substr($vendor->business_name, 0, 1)) }}
                 </div>
+            @endif
+        </div>
+
+        {{-- TITLE + BADGES --}}
+        <div class="flex-grow-1">
+            <div class="title">{{ strtoupper($vendor->business_name) }}</div>
+
+            <div class="badge-wrapper">
+                @if($vendor->profile_percent >= 90)
+                    <span class="badge verified">✔ Verified</span>
+                    <span class="badge trusted">⭐ Trusted</span>
+                @elseif($vendor->profile_percent >= 60)
+                    <span class="badge verified">✔ Verified</span>
+                @endif
             </div>
-
-            <span class="vendor-badge">✔ Verified</span>
         </div>
+    </div>
 
-        {{-- LOCATION --}}
-        <div class="vendor-location">
-            📍 {{ $vendor->statename ?? '' }} – {{ $vendor->regionname ?? '' }} – {{ $vendor->cityname ?? '' }}
-        </div>
+    {{-- ================= BODY ================= --}}
+    <div class="subtitle">{{ $vendor->work_type }}</div>
 
-        {{-- TAGS --}}
-        <div class="vendor-tags">
-            <span>✓ {{ $vendor->experience_years }}+ Years</span>
-            <span>✓ {{ $vendor->team_size_data }}</span>
-            <span>✓ Min ₹{{ $vendor->min_project_value }}</span>
-        </div>
+    <div class="location">
+        📍 {{ $vendor->statename ?? '' }},
+        {{ $vendor->regionname ?? '' }},
+        {{ $vendor->cityname ?? '' }}
+    </div>
 
-        {{-- META --}}
-        <div class="vendor-meta">
-            ✓ Govt & Private Projects<br>
-            ✓ {{ $vendor->entity_type }}
-        </div>
+    {{-- TAGS --}}
+    <div class="tags">
+        @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
+            <span class="tag-chip">✔ {{ trim($subtype) }}</span>
+        @endforeach
+    </div>
 
-        {{-- FOOTER --}}
-        <div class="vendor-footer">
+    {{-- DETAILS --}}
+    <div class="details">
+        <p>✔ {{ $vendor->experiance }} years experience</p>
+        <p>✔ Premium {{ $vendor->work_type }}</p>
+    </div>
 
-            {{-- CONTACT (MASKED) --}}
-            <div class="vendor-contact">
-                @php
-                    $mobile = preg_replace('/\D/', '', $vendor->mobile);
-                    $maskedMobile = $mobile ? substr($mobile,0,2).str_repeat('x', max(strlen($mobile)-2,0)) : 'xxxxxxxx';
-                @endphp
-                <div>📞 {{ $maskedMobile }}</div>
+    {{-- ================= ACTIONS ================= --}}
+    <div class="actions">
 
-                @php
-                    $email = $vendor->email;
-                    if (!empty($email) && str_contains($email,'@')) {
-                        [$name,$domain] = explode('@',$email,2);
-                        $maskedEmail = substr($name,0,2).str_repeat('*', max(strlen($name)-2,0)).'@'.$domain;
-                    } else { $maskedEmail = 'xxxx@xxxx.com'; }
-                @endphp
-                <div>✉️ {{ $maskedEmail }}</div>
+        <button class="btn btn-outline"
+            onclick="viewProfile({{ $vendor->id }})">
+            View Profile
+        </button>
+
+        @if(($vendor->total_reviews ?? 0) > 0)
+            <div class="rating-display">
+                <div class="rating-stars">
+                    @php $r = (int) round($vendor->avg_rating ?? 0); @endphp
+                    @for($i = 1; $i <= 5; $i++)
+                        @if($i <= $r)
+                            <i class="bi bi-star-fill"></i>
+                        @else
+                            <i class="bi bi-star"></i>
+                        @endif
+                    @endfor
+                </div>
+
+                <span class="rating-text">
+                    {{ number_format((float)($vendor->avg_rating ?? 0), 1) }} / 5
+                    <small>({{ $vendor->total_reviews ?? 0 }})</small>
+                </span>
             </div>
-
-            {{-- CTA --}}
-            <button class="btn-interest"
-                onclick="handleInterested(
-                    {{ $vendor->id }},
-                    '{{ addslashes($vendor->business_name) }}',
-                    '{{ addslashes($vendor->name) }}',
-                    '{{ addslashes($vendor->work_subtype_data) }}'
-                )">
-                ❤️ I’m Interested
+        @else
+            <button class="btn btn-rating"
+                onclick="openRatingModal({{ $vendor->id }})">
+                ⭐ Add Rating
             </button>
-
-        </div>
+        @endif
 
     </div>
-</div>
-@endforeach
 
-   </div>
 </div>
+
+@endforeach
 </div>
+
+         </div>
+         <!-- </div> -->
+      </div>
 {{-- ================= AUTH MODAL (UNCHANGED) ================= --}}
+
 <div class="modal fade" id="authModal" tabindex="-1">
    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content auth-modal">
          <div class="auth-header">
-            <h5 class="fw-bold">Login Required</h5>
+            <div class="auth-icon"><i class="bi bi-shield-lock-fill"></i></div>
+            <h5 class="fw-bold mb-1">Login Required</h5>
+            <p class="mb-0 small opacity-75">Please sign in to continue</p>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
          </div>
-         <div class="modal-body text-center">
-            <a href="{{ route('login_register') }}" class="btn btn-auth-primary w-100">
-            Login / Register
+         <div class="modal-body text-center p-4">
+            <p class="text-muted mb-4">
+               To view Vendor contact details and unlock premium leads, please log in to your Customer account.
+            </p>
+            <a href="{{ route('login_register') }}" class="btn btn-auth-primary w-100 mb-3">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Login to Continue
+            </a>
+            <a href="{{ route('login_register') }}" class="btn btn-auth-outline w-100">
+            <i class="bi bi-person-plus me-2"></i> Create Free Account
             </a>
          </div>
       </div>
    </div>
 </div>
-{{-- ================= VENDOR MODAL (ADDED – REQUIRED) ================= --}}
-<div class="modal fade" id="vendorModal" tabindex="-1">
-   <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content premium-modal border-0">
-         <!-- HEADER -->
-         <div class="premium-header d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-               <div class="vendor-avatar">
-                  <i class="bi bi-person-badge-fill"></i>
-               </div>
-               <div>
-                  <h5 class="fw-bold mb-0">Vendor Details</h5>
-                  <small class="opacity-75">Verified professional profile</small>
-               </div>
+<div class="modal fade" id="ratingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Rate Vendor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-         </div>
-         <!-- BODY -->
-         <div class="modal-body p-4">
-            <!-- BASIC INFO -->
-            <div class="row g-4 mb-4">
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-person-fill text-primary"></i>
-                        <strong>Name</strong>
-                     </div>
-                     <div class="fw-bold fs-6" id="vFullname">—</div>
-                  </div>
-               </div>
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-briefcase-fill text-primary"></i>
-                        <strong>Business</strong>
-                     </div>
-                     <div class="fw-bold fs-6" id="vBusiness">—</div>
-                  </div>
-               </div>
+
+            <div class="modal-body text-center">
+
+                <input type="hidden" id="ratingVendorId">
+                <input type="hidden" id="ratingValue">
+
+                <p class="mb-2 text-muted">How was your experience?</p>
+
+                <div class="star-rating" id="starRating">
+                    <i class="bi bi-star" data-value="1"></i>
+                    <i class="bi bi-star" data-value="2"></i>
+                    <i class="bi bi-star" data-value="3"></i>
+                    <i class="bi bi-star" data-value="4"></i>
+                    <i class="bi bi-star" data-value="5"></i>
+                </div>
+
+                <div class="rating-text mt-2" id="ratingText">Select a rating</div>
+
+                <textarea class="form-control mt-3"
+                    id="ratingComment"
+                    placeholder="Write a short review (optional)"
+                    rows="3"></textarea>
+
             </div>
-            <!-- CONTACT INFO -->
-            <div class="row g-4 mb-4">
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-telephone-fill text-primary"></i>
-                        <strong>Mobile</strong>
-                     </div>
-                     <div class="fw-semibold" id="vMobile">—</div>
-                  </div>
-               </div>
-               <div class="col-md-6">
-                  <div class="contact-info-section">
-                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <i class="bi bi-envelope-fill text-primary"></i>
-                        <strong>Email</strong>
-                     </div>
-                     <div class="fw-semibold" id="vEmail">—</div>
-                  </div>
-               </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <button class="btn btn-primary" onclick="submitRating()">
+                    Submit Rating
+                </button>
             </div>
-            <!-- LOCATION -->
-            <div class="contact-info-section mb-4">
-               <div class="d-flex align-items-center gap-2 mb-2">
-                  <i class="bi bi-geo-alt-fill text-primary"></i>
-                  <strong>Location</strong>
-               </div>
-               <div class="fw-semibold" id="vLocation">—</div>
-            </div>
-            <!-- ACTIONS -->
-            <div class="d-flex justify-content-end gap-2">
-               <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
-               Close
-               </button>
-               <a href="tel:" id="callVendorBtn" class="btn btn-gradient-primary px-4">
-               <i class="bi bi-telephone-outbound-fill me-1"></i> Call Now
-               </a>
-            </div>
-         </div>
-      </div>
-   </div>
+
+        </div>
+    </div>
 </div>
+
 {{-- ================= SCRIPTS ================= --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -868,11 +1204,11 @@
    
        $('#regionSelect')
            .prop('disabled', true)
-           .html('<option value="">Loading regions...</option>');
+           .html('<option value="">Loading District...</option>');
    
        $('#citySelect')
            .prop('disabled', true)
-           .html('<option value="">Select City</option>');
+           .html('<option value="">Select regions</option>');
    
        if (!stateId) {
            applyFilters();
@@ -881,7 +1217,7 @@
    
        $.get(`/locations/regions/${stateId}`, function (regions) {
    
-           let options = '<option value="">Select Region</option>';
+           let options = '<option value="">Select District</option>';
            regions.forEach(r => {
                options += `<option value="${r.id}">${r.name}</option>`;
            });
@@ -899,7 +1235,7 @@
    
        $('#citySelect')
            .prop('disabled', true)
-           .html('<option value="">Loading cities...</option>');
+           .html('<option value="">Loading Region...</option>');
    
        if (!regionId) {
            applyFilters();
@@ -908,7 +1244,7 @@
    
        $.get(`/locations/cities/${regionId}`, function (cities) {
    
-           let options = '<option value="">Select City</option>';
+           let options = '<option value="">Select Region</option>';
            cities.forEach(c => {
                options += `<option value="${c.id}">${c.name}</option>`;
            });
@@ -923,4 +1259,115 @@
    
    $('#citySelect').on('change', applyFilters);
 </script>
+<script>
+   function requireLogin(callback) {
+    if (!window.CUSTOMERID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return false;
+    }
+    callback();
+}
+
+function viewProfile(id) {
+   if (!window.CUSTOMERID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
+    window.location.href = "{{ url('vendor/profile/id') }}/" + id;
+}
+</script>
+
+
+<script>
+const ratingLabels = {
+    1: "Very Bad",
+    2: "Bad",
+    3: "Average",
+    4: "Good",
+    5: "Excellent"
+};
+
+function openRatingModal(vendorId){
+    document.getElementById('ratingVendorId').value = vendorId;
+    document.getElementById('ratingValue').value = '';
+    document.getElementById('ratingText').innerText = 'Select a rating';
+
+    document.querySelectorAll('#starRating i').forEach(star => {
+        star.classList.remove('active');
+    });
+
+    new bootstrap.Modal(document.getElementById('ratingModal')).show();
+}
+
+document.querySelectorAll('#starRating i').forEach(star => {
+
+    star.addEventListener('mouseenter', function(){
+        const val = this.dataset.value;
+        highlightStars(val, 'hover');
+    });
+
+    star.addEventListener('mouseleave', function(){
+        clearHover();
+    });
+
+    star.addEventListener('click', function(){
+        const val = this.dataset.value;
+        document.getElementById('ratingValue').value = val;
+        document.getElementById('ratingText').innerText = ratingLabels[val];
+        highlightStars(val, 'active');
+    });
+});
+
+function highlightStars(val, type){
+    document.querySelectorAll('#starRating i').forEach(star => {
+        star.classList.remove('hover', 'active');
+        if(star.dataset.value <= val){
+            star.classList.add(type);
+        }
+    });
+}
+
+function clearHover(){
+    const selected = document.getElementById('ratingValue').value;
+    document.querySelectorAll('#starRating i').forEach(star => {
+        star.classList.remove('hover');
+        if(selected && star.dataset.value <= selected){
+            star.classList.add('active');
+        }
+    });
+}
+
+function submitRating(){
+
+    const vendorId = document.getElementById('ratingVendorId').value;
+    const rating   = document.getElementById('ratingValue').value;
+    const comment  = document.getElementById('ratingComment').value;
+
+    if(!rating){
+        alert('Please select a rating');
+        return;
+    }
+
+    $.ajax({
+        url: "/vendor/rate", // 🔁 change to your route
+        method: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            vendor_id: vendorId,
+            rating: rating,
+            comment: comment
+        },
+        success: function(){
+            alert('⭐ Rating submitted successfully');
+            bootstrap.Modal.getInstance(
+                document.getElementById('ratingModal')
+            ).hide();
+        },
+        error: function(){
+            alert('❌ Failed to submit rating');
+        }
+    });
+}
+</script>
+
 @endsection
