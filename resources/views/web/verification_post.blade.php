@@ -49,6 +49,7 @@
                         <th>Location</th>
                         <th>Budget</th>
                         <th>Status</th>
+                        <th>Agreement Accepted</th>
                         <th width="120">Action</th>
                     </tr>
                 </thead>
@@ -65,6 +66,13 @@
                                 {{ $post->cityname ?? '-' }}
                             </td>
                             <td>{{ $post->budget_range ?? '-' }}</td>
+                             <td> @if(!empty($post->agreement_accepted_at))
+                                    <span class="badge bg-success mt-1">
+                                        ✅ Agreement Accepted
+                                    </span>
+                                @endif</td>
+ 
+                            <td>
                             <td>
                                 @if($post->post_verify == 1)
                                     <span class="badge bg-success">Verified</span>

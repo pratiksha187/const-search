@@ -101,7 +101,6 @@
                                         </li>
 
 
-
                                         {{-- Pending only --}}
                                         @if($vendor->requerd_documnet_approve != 1 && $vendor->requerd_documnet_approve != 2)
 
