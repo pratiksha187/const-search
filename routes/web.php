@@ -355,13 +355,23 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
     ->name('admin.supplierapproved');
 
 
-    Route::post('/admin/vendors/{id}/status',
-        [AdminController::class, 'updateStatus']
-    )->name('admin.vendors.status');
+    // Route::post('/admin/vendors/{id}/status',
+    //     [AdminController::class, 'updateStatus']
+    // )->name('admin.vendors.status');
 
     Route::post('/admin/supplier/{id}/status',
         [AdminController::class, 'updatesupplierStatus']
     )->name('admin.supplier.status');
+
+
+
+  Route::post('/admin/vendors/document-approve/{id}',
+    [AdminController::class, 'approveDocument'])
+    ->name('admin.vendors.document');
+
+Route::post('/admin/vendors/vendor-approve/{id}',
+    [AdminController::class, 'approveVendor'])
+    ->name('admin.vendors.vendor');
 
 
  // STATE

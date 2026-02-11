@@ -80,39 +80,77 @@ class AdminController extends Controller
         return view('web.supplierapproved', compact('supplier'));
     }
 
-    
- 
-public function updateStatus(Request $request, $id)
+  public function approveDocument(Request $request, $id)
 {
     $request->validate([
         'status' => 'required|in:approve,reject'
     ]);
 
-    // 1 = Approved, 2 = Rejected (for your requerd_documnet_approve field)
     $docApproveValue = ($request->status === 'approve') ? 1 : 2;
-
-    // ✅ enum status in vendor_reg table
-    $vendorStatus = ($request->status === 'approve') ? 'approved' : 'rejected';
 
     $updated = DB::table('vendor_reg')
         ->where('id', $id)
         ->update([
             'requerd_documnet_approve' => $docApproveValue,
-            'status' => $vendorStatus, // ✅ update enum
             'updated_at' => now(),
         ]);
 
     if (!$updated) {
-        return redirect()->back()->with('error', 'Vendor not found or already updated.');
+        return back()->with('error', 'Vendor not found.');
     }
 
-    return redirect()->back()->with(
-        'success',
-        $request->status === 'approve'
-            ? 'Vendor approved successfully.'
-            : 'Vendor rejected successfully.'
-    );
+    return back()->with('success', 'Document status updated successfully.');
 }
+
+
+public function approveVendor($id)
+{
+    $updated = DB::table('vendor_reg')
+        ->where('id', $id)
+        ->update([
+            'status' => 'approved',
+           
+            'updated_at' => now(),
+        ]);
+
+    if (!$updated) {
+        return back()->with('error', 'Vendor not found.');
+    }
+
+    return back()->with('success', 'Vendor approved successfully.');
+}
+ 
+// public function approveDocument(Request $request, $id)
+// {
+//     $request->validate([
+//         'status' => 'required|in:approve,reject'
+//     ]);
+
+//     // 1 = Approved, 2 = Rejected (for your requerd_documnet_approve field)
+//     $docApproveValue = ($request->status === 'approve') ? 1 : 2;
+
+//     // ✅ enum status in vendor_reg table
+//     $vendorStatus = ($request->status === 'approve') ? 'approved' : 'rejected';
+
+//     $updated = DB::table('vendor_reg')
+//         ->where('id', $id)
+//         ->update([
+//             'requerd_documnet_approve' => $docApproveValue,
+//             'status' => $vendorStatus, // ✅ update enum
+//             'updated_at' => now(),
+//         ]);
+
+//     if (!$updated) {
+//         return redirect()->back()->with('error', 'Vendor not found or already updated.');
+//     }
+
+//     return redirect()->back()->with(
+//         'success',
+//         $request->status === 'approve'
+//             ? 'Vendor approved successfully.'
+//             : 'Vendor rejected successfully.'
+//     );
+// }
 
     public function updatesupplierStatus(Request $request, $id)
     {
