@@ -105,7 +105,12 @@
             <span class="badge bg-success mt-1">
                 ✅ Agreement Accepted
             </span>
+        @else
+            <span class="badge bg-danger mt-1">
+                ❌ Agreement Not Accepted
+            </span>
         @endif
+
     </div>
 
     <span class="status-badge {{ $vendor->lead_balance > 0 ? 'status-active' : 'status-empty' }}">
