@@ -379,10 +379,7 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
                           Agreement Not Uploaded Yet
                       </div>
 
-                      <a href="{{ route('vendor_agreement_page') }}"
-                        class="agreement-btn btn btn-danger btn-sm">
-                          Complete Now
-                      </a>
+                     
 
                   </div>
 
