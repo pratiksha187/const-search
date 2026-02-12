@@ -478,7 +478,7 @@ class LoginRegController extends Controller
         $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');
-    //    dd( $vendIds );
+        //    dd( $vendIds );
         $notifications = DB::table('customer_interests as ci')
                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
                 ->whereIn('ci.vendor_id', $vendIds)

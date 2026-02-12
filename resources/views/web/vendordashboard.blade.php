@@ -281,6 +281,46 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
   .credits-actions{ flex-direction:column; }
   .pc-right{ text-align:left; }
 }
+
+/* AGREEMENT HIGHLIGHT */
+
+.agreement-highlight{
+    margin-top:18px;
+    padding:14px 18px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.agreement-active{
+    background:linear-gradient(135deg,#dcfce7,#bbf7d0);
+    border:1px solid #22c55e;
+    box-shadow:0 8px 20px rgba(34,197,94,.15);
+}
+
+.agreement-missing{
+    background:linear-gradient(135deg,#fee2e2,#fecaca);
+    border:1px solid #ef4444;
+    box-shadow:0 8px 20px rgba(239,68,68,.15);
+}
+
+.agreement-highlight i{
+    font-size:18px;
+}
+
+.agreement-btn{
+    padding:6px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+}
+
 </style>
 
 <div class="dashboard-wrap">
@@ -312,7 +352,42 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
           <div>
             <div class="hero-title">Hi {{ $vendor->name }} 👋</div>
             <div class="hero-sub">Track your leads, bids and projects at a glance.</div>
+              {{-- AGREEMENT HIGHLIGHT SECTION --}}
+              @if(!empty($vendor->custntructkaro_agreement_file))
 
+                  <div class="agreement-highlight agreement-active">
+
+                      <div>
+                          <i class="bi bi-shield-check text-success me-2"></i>
+                          ConstructKaro Agreement Uploaded & Active
+                      </div>
+
+                      <a href="{{ asset('storage/'.$vendor->custntructkaro_agreement_file) }}"
+                        target="_blank"
+                        class="agreement-btn btn btn-success btn-sm">
+                          View Agreement
+                      </a>
+
+                  </div>
+
+              @else
+
+                  <div class="agreement-highlight agreement-missing">
+
+                      <div>
+                          <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                          Agreement Not Uploaded Yet
+                      </div>
+
+                      <a href="{{ route('vendor_agreement_page') }}"
+                        class="agreement-btn btn btn-danger btn-sm">
+                          Complete Now
+                      </a>
+
+                  </div>
+
+              @endif
+              <br>
             <div class="hero-meta">
               <span class="pill good">
                 <i class="bi bi-shield-check"></i> Verified Vendor
@@ -332,6 +407,7 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
                 <i class="bi bi-play-circle"></i> How it works?
               </a>
             </div>
+            
 
             <div class="hero-actions">
               <a href="{{ route('search_customer') }}" class="btn btn-hero primary">

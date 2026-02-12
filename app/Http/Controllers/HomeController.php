@@ -136,7 +136,7 @@ class HomeController extends Controller
                     ->where('user_id', $customer_id)
                     ->pluck('id');
         $notifications = DB::table('vendor_interests as vi')
-                // ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+               
                 ->whereIn('vi.customer_id', $postIds)
             
                 ->get();
@@ -144,7 +144,7 @@ class HomeController extends Controller
       
         //   $cust_data = DB::table('users')->where('id',$customer_id)->first();
         $cust_data = DB::table('users')->where('id', $customer_id)->first();
-
+// dd( $cust_data);
         return view('web.cutomerprofile', compact('cust_data','notifications','notificationCount'));
     }
     

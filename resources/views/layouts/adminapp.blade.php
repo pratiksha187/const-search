@@ -242,7 +242,7 @@ body{
                 <a href="{{ route('postverification') }}">Lead Verification</a>
                 <a href="{{ route('admin.freeleads') }}">Free Leads (FB/Insta)</a>
                 <a href="{{ route('primium_lead_intrested') }}">Premium Lead Interested</a>
-                <a href="{{ route('admin.post.agreement.list') }}">Post Agreement(CK)</a>
+                <!-- <a href="{{ route('admin.post.agreement.list') }}">Post Agreement(CK)</a> -->
                  
             </div>
 
