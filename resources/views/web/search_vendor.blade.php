@@ -10,580 +10,217 @@
 </script>
 {{-- ================= YOUR ORIGINAL CSS (UNCHANGED) ================= --}}
 <style>
-   /* ================= ROOT ================= */
-   :root{
-   --primary-blue:#2563eb;
-   --primary-indigo:#4f46e5;
-   --primary-orange:#f97316;
-   --success-green:#10b981;
-   --bg-gradient:linear-gradient(135deg,#f8fafc 0%,#eff6ff 50%,#f8fafc 100%);
-   }
-   *{box-sizing:border-box}
-   body{
-   font-family:'Inter',sans-serif;
-   background:var(--bg-gradient);
-   color:#1e293b;
-   }
-   /* ================= HEADER ================= */
-   .header{
-   background:rgba(255,255,255,.9);
-   backdrop-filter:blur(20px);
-   border-bottom:1px solid #e2e8f0;
-   position:sticky;
-   top:0;
-   z-index:1000;
-   }
-   /* ================= BUTTONS ================= */
-   .btn-gradient-primary{
-   background:linear-gradient(135deg,var(--primary-blue),var(--primary-indigo));
-   border:none;
-   color:#fff;
-   font-weight:600;
-   border-radius:10px;
-   }
-   .btn-gradient-primary:hover{
-   transform:scale(1.05);
-   box-shadow:0 10px 25px rgba(37,99,235,.4);
-   }
-   /* ================= FILTER SIDEBAR ================= */
-   .filter-sidebar{
-   background:#fff;
-   border-radius:24px;
-   border:1px solid #e2e8f0;
-   padding:24px;
-   position:sticky;
-   top:100px;
-   }
-   .filter-header{
-   display:flex;
-   gap:12px;
-   border-bottom:1px solid #e2e8f0;
-   padding-bottom:20px;
-   margin-bottom:24px;
-   }
-   .filter-icon-box{
-   width:40px;height:40px;
-   background:linear-gradient(135deg,var(--primary-blue),var(--primary-indigo));
-   border-radius:12px;
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   color:#fff;
-   }
-   .filter-category-item{
-   padding:12px;
-   border-radius:12px;
-   cursor:pointer;
-   border:2px solid transparent;
-   }
-   .filter-category-item:hover{
-   background:#f8fafc;
-   border-color:#e2e8f0;
-   }
-   .filter-category-item.active{
-   background:#eff6ff;
-   border-color:#93c5fd;
-   }
-   /* ================= SEARCH ================= */
-   .search-section{
-   background:#fff;
-   border-radius:24px;
-   border:1px solid #e2e8f0;
-   padding:24px;
-   margin-bottom:24px;
-   }
-   .form-control-custom,
-   .form-select-custom{
-   padding:14px 20px;
-   border:2px solid #e2e8f0;
-   border-radius:12px;
-   font-weight:500;
-   }
-   .form-control-custom:focus,
-   .form-select-custom:focus{
-   border-color:var(--primary-blue);
-   box-shadow:0 0 0 4px rgba(37,99,235,.1);
-   }
-   /* ================= VENDOR CARD ================= */
-   .vendor-card{
-   background:#fff;
-   border-radius:16px;
-   border:1px solid #e2e8f0;
-   padding:14px;
-   margin-bottom:14px;
-   position:relative;
-   transition:.3s ease;
-   }
-   .vendor-card:hover{
-   transform:translateY(-2px);
-   box-shadow:0 20px 60px rgba(15,23,42,.15);
-   }
-   /* ================= AVATAR ================= */
-   .vendor-avatar{
-   width:64px;height:64px;
-   border-radius:12px;
-   background:linear-gradient(135deg,var(--primary-blue),var(--primary-indigo));
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   color:#fff;
-   font-size:24px;
-   font-weight:800;
-   position:relative;
-   }
-   /* ================= TEXT ================= */
-   .vendor-name{
-   font-size:16px;
-   font-weight:800;
-   }
-   .category-badge{
-   background:#fed7aa;
-   color:#c2410c;
-   padding:4px 10px;
-   border-radius:20px;
-   font-size:11px;
-   font-weight:700;
-   }
-   /* ================= CONTACT ================= */
-   .contact-info-section{
-   background:#f8fafc;
-   border-radius:12px;
-   padding:10px;
-   border:1px solid #e2e8f0;
-   }
-   /* ================= ACTION BUTTONS ================= */
-   .btn-interested{
-   background:linear-gradient(135deg,#f97316,#ea580c);
-   border:none;
-   color:#fff;
-   padding:12px 24px;
-   border-radius:12px;
-   font-weight:700;
-   }
-   /* ================= MODAL ================= */
-   .modal-content{
-   border-radius:24px;
-   overflow:hidden;
-   }
-   .payment-section{
-   background:linear-gradient(135deg,var(--success-green),#059669);
-   border-radius:16px;
-   padding:24px;
-   color:#fff;
-   }
-   .price-tag{
-   font-size:40px;
-   font-weight:800;
-   }
-   /* ================= RESPONSIVE ================= */
-   @media(max-width:991px){
-   .filter-sidebar{position:relative;top:0}
-   }
-   @media(max-width:768px){
-   .vendor-avatar{width:80px;height:80px}
-   }
-   /* ===== PREMIUM MODAL ===== */
-   .premium-modal {
-   border-radius: 24px;
-   overflow: hidden;
-   }
-   .premium-header {
-   background: linear-gradient(135deg, #2563eb, #4f46e5);
-   color: #fff;
-   padding: 24px 28px;
-   }
-   /* LOCKED SECTION */
-   .locked-info {
-   padding: 20px;
-   border-radius: 18px;
-   background: #f8fafc;
-   border: 1px dashed #e2e8f0;
-   }
-   .lock-icon {
-   width: 64px;
-   height: 64px;
-   border-radius: 50%;
-   background: linear-gradient(135deg, #ef4444, #dc2626);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   color: #fff;
-   font-size: 28px;
-   margin: auto;
-   }
-   /* PAYMENT BOX */
-   .payment-section-modern {
-   background: linear-gradient(135deg, #10b981, #059669);
-   color: #fff;
-   border-radius: 20px;
-   padding: 24px;
-   margin-top: 20px;
-   }
-   .price-tag {
-   font-size: 36px;
-   font-weight: 800;
-   }
-   .benefits-list {
-   list-style: none;
-   padding: 0;
-   margin: 15px 0 0;
-   }
-   .benefits-list li {
-   display: flex;
-   align-items: center;
-   gap: 10px;
-   font-size: 14px;
-   margin-bottom: 8px;
-   }
-   .benefits-list i {
-   color: #d1fae5;
-   }
-   /* PAY BUTTON */
-   .pay-btn {
-   background: #065f46;
-   border: none;
-   color: #fff;
-   font-weight: 700;
-   padding: 14px;
-   border-radius: 14px;
-   transition: all 0.3s ease;
-   }
-   .pay-btn:hover {
-   background: #064e3b;
-   transform: translateY(-1px);
-   }
-   /* ===== AUTH MODAL ===== */
-   .auth-modal {
-   border-radius: 22px;
-   overflow: hidden;
-   }
-   /* HEADER */
-   .auth-header {
-   background: linear-gradient(135deg, #2563eb, #4f46e5);
-   color: #fff;
-   padding: 32px 24px 28px;
-   text-align: center;
-   position: relative;
-   }
-   .auth-icon {
-   width: 64px;
-   height: 64px;
-   border-radius: 16px;
-   background: rgba(255,255,255,0.18);
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   margin: 0 auto 12px;
-   font-size: 28px;
-   }
-   /* BUTTONS */
-   .btn-auth-primary {
-   background: linear-gradient(135deg, #2563eb, #4f46e5);
-   border: none;
-   color: #fff;
-   font-weight: 700;
-   padding: 14px;
-   border-radius: 14px;
-   transition: all .3s ease;
-   }
-   /* ===== BLUR SENSITIVE INFO ===== */
-   .blur-text {
-   filter: blur(6px);
-   pointer-events: none;
-   user-select: none;
-   transition: all 0.3s ease;
-   }
-   /* Unblur when allowed */
-   .unblur {
-   filter: blur(0);
-   pointer-events: auto;
-   }
-   /* Optional: lock hint */
-   .blur-text::after {
-   content: ' 🔒';
-   filter: blur(0);
-   }
-   .btn-auth-primary:hover {
-   transform: translateY(-1px);
-   box-shadow: 0 10px 25px rgba(37,99,235,0.4);
-   }
-   .btn-auth-outline {
-   background: #fff;
-   border: 2px solid #e5e7eb;
-   color: #1e293b;
-   font-weight: 600;
-   padding: 14px;
-   border-radius: 14px;
-   transition: all .3s ease;
-   }
-   .btn-auth-outline:hover {
-   background: #f8fafc;
-   border-color: #c7d2fe;
-   }
-   /* ================= LOCATION FILTER UPGRADE ================= */
-   .search-section {
-   background: linear-gradient(135deg,#ffffff,#f8fafc);
-   border-radius: 22px;
-   border: 1px solid #e5e7eb;
-   padding: 22px;
-   box-shadow: 0 10px 40px rgba(15,23,42,.08);
-   }
-   .form-select-custom {
-   height: 54px;
-   font-weight: 600;
-   border-radius: 14px;
-   background-color: #fff;
-   transition: all .25s ease;
-   }
-   .form-select-custom:hover {
-   border-color: #93c5fd;
-   }
-   .form-select-custom:disabled {
-   background: #f1f5f9;
-   cursor: not-allowed;
-   }
-   /* Icon colors */
-   .text-indigo { color:#4f46e5 }
-   .text-orange { color:#f97316 }
+:root{
+    --navy:#1c2c3e;
+    --orange:#f97316;
+    --light:#f8fafc;
+    --gray:#64748b;
+}
 
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
+/* ================= GLOBAL ================= */
 
-    /* body {
-      background: #f4f6fb;
-      padding: 40px;
-    } */
+body{
+    font-family:'Inter',sans-serif;
+    background:
+        linear-gradient(rgba(248,250,252,.96), rgba(248,250,252,.96)),
+        url('https://images.unsplash.com/photo-1581090700227-4c4f50f7b7c4?auto=format&fit=crop&w=1600&q=60');
+    background-size:cover;
+    background-attachment:fixed;
+}
 
-    .card {
-      width: 420px;
-      background: #fff;
-      border-radius: 16px;
-      padding: 22px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-      border-left: 5px solid #5b6cff;
-    }
+/* ================= HERO ================= */
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.marketplace-hero{
+    background:linear-gradient(135deg,var(--navy),#0f172a);
+    padding:60px 40px;
+    border-radius:20px;
+    color:#fff;
+    margin-bottom:35px;
+    box-shadow:0 25px 60px rgba(0,0,0,.25);
+}
 
-    .title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #0f172a;
-    }
+.marketplace-hero h2{
+    font-weight:900;
+    font-size:32px;
+    margin-bottom:8px;
+}
 
-    .verified {
-      background: #22c55e;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 20px;
-    }
+.marketplace-hero p{
+    opacity:.85;
+    font-weight:500;
+}
 
-    .subtitle {
-      margin-top: 8px;
-      color: #4f46e5;
-      font-weight: 600;
-    }
+/* ================= SIDEBAR ================= */
 
-    .location {
-      margin-top: 6px;
-      color: #64748b;
-      font-size: 14px;
-    }
+.filter-sidebar{
+    background:#fff;
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+    border:1px solid #e2e8f0;
+}
 
-    .tags {
-      margin-top: 14px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+.filter-header{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:20px;
+    padding-bottom:15px;
+    border-bottom:1px solid #eee;
+}
 
-    .tag {
-      background: #f1f5f9;
-      color: #0f172a;
-      font-size: 13px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 500;
-    }
+/* ================= GRID ================= */
 
-    .details {
-      margin-top: 16px;
-      color: #475569;
-      font-size: 14px;
-    }
-
-    .details p {
-      margin: 6px 0;
-    }
-
-    .actions {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 12px;
-      font-size: 15px;
-      font-weight: 600;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-
-    .btn-outline {
-      background: #fff;
-      border: 2px solid #5b6cff;
-      color: #5b6cff;
-    }
-
-    .btn-outline:hover {
-      background: #5b6cff;
-      color: #fff;
-    }
-
-    .btn-primary {
-      background: #5b6cff;
-      border: none;
-      color: #fff;
-    }
-
-    /* ===== FORCE 2 CARDS PER ROW ===== */
 .vendor-grid{
     display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:24px;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
 }
 
-/* Tablet */
-@media (max-width: 1200px){
-    .vendor-grid{
-        grid-template-columns:repeat(2, 1fr);
-    }
+@media(max-width:992px){
+    .vendor-grid{grid-template-columns:1fr;}
 }
 
-/* Mobile */
-@media (max-width: 768px){
-    .vendor-grid{
-        grid-template-columns:1fr;
-    }
-}
+/* ================= VENDOR CARD ================= */
 
-/* Card should fill grid cell */
 .vendor-card{
-    width:100%;
-    max-width:100%;
+    background:#fff;
+    border-radius:18px;
+    padding:22px;
+    position:relative;
+    box-shadow:0 15px 45px rgba(15,23,42,.08);
+    transition:.35s;
+    overflow:hidden;
 }
 
-    .btn-primary:hover {
-      background: #434eea;
-    }
+.vendor-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 25px 70px rgba(15,23,42,.18);
+}
 
-    .tags{
+/* Industrial Accent Stripe */
+.vendor-card::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:6px;
+    height:100%;
+    background:linear-gradient(180deg,var(--orange),var(--navy));
+}
+
+/* watermark */
+.vendor-card .watermark{
+    position:absolute;
+    right:15px;
+    bottom:15px;
+    font-size:70px;
+    opacity:.05;
+    color:var(--navy);
+}
+
+/* ================= HEADER ================= */
+
+.vendor-header{
     display:flex;
-    flex-wrap:wrap;
-    gap:8px;
-    margin:10px 0 14px;
-}
-
-.tag-chip{
-    background:#f1f5f9;
-    color:#0f172a;
-    font-size:13px;
-    font-weight:500;
-    padding:6px 10px;
-    border-radius:8px;
-    white-space:nowrap;
-    box-shadow:inset 0 0 0 1px #e5e7eb;
-}
-.badge-wrapper{
-    display:flex;
-    gap:6px;
+    gap:15px;
     align-items:center;
 }
 
-.badge{
-    font-size:12px;
-    font-weight:700;
-    padding:4px 10px;
-    border-radius:999px;
+.vendor-logo{
+    width:58px;
+    height:58px;
+    border-radius:12px;
+    overflow:hidden;
+    background:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-/* VERIFIED */
+.logo-placeholder{
+    background:var(--navy);
+    color:#fff;
+    font-weight:800;
+    font-size:20px;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* ================= TEXT ================= */
+
+.vendor-name{
+    font-weight:800;
+    font-size:17px;
+    color:var(--navy);
+}
+
+.vendor-type{
+    font-size:14px;
+    font-weight:600;
+    color:var(--orange);
+}
+
+.vendor-location{
+    font-size:13px;
+    color:var(--gray);
+    margin-top:4px;
+}
+
+/* ================= TAGS ================= */
+
+.tag-chip{
+    background:#eef2ff;
+    color:#1c2c3e;
+    font-size:12px;
+    padding:6px 10px;
+    border-radius:8px;
+    display:inline-block;
+    margin:4px 4px 0 0;
+}
+
+/* ================= BADGES ================= */
+
 .badge.verified{
-    background:#ecfdf5;
+    background:#e6fffa;
     color:#065f46;
     border:1px solid #10b981;
 }
 
-/* TRUSTED */
 .badge.trusted{
     background:#fff7ed;
     color:#9a3412;
-    border:1px solid #f97316;
+    border:1px solid var(--orange);
 }
 
-.actions{
-    display:flex;
-    gap:10px;
-    margin-top:12px;
-}
+/* ================= BUTTONS ================= */
 
-/* Existing outline button stays same */
-
-/* Rating Button */
-.btn-rating{
-    border:1px solid #f59e0b;
-    background:#fff7ed;
-    color:#9a3412;
-    font-size:13px;
+.btn-outline-custom{
+    border:2px solid var(--navy);
+    color:var(--navy);
     font-weight:600;
-    padding:6px 14px;
-    border-radius:8px;
-    transition:.2s;
+    border-radius:12px;
+    padding:8px 16px;
 }
 
-.btn-rating:hover{
-    background:#f59e0b;
+.btn-outline-custom:hover{
+    background:var(--navy);
     color:#fff;
 }
-.star-rating{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    font-size:34px;
-    cursor:pointer;
-}
 
-.star-rating i{
-    color:#d1d5db;
-    transition:.2s;
-}
-
-.star-rating i.active,
-.star-rating i.hover{
-    color:#f59e0b;
-}
-
-.rating-text{
-    font-size:14px;
+.btn-rating{
+    border:1px solid var(--orange);
+    background:#fff7ed;
+    color:#9a3412;
     font-weight:600;
-    color:#6b7280;
+    border-radius:8px;
+    padding:6px 14px;
 }
+
 .rating-display{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:14px;
     font-weight:600;
     color:#374151;
 }
@@ -592,54 +229,53 @@
     color:#f59e0b;
 }
 
-.rating-text small{
-    color:#6b7280;
-    font-weight:500;
+/* ================= CONSTRUCTION CARD STYLE ================= */
+
+.construction-card{
+    background:#ffffff;
+    border-radius:18px;
+    padding:24px;
+    position:relative;
+    box-shadow:0 20px 50px rgba(15,23,42,.08);
+    transition:.35s ease;
+    overflow:hidden;
 }
 
-.vendor-logo {
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #f1f5f9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.construction-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 30px 70px rgba(15,23,42,.18);
 }
 
-.logo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+/* Accent Strip */
+.construction-accent{
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+    width:6px;
+    background:linear-gradient(180deg,#f97316,#1c2c3e);
 }
 
-.logo-placeholder {
-    width: 100%;
-    height: 100%;
-    font-weight: 700;
-    font-size: 18px;
-    color: #fff;
-    background: #1c2c3e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.vendor-card{
-    background:#fff;
-    border-radius:12px;
-    padding:16px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.06);
+/* Watermark */
+.construction-watermark{
+    position:absolute;
+    right:15px;
+    bottom:15px;
+    font-size:70px;
+    opacity:.04;
+    color:#1c2c3e;
 }
 
-.card-header{
-    margin-bottom:10px;
+/* Header Layout */
+.vendor-header{
+    display:flex;
+    gap:16px;
 }
 
 .vendor-logo{
-    width:48px;
-    height:48px;
-    border-radius:8px;
+    width:60px;
+    height:60px;
+    border-radius:12px;
     overflow:hidden;
     background:#f1f5f9;
     display:flex;
@@ -647,7 +283,7 @@
     justify-content:center;
 }
 
-.logo-img{
+.vendor-logo img{
     width:100%;
     height:100%;
     object-fit:contain;
@@ -658,77 +294,96 @@
     height:100%;
     background:#1c2c3e;
     color:#fff;
-    font-weight:700;
-    font-size:18px;
+    font-weight:800;
     display:flex;
     align-items:center;
     justify-content:center;
 }
 
-.title{
+.vendor-name{
     font-weight:800;
-    font-size:15px;
+    font-size:16px;
+    color:#1c2c3e;
+    margin-bottom:4px;
 }
 
-.subtitle{
+.vendor-type{
     font-size:14px;
-    color:#555;
-    margin-top:6px;
+    font-weight:600;
+    color:#f97316;
 }
 
-.location{
+.vendor-location{
     font-size:13px;
-    color:#777;
-    margin-top:4px;
+    color:#64748b;
 }
 
-.tags{
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-    margin-top:8px;
-}
-
+/* Tags */
 .tag-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
     background:#eef2ff;
     color:#1c2c3e;
     font-size:12px;
-    padding:4px 8px;
-    border-radius:6px;
+    padding:6px 10px;
+    border-radius:8px;
 }
 
-.details{
+/* Details */
+.detail-item{
     font-size:13px;
-    margin-top:10px;
+    margin-bottom:4px;
+    display:flex;
+    gap:6px;
+    align-items:center;
 }
 
-.actions{
-    margin-top:14px;
+/* Footer */
+.vendor-footer{
+    margin-top:18px;
     display:flex;
     justify-content:space-between;
     align-items:center;
 }
 
-.badge{
-    font-size:11px;
-    padding:3px 6px;
-    border-radius:4px;
+.btn-profile{
+    background:#1c2c3e;
+    color:#fff;
+    border:none;
+    padding:8px 18px;
+    border-radius:10px;
+    font-weight:600;
+    transition:.3s;
 }
 
-.badge.verified{
-    background:#dcfce7;
-    color:#166534;
+.btn-profile:hover{
+    background:#f97316;
+    color:#fff;
 }
 
-.badge.trusted{
-    background:#fff7ed;
-    color:#9a3412;
+/* Rating */
+.rating-display{
+    font-size:14px;
+    font-weight:600;
+    display:flex;
+    gap:6px;
+    align-items:center;
+}
+
+.rating-display i{
+    color:#f59e0b;
 }
 
 </style>
+
 <script>
     window.CUSTOMERID = @json($cust_data->id ?? null);
 </script>
+<div class="marketplace-hero text-center">
+    <h2>India’s Trusted Construction Vendor Network</h2>
+    <p>Verified Contractors • Architects • Consultants • Interior Experts</p>
+</div>
 
       {{-- ================= MAIN CONTENT ================= --}}
       <div class="container-fluid px-4 py-4">
@@ -801,245 +456,134 @@
                   <span id="vendorCount">{{ $vendor_reg->count() }}</span> Professional Vendor
                </h3>
                {{-- ================= VENDORS ================= --}}
-               <!-- <div class="vendor-grid">
-                  @foreach($vendor_reg as $vendor)
-                     <div class="card vendor-card"
+              
+               <div class="vendor-grid">
+                    @foreach($vendor_reg as $vendor)
+
+                    <div class="vendor-card construction-card"
                         data-vendor-id="{{ $vendor->id }}"
-                        {{-- BASIC --}}
                         data-business="{{ $vendor->business_name }}"
                         data-fullname="{{ $vendor->name }}"
                         data-contact-name="{{ $vendor->contact_person_name }}"
                         data-mobile="{{ $vendor->mobile }}"
                         data-email="{{ $vendor->email }}"
-                        {{-- WORK --}}
                         data-work-type-id="{{ $vendor->work_type_id }}"
                         data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
-                        data-work-type="{{ strtolower($vendor->work_type) }}"
-                        data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
-                        data-experience="{{ $vendor->experience_years }}"
-                        data-team-size="{{ $vendor->team_size_data }}"
-                        data-min-project="{{ $vendor->min_project_value }}"
-                        {{-- COMPANY --}}
-                        data-company-name="{{ $vendor->company_name }}"
-                        data-entity-type="{{ $vendor->entity_type }}"
-                        data-gst="{{ $vendor->gst_number }}"
-                        data-pan="{{ $vendor->pan_number }}"
-                        data-msme="{{ $vendor->msme_registered }}"
-                        {{-- LOCATION --}}
                         data-state-id="{{ $vendor->state }}"
                         data-region-id="{{ $vendor->region }}"
                         data-city-id="{{ $vendor->city }}"
-                        {{-- BANK (OPTIONAL) --}}
-                        data-bank-name="{{ $vendor->bank_name }}"
-                        data-account-type="{{ $vendor->account_type }}">
-                        
-                        <div class="card-header">
+                    >
+
+                        <!-- Industrial Accent -->
+                        <div class="construction-accent"></div>
+
+                        <!-- Watermark Icon -->
+                        <div class="construction-watermark">
+                            <i class="bi bi-building"></i>
+                        </div>
+
+                        <!-- ================= HEADER ================= -->
+                        <div class="vendor-header">
+
                             <div class="vendor-logo">
                                 @if(!empty($vendor->company_logo))
                                     <img src="{{ asset('storage/'.$vendor->company_logo) }}"
-                                        alt="{{ $vendor->business_name }}"
-                                        class="logo-img">
+                                        alt="{{ $vendor->business_name }}">
                                 @else
                                     <div class="logo-placeholder">
                                         {{ strtoupper(substr($vendor->business_name, 0, 1)) }}
                                     </div>
                                 @endif
                             </div>
-                           <div class="title">{{ strtoupper($vendor->business_name) }}</div>
 
-                           <div class="badge-wrapper">
-                              @if($vendor->profile_percent >= 90)
-                                    <span class="badge verified">✔ Verified</span>
-                                    <span class="badge trusted">⭐ Trusted</span>
-                              @elseif($vendor->profile_percent >= 60)
-                                    <span class="badge verified">✔ Verified</span>
-                              @endif
-                           </div>
-                        </div>
+                            <div class="vendor-info">
+                                <h5 class="vendor-name">
+                                    {{ strtoupper($vendor->business_name) }}
+                                </h5>
 
+                                <div class="vendor-type">
+                                    {{ $vendor->work_type }}
+                                </div>
 
-                        <div class="subtitle">{{ $vendor->work_type }}</div>
-                        <div class="location">📍  {{ $vendor->statename ?? '' }},
-                              {{ $vendor->regionname ?? '' }},
-                              {{ $vendor->cityname ?? '' }}</div>
+                                <div class="vendor-location">
+                                    📍 {{ $vendor->statename }},
+                                    {{ $vendor->regionname }},
+                                    {{ $vendor->cityname }}
+                                </div>
 
-                        
-                        <div class="tags">
-                           @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
-                              <span class="tag-chip">
-                                    ✔ {{ trim($subtype) }}
-                              </span>
-                           @endforeach
-                        </div>
-
-
-                        <div class="details">
-                           <p>✔ {{ $vendor->experiance }} years experience</p>
-                           <p>✔ Premium {{$vendor->work_type}}</p>
-                        </div>
-
-                       
-                        <div class="actions">
-
-                           <button class="btn btn-outline"
-                              onclick="viewProfile({{ $vendor->id }})">
-                              View Profile
-                           </button>
-
-                           @if(($vendor->total_reviews ?? 0) > 0)
-                              <div class="rating-display">
-                                 <div class="rating-stars">
-                                       @php $r = (int) round($vendor->avg_rating ?? 0); @endphp
-                                       @for($i = 1; $i <= 5; $i++)
-                                          @if($i <= $r)
-                                             <i class="bi bi-star-fill"></i>
-                                          @else
-                                             <i class="bi bi-star"></i>
-                                          @endif
-                                       @endfor
-                                 </div>
-
-                                 <span class="rating-text">
-                                       {{ number_format((float)($vendor->avg_rating ?? 0), 1) }} / 5
-                                       <small>({{ $vendor->total_reviews ?? 0 }})</small>
-                                 </span>
-                              </div>
-                           @else
-                              <button class="btn btn-rating" onclick="openRatingModal({{ $vendor->id }})">
-                                 ⭐ Add Rating
-                              </button>
-                           @endif
-
+                                <div class="badge-wrapper mt-1">
+                                    @if($vendor->profile_percent >= 90)
+                                        <span class="badge verified">✔ Verified</span>
+                                        <span class="badge trusted">⭐ Trusted</span>
+                                    @elseif($vendor->profile_percent >= 60)
+                                        <span class="badge verified">✔ Verified</span>
+                                    @endif
+                                </div>
+                            </div>
 
                         </div>
 
+                        <!-- ================= TAGS ================= -->
+                        <div class="tags mt-3">
+                            @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
+                                <span class="tag-chip">
+                                    <i class="bi bi-check2-circle"></i>
+                                    {{ trim($subtype) }}
+                                </span>
+                            @endforeach
+                        </div>
 
-                     </div>
-                  @endforeach
-               </div> -->
-               <div class="vendor-grid">
-@foreach($vendor_reg as $vendor)
+                        <!-- ================= DETAILS ================= -->
+                        <div class="details mt-3">
+                            <div class="detail-item">
+                                <i class="bi bi-award-fill text-warning"></i>
+                                {{ $vendor->experiance }} Years Experience
+                            </div>
 
-<div class="card vendor-card"
-    data-vendor-id="{{ $vendor->id }}"
-    data-business="{{ $vendor->business_name }}"
-    data-fullname="{{ $vendor->name }}"
-    data-contact-name="{{ $vendor->contact_person_name }}"
-    data-mobile="{{ $vendor->mobile }}"
-    data-email="{{ $vendor->email }}"
-    data-work-type-id="{{ $vendor->work_type_id }}"
-    data-work-subtype-id='@json(json_decode($vendor->work_subtype_id))'
-    data-work-type="{{ strtolower($vendor->work_type) }}"
-    data-work-subtype="{{ strtolower($vendor->work_subtype_data) }}"
-    data-experience="{{ $vendor->experience_years }}"
-    data-team-size="{{ $vendor->team_size_data }}"
-    data-min-project="{{ $vendor->min_project_value }}"
-    data-company-name="{{ $vendor->company_name }}"
-    data-entity-type="{{ $vendor->entity_type }}"
-    data-gst="{{ $vendor->gst_number }}"
-    data-pan="{{ $vendor->pan_number }}"
-    data-msme="{{ $vendor->msme_registered }}"
-    data-state-id="{{ $vendor->state }}"
-    data-region-id="{{ $vendor->region }}"
-    data-city-id="{{ $vendor->city }}"
-    data-bank-name="{{ $vendor->bank_name }}"
-    data-account-type="{{ $vendor->account_type }}"
->
+                            <div class="detail-item">
+                                <i class="bi bi-shield-check text-success"></i>
+                                Premium {{ $vendor->work_type }}
+                            </div>
+                        </div>
 
-    {{-- ================= HEADER ================= --}}
-    <div class="card-header d-flex align-items-center gap-3">
+                        <!-- ================= FOOTER ACTION ================= -->
+                        <div class="vendor-footer">
 
-        {{-- LOGO --}}
-        <div class="vendor-logo">
-            @if(!empty($vendor->company_logo))
-                <img src="{{ asset('storage/'.$vendor->company_logo) }}"
-                     alt="{{ $vendor->business_name }}"
-                     class="logo-img">
-            @else
-                <div class="logo-placeholder">
-                    {{ strtoupper(substr($vendor->business_name, 0, 1)) }}
-                </div>
-            @endif
-        </div>
+                            <button class="btn btn-profile"
+                                onclick="viewProfile({{ $vendor->id }})">
+                                View Profile
+                            </button>
 
-        {{-- TITLE + BADGES --}}
-        <div class="flex-grow-1">
-            <div class="title">{{ strtoupper($vendor->business_name) }}</div>
+                            @if(($vendor->total_reviews ?? 0) > 0)
+                                <div class="rating-display">
+                                    @php $r = (int) round($vendor->avg_rating ?? 0); @endphp
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $r)
+                                            <i class="bi bi-star-fill"></i>
+                                        @else
+                                            <i class="bi bi-star"></i>
+                                        @endif
+                                    @endfor
 
-            <div class="badge-wrapper">
-                @if($vendor->profile_percent >= 90)
-                    <span class="badge verified">✔ Verified</span>
-                    <span class="badge trusted">⭐ Trusted</span>
-                @elseif($vendor->profile_percent >= 60)
-                    <span class="badge verified">✔ Verified</span>
-                @endif
-            </div>
-        </div>
-    </div>
+                                    <span>
+                                        {{ number_format((float)($vendor->avg_rating ?? 0), 1) }}
+                                        ({{ $vendor->total_reviews }})
+                                    </span>
+                                </div>
+                            @else
+                                <button class="btn btn-rating"
+                                    onclick="openRatingModal({{ $vendor->id }})">
+                                    ⭐ Add Rating
+                                </button>
+                            @endif
 
-    {{-- ================= BODY ================= --}}
-    <div class="subtitle">{{ $vendor->work_type }}</div>
+                        </div>
 
-    <div class="location">
-        📍 {{ $vendor->statename ?? '' }},
-        {{ $vendor->regionname ?? '' }},
-        {{ $vendor->cityname ?? '' }}
-    </div>
+                    </div>
 
-    {{-- TAGS --}}
-    <div class="tags">
-        @foreach(explode(',', $vendor->work_subtype_data) as $subtype)
-            <span class="tag-chip">✔ {{ trim($subtype) }}</span>
-        @endforeach
-    </div>
+                    @endforeach 
+<!-- </div> -->
 
-    {{-- DETAILS --}}
-    <div class="details">
-        <p>✔ {{ $vendor->experiance }} years experience</p>
-        <p>✔ Premium {{ $vendor->work_type }}</p>
-    </div>
-
-    {{-- ================= ACTIONS ================= --}}
-    <div class="actions">
-
-        <button class="btn btn-outline"
-            onclick="viewProfile({{ $vendor->id }})">
-            View Profile
-        </button>
-
-        @if(($vendor->total_reviews ?? 0) > 0)
-            <div class="rating-display">
-                <div class="rating-stars">
-                    @php $r = (int) round($vendor->avg_rating ?? 0); @endphp
-                    @for($i = 1; $i <= 5; $i++)
-                        @if($i <= $r)
-                            <i class="bi bi-star-fill"></i>
-                        @else
-                            <i class="bi bi-star"></i>
-                        @endif
-                    @endfor
-                </div>
-
-                <span class="rating-text">
-                    {{ number_format((float)($vendor->avg_rating ?? 0), 1) }} / 5
-                    <small>({{ $vendor->total_reviews ?? 0 }})</small>
-                </span>
-            </div>
-        @else
-            <button class="btn btn-rating"
-                onclick="openRatingModal({{ $vendor->id }})">
-                ⭐ Add Rating
-            </button>
-        @endif
-
-    </div>
-
-</div>
-
-@endforeach
-</div>
-
-         </div>
          <!-- </div> -->
       </div>
 {{-- ================= AUTH MODAL (UNCHANGED) ================= --}}

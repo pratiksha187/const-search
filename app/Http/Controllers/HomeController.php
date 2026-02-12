@@ -306,7 +306,7 @@ class HomeController extends Controller
             ->leftJoin('state as s', 's.id', '=', 'v.state')
             ->leftJoin('region as r', 'r.id', '=', 'v.region')
             ->leftJoin('city as c', 'c.id', '=', 'v.city')
-            ->where('v.status','approved')
+            ->where('v.status', 'approved')
             ->select(
                 'v.*',
                 DB::raw('ROUND(AVG(vr.rating), 1) as avg_rating'),
@@ -353,7 +353,7 @@ class HomeController extends Controller
         $vendor_reg = $vendor_reg->filter(function ($vendor) {
             return (int)$vendor->profile_percent >= 70;
         })->values(); // reindex
-// dd($vendor_reg);
+        // dd($vendor_reg);
         return view('web.search_vendor', [
             'cust_data'          => $cust_data,
             'notifications'      => $notifications,

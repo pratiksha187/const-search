@@ -97,60 +97,6 @@ class SuppliersController extends Controller
             'maximum_distance'
         ));
     }
-
-
-    // public function quotesandorder()
-    // {
-    //     $supplier_id = Session::get('supplier_id');
-
-    //     if (!$supplier_id) {
-    //         abort(403, 'Unauthorized');
-    //     }
-
-    //     // Supplier Name
-    //     $supplierName = DB::table('supplier_reg')
-    //         ->where('id', $supplier_id)
-    //         ->value('contact_person');
-
-    //     // ================= QUOTES =================
-    //     $quotes = DB::table('supplier_quotes as sq')
-    //         ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
-    //         ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
-    //         ->join('material_categories as mc', 'mc.id', '=', 'se.category')
-    //         ->where('sq.supplier_id', $supplier_id)
-    //         ->where('sq.status', 'sent')
-    //         ->select(
-    //             'sq.*',
-    //             'se.quantity',
-    //             'sr.shop_name',
-    //             'mc.name as material_categories_name'
-    //         )
-    //         ->orderBy('sq.created_at', 'DESC')
-    //         ->get();
-
-    //     // ================= ORDERS =================
-    //     $orders = DB::table('supplier_quotes as sq')
-    //         ->join('supplier_enquiries as se', 'se.id', '=', 'sq.enquiry_id')
-    //         ->join('supplier_reg as sr', 'sr.id', '=', 'sq.supplier_id')
-    //         ->join('material_categories as mc', 'mc.id', '=', 'se.category')
-    //         ->where('sq.supplier_id', $supplier_id)
-    //         ->whereIn('sq.status', ['accepted', 'order'])
-    //         ->select(
-    //             'sq.*',
-    //             'se.quantity',
-    //             'sr.shop_name',
-    //             'mc.name as material_categories_name'
-    //         )
-    //         ->orderBy('sq.updated_at', 'DESC')
-    //         ->get();
-
-    //     return view('web.quotes&order', compact(
-    //         'supplierName',
-    //         'quotes',
-    //         'orders'
-    //     ));
-    // }
-
    
     public function myproducts(Request $request)
     {
@@ -783,710 +729,315 @@ class SuppliersController extends Controller
     }
 
 
-// public function supplierserch()
-// {
-//     $notificationCount =0;
-//     $notifications =0;
-//     $customer_id = Session::get('customer_id');
-//     $cust_data = DB::table('users')->where('id',$customer_id)->first();
-//     $vendor_id   = Session::get('vendor_id');
-//     $supplier_id = Session::get('supplier_id');
-//     // dd($customer_id);
-//     /* ===============================
-//        MASTER DATA
-//     =============================== */
-//     $credit_days       = DB::table('credit_days')->get();
-//     $states = DB::table('state')->orderBy('name')->get();
-
-//     $delivery_type     = DB::table('delivery_type')->get();
-//     $maximum_distances = DB::table('maximum_distances')->get();
-//     $material_categories = DB::table('material_categories')->get();
-//     // dd($credit_days);
-//     /* ===============================
-//        SUPPLIERS + CATEGORIES
-//     =============================== */
-//     $supplier_data = DB::table('supplier_reg as s')
-//         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-//         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-//           ->leftJoin('city as c', 'c.id', '=', 's.city_id')
-//             ->leftJoin('region as r', 'r.id', '=', 's.region_id')
-//             ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
-//         ->select(
-//             's.*',
-//             'cd.days as credit_days_value','c.name as cityname','r.name as regionname','sn.name as statename',
-//             DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
-//             DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
-//         )
-//         ->groupBy('s.id', 'cd.days')
-//         ->orderBy('s.id', 'desc')
-//         ->get();
-//         // dd($supplier_data);
-//     /* ===============================
-//        NORMALIZE CATEGORY DATA
-//     =============================== */
-//     foreach ($supplier_data as $supplier) {
-
-//         $ids   = $supplier->material_category_ids
-//             ? explode(',', $supplier->material_category_ids)
-//             : [];
-
-//         $names = $supplier->material_category_names
-//             ? explode(',', $supplier->material_category_names)
-//             : [];
-
-//         $supplier->material_categories = [];
-
-//         foreach ($ids as $i => $id) {
-//             $supplier->material_categories[] = [
-//                 'id'   => (int) $id,
-//                 'name' => $names[$i] ?? null
-//             ];
-//         }
-
-//         unset($supplier->material_category_ids, $supplier->material_category_names);
-//     }
-
-//     /* ===============================
-//        ✅ FETCH VENDOR IF LOGGED IN
-//     =============================== */
-//     $vendor = null;
-
-//     if ($vendor_id) {
-//         $vendor = DB::table('vendor_reg')
-//             ->where('id', $vendor_id)
-//             ->first();
-//     }
-
-//     /* ===============================
-//        LAYOUT
-//     =============================== */
-//     $layout = 'layouts.guest';
-//     if ($customer_id) {
-       
-//         $postIds = DB::table('posts')
-//                     ->where('user_id', $customer_id)
-//                     ->pluck('id');
-//         $notifications = DB::table('vendor_interests as vi')
-                
-//                 ->whereIn('vi.customer_id', $postIds)
-            
-//                 ->get();
-//         $notificationCount = $notifications->count();
-//         $layout = 'layouts.custapp';
-//     } elseif ($vendor_id) {
-//         // $vendor = DB::table('vendor_reg')
-//         //             ->where('id', $vendor_id)
-//         //             ->first();
-//         $vendIds = DB::table('vendor_reg')
-//                     ->where('id', $vendor_id)
-//                     ->pluck('id');
-//         //    dd( $vendIds );
-//         $notifications = DB::table('customer_interests as ci')
-//                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
-//                 ->whereIn('ci.vendor_id', $vendIds)
-//                 // ->select('v.*','vi.*')
-//                  ->select('ci.*','u.*')
-//                 ->get();
-//         //    dd( $notifications );     
-//         $notificationCount = $notifications->count();
-//         // dd('tsest');
-//         $layout = 'layouts.vendorapp';
-//     }
-
-//     $brands = DB::table('brands')
-          
-//             ->orderBy('name')
-//             ->get();
-//     // ✅ LOGIN CHECK FLAG
-//     $isLoggedIn = false;
-
-//     if ($customer_id || $vendor_id) {
-//         $isLoggedIn = true;
-//     }
-
-//    // ================= PROFILE COMPLETION LOGIC =================
-//         $profileCompletion = 0;
-
-//         $profileSteps = [
-//             'basic'   => false,
-//             'material'=> false,
-//             'uploads' => false,
-//             'bank'    => false,
-//         ];
-
-//         // STEP 1: BASIC DETAILS
-//         if (
-//             !empty($supplier->name) &&
-//             !empty($supplier->mobile) &&
-//             !empty($supplier->email) &&
-//             !empty($supplier->business_name)
-//         ) {
-//             $profileSteps['basic'] = true;
-//             $profileCompletion += 25;
-//         }
-//     // dd($profileCompletion);
-//         // STEP 2: MATERIAL SELECTED
-//         if (!empty($supplier->material_category)) {
-//             $profileSteps['material'] = true;
-//             $profileCompletion += 25;
-//         }
-
-//         // STEP 3: DOCUMENT UPLOADS (MIN REQUIRED)
-//         if (
-//             !empty($supplier->gst_certificate_path) &&
-//             !empty($supplier->pan_card_path)
-//         ) {
-//             $profileSteps['uploads'] = true;
-//             $profileCompletion += 25;
-//         }
-
-//         // STEP 4: BANK DETAILS
-//         if (
-//             !empty($supplier->bank_name) &&
-//             !empty($supplier->account_number) &&
-//             !empty($supplier->ifsc_code)
-//         ) {
-//             $profileSteps['bank'] = true;
-//             $profileCompletion += 25;
-//         }
-//     $profileBadge = [
-//         'label' => 'Incomplete',
-//         'class' => 'incomplete'
-//     ];
-
-//     if ($profileCompletion == 100) {
-//         $profileBadge = [
-//             'label' => 'Verified',
-//             'class' => 'verified'
-//         ];
-//     } elseif ($profileCompletion >= 75) {
-//         $profileBadge = [
-//             'label' => 'Trusted',
-//             'class' => 'trusted'
-//         ];
-//     } elseif ($profileCompletion >= 50) {
-//         $profileBadge = [
-//             'label' => 'Partially Verified',
-//             'class' => 'partial'
-//         ];
-//     }
-
-//     // dd($supplier_data);
-//     return view('web.supplierserch', compact(
-//         'credit_days','material_categories','notificationCount','notifications',
-//         'delivery_type',
-//         'maximum_distances','states','profileBadge',
-//         'supplier_data',
-//         'layout','cust_data',
-//         'customer_id','profileCompletion',
-//         'brands',
-//         'vendor_id',
-//         'supplier_id',
-//         'isLoggedIn',
-//         'vendor' 
-//     ));
-// }
-
-// public function supplierserch()
-// {
-//     $notificationCount = 0;
-//     $notifications = collect();
-
-//     $customer_id  = Session::get('customer_id');
-//     $cust_data    = $customer_id ? DB::table('users')->where('id', $customer_id)->first() : null;
-
-//     $vendor_id    = Session::get('vendor_id');
-//     $supplier_id  = Session::get('supplier_id');
-
-//     /* ===============================
-//        MASTER DATA
-//     =============================== */
-//     $credit_days         = DB::table('credit_days')->get();
-//     $states              = DB::table('state')->orderBy('name')->get();
-//     $delivery_type       = DB::table('delivery_type')->get();
-//     $maximum_distances   = DB::table('maximum_distances')->get();
-//     $material_categories = DB::table('material_categories')->get();
-
-//     /* ===============================
-//        SUPPLIERS + CATEGORIES
-//     =============================== */
-//     $supplier_data = DB::table('supplier_reg as s')
-//         ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-//         ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-//         ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-//         ->leftJoin('city as c', 'c.id', '=', 's.city_id')
-//         ->leftJoin('region as r', 'r.id', '=', 's.region_id')
-//         ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
-//         ->select(
-//             's.*',
-//             'cd.days as credit_days_value',
-//             'c.name as cityname',
-//             'r.name as regionname',
-//             'sn.name as statename',
-//             DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
-//             DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
-//         )
-//         // IMPORTANT: groupBy must include all non-aggregated columns in strict mode,
-//         // but keeping your original style:
-//         ->groupBy('s.id', 'cd.days', 'c.name', 'r.name', 'sn.name')
-//         ->orderBy('s.id', 'desc')
-//         ->get();
-
-//     /* ===============================
-//        NORMALIZE CATEGORY DATA + PROFILE COMPLETION PER SUPPLIER ✅
-//     =============================== */
-//     foreach ($supplier_data as $supplier) {
-// // dd($supplier);
-//         // ---- categories normalize ----
-//         $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
-//         $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
-
-//         $supplier->material_categories = [];
-
-//         foreach ($ids as $i => $id) {
-//             $supplier->material_categories[] = [
-//                 'id'   => (int) $id,
-//                 'name' => $names[$i] ?? null
-//             ];
-//         }
-
-//         unset($supplier->material_category_ids, $supplier->material_category_names);
-
-//         // ---- profile completion ✅ ----
-//         $profileCompletion = 0;
-
-//         // STEP 1: BASIC DETAILS
-//         if (
-//             !empty($supplier->contact_person) &&
-//             !empty($supplier->mobile) &&
-//             !empty($supplier->email) &&
-//             !empty($supplier->shop_name)
-//         ) {
-//             $profileCompletion += 25;
-//         }
-// // dd($profileCompletion);
-//         // STEP 2: MATERIAL SELECTED
-//         // You were checking $supplier->material_category (not exists).
-//         // Correct: if supplier has any categories in $supplier->material_categories
-//         if (!empty($supplier->material_category) ) {
-//             $profileCompletion += 25;
-//         }
-
-//         // STEP 3: DOCUMENT UPLOADS
-//         if (
-//             !empty($supplier->gst_certificate_path) &&
-//              !empty($supplier->gst_number) && !empty($supplier->pan_number) &&
-//             !empty($supplier->pan_card_path)
-//         ) {
-//             $profileCompletion += 25;
-//         }
-
-//         // STEP 4: BANK DETAILS
-//         if (
-//             !empty($supplier->bank_name) &&
-//             !empty($supplier->account_number) &&
-//             !empty($supplier->ifsc_code)
-//         ) {
-//             $profileCompletion += 25;
-//         }
-
-//         $supplier->profileCompletion = $profileCompletion;
-
-//         // badge
-//         $profileBadge = [
-//             'label' => 'Incomplete',
-//             'class' => 'incomplete'
-//         ];
-
-//         if ($profileCompletion >= 100) {
-//             $profileBadge = ['label' => 'Verified', 'class' => 'verified'];
-//         } elseif ($profileCompletion >= 75) {
-//             $profileBadge = ['label' => 'Trusted', 'class' => 'trusted'];
-//         } elseif ($profileCompletion >= 50) {
-//             $profileBadge = ['label' => 'Partially Verified', 'class' => 'partial'];
-//         }
-
-//         $supplier->profileBadge = $profileBadge;
-//     }
-
-//     /* ===============================
-//        ✅ FETCH VENDOR IF LOGGED IN
-//     =============================== */
-//     $vendor = null;
-//     if ($vendor_id) {
-//         $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-//     }
-
-//     /* ===============================
-//        LAYOUT + NOTIFICATIONS
-//     =============================== */
-//     $layout = 'layouts.guest';
-
-//     if ($customer_id) {
-//         $postIds = DB::table('posts')
-//             ->where('user_id', $customer_id)
-//             ->pluck('id');
-
-//         $notifications = DB::table('vendor_interests as vi')
-//             ->whereIn('vi.customer_id', $postIds)
-//             ->get();
-
-//         $notificationCount = $notifications->count();
-//         $layout = 'layouts.custapp';
-
-//     } elseif ($vendor_id) {
-
-//         $vendIds = DB::table('vendor_reg')
-//             ->where('id', $vendor_id)
-//             ->pluck('id');
-
-//         $notifications = DB::table('customer_interests as ci')
-//             ->join('users as u', 'u.id', '=', 'ci.customer_id')
-//             ->whereIn('ci.vendor_id', $vendIds)
-//             ->select('ci.*', 'u.*')
-//             ->get();
-
-//         $notificationCount = $notifications->count();
-//         $layout = 'layouts.vendorapp';
-//     }
-
-//     $brands = DB::table('brands')->orderBy('name')->get();
-
-//     // ✅ LOGIN CHECK FLAG
-//     $isLoggedIn = ($customer_id || $vendor_id) ? true : false;
-// // dd($profileCompletion);
-//     return view('web.supplierserch', compact(
-//         'credit_days',
-//         'material_categories',
-//         'notificationCount',
-//         'notifications',
-//         'delivery_type',
-//         'maximum_distances',
-//         'states',
-//         'supplier_data',
-//         'layout','profileCompletion',
-//         'cust_data',
-//         'customer_id',
-//         'brands',
-//         'vendor_id',
-//         'supplier_id',
-//         'isLoggedIn',
-//         'vendor'
-//     ));
-// }
-public function supplierserch()
-{
-    $notificationCount = 0;
-    $notifications = collect();
-
-    $customer_id  = Session::get('customer_id');
-    $cust_data    = $customer_id ? DB::table('users')->where('id', $customer_id)->first() : null;
-
-    $vendor_id    = Session::get('vendor_id');
-    $supplier_id  = Session::get('supplier_id');
-
-    /* ===============================
-       MASTER DATA
-    =============================== */
-    $credit_days         = DB::table('credit_days')->get();
-    $states              = DB::table('state')->orderBy('name')->get();
-    $delivery_type       = DB::table('delivery_type')->get();
-    $maximum_distances   = DB::table('maximum_distances')->get();
-    $material_categories = DB::table('material_categories')->get();
-
-    /* ===============================
-       SUPPLIERS + CATEGORIES
-    =============================== */
-    $supplier_data = DB::table('supplier_reg as s')
-        ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-        ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-        ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-        ->leftJoin('city as c', 'c.id', '=', 's.city_id')
-        ->leftJoin('region as r', 'r.id', '=', 's.region_id')
-        ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
-        ->select(
-            's.*',
-            'cd.days as credit_days_value',
-            'c.name as cityname',
-            'r.name as regionname',
-            'sn.name as statename',
-            DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
-            DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
-        )
-        ->groupBy('s.id', 'cd.days', 'c.name', 'r.name', 'sn.name')
-        ->orderBy('s.id', 'desc')
-        ->get();
-
-    /* ===============================
-       NORMALIZE CATEGORY DATA + PROFILE COMPLETION PER SUPPLIER ✅
-    =============================== */
-    foreach ($supplier_data as $supplier) {
-
-        // ---- normalize categories ----
-        $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
-        $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
-
-        $supplier->material_categories = [];
-        foreach ($ids as $i => $id) {
-            $supplier->material_categories[] = [
-                'id'   => (int) $id,
-                'name' => $names[$i] ?? null
-            ];
-        }
-
-        unset($supplier->material_category_ids, $supplier->material_category_names);
-
-        // ---- profile completion ----
-        $profileCompletion = 0;
-
-        // STEP 1: BASIC DETAILS
-        if (
-            !empty($supplier->contact_person) &&
-            !empty($supplier->mobile) &&
-            !empty($supplier->email) &&
-            !empty($supplier->shop_name)
-        ) {
-            $profileCompletion += 25;
-        }
-
-        // STEP 2: MATERIAL SELECTED (✅ correct)
-        if (!empty($supplier->material_categories) && count($supplier->material_categories) > 0) {
-            $profileCompletion += 25;
-        }
-
-        // STEP 3: DOCS + GST/PAN
-        if (
-            !empty($supplier->gst_certificate_path) &&
-            !empty($supplier->pan_card_path) &&
-            !empty($supplier->gst_number) &&
-            !empty($supplier->pan_number)
-        ) {
-            $profileCompletion += 25;
-        }
-
-        // STEP 4: BANK
-        if (
-            !empty($supplier->bank_name) &&
-            !empty($supplier->account_number) &&
-            !empty($supplier->ifsc_code)
-        ) {
-            $profileCompletion += 25;
-        }
-
-        $supplier->profileCompletion = $profileCompletion;
-
-        // badge
-        $profileBadge = ['label' => 'Incomplete', 'class' => 'incomplete'];
-
-        if ($profileCompletion >= 100) {
-            $profileBadge = ['label' => 'Verified', 'class' => 'verified'];
-        } elseif ($profileCompletion >= 75) {
-            $profileBadge = ['label' => 'Trusted', 'class' => 'trusted'];
-        } elseif ($profileCompletion >= 50) {
-            $profileBadge = ['label' => 'Partially Verified', 'class' => 'partial'];
-        }
-
-        $supplier->profileBadge = $profileBadge;
-    }
-
-    /* ===============================
-       ✅ FETCH VENDOR IF LOGGED IN
-    =============================== */
-    $vendor = null;
-    if ($vendor_id) {
-        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-    }
-
-    /* ===============================
-       LAYOUT + NOTIFICATIONS
-    =============================== */
-    $layout = 'layouts.guest';
-
-    if ($customer_id) {
-        $postIds = DB::table('posts')->where('user_id', $customer_id)->pluck('id');
-
-        $notifications = DB::table('vendor_interests as vi')
-            ->whereIn('vi.customer_id', $postIds)
-            ->get();
-
-        $notificationCount = $notifications->count();
-        $layout = 'layouts.custapp';
-
-    } elseif ($vendor_id) {
-
-        $vendIds = DB::table('vendor_reg')->where('id', $vendor_id)->pluck('id');
-
-        $notifications = DB::table('customer_interests as ci')
-            ->join('users as u', 'u.id', '=', 'ci.customer_id')
-            ->whereIn('ci.vendor_id', $vendIds)
-            ->select('ci.*', 'u.*')
-            ->get();
-
-        $notificationCount = $notifications->count();
-        $layout = 'layouts.vendorapp';
-    }
-
-    $brands = DB::table('brands')->orderBy('name')->get();
-    $isLoggedIn = ($customer_id || $vendor_id) ? true : false;
-
-    return view('web.supplierserch', compact(
-        'credit_days',
-        'material_categories',
-        'notificationCount',
-        'notifications',
-        'delivery_type',
-        'maximum_distances',
-        'states',
-        'supplier_data',
-        'layout',
-        'cust_data',
-        'customer_id',
-        'brands',
-        'vendor_id',
-        'supplier_id',
-        'isLoggedIn',
-        'vendor'
-    ));
-}
-
-public function supplierFilter(Request $request)
-{
-    $query = DB::table('supplier_reg as s')
-        ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
-        ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
-        ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
-         ->leftJoin('city as c', 'c.id', '=', 's.city_id')
+    public function supplierserch()
+    {
+        $notificationCount = 0;
+        $notifications = collect();
+
+        $customer_id  = Session::get('customer_id');
+        $cust_data    = $customer_id ? DB::table('users')->where('id', $customer_id)->first() : null;
+
+        $vendor_id    = Session::get('vendor_id');
+        $supplier_id  = Session::get('supplier_id');
+
+        /* ===============================
+        MASTER DATA
+        =============================== */
+        $credit_days         = DB::table('credit_days')->get();
+        $states              = DB::table('state')->orderBy('name')->get();
+        $delivery_type       = DB::table('delivery_type')->get();
+        $maximum_distances   = DB::table('maximum_distances')->get();
+        $material_categories = DB::table('material_categories')->get();
+
+        /* ===============================
+        SUPPLIERS + CATEGORIES
+        =============================== */
+        $supplier_data = DB::table('supplier_reg as s')
+            ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+            ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+            ->leftJoin('city as c', 'c.id', '=', 's.city_id')
             ->leftJoin('region as r', 'r.id', '=', 's.region_id')
             ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
-        ->select(
-            's.*','c.name as cityname','r.name as regionname','sn.name as statename',
-            'cd.days as credit_days_value',
-            DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
-            DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_category_names')
-        );
+            ->select(
+                's.*',
+                'cd.days as credit_days_value',
+                'c.name as cityname',
+                'r.name as regionname',
+                'sn.name as statename',
+                DB::raw('GROUP_CONCAT(DISTINCT mc.id ORDER BY mc.id) as material_category_ids'),
+                DB::raw('GROUP_CONCAT(DISTINCT mc.name ORDER BY mc.name) as material_category_names')
+            )
+            ->groupBy('s.id', 'cd.days', 'c.name', 'r.name', 'sn.name')
+            ->orderBy('s.id', 'desc')
+            ->get();
 
-    // ✅ SEARCH FILTER
-    if ($request->filled('search')) {
-        $search = $request->search;
+        /* ===============================
+        NORMALIZE CATEGORY DATA + PROFILE COMPLETION PER SUPPLIER ✅
+        =============================== */
+        foreach ($supplier_data as $supplier) {
 
-        $query->where(function ($q) use ($search) {
-            $q->where('s.shop_name', 'LIKE', "%{$search}%")
-            ->orWhere('mc.name', 'LIKE', "%{$search}%");
-        });
+            // ---- normalize categories ----
+            $ids   = $supplier->material_category_ids ? explode(',', $supplier->material_category_ids) : [];
+            $names = $supplier->material_category_names ? explode(',', $supplier->material_category_names) : [];
 
-    }
-
-    // ✅ CATEGORY FILTER
-    if ($request->filled('categories')) {
-        $query->whereIn('sp.material_category_id', $request->categories);
-    }
-
-    // ✅ CREDIT FILTER
-    if ($request->filled('credit_terms')) {
-        $query->whereIn('s.credit_days', $request->credit_terms);
-    }
-    if ($request->filled('state_id')) {
-        $query->where('s.state_id', $request->state_id);
-    }
-
-    if ($request->filled('region_id')) {
-        $query->where('s.region_id', $request->region_id);
-    }
-
-    if ($request->filled('city_id')) {
-        $query->where('s.city_id', $request->city_id);
-    }
-
-
-    $supplier_data = $query
-        ->groupBy('s.id', 'cd.days')
-        ->orderBy('s.id', 'desc')
-        ->get();
-
-    foreach ($supplier_data as $supplier) {
-        $supplier->material_categories = [];
-
-        if ($supplier->material_category_ids) {
-            $ids   = explode(',', $supplier->material_category_ids);
-            $names = explode(',', $supplier->material_category_names);
-
+            $supplier->material_categories = [];
             foreach ($ids as $i => $id) {
                 $supplier->material_categories[] = [
-                    'id' => $id,
-                    'name' => $names[$i] ?? ''
+                    'id'   => (int) $id,
+                    'name' => $names[$i] ?? null
                 ];
             }
+
+            unset($supplier->material_category_ids, $supplier->material_category_names);
+
+            // ---- profile completion ----
+            $profileCompletion = 0;
+
+            // STEP 1: BASIC DETAILS
+            if (
+                !empty($supplier->contact_person) &&
+                !empty($supplier->mobile) &&
+                !empty($supplier->email) &&
+                !empty($supplier->shop_name)
+            ) {
+                $profileCompletion += 25;
+            }
+
+            // STEP 2: MATERIAL SELECTED (✅ correct)
+            if (!empty($supplier->material_categories) && count($supplier->material_categories) > 0) {
+                $profileCompletion += 25;
+            }
+
+            // STEP 3: DOCS + GST/PAN
+            if (
+                !empty($supplier->gst_certificate_path) &&
+                !empty($supplier->pan_card_path) &&
+                !empty($supplier->gst_number) &&
+                !empty($supplier->pan_number)
+            ) {
+                $profileCompletion += 25;
+            }
+
+            // STEP 4: BANK
+            if (
+                !empty($supplier->bank_name) &&
+                !empty($supplier->account_number) &&
+                !empty($supplier->ifsc_code)
+            ) {
+                $profileCompletion += 25;
+            }
+
+            $supplier->profileCompletion = $profileCompletion;
+
+            // badge
+            $profileBadge = ['label' => 'Incomplete', 'class' => 'incomplete'];
+
+            if ($profileCompletion >= 100) {
+                $profileBadge = ['label' => 'Verified', 'class' => 'verified'];
+            } elseif ($profileCompletion >= 75) {
+                $profileBadge = ['label' => 'Trusted', 'class' => 'trusted'];
+            } elseif ($profileCompletion >= 50) {
+                $profileBadge = ['label' => 'Partially Verified', 'class' => 'partial'];
+            }
+
+            $supplier->profileBadge = $profileBadge;
         }
+
+        /* ===============================
+        ✅ FETCH VENDOR IF LOGGED IN
+        =============================== */
+        $vendor = null;
+        if ($vendor_id) {
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+        }
+
+        /* ===============================
+        LAYOUT + NOTIFICATIONS
+        =============================== */
+        $layout = 'layouts.guest';
+
+        if ($customer_id) {
+            $postIds = DB::table('posts')->where('user_id', $customer_id)->pluck('id');
+
+            $notifications = DB::table('vendor_interests as vi')
+                ->whereIn('vi.customer_id', $postIds)
+                ->get();
+
+            $notificationCount = $notifications->count();
+            $layout = 'layouts.custapp';
+
+        } elseif ($vendor_id) {
+
+            $vendIds = DB::table('vendor_reg')->where('id', $vendor_id)->pluck('id');
+
+            $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                ->select('ci.*', 'u.*')
+                ->get();
+
+            $notificationCount = $notifications->count();
+            $layout = 'layouts.vendorapp';
+        }
+
+        $brands = DB::table('brands')->orderBy('name')->get();
+        $isLoggedIn = ($customer_id || $vendor_id) ? true : false;
+
+        return view('web.supplierserch', compact(
+            'credit_days',
+            'material_categories',
+            'notificationCount',
+            'notifications',
+            'delivery_type',
+            'maximum_distances',
+            'states',
+            'supplier_data',
+            'layout',
+            'cust_data',
+            'customer_id',
+            'brands',
+            'vendor_id',
+            'supplier_id',
+            'isLoggedIn',
+            'vendor'
+        ));
     }
 
-    return view('web.supplier_cards', compact('supplier_data'))->render();
-}
+    public function supplierFilter(Request $request)
+    {
+        $query = DB::table('supplier_reg as s')
+            ->leftJoin('supplier_products_data as sp', 'sp.supp_id', '=', 's.id')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'sp.material_category_id')
+            ->leftJoin('credit_days as cd', 'cd.id', '=', 's.credit_days')
+            ->leftJoin('city as c', 'c.id', '=', 's.city_id')
+                ->leftJoin('region as r', 'r.id', '=', 's.region_id')
+                ->leftJoin('state as sn', 'sn.id', '=', 's.state_id')
+            ->select(
+                's.*','c.name as cityname','r.name as regionname','sn.name as statename',
+                'cd.days as credit_days_value',
+                DB::raw('GROUP_CONCAT(DISTINCT mc.id) as material_category_ids'),
+                DB::raw('GROUP_CONCAT(DISTINCT mc.name) as material_category_names')
+            );
+
+        // ✅ SEARCH FILTER
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('s.shop_name', 'LIKE', "%{$search}%")
+                ->orWhere('mc.name', 'LIKE', "%{$search}%");
+            });
+
+        }
+
+        // ✅ CATEGORY FILTER
+        if ($request->filled('categories')) {
+            $query->whereIn('sp.material_category_id', $request->categories);
+        }
+
+        // ✅ CREDIT FILTER
+        if ($request->filled('credit_terms')) {
+            $query->whereIn('s.credit_days', $request->credit_terms);
+        }
+        if ($request->filled('state_id')) {
+            $query->where('s.state_id', $request->state_id);
+        }
+
+        if ($request->filled('region_id')) {
+            $query->where('s.region_id', $request->region_id);
+        }
+
+        if ($request->filled('city_id')) {
+            $query->where('s.city_id', $request->city_id);
+        }
 
 
-public function supplierenquirystore(Request $request)
-{
-    /* ===============================
-       🔐 LOGIN CHECK (VERY IMPORTANT)
-    =============================== */
-    if (!session()->has('customer_id') && !session()->has('vendor_id')) {
+        $supplier_data = $query
+            ->groupBy('s.id', 'cd.days')
+            ->orderBy('s.id', 'desc')
+            ->get();
+
+        foreach ($supplier_data as $supplier) {
+            $supplier->material_categories = [];
+
+            if ($supplier->material_category_ids) {
+                $ids   = explode(',', $supplier->material_category_ids);
+                $names = explode(',', $supplier->material_category_names);
+
+                foreach ($ids as $i => $id) {
+                    $supplier->material_categories[] = [
+                        'id' => $id,
+                        'name' => $names[$i] ?? ''
+                    ];
+                }
+            }
+        }
+
+        return view('web.supplier_cards', compact('supplier_data'))->render();
+    }
+
+
+    public function supplierenquirystore(Request $request)
+    {
+        /* ===============================
+        🔐 LOGIN CHECK (VERY IMPORTANT)
+        =============================== */
+        if (!session()->has('customer_id') && !session()->has('vendor_id')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Login required'
+            ], 401);
+        }
+
+        $userId = session('customer_id') ?? session('vendor_id');
+
+        /* ===============================
+        VALIDATION
+        =============================== */
+        $validated = $request->validate([
+            'supplier_id'        => ['required','integer'],
+            'category'           => ['nullable','string','max:255'],
+            'quantity'           => ['nullable','string','max:100'],
+            'specs'              => ['nullable','string'],
+            'delivery_location'  => ['nullable','string','max:255'],
+            'required_by'        => ['nullable','string','max:100'],
+            'payment_preference' => ['required','in:cash,online,credit'],
+            'attachments.*'      => ['nullable','file','max:5120'],
+        ]);
+
+        /* ===============================
+        📎 HANDLE FILE UPLOADS
+        =============================== */
+        $files = [];
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $files[] = $file->store('enquiries/attachments', 'public');
+            }
+        }
+
+        /* ===============================
+        💾 SAVE ENQUIRY
+        =============================== */
+        $enquiry = SupplierEnquiry::create([
+            'supplier_id'        => $validated['supplier_id'],
+            'user_id'            => $userId, // ✅ IMPORTANT
+            'category'           => $validated['category'] ?? null,
+            'quantity'           => $validated['quantity'] ?? null,
+            'specs'              => $validated['specs'] ?? null,
+            'delivery_location'  => $validated['delivery_location'] ?? null,
+            'required_by'        => $validated['required_by'] ?? null,
+            'payment_preference' => $validated['payment_preference'],
+            'attachments'        => !empty($files) ? json_encode($files) : null,
+        ]);
+
         return response()->json([
-            'status'  => false,
-            'message' => 'Login required'
-        ], 401);
+            'status'  => true,
+            'message' => 'Enquiry sent successfully',
+            'id'      => $enquiry->id
+        ]);
     }
-
-    $userId = session('customer_id') ?? session('vendor_id');
-
-    /* ===============================
-       VALIDATION
-    =============================== */
-    $validated = $request->validate([
-        'supplier_id'        => ['required','integer'],
-        'category'           => ['nullable','string','max:255'],
-        'quantity'           => ['nullable','string','max:100'],
-        'specs'              => ['nullable','string'],
-        'delivery_location'  => ['nullable','string','max:255'],
-        'required_by'        => ['nullable','string','max:100'],
-        'payment_preference' => ['required','in:cash,online,credit'],
-        'attachments.*'      => ['nullable','file','max:5120'],
-    ]);
-
-    /* ===============================
-       📎 HANDLE FILE UPLOADS
-    =============================== */
-    $files = [];
-
-    if ($request->hasFile('attachments')) {
-        foreach ($request->file('attachments') as $file) {
-            $files[] = $file->store('enquiries/attachments', 'public');
-        }
-    }
-
-    /* ===============================
-       💾 SAVE ENQUIRY
-    =============================== */
-    $enquiry = SupplierEnquiry::create([
-        'supplier_id'        => $validated['supplier_id'],
-        'user_id'            => $userId, // ✅ IMPORTANT
-        'category'           => $validated['category'] ?? null,
-        'quantity'           => $validated['quantity'] ?? null,
-        'specs'              => $validated['specs'] ?? null,
-        'delivery_location'  => $validated['delivery_location'] ?? null,
-        'required_by'        => $validated['required_by'] ?? null,
-        'payment_preference' => $validated['payment_preference'],
-        'attachments'        => !empty($files) ? json_encode($files) : null,
-    ]);
-
-    return response()->json([
-        'status'  => true,
-        'message' => 'Enquiry sent successfully',
-        'id'      => $enquiry->id
-    ]);
-}
-
-
-   
    
     public function storeSupplierProductData(Request $request)
     {
@@ -1676,7 +1227,7 @@ public function supplierenquirystore(Request $request)
             )
             ->orderBy('se.created_at', 'DESC')
             ->get();
-// dd($allEnquiries);
+        // dd($allEnquiries);
         // ✅ NEW = status IS NULL
         $newEnquiries = $allEnquiries->whereNull('status');
 
@@ -1765,355 +1316,259 @@ public function supplierenquirystore(Request $request)
         return back()->with('success', 'Quotation sent successfully');
     }
 
-    // public function allsupplierenquiry()
-    // {
-    //     $notificationCount = 0;
-    //     $notifications = collect();
-    //     $cust_data = null;
-    //     $vendor = null;
-
-    //     $customer_id = Session::get('customer_id');
-    //     $vendor_id   = Session::get('vendor_id');
-
-    //     $layout = 'layouts.guest';
-
-    //     /* ================= CUSTOMER ================= */
-    //     if ($customer_id) {
-
-    //         $cust_data = DB::table('users')->where('id', $customer_id)->first();
-
-    //         $notifications = DB::table('vendor_interests')->get();
-    //         $notificationCount = $notifications->count();
-
-    //         $enquiries = DB::table('supplier_enquiries as se')
-    //             ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
-    //             ->where('se.user_id', 'c_'.$customer_id)
-    //             ->select(
-    //                 'se.id',
-    //                 'se.created_at',
-    //                 'se.delivery_location',
-    //                 's.shop_name'
-    //             )
-    //             ->orderBy('se.id','desc')
-    //             ->get();
-
-    //         $layout = 'layouts.custapp';
-    //     }
-    //     /* ================= VENDOR ================= */
-    //     elseif ($vendor_id) {
-
-    //         $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-
-    //         $notifications = DB::table('customer_interests')->get();
-    //         $notificationCount = $notifications->count();
-
-    //         $search = $request->q;
-
-    //         $enquiries = DB::table('supplier_enquiries as se')
-    //             ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
-    //             ->where('se.user_id', 'v_'.$vendor_id)
-    //             ->when($search, function ($query) use ($search) {
-    //                 $query->where(function($q) use ($search){
-    //                     $q->where('s.shop_name', 'like', "%{$search}%")
-    //                     ->orWhere('se.delivery_location', 'like', "%{$search}%")
-    //                     ->orWhere('se.id', 'like', "%{$search}%");
-    //                 });
-    //             })
-    //             ->select(
-    //                 'se.id',
-    //                 'se.created_at',
-    //                 'se.delivery_location',
-    //                 's.shop_name'
-    //             )
-    //             ->orderBy('se.id','desc')
-    //             ->paginate(10); // ✅ pagination
-
-    //         // $enquiries = DB::table('supplier_enquiries as se')
-    //         //     ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
-    //         //     ->where('se.user_id', 'v_'.$vendor_id)
-
-    //         //     ->select(
-    //         //         'se.id',
-    //         //         'se.created_at',
-    //         //         'se.delivery_location',
-    //         //         's.shop_name'
-    //         //     )
-    //         //     ->orderBy('se.id','desc')
-    //         //     ->get();
-    //     // dd( $enquiries );
-    //         $layout = 'layouts.vendorapp';
-    //     }
-    //     else {
-    //         abort(403);
-    //     }
-
-    //     return view('web.supplier_enquiry_index', compact(
-    //         'enquiries',
-    //         'layout','vendor_id', 
-    //         'cust_data',
-    //         'vendor',
-    //         'notifications',
-    //         'notificationCount'
-    //     ));
-    // }
-
     public function allsupplierenquiry(Request $request)
-{
-    $notificationCount = 0;
-    $notifications = collect();
-    $cust_data = null;
-    $vendor = null;
+    {
+        $notificationCount = 0;
+        $notifications = collect();
+        $cust_data = null;
+        $vendor = null;
 
-    $customer_id = Session::get('customer_id');
-    $vendor_id   = Session::get('vendor_id');
+        $customer_id = Session::get('customer_id');
+        $vendor_id   = Session::get('vendor_id');
 
-    $layout = 'layouts.guest';
+        $layout = 'layouts.guest';
 
-    // ✅ common search
-    $search = $request->q;
+        // ✅ common search
+        $search = $request->q;
 
-    /* ================= CUSTOMER ================= */
-    if ($customer_id) {
+        /* ================= CUSTOMER ================= */
+        if ($customer_id) {
 
-        $cust_data = DB::table('users')->where('id', $customer_id)->first();
+            $cust_data = DB::table('users')->where('id', $customer_id)->first();
 
-        $notifications = DB::table('vendor_interests')->get();
-        $notificationCount = $notifications->count();
+            $notifications = DB::table('vendor_interests')->get();
+            $notificationCount = $notifications->count();
 
-        $enquiries = DB::table('supplier_enquiries as se')
+            $enquiries = DB::table('supplier_enquiries as se')
+                ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
+                ->where('se.user_id', 'c_'.$customer_id)
+                ->when($search, function ($query) use ($search) {
+                    $query->where(function($q) use ($search){
+                        $q->where('s.shop_name', 'like', "%{$search}%")
+                        ->orWhere('se.delivery_location', 'like', "%{$search}%")
+                        ->orWhere('se.id', 'like', "%{$search}%");
+                    });
+                })
+                ->select(
+                    'se.id',
+                    'se.created_at',
+                    'se.delivery_location',
+                    's.shop_name'
+                )
+                ->orderBy('se.id','desc')
+                ->paginate(10); // ✅ pagination
+
+            $layout = 'layouts.custapp';
+        }
+
+        /* ================= VENDOR ================= */
+        elseif ($vendor_id) {
+
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+
+            $notifications = DB::table('customer_interests')->get();
+            $notificationCount = $notifications->count();
+
+            $enquiries = DB::table('supplier_enquiries as se')
+                ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
+                ->where('se.user_id', 'v_'.$vendor_id)
+                ->when($search, function ($query) use ($search) {
+                    $query->where(function($q) use ($search){
+                        $q->where('s.shop_name', 'like', "%{$search}%")
+                        ->orWhere('se.delivery_location', 'like', "%{$search}%")
+                        ->orWhere('se.id', 'like', "%{$search}%");
+                    });
+                })
+                ->select(
+                    'se.id',
+                    'se.created_at',
+                    'se.delivery_location',
+                    's.shop_name'
+                )
+                ->orderBy('se.id','desc')
+                ->paginate(10); // ✅ pagination
+
+            $layout = 'layouts.vendorapp';
+        }
+
+        else {
+            abort(403);
+        }
+
+        return view('web.supplier_enquiry_index', compact(
+            'enquiries',
+            'layout',
+            'vendor_id',
+            'cust_data',
+            'vendor',
+            'notifications',
+            'notificationCount'
+        ));
+    }
+
+    public function supplierenquiryshow($id)
+    {
+        $notificationCount = 0;
+        $notifications = collect();
+        $vendor = null;
+        $cust_data = null;
+
+        $customer_id = Session::get('customer_id');
+        $vendor_id   = Session::get('vendor_id');
+
+        $layout = 'layouts.guest';
+
+        /* ================= CUSTOMER ================= */
+        if ($customer_id) {
+
+            $cust_data = DB::table('users')->where('id', $customer_id)->first();
+
+            $postIds = DB::table('posts')
+                ->where('user_id', $customer_id)
+                ->pluck('id');
+
+            $notifications = DB::table('vendor_interests as vi')
+                ->whereIn('vi.customer_id', $postIds)
+                ->get();
+
+            $notificationCount = $notifications->count();
+            $layout = 'layouts.custapp';
+        }
+        /* ================= VENDOR ================= */
+        elseif ($vendor_id) {
+
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+
+            $vendIds = DB::table('vendor_reg')
+                ->where('id', $vendor_id)
+                ->pluck('id');
+
+            $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->whereIn('ci.vendor_id', $vendIds)
+                ->select('ci.*', 'u.*')
+                ->get();
+
+            $notificationCount = $notifications->count();
+            $layout = 'layouts.vendorapp';
+        }
+
+        /* ================= ENQUIRY MASTER ================= */
+        $enquiry = DB::table('supplier_enquiries as se')
             ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
-            ->where('se.user_id', 'c_'.$customer_id)
-            ->when($search, function ($query) use ($search) {
-                $query->where(function($q) use ($search){
-                    $q->where('s.shop_name', 'like', "%{$search}%")
-                      ->orWhere('se.delivery_location', 'like', "%{$search}%")
-                      ->orWhere('se.id', 'like', "%{$search}%");
-                });
-            })
+            ->select('se.*','s.shop_name','s.city_id','s.state_id')
+            ->where('se.id', $id)
+            ->first();
+
+        if (!$enquiry) abort(404);
+
+        /* ================= ENQUIRY ITEMS ================= */
+        $items = DB::table('supplier_enquiry_items as ei')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
+            ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
+            ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
+            ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
             ->select(
-                'se.id',
-                'se.created_at',
-                'se.delivery_location',
-                's.shop_name'
+                'mc.name as category',
+                'mp.product_name as product',
+                'ms.material_subproduct as spec',
+                'b.name as brand',
+                'ei.qty'
             )
-            ->orderBy('se.id','desc')
-            ->paginate(10); // ✅ pagination
-
-        $layout = 'layouts.custapp';
-    }
-
-    /* ================= VENDOR ================= */
-    elseif ($vendor_id) {
-
-        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-
-        $notifications = DB::table('customer_interests')->get();
-        $notificationCount = $notifications->count();
-
-        $enquiries = DB::table('supplier_enquiries as se')
-            ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
-            ->where('se.user_id', 'v_'.$vendor_id)
-            ->when($search, function ($query) use ($search) {
-                $query->where(function($q) use ($search){
-                    $q->where('s.shop_name', 'like', "%{$search}%")
-                      ->orWhere('se.delivery_location', 'like', "%{$search}%")
-                      ->orWhere('se.id', 'like', "%{$search}%");
-                });
-            })
-            ->select(
-                'se.id',
-                'se.created_at',
-                'se.delivery_location',
-                's.shop_name'
-            )
-            ->orderBy('se.id','desc')
-            ->paginate(10); // ✅ pagination
-
-        $layout = 'layouts.vendorapp';
-    }
-
-    else {
-        abort(403);
-    }
-
-    return view('web.supplier_enquiry_index', compact(
-        'enquiries',
-        'layout',
-        'vendor_id',
-        'cust_data',
-        'vendor',
-        'notifications',
-        'notificationCount'
-    ));
-}
-
-public function supplierenquiryshow($id)
-{
-    $notificationCount = 0;
-    $notifications = collect();
-    $vendor = null;
-    $cust_data = null;
-
-    $customer_id = Session::get('customer_id');
-    $vendor_id   = Session::get('vendor_id');
-
-    $layout = 'layouts.guest';
-
-    /* ================= CUSTOMER ================= */
-    if ($customer_id) {
-
-        $cust_data = DB::table('users')->where('id', $customer_id)->first();
-
-        $postIds = DB::table('posts')
-            ->where('user_id', $customer_id)
-            ->pluck('id');
-
-        $notifications = DB::table('vendor_interests as vi')
-            ->whereIn('vi.customer_id', $postIds)
+            ->where('ei.enquiry_id', $id)
             ->get();
 
-        $notificationCount = $notifications->count();
-        $layout = 'layouts.custapp';
-    }
-    /* ================= VENDOR ================= */
-    elseif ($vendor_id) {
-
-        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-
-        $vendIds = DB::table('vendor_reg')
-            ->where('id', $vendor_id)
-            ->pluck('id');
-
-        $notifications = DB::table('customer_interests as ci')
-            ->join('users as u', 'u.id', '=', 'ci.customer_id')
-            ->whereIn('ci.vendor_id', $vendIds)
-            ->select('ci.*', 'u.*')
+        /* ================= QUOTATIONS (NEW) ================= */
+        /* ================= QUOTATIONS (from quotations table) ================= */
+        $quotes = DB::table('quotations as q')
+            ->leftJoin('supplier_reg as sr', 'sr.id', '=', 'q.supplier_id')
+            ->leftJoin('supplier_enquiry_items as ei', 'ei.id', '=', 'q.item_id')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
+            ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
+            ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
+            ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
+            ->select(
+                'q.*',
+                'sr.shop_name as supplier_name',
+                'mc.name as category',
+                'mp.product_name as product',
+                'ms.material_subproduct as spec',
+                'b.name as brand'
+            )
+            ->where('q.enquiry_id', $id)
+            ->orderBy('q.id', 'desc')
             ->get();
 
-        $notificationCount = $notifications->count();
-        $layout = 'layouts.vendorapp';
+        /* Summary (grand total etc.) */
+        $quoteSummary = (clone DB::table('quotations'))
+            ->where('enquiry_id', $id)
+            ->selectRaw('COUNT(*) as rows_count, SUM(total) as grand_total')
+            ->first();
+
+        
+
+        return view('web.supplier_enquiry_show', compact(
+            'enquiry',
+            'items',
+            'quotes',
+            'quoteSummary',
+            'layout',
+            'cust_data',
+            'vendor',
+            'notifications',
+            'notificationCount'
+        ));
     }
 
-    /* ================= ENQUIRY MASTER ================= */
-    $enquiry = DB::table('supplier_enquiries as se')
-        ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
-        ->select('se.*','s.shop_name','s.city_id','s.state_id')
-        ->where('se.id', $id)
-        ->first();
-
-    if (!$enquiry) abort(404);
-
-    /* ================= ENQUIRY ITEMS ================= */
-    $items = DB::table('supplier_enquiry_items as ei')
-        ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
-        ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
-        ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
-        ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
-        ->select(
-            'mc.name as category',
-            'mp.product_name as product',
-            'ms.material_subproduct as spec',
-            'b.name as brand',
-            'ei.qty'
-        )
-        ->where('ei.enquiry_id', $id)
-        ->get();
-
-    /* ================= QUOTATIONS (NEW) ================= */
-    /* ================= QUOTATIONS (from quotations table) ================= */
-$quotes = DB::table('quotations as q')
-    ->leftJoin('supplier_reg as sr', 'sr.id', '=', 'q.supplier_id')
-    ->leftJoin('supplier_enquiry_items as ei', 'ei.id', '=', 'q.item_id')
-    ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
-    ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
-    ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
-    ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
-    ->select(
-        'q.*',
-        'sr.shop_name as supplier_name',
-        'mc.name as category',
-        'mp.product_name as product',
-        'ms.material_subproduct as spec',
-        'b.name as brand'
-    )
-    ->where('q.enquiry_id', $id)
-    ->orderBy('q.id', 'desc')
-    ->get();
-
-/* Summary (grand total etc.) */
-$quoteSummary = (clone DB::table('quotations'))
-    ->where('enquiry_id', $id)
-    ->selectRaw('COUNT(*) as rows_count, SUM(total) as grand_total')
-    ->first();
-
   
-
-    return view('web.supplier_enquiry_show', compact(
-        'enquiry',
-        'items',
-        'quotes',
-        'quoteSummary',
-        'layout',
-        'cust_data',
-        'vendor',
-        'notifications',
-        'notificationCount'
-    ));
-}
-
-  
-public function quotationForm($enquiry_id)
-{
-    // 1️⃣ Get enquiry (single row)
-    $enquiry = DB::table('supplier_enquiries')
-        ->where('id', $enquiry_id)
-        ->first();
-
-    abort_if(!$enquiry, 404);
-
-    // 2️⃣ Detect user type from user_id
-    $userType = explode('_', $enquiry->user_id)[0]; // c or v
-    // dd($userType);
-    $userId   = explode('_', $enquiry->user_id)[1]; // numeric id
-
-    $user = null;
-
-    // 3️⃣ Load correct user
-    if ($userType === 'c') {
-        // CUSTOMER
-        $user = DB::table('users')
-            ->where('id', $userId)
+    public function quotationForm($enquiry_id)
+    {
+        // 1️⃣ Get enquiry (single row)
+        $enquiry = DB::table('supplier_enquiries')
+            ->where('id', $enquiry_id)
             ->first();
-    } elseif ($userType === 'v') {
-        // VENDOR
-        $user = DB::table('vendor_reg')
-            ->where('id', $userId)
-            ->first();
+
+        abort_if(!$enquiry, 404);
+
+        // 2️⃣ Detect user type from user_id
+        $userType = explode('_', $enquiry->user_id)[0]; // c or v
+        // dd($userType);
+        $userId   = explode('_', $enquiry->user_id)[1]; // numeric id
+
+        $user = null;
+
+        // 3️⃣ Load correct user
+        if ($userType === 'c') {
+            // CUSTOMER
+            $user = DB::table('users')
+                ->where('id', $userId)
+                ->first();
+        } elseif ($userType === 'v') {
+            // VENDOR
+            $user = DB::table('vendor_reg')
+                ->where('id', $userId)
+                ->first();
+        }
+
+
+        $items =    DB::table('supplier_enquiry_items as ei')
+            ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
+            ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
+            ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
+            ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
+            ->select(
+
+                'mc.name as category',
+                'mp.product_name as product',
+                'ms.material_subproduct as spec',
+                'b.name as brand',
+                'ei.*'
+            )
+            ->where('ei.enquiry_id', $enquiry_id)
+            ->get();
+
+        return view('web.send-custquotation', compact('enquiry', 'user', 'items'));
     }
-
-    // 4️⃣ Get enquiry items (multiple rows)
-//    DB::table('supplier_enquiry_items')
-//         ->where('enquiry_id', $enquiry_id)
-//         ->get();
-
-      $items =    DB::table('supplier_enquiry_items as ei')
-        ->leftJoin('material_categories as mc', 'mc.id', '=', 'ei.category_id')
-        ->leftJoin('material_product as mp', 'mp.id', '=', 'ei.product_id')
-        ->leftJoin('material_product_subtype as ms', 'ms.id', '=', 'ei.spec_id')
-        ->leftJoin('brands as b', 'b.id', '=', 'ei.brand_id')
-        ->select(
-
-            'mc.name as category',
-            'mp.product_name as product',
-            'ms.material_subproduct as spec',
-            'b.name as brand',
-            'ei.*'
-        )
-        ->where('ei.enquiry_id', $enquiry_id)
-        ->get();
-// dd($items);
-    return view('web.send-custquotation', compact('enquiry', 'user', 'items'));
-}
 
 
     public function sendQuotationtocust(Request $request)
@@ -2160,14 +1615,6 @@ public function quotationForm($enquiry_id)
             ]);
         }
 
-        // 🔔 Optional email (grand total)
-        // Mail::raw(
-        //     "Quotation Sent Successfully\n\nGrand Total: ₹{$grandTotal}\n\nRemarks: {$request->remarks}",
-        //     function ($mail) use ($request) {
-        //         $mail->to(auth()->user()->email)
-        //             ->subject('Quotation Sent');
-        //     }
-        // );
 
         return redirect()
             ->route('supplier.orders')
@@ -2220,68 +1667,68 @@ public function quotationForm($enquiry_id)
     }
 
     
-public function quotationAccept($id)
-{
-    $customer_id = Session::get('customer_id');
-    if(!$customer_id){
-        return redirect()->back()->with('error', 'Login required');
+    public function quotationAccept($id)
+    {
+        $customer_id = Session::get('customer_id');
+        if(!$customer_id){
+            return redirect()->back()->with('error', 'Login required');
+        }
+
+        // quotation fetch + security: only customer who owns enquiry can accept
+        $q = DB::table('quotations as qt')
+            ->join('supplier_enquiries as se', 'se.id', '=', 'qt.enquiry_id')
+            ->where('qt.id', $id)
+            ->where('se.user_id', 'c_'.$customer_id)
+            ->select('qt.*','se.id as enquiry_id')
+            ->first();
+
+        if(!$q) abort(403);
+
+        DB::table('quotations')
+            ->where('id', $id)
+            ->update([
+                'status' => 'accepted',
+                'customer_response_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+        // ✅ OPTIONAL: if you want "only one accepted" then uncomment below:
+        // DB::table('quotations')
+        //     ->where('enquiry_id', $q->enquiry_id)
+        //     ->where('supplier_id', '!=', $q->supplier_id)
+        //     ->update([
+        //         'status' => 'rejected',
+        //         'customer_response_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ]);
+
+        return redirect()->back()->with('success', 'Quotation accepted. Order placed successfully!');
     }
 
-    // quotation fetch + security: only customer who owns enquiry can accept
-    $q = DB::table('quotations as qt')
-        ->join('supplier_enquiries as se', 'se.id', '=', 'qt.enquiry_id')
-        ->where('qt.id', $id)
-        ->where('se.user_id', 'c_'.$customer_id)
-        ->select('qt.*','se.id as enquiry_id')
-        ->first();
+    public function quotationReject($id)
+    {
+        $customer_id = Session::get('customer_id');
+        if(!$customer_id){
+            return redirect()->back()->with('error', 'Login required');
+        }
 
-    if(!$q) abort(403);
+        $q = DB::table('quotations as qt')
+            ->join('supplier_enquiries as se', 'se.id', '=', 'qt.enquiry_id')
+            ->where('qt.id', $id)
+            ->where('se.user_id', 'c_'.$customer_id)
+            ->select('qt.*')
+            ->first();
 
-    DB::table('quotations')
-        ->where('id', $id)
-        ->update([
-            'status' => 'accepted',
-            'customer_response_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
+        if(!$q) abort(403);
 
-    // ✅ OPTIONAL: if you want "only one accepted" then uncomment below:
-    // DB::table('quotations')
-    //     ->where('enquiry_id', $q->enquiry_id)
-    //     ->where('supplier_id', '!=', $q->supplier_id)
-    //     ->update([
-    //         'status' => 'rejected',
-    //         'customer_response_at' => Carbon::now(),
-    //         'updated_at' => Carbon::now(),
-    //     ]);
+        DB::table('quotations')
+            ->where('id', $id)
+            ->update([
+                'status' => 'rejected',
+                'customer_response_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
 
-    return redirect()->back()->with('success', 'Quotation accepted. Order placed successfully!');
-}
-
-public function quotationReject($id)
-{
-    $customer_id = Session::get('customer_id');
-    if(!$customer_id){
-        return redirect()->back()->with('error', 'Login required');
+        return redirect()->back()->with('success', 'Quotation rejected.');
     }
-
-    $q = DB::table('quotations as qt')
-        ->join('supplier_enquiries as se', 'se.id', '=', 'qt.enquiry_id')
-        ->where('qt.id', $id)
-        ->where('se.user_id', 'c_'.$customer_id)
-        ->select('qt.*')
-        ->first();
-
-    if(!$q) abort(403);
-
-    DB::table('quotations')
-        ->where('id', $id)
-        ->update([
-            'status' => 'rejected',
-            'customer_response_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-
-    return redirect()->back()->with('success', 'Quotation rejected.');
-}
 }

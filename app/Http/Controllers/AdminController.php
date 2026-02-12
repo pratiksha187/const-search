@@ -24,7 +24,7 @@ class AdminController extends Controller
         return view('web.vendor_verification', compact('vendors'));
     }
 
-     public function supplier_verification(){
+    public function supplier_verification(){
         // dd('test');
         $supplier = DB::table('supplier_reg as s')
             
@@ -37,6 +37,7 @@ class AdminController extends Controller
             // dd($vendors);
         return view('web.supplier_verification', compact('supplier'));
     }
+
     public function vendorsapproved($id){
          $vendor = DB::table('vendor_reg as v')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
@@ -60,12 +61,10 @@ class AdminController extends Controller
             )
             ->where('v.id', $id)
             ->first();
-
-// dd($vendor);
         return view('web.vendorsapproved', compact('vendor'));
     }
 
-     public function supplierapproved($id){
+    public function supplierapproved($id){
          $supplier = DB::table('supplier_reg as s')
             
             ->select(
@@ -80,77 +79,46 @@ class AdminController extends Controller
         return view('web.supplierapproved', compact('supplier'));
     }
 
-  public function approveDocument(Request $request, $id)
-{
-    $request->validate([
-        'status' => 'required|in:approve,reject'
-    ]);
-
-    $docApproveValue = ($request->status === 'approve') ? 1 : 2;
-
-    $updated = DB::table('vendor_reg')
-        ->where('id', $id)
-        ->update([
-            'requerd_documnet_approve' => $docApproveValue,
-            'updated_at' => now(),
+    public function approveDocument(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:approve,reject'
         ]);
 
-    if (!$updated) {
-        return back()->with('error', 'Vendor not found.');
+        $docApproveValue = ($request->status === 'approve') ? 1 : 2;
+
+        $updated = DB::table('vendor_reg')
+            ->where('id', $id)
+            ->update([
+                'requerd_documnet_approve' => $docApproveValue,
+                'updated_at' => now(),
+            ]);
+
+        if (!$updated) {
+            return back()->with('error', 'Vendor not found.');
+        }
+
+        return back()->with('success', 'Document status updated successfully.');
     }
 
-    return back()->with('success', 'Document status updated successfully.');
-}
 
+    public function approveVendor($id)
+    {
+        $updated = DB::table('vendor_reg')
+            ->where('id', $id)
+            ->update([
+                'status' => 'approved',
+            
+                'updated_at' => now(),
+            ]);
 
-public function approveVendor($id)
-{
-    $updated = DB::table('vendor_reg')
-        ->where('id', $id)
-        ->update([
-            'status' => 'approved',
-           
-            'updated_at' => now(),
-        ]);
+        if (!$updated) {
+            return back()->with('error', 'Vendor not found.');
+        }
 
-    if (!$updated) {
-        return back()->with('error', 'Vendor not found.');
+        return back()->with('success', 'Vendor approved successfully.');
     }
-
-    return back()->with('success', 'Vendor approved successfully.');
-}
  
-// public function approveDocument(Request $request, $id)
-// {
-//     $request->validate([
-//         'status' => 'required|in:approve,reject'
-//     ]);
-
-//     // 1 = Approved, 2 = Rejected (for your requerd_documnet_approve field)
-//     $docApproveValue = ($request->status === 'approve') ? 1 : 2;
-
-//     // ✅ enum status in vendor_reg table
-//     $vendorStatus = ($request->status === 'approve') ? 'approved' : 'rejected';
-
-//     $updated = DB::table('vendor_reg')
-//         ->where('id', $id)
-//         ->update([
-//             'requerd_documnet_approve' => $docApproveValue,
-//             'status' => $vendorStatus, // ✅ update enum
-//             'updated_at' => now(),
-//         ]);
-
-//     if (!$updated) {
-//         return redirect()->back()->with('error', 'Vendor not found or already updated.');
-//     }
-
-//     return redirect()->back()->with(
-//         'success',
-//         $request->status === 'approve'
-//             ? 'Vendor approved successfully.'
-//             : 'Vendor rejected successfully.'
-//     );
-// }
 
     public function updatesupplierStatus(Request $request, $id)
     {
@@ -317,86 +285,82 @@ public function approveVendor($id)
     }
 
    
-   public function verifyPost(Request $request, $id)
-{
-    $request->validate([
-        'post_verify' => 'required|in:0,1',
-    ]);
-
-    $updated = DB::table('posts')
-        ->where('id', $id)
-        ->update([
-            'post_verify' => $request->post_verify,
-            'updated_at' => now()
+    public function verifyPost(Request $request, $id)
+    {
+        $request->validate([
+            'post_verify' => 'required|in:0,1',
         ]);
 
-    return back()->with(
-        $updated ? 'success' : 'error',
-        $updated
-            ? 'Project status updated successfully.'
-            : 'No changes were made.'
-    );
-}
-
-
-public function primium_lead_intrested(Request $request)
-{
-    $query = DB::table('vendor_talk_requests as vtr')
-        ->join('vendor_reg as v', 'v.id', '=', 'vtr.vendor_id')
-        ->select(
-            'vtr.*',
-            'v.name',
-            'v.mobile',
-            'v.email',
-            'v.company_name',
-            'v.business_name',
-            'v.lead_balance'
-        )
-        ->orderBy('vtr.created_at', 'desc');
-
-    // 🔎 Search
-    if ($request->filled('search')) {
-        $search = $request->search;
-
-        $query->where(function ($q) use ($search) {
-            $q->where('v.name', 'like', "%{$search}%")
-              ->orWhere('v.mobile', 'like', "%{$search}%")
-              ->orWhere('v.email', 'like', "%{$search}%")
-              ->orWhere('vtr.message', 'like', "%{$search}%");
-        });
-    }
-
-    $requests = $query->paginate(10)->withQueryString();
-
-    return view('web.talk_requests', compact('requests'));
-}
-
-  public function updateTalkStatus(Request $request)
-{
-    DB::table('vendor_talk_requests')
-        ->where('id', $request->id)
-        ->update(['status' => $request->status]);
-
-    return redirect()->back()->with('success', 'Status updated successfully');
-}
-
-public function destroy($id)
-{
-    // $vendor = Vendor::findOrFail($id);
-   $deleted = DB::table('vendor_reg')
+        $updated = DB::table('posts')
             ->where('id', $id)
-            ->delete();
+            ->update([
+                'post_verify' => $request->post_verify,
+                'updated_at' => now()
+            ]);
 
-    if ($deleted) {
-        return back()->with('success', 'Vendor deleted successfully.');
-    } else {
-        return back()->with('error', 'Vendor not found.');
+        return back()->with(
+            $updated ? 'success' : 'error',
+            $updated
+                ? 'Project status updated successfully.'
+                : 'No changes were made.'
+        );
     }
 
 
+    public function primium_lead_intrested(Request $request)
+    {
+        $query = DB::table('vendor_talk_requests as vtr')
+            ->join('vendor_reg as v', 'v.id', '=', 'vtr.vendor_id')
+            ->select(
+                'vtr.*',
+                'v.name',
+                'v.mobile',
+                'v.email',
+                'v.company_name',
+                'v.business_name',
+                'v.lead_balance'
+            )
+            ->orderBy('vtr.created_at', 'desc');
 
-    // return redirect()->back()->with('success', 'Vendor deleted successfully.');
-}
+        // 🔎 Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('v.name', 'like', "%{$search}%")
+                ->orWhere('v.mobile', 'like', "%{$search}%")
+                ->orWhere('v.email', 'like', "%{$search}%")
+                ->orWhere('vtr.message', 'like', "%{$search}%");
+            });
+        }
+
+        $requests = $query->paginate(10)->withQueryString();
+
+        return view('web.talk_requests', compact('requests'));
+    }
+
+    public function updateTalkStatus(Request $request)
+    {
+        DB::table('vendor_talk_requests')
+            ->where('id', $request->id)
+            ->update(['status' => $request->status]);
+
+        return redirect()->back()->with('success', 'Status updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        
+        $deleted = DB::table('vendor_reg')
+                ->where('id', $id)
+                ->delete();
+
+        if ($deleted) {
+            return back()->with('success', 'Vendor deleted successfully.');
+        } else {
+            return back()->with('error', 'Vendor not found.');
+        }
+    }
 
 
 
