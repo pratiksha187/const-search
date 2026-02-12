@@ -364,28 +364,28 @@
         <form id="interestForm">
           @csrf
           <input type="hidden" name="cust_id" value="{{ $customer_data->id }}">
-    <input type="hidden" name="required_credits" id="required_credits"
-        value="{{ $customer_data->lead_credit_value ?? 0 }}">
+            <input type="hidden" name="required_credits" id="required_credits"
+                value="{{ $customer_data->lead_credit_value ?? 0 }}">
 
-    <input type="hidden" name="lead_type" id="lead_type"
-        value="{{ ($customer_data->lead_credit_label ?? '') === 'Prime Lead' ? 'prime' : 'credit' }}">
+            <input type="hidden" name="lead_type" id="lead_type"
+                value="{{ ($customer_data->lead_credit_label ?? '') === 'Prime Lead' ? 'prime' : 'credit' }}">
 
-          <div class="mb-3">
-            <label class="form-label">Your Name *</label>
-            <input type="text" class="form-control" name="vendor_name" required>
-          </div>
+                <div class="mb-3">
+                    <label class="form-label">Your Name *</label>
+                    <input type="text" class="form-control" name="vendor_name" required>
+                </div>
 
-          <div class="mb-3">
-            <label class="form-label">Type of Work *</label>
-            <input type="text" class="form-control" name="work_type"
-                   placeholder="e.g. Road construction, Building design" required>
-          </div>
+                <!-- <div class="mb-3">
+                    <label class="form-label">Type of Work *</label>
+                    <input type="text" class="form-control" name="work_type"
+                        placeholder="e.g. Road construction, Building design" required>
+                </div> -->
 
-          <div class="mb-3">
-            <label class="form-label">Location *</label>
-            <input type="text" class="form-control" name="location"
-                   placeholder="Project location" required>
-          </div>
+                <div class="mb-3">
+                    <label class="form-label">Location *</label>
+                    <input type="text" class="form-control" name="location"
+                        placeholder="Vendor location" required>
+                </div>
 
           
         </form>
