@@ -321,7 +321,7 @@
                             <td>
                                 <div class="ck-supplier">
                                     <div class="name">{{ $row->shop_name ?? 'Supplier' }}</div>
-                                    <div class="sub">Supplier enquiry record</div>
+                                    <div class="sub">{{$row->mobile}}</div>
                                 </div>
                             </td>
 

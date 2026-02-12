@@ -154,7 +154,8 @@
     </div>
 
     <div class="text-muted mb-3">
-        Supplier: <strong>{{ $enquiry->shop_name ?? 'Supplier' }}</strong>
+        Supplier: <strong>{{ $enquiry->shop_name ?? 'Supplier' }}</strong><br>
+        Supplier Mobile: <strong>{{ $enquiry->mobile ?? 'Supplier' }}</strong>
     </div>
 
     <!-- Info -->

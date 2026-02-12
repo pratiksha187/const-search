@@ -1353,7 +1353,7 @@ class SuppliersController extends Controller
                     'se.id',
                     'se.created_at',
                     'se.delivery_location',
-                    's.shop_name'
+                    's.shop_name','s.mobile'
                 )
                 ->orderBy('se.id','desc')
                 ->paginate(10); // ✅ pagination
@@ -1383,11 +1383,11 @@ class SuppliersController extends Controller
                     'se.id',
                     'se.created_at',
                     'se.delivery_location',
-                    's.shop_name'
+                    's.shop_name','s.mobile'
                 )
                 ->orderBy('se.id','desc')
                 ->paginate(10); // ✅ pagination
-
+// dd( $enquiries);
             $layout = 'layouts.vendorapp';
         }
 
@@ -1456,7 +1456,7 @@ class SuppliersController extends Controller
         /* ================= ENQUIRY MASTER ================= */
         $enquiry = DB::table('supplier_enquiries as se')
             ->leftJoin('supplier_reg as s', 's.id', '=', 'se.supplier_id')
-            ->select('se.*','s.shop_name','s.city_id','s.state_id')
+            ->select('se.*','s.shop_name','s.mobile','s.city_id','s.state_id')
             ->where('se.id', $id)
             ->first();
 
