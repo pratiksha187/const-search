@@ -353,7 +353,20 @@ Route::get('/admin/vendors/approved/{id}', [AdminController::class, 'vendorsappr
 
     Route::get('/admin/supplier/approved/{id}', [AdminController::class, 'supplierapproved'])
     ->name('admin.supplierapproved');
+// Route::get('/admin/vendor_ck_Agreement', [AdminController::class, 'vendor_ck_Agreement'])
+//     ->name('vendor_ck_Agreement');
+Route::get('/admin/vendor/agreement-list',
+    [AdminController::class, 'vendor_ck_Agreement']
+)->name('admin.vendor.agreement.list');
 
+Route::get('/admin/vendor/agreement/{id}',
+    [AdminController::class, 'showVendorAgreement']
+)->name('admin.vendor.agreement');
+
+    // admin.vendor.agreement
+Route::post('/admin/vendor/agreement/store/{id}',
+    [AdminController::class, 'storeVendorAgreement']
+)->name('admin.vendor.agreement.store');
 
     // Route::post('/admin/vendors/{id}/status',
     //     [AdminController::class, 'updateStatus']
@@ -449,6 +462,16 @@ Route::post('/admin/vendors/vendor-approve/{id}',
     
     Route::get('/customer/agreement', [AgreementController::class, 'customershow'])->name('customer.agreement');
     Route::post('/customer/agreement/accept', [AgreementController::class, 'customeraccept'])->name('customer.agreement.accept');
+
+
+    Route::get('/admin/post-agreement-list', [AdminController::class, 'postAgreementList'])
+    ->name('admin.post.agreement.list');
+
+    Route::get('/admin/post-agreement/{id}', [AdminController::class, 'showPostAgreement'])
+        ->name('admin.post.agreement');
+
+    Route::post('/admin/post-agreement/store/{id}', [AdminController::class, 'storePostAgreement'])
+        ->name('admin.post.agreement.store');
 
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";

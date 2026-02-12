@@ -11,131 +11,168 @@
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        :root{
-            --navy:#1c2c3e;
-            --orange:#f25c05;
-            --bg:#f5f6fa;
-            --border:#e5e7eb;
-        }
+<style>
+:root{
+    --navy:#1c2c3e;
+    --orange:#f25c05;
+    --bg:#f5f6fa;
+    --border:#e5e7eb;
+}
 
-        *{ box-sizing:border-box }
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:var(--bg);
+}
 
-        body{
-            margin:0;
-            font-family:'Poppins',sans-serif;
-            background:var(--bg);
-        }
+/* ================= LAYOUT ================= */
 
-        /* ================= LAYOUT ================= */
-        .app-layout{
-            display:flex;
-            min-height:100vh;
-        }
+.app-layout{
+    display:flex;
+    min-height:100vh;
+}
 
-        /* ================= SIDEBAR ================= */
-        .sidebar{
-            width:260px;
-            background:#fff;
-            border-right:1px solid var(--border);
-            display:flex;
-            flex-direction:column;
-            position:fixed;
-            top:0;
-            bottom:0;
-            left:0;
-        }
+/* ================= SIDEBAR ================= */
 
-        .sidebar-logo{
-            height:90px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            border-bottom:1px solid var(--border);
-        }
+.sidebar{
+    width:270px;
+    background:#fff;
+    border-right:1px solid var(--border);
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    overflow-y:auto;
+}
 
-        .sidebar-logo img{
-            height:60px;
-        }
+/* LOGO */
+.sidebar-logo{
+    height:85px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:1px solid var(--border);
+}
 
-        .sidebar-menu{
-            padding:20px 14px;
-            flex:1;
-        }
+.sidebar-logo img{
+    height:55px;
+}
 
-        .menu-item{
-            display:flex;
-            align-items:center;
-            gap:12px;
-            padding:12px 16px;
-            border-radius:14px;
-            font-weight:600;
-            font-size:14px;
-            color:var(--navy);
-            text-decoration:none;
-            margin-bottom:8px;
-            transition:.25s;
-        }
+/* MENU */
+.sidebar-menu{
+    padding:20px 14px;
+}
 
-        .menu-item i{
-            font-size:18px;
-        }
+/* MENU ITEM */
+.menu-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:12px 16px;
+    border-radius:12px;
+    font-weight:600;
+    font-size:14px;
+    color:var(--navy);
+    text-decoration:none;
+    margin-bottom:6px;
+    transition:.25s;
+    cursor:pointer;
+}
 
-        .menu-item:hover,
-        .menu-item.active{
-            background:var(--orange);
-            color:#fff;
-        }
+.menu-item i{
+    font-size:18px;
+}
 
-        /* ================= SIDEBAR FOOTER ================= */
-        .sidebar-footer{
-            padding:16px;
-            border-top:1px solid var(--border);
-            display:flex;
-            align-items:center;
-            gap:12px;
-        }
+.menu-item:hover,
+.menu-item.active{
+    background:var(--orange);
+    color:#fff;
+}
 
-        .profile-avatar{
-            width:42px;
-            height:42px;
-            border-radius:50%;
-            background:var(--orange);
-            color:#fff;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-weight:700;
-        }
+/* GROUP TITLE */
+.menu-group-title{
+    font-size:11px;
+    font-weight:700;
+    color:#94a3b8;
+    margin:20px 16px 10px;
+    text-transform:uppercase;
+}
 
-        .profile-name{
-            font-weight:600;
-            color:var(--navy);
-            font-size:14px;
-        }
+/* SUB MENU */
+.sub-menu{
+    display:none;
+    padding-left:10px;
+}
 
-        /* ================= CONTENT ================= */
-        .main-content{
-            margin-left:260px;
-            padding:32px;
-            width:calc(100% - 260px);
-        }
+.sub-menu a{
+    display:block;
+    padding:10px 14px;
+    font-size:13px;
+    border-radius:10px;
+    text-decoration:none;
+    color:var(--navy);
+    margin-bottom:5px;
+}
 
-        /* ================= RESPONSIVE ================= */
-        @media(max-width:768px){
-            .sidebar{
-                transform:translateX(-100%);
-            }
-            .main-content{
-                margin-left:0;
-                width:100%;
-            }
-        }
-        .sidebar-footer button:hover{
-            text-decoration: underline;
-        }
+.sub-menu a:hover,
+.sub-menu a.active{
+    background:#fff3ec;
+    color:var(--orange);
+}
 
-    </style>
+/* ARROW */
+.menu-arrow{
+    font-size:14px;
+    transition:.3s;
+}
+
+.rotate{
+    transform:rotate(90deg);
+}
+
+/* FOOTER */
+.sidebar-footer{
+    padding:15px;
+    border-top:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.profile-avatar{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:var(--orange);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+}
+
+/* ================= CONTENT ================= */
+
+.main-content{
+    margin-left:270px;
+    padding:32px;
+    width:calc(100% - 270px);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:768px){
+    .sidebar{
+        transform:translateX(-100%);
+    }
+    .main-content{
+        margin-left:0;
+        width:100%;
+    }
+}
+
+</style>
 </head>
 
 <body>
@@ -153,55 +190,71 @@
 
         <nav class="sidebar-menu">
 
-            <a href="{{ route('admindashboard') }}" class="menu-item active">
-                <i class="bi bi-speedometer2"></i>
-                Dashboard
+            {{-- DASHBOARD --}}
+            <a href="{{ route('admindashboard') }}"
+               class="menu-item {{ request()->routeIs('admindashboard') ? 'active' : '' }}">
+                <span><i class="bi bi-speedometer2"></i> Dashboard</span>
             </a>
 
-            <a href="{{ route('addmaster') }}" class="menu-item">
-                <i class="bi bi-grid"></i>
-                Add Master
+            {{-- MASTER --}}
+            <a href="{{ route('addmaster') }}"
+               class="menu-item {{ request()->routeIs('addmaster') ? 'active' : '' }}">
+                <span><i class="bi bi-grid"></i> Add Master</span>
             </a>
 
-            <a href="{{ route('vendor_verification') }}" class="menu-item">
-                <i class="bi bi-shield-check"></i>
-                Vendor Verification
-            </a>
+            {{-- VENDORS --}}
+            <div class="menu-group-title">Vendors</div>
 
-            <a href="{{ route('admin.freeleads') }}" class="menu-item">
-                <i class="bi bi-award"></i>
-                Free Leads(fb/insta) Verification
-            </a>
+            <div class="menu-item toggle-menu">
+                <span><i class="bi bi-people"></i> Vendor Management</span>
+                <i class="bi bi-chevron-right menu-arrow"></i>
+            </div>
 
-            <a href="{{ route('postverification') }}" class="menu-item">
-                <i class="bi bi-journal-bookmark-fill"></i>
-                 Leads Verification
-            </a>
-
-            <a href="{{ route('supplier_verification') }}" class="menu-item">
-                <i class="bi bi-file-earmark-check-fill"></i>
-                 Supplier Verification
-            </a>
-
-            <a href="{{ route('primium_lead_intrested') }}" class="menu-item">
-                <i class="bi bi-file-earmark-check-fill"></i>
-                 Supplier Verification
-            </a>
+            <div class="sub-menu">
+                <a href="{{ route('vendor_verification') }}">Vendor Verification</a>
+                <a href="{{ route('admin.vendor.agreement.list') }}">Vendor Agreement(CK)</a>
+            </div>
 
 
+            {{-- SUPPLIERS --}}
+            <div class="menu-group-title">Suppliers</div>
+
+            <div class="menu-item toggle-menu">
+                <span><i class="bi bi-box-seam"></i> Supplier Management</span>
+                <i class="bi bi-chevron-right menu-arrow"></i>
+            </div>
+
+            <div class="sub-menu">
+                <a href="{{ route('supplier_verification') }}">Supplier Verification</a>
+               
+            </div>
+
+
+            {{-- LEADS --}}
+            <div class="menu-group-title">Leads</div>
+
+            <div class="menu-item toggle-menu">
+                <span><i class="bi bi-journal-bookmark"></i> Lead Management</span>
+                <i class="bi bi-chevron-right menu-arrow"></i>
+            </div>
+
+            <div class="sub-menu">
+                <a href="{{ route('postverification') }}">Lead Verification</a>
+                <a href="{{ route('admin.freeleads') }}">Free Leads (FB/Insta)</a>
+                <a href="{{ route('primium_lead_intrested') }}">Premium Lead Interested</a>
+                <a href="{{ route('admin.post.agreement.list') }}">Post Agreement(CK)</a>
+                 
+            </div>
 
         </nav>
 
         <div class="sidebar-footer">
             <div class="profile-avatar">A</div>
-
-            <div class="d-flex flex-column">
-                <div class="profile-name">Admin</div>
-                <a href="{{ route('logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a>
-                
+            <div>
+                <div style="font-weight:600;">Admin</div>
+                <a href="{{ route('logout') }}" style="font-size:13px;">Logout</a>
             </div>
         </div>
-
 
     </aside>
 
@@ -214,6 +267,25 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// COLLAPSIBLE MENU
+document.querySelectorAll('.toggle-menu').forEach(function(menu){
+    menu.addEventListener('click', function(){
+
+        const subMenu = this.nextElementSibling;
+        const arrow = this.querySelector('.menu-arrow');
+
+        if(subMenu.style.display === "block"){
+            subMenu.style.display = "none";
+            arrow.classList.remove('rotate');
+        }else{
+            subMenu.style.display = "block";
+            arrow.classList.add('rotate');
+        }
+    });
+});
+</script>
 
 </body>
 </html>

@@ -362,6 +362,123 @@ class AdminController extends Controller
         }
     }
 
+   public function vendor_ck_Agreement()
+{
+    $vendors = DB::table('vendor_reg')
+                ->orderBy('id','desc')
+                ->get();
+
+    return view('web.vendor_agreement_list', compact('vendors'));
+}
+
+public function showVendorAgreement($id)
+{
+    $vendor = DB::table('vendor_reg')
+                ->where('id', $id)
+                ->first();
+
+    if (!$vendor) {
+        abort(404);
+    }
+
+    return view('web.add_vendor_agreement', compact('vendor'));
+}
+
+
+   public function storeVendorAgreement(Request $request, $id)
+{
+    //  dd($request->all());
+    $request->validate([
+        // 'agreement_version' => 'required|string',
+        'agreement_file'    => 'required|mimes:pdf|max:2048',
+    ]);
+
+    $vendor = DB::table('vendor_reg')->where('id', $id)->first();
+
+    if (!$vendor) {
+        return redirect()->back()->with('error', 'Vendor not found');
+    }
+
+    // Upload file
+    $filePath = null;
+
+    if ($request->hasFile('agreement_file')) {
+        $filePath = $request->file('agreement_file')
+            ->store('vendor_agreements', 'public');
+    }
+
+    // Update vendor table
+    DB::table('vendor_reg')
+        ->where('id', $id)
+        ->update([
+            'custntructkaro_agreement_file' => $filePath,
+          
+            'updated_at' => now(),
+        ]);
+
+    return redirect()
+        ->route('admin.vendor.agreement.list')
+        ->with('success', 'Agreement uploaded successfully');
+}
+
+public function postAgreementList()
+{
+    $posts = DB::table('posts')
+        ->leftJoin('users', 'users.id', '=', 'posts.user_id')
+        ->select(
+            'posts.*',
+            'users.name as customer_name',
+            'users.mobile',
+            'users.email'
+        )
+        ->orderBy('posts.id','desc')
+        ->get();
+
+    return view('web.post_agreement_list', compact('posts'));
+}
+
+public function showPostAgreement($id)
+{
+    $post = DB::table('posts')
+        ->leftJoin('users', 'users.id', '=', 'posts.user_id')
+        ->select(
+            'posts.*',
+            'users.name as customer_name',
+            'users.mobile',
+            'users.email'
+        )
+        ->where('posts.id', $id)
+        ->first();
+
+    return view('web.add_post_agreement', compact('post'));
+}
+public function storePostAgreement(Request $request, $id)
+{
+    // dd($id);
+    $request->validate([
+       
+        'agreement_file' => 'required|mimes:pdf'
+    ]);
+
+    $filePath = null;
+
+    if ($request->hasFile('agreement_file')) {
+        $filePath = $request->file('agreement_file')
+            ->store('post_agreements', 'public');
+    }
+
+    DB::table('posts')
+        ->where('id', $id)
+        ->update([
+            'ck_agreement_file' => $filePath,
+            'ck_agreement_added_at' => now(),
+        ]);
+
+    return redirect()
+        ->route('admin.post.agreement.list')
+        ->with('success', 'Post Agreement Added Successfully');
+}
+
 
 
 }
