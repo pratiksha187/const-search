@@ -25,6 +25,7 @@
                     <th>Contact</th>
                     <th>Vendor Status</th>
                     <th>Document Status</th>
+                      <th>Documents Uploaded</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -60,6 +61,45 @@
                             @else
                                 <span class="badge bg-warning text-dark">Pending</span>
                             @endif
+                        </td>
+                        {{-- Documents Uploaded (NEW COLUMN) --}}
+                        <td>
+
+                        @php
+                            $documents = [
+                                $vendor->aadhaar_card_file,
+                                $vendor->pan_card_file,
+                                $vendor->certificate_of_incorporation_file,
+                                $vendor->work_completion_certificates_file1,
+                                $vendor->work_completion_certificates_file2,
+                                $vendor->work_completion_certificates_file3,
+                            ];
+
+                            $totalDocs = count($documents);
+
+                            $uploadedDocs = collect($documents)
+                                ->filter(function ($doc) {
+                                    return !empty($doc) && !str_contains($doc, 'tmp');
+                                })
+                                ->count();
+                        @endphp
+
+                        @if($uploadedDocs == $totalDocs)
+                            <span class="badge bg-success">
+                                Complete ({{ $uploadedDocs }}/{{ $totalDocs }})
+                            </span>
+
+                        @elseif($uploadedDocs > 0)
+                            <span class="badge bg-warning text-dark">
+                                Partial ({{ $uploadedDocs }}/{{ $totalDocs }})
+                            </span>
+
+                        @else
+                            <span class="badge bg-danger">
+                                Missing (0/{{ $totalDocs }})
+                            </span>
+                        @endif
+
                         </td>
 
                         {{-- ACTION --}}
