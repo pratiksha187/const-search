@@ -17,14 +17,7 @@
    background:var(--bg);
    font-family:Inter,system-ui;
    }
-   /* ================= PROFILE ================= */
-   /* .profile-card{
-   background:linear-gradient(135deg,#2563eb,#4f46e5);
-   color:#fff;
-   border-radius:18px;
-   padding:26px;
-   margin-bottom:28px;
-   } */
+  
    /* ================= WRAPPER ================= */
    .card-box{
    background:#fff;
@@ -613,60 +606,7 @@ hr{
         </div>
     </div>
 
-    {{-- DOCUMENTS --}}
-    <div class="doc-links mt-3">
-
-    @php
-        $hasDocs =
-            $supplier->gst_certificate_path ||
-            $supplier->pan_card_path ||
-            $supplier->shop_license_path ||
-            $supplier->sample_invoice_path ||
-            $supplier->costing_sheet_path;
-    @endphp
-
-    @if($hasDocs)
-
-        @if($supplier->gst_certificate_path)
-            <a href="{{ asset('storage/'.$supplier->gst_certificate_path) }}" target="_blank">
-                GST Certificate
-            </a>
-        @endif
-
-        @if($supplier->pan_card_path)
-            <a href="{{ asset('storage/'.$supplier->pan_card_path) }}" target="_blank">
-                PAN Card
-            </a>
-        @endif
-
-        @if($supplier->shop_license_path)
-            <a href="{{ asset('storage/'.$supplier->shop_license_path) }}" target="_blank">
-                Shop License
-            </a>
-        @endif
-
-        @if($supplier->sample_invoice_path)
-            <a href="{{ asset('storage/'.$supplier->sample_invoice_path) }}" target="_blank">
-                Sample Invoice
-            </a>
-        @endif
-
-        @if($supplier->costing_sheet_path)
-            <a href="{{ asset('storage/'.$supplier->costing_sheet_path) }}" target="_blank">
-                Costing Sheet
-            </a>
-        @endif
-
-    @else
-       
-          <span class="no-docs">📄 No documents uploaded</span>
-
-        
-    @endif
-
-</div>
-
-
+  
 </div>
 
 
