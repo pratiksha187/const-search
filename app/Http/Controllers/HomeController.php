@@ -350,9 +350,9 @@ class HomeController extends Controller
         });
 
         // ✅ FILTER: only show vendors >= 70%
-        $vendor_reg = $vendor_reg->filter(function ($vendor) {
-            return (int)$vendor->profile_percent >= 70;
-        })->values(); // reindex
+        // $vendor_reg = $vendor_reg->filter(function ($vendor) {
+        //     return (int)$vendor->profile_percent >= 70;
+        // })->values(); // reindex
         // dd($vendor_reg);
         return view('web.search_vendor', [
             'cust_data'          => $cust_data,
