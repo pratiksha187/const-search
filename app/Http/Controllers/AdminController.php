@@ -39,28 +39,32 @@ class AdminController extends Controller
     }
 
     public function vendorsapproved($id){
-         $vendor = DB::table('vendor_reg as v')
+        $vendor = DB::table('vendor_reg as v')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
             ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
             ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
             ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
             ->leftJoin('state as s', 's.id', '=', 'v.state')
+            ->leftJoin('entity_type as et', 'et.id', '=', 'v.entity_type')
+            ->leftJoin('account_type as at', 'at.id', '=', 'v.account_type')
             ->leftJoin('region as r', 'r.id', '=', 'v.region')
             ->leftJoin('city as c', 'c.id', '=', 'v.city')
            
             ->select(
-                'v.*',
+                'v.*','at.name as atname',
                 'wt.work_type as work_type_name',
                 'wst.work_subtype as work_subtype_name',
                 'ts.team_size as team_size_data',
                 'ey.experiance as experiance',
                 's.name as statename',
+                'et.entity_type as entity_type_name',
                 'r.name as regionname',
                 'c.name as cityname'
                
             )
             ->where('v.id', $id)
             ->first();
+            // dd($vendor);
         return view('web.vendorsapproved', compact('vendor'));
     }
 

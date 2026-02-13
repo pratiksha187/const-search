@@ -473,6 +473,10 @@ Route::post('/admin/vendors/vendor-approve/{id}',
     Route::post('/admin/post-agreement/store/{id}', [AdminController::class, 'storePostAgreement'])
         ->name('admin.post.agreement.store');
 
+    Route::post('/admin/vendor/{id}/update-description',
+        [VenderController::class, 'updateDescription']
+    )->name('admin.vendor.updateDescription');
+
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";

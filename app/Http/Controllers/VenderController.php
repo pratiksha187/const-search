@@ -427,4 +427,22 @@ class VenderController extends Controller
 
         return redirect()->back()->with('success', 1);
     }
+
+    public function updateDescription(Request $request, $id)
+    {
+        $request->validate([
+            'description' => 'nullable|string'
+        ]);
+
+        DB::table('vendor_reg')
+            ->where('id', $id)
+            ->update([
+                'description' => $request->description,
+                'updated_at'  => now() 
+            ]);
+
+        return back()->with('success', 'Description updated successfully.');
+    }
+
+
 }
