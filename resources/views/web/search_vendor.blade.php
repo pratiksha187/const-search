@@ -537,13 +537,13 @@ body{
                         <div class="details mt-3">
                             <div class="detail-item">
                                 <i class="bi bi-award-fill text-warning"></i>
-                                {{ $vendor->experiance }} Years Experience
+                                {{ $vendor->experiance }} Experience
                             </div>
 
-                            <div class="detail-item">
+                            <!-- <div class="detail-item">
                                 <i class="bi bi-shield-check text-success"></i>
                                 Premium {{ $vendor->work_type }}
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- ================= FOOTER ACTION ================= -->
