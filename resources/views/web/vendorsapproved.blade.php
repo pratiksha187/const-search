@@ -61,6 +61,8 @@
         <div class="col-md-4"><div class="label">Name</div><div class="value">{{ $vendor->name }}</div></div>
         <div class="col-md-4"><div class="label">Mobile</div><div class="value">{{ $vendor->mobile }}</div></div>
         <div class="col-md-4"><div class="label">Email</div><div class="value">{{ $vendor->email }}</div></div>
+        <div class="col-md-4"><div class="label">Designation</div><div class="value">{{ $vendor->contact_person_designation }}</div></div>
+        
         <div class="col-md-4"><div class="label">Business Name</div><div class="value">{{ $vendor->business_name }}</div></div>
         <div class="col-md-4"><div class="label">Experience</div><div class="value">{{ $vendor->experiance }}</div></div>
         <div class="col-md-4"><div class="label">Team Size</div><div class="value">{{ $vendor->team_size_data }}</div></div>
@@ -86,6 +88,8 @@
 <div class="profile-card">
     <div class="section-title">Company Details</div>
     <div class="row g-3">
+        <div class="col-md-4"><div class="label">Company Name</div><div class="value">{{ $vendor->company_name }}</div></div>
+
         <div class="col-md-4"><div class="label">Entity Type</div><div class="value">{{ $vendor->entity_type_name }}</div></div>
         <div class="col-md-4"><div class="label">GST Number</div><div class="value">{{ $vendor->gst_number ?? '-' }}</div></div>
         <div class="col-md-4"><div class="label">MSME Registered</div><div class="value">{{ ucfirst($vendor->msme_registered) }}</div></div>
