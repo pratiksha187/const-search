@@ -483,14 +483,16 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
   {{-- KPI ROW --}}
   <div class="row g-3 mb-4">
     <div class="col-md-4">
-      <div class="kpi-card">
-        <div>
-          <div class="kpi-title">Active Leads</div>
-          <div class="kpi-value">{{ $ActiveLeads }}</div>
-          <div class="kpi-sub">Open opportunities</div>
+      <a href="{{ route('search_customer') }}" class="text-decoration-none text-dark">
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-title">Active Leads</div>
+            <div class="kpi-value">{{ $ActiveLeads }}</div>
+            <div class="kpi-sub">Open opportunities</div>
+          </div>
+          <div class="kpi-icon bg-orange"><i class="bi bi-briefcase-fill"></i></div>
         </div>
-        <div class="kpi-icon bg-orange"><i class="bi bi-briefcase-fill"></i></div>
-      </div>
+      </a>
     </div>
 
     <div class="col-md-4">

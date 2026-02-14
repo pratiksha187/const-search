@@ -222,7 +222,7 @@ class VenderController extends Controller
         $vendorId = session('vendor_id');
       
         $custId   = $request->customer_id;
-    //    dd( $custId ); 
+        //    dd( $custId ); 
         /* ===============================
         1️⃣ CHECK ALREADY ENQUIRED
         ================================ */
