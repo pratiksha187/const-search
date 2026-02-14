@@ -512,57 +512,151 @@
     }
 
     /* ===================== MAIN: HANDLE INTEREST ===================== */
+    // function handleInterested() {
+
+    //     if (!window.CUSTOMERID || window.CUSTOMERID === 0) {
+    //         openModal('authModal');
+    //         return;
+    //     }
+
+    //     $.ajax({
+    //         url: "{{ route('vendor.check_lead_balance') }}",
+    //         method: "GET",
+    //         data: { customer_id: window.CUSTOMERID },
+
+    //         success: function (res) {
+
+    //             if (res.already_exists === true) {
+
+    //                 if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+    //                 if (res.customer_email)  $('#customerEmail').text(res.customer_email);
+
+    //                 Swal.fire({
+    //                     icon: 'info',
+    //                     title: 'Already Unlocked',
+    //                     text: 'You have already unlocked this customer.',
+    //                     confirmButtonColor: '#2563eb'
+    //                 }).then(() => {
+    //                     openModal('customerContactModal');
+    //                 });
+
+    //                 return;
+    //             }
+
+    //             if ((res.balance ?? 0) > 0) {
+    //                 openModal('vendorModal');
+    //                 return;
+    //             }
+
+    //             Swal.fire({
+    //                 icon: 'warning',
+    //                 title: 'Insufficient Balance',
+    //                 text: 'You do not have enough lead balance. Please add credits.',
+    //                 confirmButtonColor: '#f25c05'
+    //             }).then(() => {
+    //                 openModal('paymentModal');
+    //             });
+
+                
+    //         },
+
+    //         error: function () {
+    //             Swal.fire('Error','Failed to check lead balance','error');
+    //         }
+    //     });
+    // }
+
     function handleInterested() {
 
-        if (!window.CUSTOMERID || window.CUSTOMERID === 0) {
-            openModal('authModal');
-            return;
-        }
+    if (!window.CUSTOMERID || window.CUSTOMERID === 0) {
+        openModal('authModal');
+        return;
+    }
 
-        $.ajax({
-            url: "{{ route('vendor.check_lead_balance') }}",
-            method: "GET",
-            data: { customer_id: window.CUSTOMERID },
+    $.ajax({
+        url: "{{ route('vendor.check_lead_balance') }}",
+        method: "GET",
+        data: { customer_id: window.CUSTOMERID },
 
-            success: function (res) {
+        success: function (res) {
 
-                if (res.already_exists === true) {
+            /* ===============================
+               1️⃣ PROFILE COMPLETION CHECK
+            =============================== */
 
-                    if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
-                    if (res.customer_email)  $('#customerEmail').text(res.customer_email);
-
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Already Unlocked',
-                        text: 'You have already unlocked this customer.',
-                        confirmButtonColor: '#2563eb'
-                    }).then(() => {
-                        openModal('customerContactModal');
-                    });
-
-                    return;
-                }
-
-                if ((res.balance ?? 0) > 0) {
-                    openModal('vendorModal');
-                    return;
-                }
+            if (res.profile_incomplete === true) {
 
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Insufficient Balance',
-                    text: 'You do not have enough lead balance. Please add credits.',
+                    title: 'Complete Your Profile',
+                    html: `
+                        Your profile is only <b>${res.profile_percent}%</b> completed.<br>
+                        Please complete at least 60% to unlock leads.
+                    `,
+                    confirmButtonText: 'Complete Now',
                     confirmButtonColor: '#f25c05'
                 }).then(() => {
-                    openModal('paymentModal');
+                    window.location.href = "{{ route('vendor.profile') }}";
                 });
-            },
 
-            error: function () {
-                Swal.fire('Error','Failed to check lead balance','error');
+                return;
             }
-        });
-    }
+
+            /* ===============================
+               2️⃣ ALREADY UNLOCKED
+            =============================== */
+
+            if (res.already_exists === true) {
+
+                if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+                if (res.customer_email)  $('#customerEmail').text(res.customer_email);
+
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Already Unlocked',
+                    text: 'You have already unlocked this customer.',
+                    confirmButtonColor: '#2563eb'
+                }).then(() => {
+                    openModal('customerContactModal');
+                });
+
+                return;
+            }
+
+            /* ===============================
+               3️⃣ CHECK BALANCE
+            =============================== */
+
+            if ((res.balance ?? 0) > 0) {
+                openModal('vendorModal');
+                return;
+            }
+
+            /* ===============================
+               4️⃣ INSUFFICIENT BALANCE
+            =============================== */
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Insufficient Balance',
+                text: 'You do not have enough lead balance. Please add credits.',
+                confirmButtonColor: '#f25c05'
+            }).then(() => {
+                openModal('paymentModal');
+            });
+
+        },
+
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to check lead balance.'
+            });
+        }
+    });
+}
+
 
     /* ===================== FREE LEAD UPLOAD TOGGLE ===================== */
     function toggleUpload(platform) {

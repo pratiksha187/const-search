@@ -215,53 +215,124 @@ class VenderController extends Controller
         return view('web.vendor-profile', compact('vendor_data_byid', 'workSubtypes','cust_data','notificationCount','notifications'));
     }
 
-    
-
     public function checkLeadBalance(Request $request)
     {
         $vendorId = session('vendor_id');
-      
-        $custId   = $request->customer_id;
-        //    dd( $custId ); 
+
+        $vendor = DB::table('vendor_reg')
+                    ->where('id', $vendorId)
+                    ->first();
+
+        if (!$vendor) {
+            return response()->json([
+                'profile_incomplete' => true,
+                'profile_percent'    => 0,
+                'already_exists'     => false,
+                'balance'            => 0
+            ]);
+        }
+
+        // ✅ PROFILE COMPLETION %
+        $profilePercent = ProfileCompletionHelper::vendor($vendor);
+
+        /* ===============================
+        0️⃣ CHECK PROFILE COMPLETION FIRST
+        ================================ */
+
+        if ($profilePercent < 60) {
+            return response()->json([
+                'profile_incomplete' => true,
+                'profile_percent'    => round($profilePercent),
+                'already_exists'     => false,
+                'balance'            => null
+            ]);
+        }
+
+        $custId = $request->customer_id;
+
         /* ===============================
         1️⃣ CHECK ALREADY ENQUIRED
         ================================ */
+
         $already = DB::table('vendor_interests')
             ->where('vendor_id', $vendorId)
             ->where('customer_id', $custId)
             ->exists();
-       
+
         if ($already) {
 
             $customer = DB::table('users')->where('id', $custId)->first();
 
             return response()->json([
-                'already_exists'  => true,
-                'balance'         => null,
-                'customer_mobile' => $customer->mobile ?? '',
-                'customer_email'  => $customer->email ?? ''
+                'profile_incomplete' => false,
+                'already_exists'     => true,
+                'balance'            => null,
+                'customer_mobile'    => $customer->mobile ?? '',
+                'customer_email'     => $customer->email ?? ''
             ]);
         }
 
         /* ===============================
         2️⃣ CHECK LEAD BALANCE
         ================================ */
-        $vendor = DB::table('vendor_reg')
-            ->where('id', $vendorId)
-            ->first();
-
-        if (!$vendor) {
-            return response()->json([
-                'balance' => 0,
-                'already_exists' => false
-            ]);
-        }
 
         return response()->json([
-            'already_exists' => false,
-            'balance' => $vendor->lead_balance
+            'profile_incomplete' => false,
+            'already_exists'     => false,
+            'balance'            => $vendor->lead_balance ?? 0
         ]);
     }
+
+
+    // public function checkLeadBalance(Request $request)
+    // {
+    //     $vendorId = session('vendor_id');
+    //     $vendor = DB::table('vendor_reg')
+    //                 ->where('id', $vendorId)
+    //                 ->first();
+    //     $profilePercent = ProfileCompletionHelper::vendor($vendor);
+    //     // dd( $profilePercent ); 
+    //     $custId   = $request->customer_id;
+    //     //    dd( $custId ); 
+    //     /* ===============================
+    //     1️⃣ CHECK ALREADY ENQUIRED
+    //     ================================ */
+    //     $already = DB::table('vendor_interests')
+    //         ->where('vendor_id', $vendorId)
+    //         ->where('customer_id', $custId)
+    //         ->exists();
+       
+    //     if ($already) {
+
+    //         $customer = DB::table('users')->where('id', $custId)->first();
+
+    //         return response()->json([
+    //             'already_exists'  => true,
+    //             'balance'         => null,
+    //             'customer_mobile' => $customer->mobile ?? '',
+    //             'customer_email'  => $customer->email ?? ''
+    //         ]);
+    //     }
+
+    //     /* ===============================
+    //     2️⃣ CHECK LEAD BALANCE
+    //     ================================ */
+    //     $vendor = DB::table('vendor_reg')
+    //         ->where('id', $vendorId)
+    //         ->first();
+
+    //     if (!$vendor) {
+    //         return response()->json([
+    //             'balance' => 0,
+    //             'already_exists' => false
+    //         ]);
+    //     }
+
+    //     return response()->json([
+    //         'already_exists' => false,
+    //         'balance' => $vendor->lead_balance
+    //     ]);
+    // }
 
     public function claimFreeLead(Request $request)
     {
@@ -315,32 +386,6 @@ class VenderController extends Controller
         $notificationCount = $notifications->count();   
         $search = $request->search;
 
-        // $leads = DB::table('vendor_interests as vi')
-        //             ->leftJoin('users as u', 'u.id', '=', 'vi.customer_id')
-        //             ->where('vi.vendor_id', $vendor_id)
-
-        //             ->when($search, function ($q) use ($search) {
-        //                 $q->where(function ($sub) use ($search) {
-        //                     $sub->where('u.name', 'like', "%{$search}%")
-        //                         ->orWhere('vi.action_status', 'like', "%{$search}%");
-        //                 });
-        //             })
-
-        //             ->select([
-        //                 'vi.id',
-        //                 'vi.customer_id',
-        //                 'vi.vendor_id',
-        //                 'vi.vendor_name',
-        //                 'vi.action_status',
-        //                 'vi.is_read',
-        //                 'u.name as customer_name',
-        //                 'u.email as customer_email',
-        //                 'u.mobile as customer_mobile',
-        //             ])
-
-        //             ->orderBy('vi.created_at', 'desc')
-        //             ->paginate(10)
-        //             ->withQueryString();
         $leads = DB::table('vendor_interests as vi')
             ->leftJoin('posts as p', 'p.id', '=', 'vi.customer_id')
             ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
