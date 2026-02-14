@@ -327,7 +327,7 @@ textarea.form-control-lg {
 
                     <div class="col-md-4">
                         <label class="form-label-custom">Unit</label>
-                        <select class="form-select form-select-lg" name="budget">
+                        <select class="form-select form-select-lg" name="unit">
                             <option value="">Select Unit</option>
                             @foreach($unit as $units)
                                 <option value="{{ $units->id }}">{{ $units->unit }}</option>
