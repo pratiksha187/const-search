@@ -414,7 +414,7 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
                 <i class="bi bi-plus-circle me-1"></i> Add Credits
               </a>
               <a href="{{ route('vendorleadhistory') }}" class="btn btn-hero outline">
-                <i class="bi bi-clock-history me-1"></i> Lead History
+                <i class="bi bi-clock-history me-1"></i>My Lead History
               </a>
             </div>
           </div>
@@ -497,7 +497,7 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
       <a href="{{ route('vendorleadhistory') }}" class="text-decoration-none text-dark">
         <div class="kpi-card">
           <div>
-            <div class="kpi-title">Lead History</div>
+            <div class="kpi-title">My Lead History</div>
             <div class="kpi-value">{{ $countleadhistory  }}</div>
             <div class="kpi-sub">Under review</div>
           </div>

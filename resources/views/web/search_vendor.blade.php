@@ -540,10 +540,6 @@ body{
                                 {{ $vendor->experiance }} Experience
                             </div>
 
-                            <!-- <div class="detail-item">
-                                <i class="bi bi-shield-check text-success"></i>
-                                Premium {{ $vendor->work_type }}
-                            </div> -->
                         </div>
 
                         <!-- ================= FOOTER ACTION ================= -->

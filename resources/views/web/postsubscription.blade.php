@@ -186,12 +186,13 @@ body{
 
                 <div class="price">
                     <small class="text-muted">
-                        ₹4,999 (Inclusive of all taxes)
+                         ₹4,999
+                        <span>+ 18% GST</span>
                     </small>
 
                 </div>
                 <div class="gst-note">
-                    GST will be calculated as per government norms
+                   Total payable: ₹5,898.82 (Including GST)
                 </div>
 
                 <ul class="feature-list">
@@ -202,14 +203,22 @@ body{
                     <li><i class="bi bi-check-circle"></i> Secure & transparent process</li>
                 </ul>
                 
-                <button
+                <!-- <button
                     id="payProjectSubscription"
                     data-cust="{{ $cust_data->id }}"
                     data-project="{{ $project->id ?? '' }}"
                     class="pay-btn">
                     Pay ₹4,999 + GST & Publish Project
-                </button>
+                </button> -->
                 
+                <button
+                    id="payProjectSubscription"
+                    data-cust="{{ $cust_data->id }}"
+                    data-project="{{ $project->id ?? '' }}"
+                    data-base="4999"
+                    class="pay-btn">
+                    Pay Now
+                </button>
 
 
                 <div class="secure-note">
@@ -264,8 +273,8 @@ $(document).on('click', '#payProjectSubscription', function () {
     const custId = $(this).data('cust');
 
     // ✅ GST-INCLUSIVE PRICE
-    // const totalAmount = 4999;
-    const totalAmount =1;
+    const totalAmount = 4999;
+    // const totalAmount =1;
     const plan = 'single'; // keep existing plan to avoid controller change
 
     $.post("{{ route('razorpay.createOrder') }}", {
@@ -332,6 +341,17 @@ $(document).on('click', '#payProjectSubscription', function () {
 </script>
 
 
+<script>
+    let btn = document.getElementById('payProjectSubscription');
+
+    let base = parseFloat(btn.getAttribute('data-base'));
+    let gstRate = 18;
+
+    let gst = (base * gstRate) / 100;
+    let total = base + gst;
+
+    btn.innerHTML = `Pay ₹${total.toFixed(2)} (Incl. 18% GST) & Publish Project`;
+</script>
 
 
 @endsection

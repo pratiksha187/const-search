@@ -371,12 +371,19 @@ class LoginRegController extends Controller
         $count_vendor_data = count($vendor_data);
         
         $customer_interests_data = DB::table('customer_interests')->where('customer_id',$customer_id)->get();
+
         $count_customer_interests_data = count($customer_interests_data);
 
         $supp_count =  DB::table('supplier_reg')->get();
         $count_supplier_reg =count($supp_count);
-
-        $customer_interests= DB::table('customer_interests')->where('customer_id',$customer_id)->get();
+        //vendor intrested to customer
+        // $customer_interests= DB::table('vendor_interests')->where('customer_id',$customer_id)->get();
+        $customer_interests=DB::table('vendor_interests as vi')
+                ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+                ->whereIn('vi.customer_id', $postIds)
+                ->select('v.*','vi.*')
+                ->get();
+        // dd( $customer_interests);
         $count_customer_interests =count($customer_interests);
 
 
@@ -392,14 +399,14 @@ class LoginRegController extends Controller
     public function customerNotificationsPage()
     {
         $customer_id = Session::get('customer_id');
-       
+          
         $cust_data = DB::table('users')->where('id',$customer_id)->first();
         // $post_id = DB::table('posts')->where('user_id',$customer_id )->get();
-            // dd($cust_data);
+           
         $postIds = DB::table('posts')
                     ->where('user_id', $customer_id)
                     ->pluck('id');
-       
+        // dd($postIds);
         $notifications = DB::table('vendor_interests as vi')
                 ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
                 ->whereIn('vi.customer_id', $postIds)

@@ -315,34 +315,69 @@ class VenderController extends Controller
         $notificationCount = $notifications->count();   
         $search = $request->search;
 
+        // $leads = DB::table('vendor_interests as vi')
+        //             ->leftJoin('users as u', 'u.id', '=', 'vi.customer_id')
+        //             ->where('vi.vendor_id', $vendor_id)
+
+        //             ->when($search, function ($q) use ($search) {
+        //                 $q->where(function ($sub) use ($search) {
+        //                     $sub->where('u.name', 'like', "%{$search}%")
+        //                         ->orWhere('vi.action_status', 'like', "%{$search}%");
+        //                 });
+        //             })
+
+        //             ->select([
+        //                 'vi.id',
+        //                 'vi.customer_id',
+        //                 'vi.vendor_id',
+        //                 'vi.vendor_name',
+        //                 'vi.action_status',
+        //                 'vi.is_read',
+        //                 'u.name as customer_name',
+        //                 'u.email as customer_email',
+        //                 'u.mobile as customer_mobile',
+        //             ])
+
+        //             ->orderBy('vi.created_at', 'desc')
+        //             ->paginate(10)
+        //             ->withQueryString();
         $leads = DB::table('vendor_interests as vi')
-                    ->leftJoin('users as u', 'u.id', '=', 'vi.customer_id')
-                    ->where('vi.vendor_id', $vendor_id)
+            ->leftJoin('posts as p', 'p.id', '=', 'vi.customer_id')
+            ->leftJoin('users as u', 'u.id', '=', 'p.user_id')
+            ->where('vi.vendor_id', $vendor_id)
 
-                    ->when($search, function ($q) use ($search) {
-                        $q->where(function ($sub) use ($search) {
-                            $sub->where('u.name', 'like', "%{$search}%")
-                                ->orWhere('vi.action_status', 'like', "%{$search}%");
-                        });
-                    })
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('u.name', 'like', "%{$search}%")
+                        ->orWhere('vi.action_status', 'like', "%{$search}%")
+                        ->orWhere('p.title', 'like', "%{$search}%"); // optional search on post title
+                });
+            })
 
-                    ->select([
-                        'vi.id',
-                        'vi.customer_id',
-                        'vi.vendor_id',
-                        'vi.vendor_name',
-                        'vi.action_status',
-                        'vi.is_read',
-                        'u.name as customer_name',
-                        'u.email as customer_email',
-                        'u.mobile as customer_mobile',
-                    ])
+            ->select([
+                'vi.id',
+                'vi.customer_id',
+                'vi.vendor_id',
+                'vi.vendor_name',
+                'vi.action_status',
+                'vi.is_read',
+                'vi.created_at',
 
-                    ->orderBy('vi.created_at', 'desc')
-                    ->paginate(10)
-                    ->withQueryString();
+                // Post fields
+                'p.title as post_title',
+               
 
+                // Customer fields
+                'u.name as customer_name',
+                'u.email as customer_email',
+                'u.mobile as customer_mobile',
+            ])
 
+            ->orderBy('vi.created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        // dd( $leads);
     return view('web.vendorleadhistory', compact('leads', 'search','vendor_id','vendor','notifications','notificationCount'));
         
     }

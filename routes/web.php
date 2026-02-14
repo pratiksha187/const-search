@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginRegController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RazorpayController;
 use App\Http\Controllers\VenderController;
+use App\Http\Controllers\ERPController;
 use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\ImportController;
@@ -485,3 +486,6 @@ Route::post('/admin/vendors/vendor-approve/{id}',
 
     return $hash; 
 });
+
+
+Route::get('erp', [ERPController::class, 'erp'])->name('erp');

@@ -273,6 +273,17 @@ body{ background:var(--bg); }
     background:#d94f04;
     color:#fff;
 }
+.kpi-card {
+    transition: .2s;
+}
+.kpi-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+a {
+    color: rgb(9 9 9);
+    text-decoration: underline;
+}
 
 </style>
 
@@ -310,20 +321,26 @@ body{ background:var(--bg); }
 
     <!-- KPI ROW -->
     <div class="row g-3 mb-4">
+        
         <div class="col-md-3">
-            <div class="kpi-card">
-                <div>
-                    <div class="kpi-title">My Posts</div>
-                    <div class="kpi-value">{{ $count_post_data }}</div>
-                    <div class="kpi-sub">My all data</div>
+            <a href="{{ route('myposts') }}" class="text-decoration-none">
+                <div class="kpi-card cursor-pointer">
+                    <div>
+                        <div class="kpi-title">My Posts</div>
+                        <div class="kpi-value">{{ $count_post_data }}</div>
+                        <div class="kpi-sub">My all data</div>
+                    </div>
+                    <div class="kpi-icon orange">
+                        <i class="bi bi-briefcase-fill"></i>
+                    </div>
                 </div>
-                <div class="kpi-icon orange"><i class="bi bi-briefcase-fill"></i></div>
-            </div>
+            </a>
         </div>
 
+
         <div class="col-md-3">
-            <a href="" class="text-decoration-none text-dark">
-                <div class="kpi-card">
+            <a href="{{ route('search_vendor') }}" class="text-decoration-none">
+                <div class="kpi-card cursor-pointer">
                     <div>
                         <div class="kpi-title">All Vendors</div>
                         <div class="kpi-value">{{ $count_vendor_data }}</div>
@@ -336,18 +353,22 @@ body{ background:var(--bg); }
 
     
         <div class="col-md-3">
-            <div class="kpi-card">
-                <div>
-                    <div class="kpi-title">Suppliers Count</div>
-                    <div class="kpi-value">{{$count_supplier_reg}}</div>
-                    <div class="kpi-sub">Profile based</div>
+            <a href="{{ route('supplierserch') }}" class="text-decoration-none">
+                <div class="kpi-card cursor-pointer">
+                    <div>
+                        <div class="kpi-title">Suppliers Count</div>
+                        <div class="kpi-value">{{$count_supplier_reg}}</div>
+                        <div class="kpi-sub">Profile based</div>
+                    </div>
+                    <div class="kpi-icon gold"><i class="bi bi-archive"></i></div>
                 </div>
-                <div class="kpi-icon gold"><i class="bi bi-archive"></i></div>
-            </div>
+            </a>    
         </div>
 
         <div class="col-md-3">
-            <div class="kpi-card">
+            <a href="{{ route('customer.notifications') }}" class="text-decoration-none">
+           
+            <div class="kpi-card cursor-pointer">
                 <div>
                     <div class="kpi-title">Intrested Vendor Count</div>
                     <div class="kpi-value">{{ $count_customer_interests }}</div>

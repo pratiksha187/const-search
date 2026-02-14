@@ -398,11 +398,36 @@ textarea.form-control-lg {
           <strong>3 project posts</strong>
         </div>
 
-        <div class="price-box mb-4">
+        <!-- <div class="price-box mb-4">
           <div class="price">₹4,999</div>
           <div class="gst">+ GST</div>
           <div class="per">per project post</div>
-        </div>
+        </div> -->
+<div class="price-box mb-4">
+
+    <div class="price fw-bold fs-3">
+        ₹4,999
+    </div>
+
+    <div class="text-muted small">
+        Base Price
+    </div>
+
+    <div class="mt-2">
+        + 18% GST: ₹899.82
+    </div>
+
+    <hr class="my-2">
+
+    <div class="fw-bold fs-4 text-success">
+        Total: ₹5,898.82
+    </div>
+
+    <div class="per text-muted small">
+        per project post
+    </div>
+
+</div>
 
         <button
             id="payProjectSubscription"
@@ -470,7 +495,7 @@ $(document).on('click', '#payProjectSubscription', function () {
 
     console.log('custId:', CUSTOMER_ID); // ✅ will show number
 
-    const totalAmount = 1; // test (change to 4999 for live)
+    const totalAmount = 4999; // 
     const plan = 'single';
 
     $.post("{{ route('razorpay.createOrder') }}", {
