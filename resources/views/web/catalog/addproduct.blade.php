@@ -150,7 +150,7 @@ $categories = [
             </div>
 
             <!-- PAINT -->
-            <div class="category-page" id="paint">
+            <div class="category-page" id="paintcoating">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header fw-semibold">Add Product – Paint & Coatings</div>
                     <div class="card-body">
@@ -323,6 +323,7 @@ $categories = [
                     </div>
                 </div>
             </div>
+
 
             <!-- steeltmt -->
             <div class="category-page" id="steeltmt">
