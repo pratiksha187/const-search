@@ -47,7 +47,7 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Customer</th>
+                    <!-- <th>Customer</th> -->
                     <th>Material</th>
                     <th>Qty</th>
                     <th>Rate</th>
@@ -64,11 +64,11 @@
                     <tr>
                         <td>{{ $key + 1 }}</td>
 
-                        <td class="customer-box">
+                        <!-- <td class="customer-box">
                             <strong>{{ $row->contact_person }}</strong>
                             <small>{{ $row->shop_name }}</small>
                             <small>{{ $row->mobile }}</small>
-                        </td>
+                        </td> -->
 
                         <td>{{ trim($row->material_categories_name) }}</td>
                         <td>{{ $row->qty }}</td>

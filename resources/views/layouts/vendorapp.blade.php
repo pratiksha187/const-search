@@ -230,6 +230,8 @@
     <div class="header-right">
 
         <!-- DESKTOP MENU -->
+         
+        @if($vendor)
         <div class="top-menu">
             <a href="{{ route('vendordashboard') }}">Dashboard</a>
 
@@ -260,10 +262,11 @@
         <div class="mobile-toggle" onclick="toggleMobileMenu()">
             <i class="bi bi-list"></i>
         </div>
-
+  @endif
     </div>
 </div>
 
+        @if($vendor)
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
     <a href="{{ route('vendordashboard') }}">Dashboard</a>
@@ -278,7 +281,7 @@
     <a href="{{ route('vendor.profile') }}">Profile</a>
     <a href="{{ route('logout') }}">Logout</a>
 </div>
-
+ @endif
 <!-- CONTENT -->
 <div class="dashboard-content">
     @yield('content')

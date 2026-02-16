@@ -797,10 +797,10 @@ hr{
            const input = card.querySelector('.qty-input');
            const data = JSON.parse(card.dataset.product);
    
-           if(+input.value >= data.available_qty){
-               alert(`Only ${data.available_qty} available`);
-               return;
-           }
+        //    if(+input.value >= data.available_qty){
+        //        alert(`Only ${data.available_qty} available`);
+        //        return;
+        //    }
            input.value++;
        }
    
@@ -816,15 +816,15 @@ hr{
            const data = JSON.parse(card.dataset.product);
            const qty  = +card.querySelector('.qty-input').value;
    
-           if(data.available_qty === 0){
-               alert('Out of stock');
-               return;
-           }
+        //    if(data.available_qty === 0){
+        //        alert('Out of stock');
+        //        return;
+        //    }
    
-           if(qty > data.available_qty){
-               alert(`Only ${data.available_qty} available`);
-               return;
-           }
+        //    if(qty > data.available_qty){
+        //        alert(`Only ${data.available_qty} available`);
+        //        return;
+        //    }
    
            addToCart(data, qty);
        }

@@ -250,11 +250,7 @@ class HomeController extends Controller
             return $vendor;
         });
 
-        // ✅ FILTER: only show vendors >= 70%
-        // $vendor_reg = $vendor_reg->filter(function ($vendor) {
-        //     return (int)$vendor->profile_percent >= 70;
-        // })->values(); // reindex
-        // dd($vendor_reg);
+       
         return view('web.search_vendor', [
             'cust_data'          => $cust_data,
             'notifications'      => $notifications,
@@ -282,7 +278,7 @@ class HomeController extends Controller
 
         // vendor fetch (optional)
         if ($vendor_id) {
-            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->where('status','approved')->first();
 
             // if session exists but vendor missing
             if (!$vendor) {
@@ -308,7 +304,7 @@ class HomeController extends Controller
             $notificationCount = $notifications->count();
         }
         $projects = collect();
-        if($vendor && $vendor->status == 'approved') {
+        // if($vendor->status == 'approved') {
         $projects = DB::table('posts')
             ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
@@ -348,7 +344,7 @@ class HomeController extends Controller
             ->orderBy('posts.id', 'desc')
             ->get();
         // dd($projects);
-      }
+    //   }
         // optional stats
         $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
         $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
