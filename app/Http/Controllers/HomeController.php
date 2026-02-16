@@ -175,105 +175,6 @@ class HomeController extends Controller
         return back()->with('success', 'Profile updated successfully');
     }
 
-   
-    // public function search_vendor(Request $request)
-    // {
-        
-    //     $customer_id = Session::get('customer_id');
-    //     $postIds = DB::table('posts')
-    //                 ->where('user_id', $customer_id)
-    //                 ->pluck('id');
-    //     $notifications = DB::table('vendor_interests as vi')
-    //                     ->whereIn('vi.customer_id', $postIds)
-    //                     ->get();
-    //     $notificationCount = $notifications->count();
-    //     $cust_data = DB::table('users')->where('id',$customer_id)->first();
-        
-    //     $work_types = DB::table('work_types')->orderBy('work_type')->get();
-    //     $states     = DB::table('state')->orderBy('name')->get();
-
-    //     $allSubtypes = DB::table('work_subtypes')
-    //                     ->pluck('work_subtype', 'id');
-
-    //     $vendor_reg = DB::table('vendor_reg as v')
-    //                 ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
-    //                 ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
-    //                 ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
-    //                 ->leftJoin('vendor_ratings as vr', 'vr.vendor_id', '=', 'v.id')
-    //                 ->leftJoin('state as s', 's.id', '=', 'v.state')
-    //                 ->leftJoin('region as r', 'r.id', '=', 'v.region')
-    //                 ->leftJoin('city as c', 'c.id', '=', 'v.city')
-    //                 ->select(
-    //                     'v.*',
-
-    //                     // ✅ AGGREGATES
-    //                     DB::raw('ROUND(AVG(vr.rating), 1) as avg_rating'),
-    //                     DB::raw('COUNT(vr.id) as total_reviews'),
-
-    //                     // work
-    //                     'wt.work_type',
-    //                     'ts.team_size as team_size_data',
-
-    //                     'ey.experiance as experiance',
-
-    //                     // location
-    //                     's.name as statename',
-    //                     'r.name as regionname',
-    //                     'c.name as cityname'
-    //                 )
-
-    //                 // ✅ REQUIRED GROUP BY
-    //                 ->groupBy(
-    //                     'v.id',
-    //                     'wt.work_type',
-    //                     'ts.team_size',
-    //                     's.name',
-    //                     'r.name',
-    //                     'c.name'
-    //                 )
-
-    //                 ->orderBy('v.id', 'desc')
-    //                 ->get();
-
-    //     dd($vendor_reg);
-    //     $vendorsWithProfile = $vendor_reg->map(function ($vendor) {
-    //         $vendor->profile_percent = ProfileCompletionHelper::vendor($vendor);
-    //         return $vendor;
-    //     });
-    //     // dd($vendorsWithProfile);
-    //     $vendorIds = DB::table('vendor_reg')
-    //                 ->pluck('id');
-    //     $vendors = DB::table('vendor_reg as v')->whereIn('id', $vendorIds)->get();
-    //                 // dd($vendors);
-    //     $vendor_reg->transform(function ($vendor) use ($allSubtypes) {
-
-    //         // decode JSON ["16","17","19"]
-    //         $ids = json_decode($vendor->work_subtype_id, true);
-
-    //         if (!is_array($ids)) {
-    //             $ids = [];
-    //         }
-
-    //         // map id -> name
-    //         $vendor->work_subtype_data = collect($ids)
-    //             ->map(fn ($id) => $allSubtypes[$id] ?? null)
-    //             ->filter()
-    //             ->values()
-    //             ->implode(', ');
-
-    //         return $vendor;
-    //     });
-       
-    //     return view('web.search_vendor', [
-    //         'cust_data' =>$cust_data,
-    //         'notifications'=>$notifications,
-    //         'notificationCount'=>$notificationCount,
-    //         'work_types'  => $work_types,
-    //         'states'      => $states,
-    //         'vendor_reg'  => $vendor_reg,
-    //         'customer_id' => $customer_id
-    //     ]);
-    // }
     public function search_vendor(Request $request)
     {
         $customer_id = Session::get('customer_id');
@@ -655,199 +556,129 @@ class HomeController extends Controller
     }
 
     public function store(Request $request)
-{
-    $customer_id = Session::get('customer_id');
+    {
+        $customer_id = Session::get('customer_id');
 
-    /* ================= VALIDATION ================= */
+        /* ================= VALIDATION ================= */
 
-    $request->validate([
-        'title'           => 'required|string|max:255',
-        'work_type_id'    => 'required|integer',
-        'work_subtype_id' => 'required|integer',
-        'state'           => 'required',
-        'region_id'       => 'required',
-        'city_id'         => 'required',
-        'budget'          => 'required|integer',
-        'contact_name'    => 'required|string|max:255',
-        'mobile'          => 'required|string|max:20',
-        'email'           => 'required|email',
-        'description'     => 'required|string',
-        'area'            => 'required|string',
-    ]);
+        $request->validate([
+            'title'           => 'required|string|max:255',
+            'work_type_id'    => 'required|integer',
+            'work_subtype_id' => 'required|integer',
+            'state'           => 'required',
+            'region_id'       => 'required',
+            'city_id'         => 'required',
+            'budget'          => 'required|integer',
+            'contact_name'    => 'required|string|max:255',
+            'mobile'          => 'required|string|max:20',
+            'email'           => 'required|email',
+            'description'     => 'required|string',
+            'area'            => 'required|string',
+        ]);
 
-    /* =====================================================
-       🟡 GUEST USER → STORE IN SESSION
-    ===================================================== */
+        /* =====================================================
+        🟡 GUEST USER → STORE IN SESSION
+        ===================================================== */
 
-    if (!$customer_id) {
+        if (!$customer_id) {
 
-        Session::put('pending_post', $request->except(['_token', 'files']));
+            Session::put('pending_post', $request->except(['_token', 'files']));
 
-        $tempFiles = [];
+            $tempFiles = [];
+
+            if ($request->hasFile('files')) {
+
+                foreach ($request->file('files') as $file) {
+
+                    $name = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+
+                    $file->move(public_path('uploads/temp_posts'), $name);
+
+                    $tempFiles[] = $name;
+                }
+            }
+
+            Session::put('pending_post_files', $tempFiles);
+
+            return response()->json([
+                'status'  => 'login_required',
+                'message' => 'Login required'
+            ]);
+        }
+
+        /* =====================================================
+        🔵 POST LIMIT CHECK (3 FREE POSTS)
+        ===================================================== */
+
+        $postCount = DB::table('posts')
+                        ->where('user_id', $customer_id)
+                        ->count();
+
+        if ($postCount >= 3) {
+
+            return response()->json([
+                'status' => 'payment_required'
+            ]);
+        }
+
+        /* =====================================================
+        🟢 PREPARE DATA FOR INSERT
+        ===================================================== */
+
+        $data = [
+            'user_id'         => $customer_id,
+            'title'           => $request->title,
+            'work_type_id'    => $request->work_type_id,
+            'work_subtype_id' => $request->work_subtype_id,
+            'state'           => $request->state,
+            'region'          => $request->region_id,
+            'city'            => $request->city_id,
+            'budget_id'       => $request->budget,
+            'contact_name'    => $request->contact_name,
+            'mobile'          => $request->mobile,
+            'email'           => $request->email,
+            'description'     => $request->description,
+            'area'            => $request->area,
+            'post_verify'     => 0,
+            'get_vendor'      => 0,
+            'created_at'      => now(),
+            'updated_at'      => now(),
+        ];
+
+        /* =====================================================
+        📁 FILE UPLOAD
+        ===================================================== */
 
         if ($request->hasFile('files')) {
+
+            $fileNames = [];
 
             foreach ($request->file('files') as $file) {
 
                 $name = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
 
-                $file->move(public_path('uploads/temp_posts'), $name);
+                $file->move(public_path('uploads/posts'), $name);
 
-                $tempFiles[] = $name;
+                $fileNames[] = $name;
             }
+
+            $data['files'] = json_encode($fileNames);
         }
 
-        Session::put('pending_post_files', $tempFiles);
+        /* =====================================================
+        💾 INSERT INTO DATABASE
+        ===================================================== */
+
+        DB::table('posts')->insert($data);
 
         return response()->json([
-            'status'  => 'login_required',
-            'message' => 'Login required'
+            'status'   => 'success',
+            'message'  => 'Project Posted Successfully',
+            'redirect' => route('myposts')
         ]);
     }
 
-    /* =====================================================
-       🔵 POST LIMIT CHECK (3 FREE POSTS)
-    ===================================================== */
 
-    $postCount = DB::table('posts')
-                    ->where('user_id', $customer_id)
-                    ->count();
-
-    if ($postCount >= 3) {
-
-        return response()->json([
-            'status' => 'payment_required'
-        ]);
-    }
-
-    /* =====================================================
-       🟢 PREPARE DATA FOR INSERT
-    ===================================================== */
-
-    $data = [
-        'user_id'         => $customer_id,
-        'title'           => $request->title,
-        'work_type_id'    => $request->work_type_id,
-        'work_subtype_id' => $request->work_subtype_id,
-        'state'           => $request->state,
-        'region'          => $request->region_id,
-        'city'            => $request->city_id,
-        'budget_id'       => $request->budget,
-        'contact_name'    => $request->contact_name,
-        'mobile'          => $request->mobile,
-        'email'           => $request->email,
-        'description'     => $request->description,
-        'area'            => $request->area,
-        'post_verify'     => 1,
-        'get_vendor'      => 0,
-        'created_at'      => now(),
-        'updated_at'      => now(),
-    ];
-
-    /* =====================================================
-       📁 FILE UPLOAD
-    ===================================================== */
-
-    if ($request->hasFile('files')) {
-
-        $fileNames = [];
-
-        foreach ($request->file('files') as $file) {
-
-            $name = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-
-            $file->move(public_path('uploads/posts'), $name);
-
-            $fileNames[] = $name;
-        }
-
-        $data['files'] = json_encode($fileNames);
-    }
-
-    /* =====================================================
-       💾 INSERT INTO DATABASE
-    ===================================================== */
-
-    DB::table('posts')->insert($data);
-
-    return response()->json([
-        'status'   => 'success',
-        'message'  => 'Project Posted Successfully',
-        'redirect' => route('myposts')
-    ]);
-}
-
-//  public function store(Request $request)
-//     {
-//         // dd($request);
-//         $customer_id = Session::get('customer_id');
-
-//         /* ================= VALIDATION ================= */
-//         $request->validate([
-//             'title'           => 'required|string|max:255',
-//             'work_type_id'    => 'required|integer',
-//             'work_subtype_id' => 'required|integer',
-//             'budget'          => 'required|integer',
-//             'contact_name'    => 'required|string|max:255',
-//             'mobile'          => 'required|string|max:20',
-//             'email'           => 'required|email',
-//             'description'     => 'required|string',
-//             'area'            => 'required|string',
-//         ]);
-
-//         /* =====================================================
-//            🟡 GUEST USER → STORE IN SESSION
-//         ===================================================== */
-//         if (!$customer_id) {
-
-//             Session::put('pending_post', $request->except(['_token', 'files']));
-
-//             $tempFiles = [];
-//             if ($request->hasFile('files')) {
-//                 foreach ($request->file('files') as $file) {
-//                     $name = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-//                     $file->move(public_path('uploads/temp_posts'), $name);
-//                     $tempFiles[] = $name;
-//                 }
-//             }
-
-//             Session::put('pending_post_files', $tempFiles);
-
-//             return response()->json([
-//                 'status' => 'login_required',
-//                 'message' => 'Login required'
-//             ]);
-//         }
-
-//         /* =====================================================
-//            POST LIMIT CHECK
-//         ===================================================== */
-//         $count = DB::table('posts')->where('user_id', $customer_id)->count();
-//         if ($count >= 3) {
-//             return response()->json([
-//                 'status' => 'payment_required'
-//             ]);
-//         }
-
-//         /* =====================================================
-//            SAVE POST DIRECTLY (LOGGED IN)
-//         ===================================================== */
-//         $this->insertPost(
-//             $customer_id,
-//             $request->all(),
-//             $request->file('files')
-//         );
-
-//         return response()->json([
-//             'status' => 'success',
-//             'message' => 'Project Posted Successfully',
-//             'redirect' => route('myposts')
-//         ]);
-//     }
-
-    /* =====================================================
-       SAVE POST FROM SESSION (AFTER LOGIN / REGISTER)
-    ===================================================== */
     public function savePostFromSession()
     {
         if (

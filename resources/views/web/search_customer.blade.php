@@ -698,9 +698,6 @@
 @media(max-width: 768px){
     .lead-title{ font-size:22px; }
 }
-/* ===============================
-   INDUSTRIAL CONSTRUCTION BACKGROUND
-================================ */
 
 body{
     background:

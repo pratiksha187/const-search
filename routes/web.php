@@ -481,7 +481,7 @@ Route::post('/admin/vendors/vendor-approve/{id}',
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "9845073050";
+    $password = "9167981732";
     $hash = Hash::make($password);
 
     return $hash; 
