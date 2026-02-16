@@ -292,7 +292,7 @@ class HomeController extends Controller
                 $mustLogin = true;
             }
         }
-        // dd($vendor);
+        // dd($vendor->status);
         // notifications only if logged in
         $notifications = collect();
         $notificationCount = 0;
@@ -307,8 +307,8 @@ class HomeController extends Controller
 
             $notificationCount = $notifications->count();
         }
-
-      
+        $projects = collect();
+        if($vendor && $vendor->status == 'approved') {
         $projects = DB::table('posts')
             ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
@@ -347,8 +347,8 @@ class HomeController extends Controller
             ->where('posts.post_verify', 1)
             ->orderBy('posts.id', 'desc')
             ->get();
-// dd($projects);
-
+        // dd($projects);
+      }
         // optional stats
         $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
         $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
@@ -374,7 +374,7 @@ class HomeController extends Controller
     {
         $cust_id   = (int) $request->cust_id;
         $vendor_id = (int) Session::get('vendor_id');
-// dd($cust_id );
+        // dd($cust_id );
         if (!$vendor_id) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
