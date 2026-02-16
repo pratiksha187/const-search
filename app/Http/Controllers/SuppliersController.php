@@ -563,6 +563,10 @@ class SuppliersController extends Controller
         $thickness_size =DB::table('thickness_size')->get();
         $delivery_type = DB::table('delivery_type')->get();
         $designcode= DB::table('designcode')->get();
+        $coloursystems= DB::table('coloursystem')->get();
+        $colorname= DB::table('colorname')->get();
+        
+        
         
        // cementconcrete
         $cementconcrete	=DB::table('material_product')->where('material_id','1')->get();	
@@ -641,7 +645,7 @@ class SuppliersController extends Controller
                         ->where('id', $supplier_id)->first();
                         // dd($supplier_data_id);
         $allowedCategories = json_decode($supplier_data_id->material_category, true); 
-        return view('web.catalog.addproduct', compact('supplier','allowedCategories','supplierName','thickness_size', 'categories','mc_chemicals','units','delivery_type',
+        return view('web.catalog.addproduct', compact('supplier','coloursystems','colorname','allowedCategories','supplierName','thickness_size', 'categories','mc_chemicals','units','delivery_type',
         'Plumbingmaterials','electricalitems','doorswindows','glassglazing','hardwaretools','machineries','timberwood','roofingmaterials','pavers',
         'concreteproducts','roadsafety','facadecladding','roadconstruction','scaffolding','hvacutilities','readymix','paintcoating','aggregates','tilesflooring','cementconcrete','designcode','steeltmt'));
     }
@@ -1056,6 +1060,8 @@ class SuppliersController extends Controller
             'price'                => 'nullable|numeric',
             'gst'                  => 'nullable|numeric',
             'delivery_time'        => 'nullable',
+            'coloursystem'          =>'nullable',
+            'colorname'             =>'nullable',
             'product_image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
         //  dd($request );
@@ -1078,6 +1084,8 @@ class SuppliersController extends Controller
             'brand_id'                    => $request->brand,
             'unit_id'                     => $request->unit,
             'quntity'                     => $request->quntity,
+            'colorname'                   => $request->colorname,
+            'coloursystem'                => $request->coloursystem,
             'price'                       => $request->price,
             'gst_percent'                 => $request->gst, 
             'gst_included'                => $request->has('gst_included') ? 1 : 0,

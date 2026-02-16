@@ -17,6 +17,8 @@ class SupplierProductData extends Model
     'brand_id',
     'quntity',
     'unit_id',
+    'coloursystem',
+    'colorname',
     'price',
     'gst_included',
     'gst_percent',

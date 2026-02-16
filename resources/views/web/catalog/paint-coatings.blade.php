@@ -48,14 +48,7 @@
                 <input type="text" name="specification" class="form-control" placeholder="e.g. Matt, 10L, WB">
             </div>
 
-            {{-- PROFILE TYPE --}}
-            <div class="col-md-6">
-                <label class="form-label">Profile Type *</label>
-                <select class="form-select js-profile-type" name="profile_type" disabled required>
-                    <option value="">Select profile type</option>
-                </select>
-            </div>
-
+         
             {{-- UNIT --}}
             <div class="col-md-6">
                 <label class="form-label">Unit *</label>
@@ -63,6 +56,27 @@
                     <option value="">Select unit</option>
                     @foreach($units as $unit)
                         <option value="{{ $unit->id }}">{{ $unit->unitname }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+             {{-- coloursystem --}}
+            <div class="col-md-6">
+                <label class="form-label">Colour System</label>
+                <select class="form-select" name="coloursystem" required>
+                    <option value="">Select Colour System</option>
+                    @foreach($coloursystems as $coloursystem)
+                        <option value="{{ $coloursystem->id }}">{{ $coloursystem->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+              {{-- colorname --}}
+            <div class="col-md-6">
+                <label class="form-label">Colour Name</label>
+                <select class="form-select" name="colorname" required>
+                    <option value="">Select Colour System</option>
+                    @foreach($colorname as $cname)
+                        <option value="{{ $cname->id }}">{{ $cname->name }}</option>
                     @endforeach
                 </select>
             </div>
@@ -82,7 +96,7 @@
                     placeholder="Enter price per unit">
             </div>
 
-            
+
             {{-- SIZE / GRADE --}}
             <div class="col-md-6">
                 <label class="form-label">Size / Grade</label>
