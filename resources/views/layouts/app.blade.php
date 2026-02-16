@@ -49,5 +49,42 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
+<!-- Install Button -->
+<button id="installBtn"
+    style="
+        display:none;
+        position:fixed;
+        top:15px;
+        right:120px;
+        background:#f25c05;
+        color:#fff;
+        border:none;
+        padding:6px 14px;
+        border-radius:20px;
+        font-size:14px;
+        z-index:9999;">
+    Install App
+</button>
+
+<script>
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+});
+
+installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+    }
+});
+</script>
+
+
 </body>
 </html>
