@@ -132,6 +132,10 @@ Route::get('/mystore', [SuppliersController::class, 'mystore'])->name('mystore')
 
 
 Route::get('/myproducts', [SuppliersController::class, 'myproducts'])->name('myproducts');
+Route::post('/products/update-quantity/{id}', 
+    [SuppliersController::class, 'updateQuantity']
+)->name('products.updateQuantity');
+
 Route::get('/products/edit/{id}', [SuppliersController::class, 'editProduct'])
     ->name('products.edit');
 

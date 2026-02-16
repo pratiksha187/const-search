@@ -138,7 +138,7 @@ class SuppliersController extends Controller
                 'ms.material_subproduct as subtype',
                 'b.name as brand',
                 'u.unitname as unit',
-                'sp.price',
+                'sp.price','sp.quntity',
                 'sp.gst_included',
                 'sp.gst_percent',
                 'dt.type as delivery_type',
@@ -157,7 +157,7 @@ class SuppliersController extends Controller
 
     public function editProduct($id)
     {
-         $notificationCount =0;
+        $notificationCount =0;
         $notifications =0;
         $supplier_id = Session::get('supplier_id');
 
@@ -215,8 +215,9 @@ class SuppliersController extends Controller
     ========================================================= */
     public function deleteProduct($id)
     {
-         $supplier_id = Session::get('supplier_id');
-
+       
+        $supplier_id = Session::get('supplier_id');
+//  dd($supplier_id);
         DB::table('supplier_products_data')
             ->where('id', $id)
             ->where('supp_id', $supplier_id)
@@ -1731,4 +1732,21 @@ class SuppliersController extends Controller
 
         return redirect()->back()->with('success', 'Quotation rejected.');
     }
+
+    public function updateQuantity(Request $request, $id)
+    {
+        $request->validate([
+            'quntity' => 'required|integer|min:0'
+        ]);
+
+        DB::table('supplier_products_data')
+            ->where('id', $id)
+            ->update([
+                'quntity' => $request->quntity,
+                'updated_at' => now()
+            ]);
+
+        return back()->with('success', 'Quantity updated successfully');
+    }
+
 }

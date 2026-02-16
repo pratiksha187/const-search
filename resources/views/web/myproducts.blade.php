@@ -81,6 +81,7 @@
                         <th>Delivery Time</th>
                         <th>Image</th>
                         <th>Added On</th>
+                        <th>Update Qut</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -118,6 +119,21 @@
                             </td>
 
                             <td>{{ date('d M Y', strtotime($row->created_at)) }}</td>
+                            <td>
+                                <form action="{{ route('products.updateQuantity', $row->id) }}" method="POST" class="d-flex">
+                                    @csrf
+                                    <input type="number"
+                                        name="quntity"
+                                        value="{{ $row->quntity }}"
+                                        min="0"
+                                        class="form-control form-control-sm me-2"
+                                        style="width:90px;">
+
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        Update
+                                    </button>
+                                </form>
+                            </td>
 
                             <td>
                                 <a href="{{ route('products.edit',$row->id) }}"

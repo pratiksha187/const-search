@@ -982,7 +982,7 @@ class HomeController extends Controller
             )
             ->orderBy('s.created_at', 'desc')
             ->get();
-// dd($supplierslist );
+        // dd($supplierslist );
         return view('web.supplierslist', compact('supplierslist'));
     }
 
@@ -1026,14 +1026,26 @@ class HomeController extends Controller
         return view('web.suppliersshow', compact('supplier'));
     }
 
+   
     public function suppliersdestroy($id)
     {
         $supplier = DB::table('supplier_reg')->where('id', $id)->first();
+
+        if (!$supplier) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Supplier not found'
+            ]);
+        }
+
+        DB::table('supplier_reg')->where('id', $id)->delete();
+
         return response()->json([
             'status' => true,
             'message' => 'Supplier deleted successfully'
         ]);
     }
+
 
 
     public function customerprofileid($id)
