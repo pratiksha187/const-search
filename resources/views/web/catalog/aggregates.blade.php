@@ -56,7 +56,7 @@
         </div>
         <!-- Quntity -->
         <div class="col-md-6 js-quntity ">
-            <label class="form-label">Quntity</label>
+            <label class="form-label">Quantity</label>
             <input type="text" name="quntity" class="form-control">
         </div>
         <!-- PRICE -->
