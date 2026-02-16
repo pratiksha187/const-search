@@ -71,6 +71,18 @@
                 <label class="form-label">Quantity</label>
                 <input type="text" name="quntity" class="form-control">
             </div>
+
+
+             <!-- PRICE -->
+            <div class="col-md-6">
+                <label class="form-label">Price (₹)</label>
+                <input type="number"
+                    name="price"
+                    class="form-control"
+                    placeholder="Enter price per unit">
+            </div>
+
+            
             {{-- SIZE / GRADE --}}
             <div class="col-md-6">
                 <label class="form-label">Size / Grade</label>
