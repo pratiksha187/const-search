@@ -878,6 +878,7 @@ public function sendOtp(Request $request)
     $sid   = config('services.twilio.sid');
     $token = config('services.twilio.token');
     $from  = config('services.twilio.from');
+// dd(config('services.twilio'));
 
     // Check config exists
     if (!$sid || !$token || !$from) {
