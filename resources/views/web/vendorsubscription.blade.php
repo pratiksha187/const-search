@@ -291,6 +291,7 @@ body{ background:var(--bg); }
 </div>
 
 {{-- ================= CREDIT PACKS ================= --}}
+{{-- ================= CREDIT PACKS (HTML ONLY with GST UI) ================= --}}
 <div class="page-head">
     <h3>Choose a pack based on the size of projects you want to access.</h3>
     <p>Credits do not expire. Credits are non-refundable.</p>
@@ -313,6 +314,18 @@ body{ background:var(--bg); }
         <div class="pack-right">
             <div class="pack-price">₹199</div>
             <div class="pack-credits">30 credits</div>
+
+            {{-- ✅ GST UI (18%) --}}
+            <div class="gst-box mt-2">
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">GST (18%)</small>
+                    <small class="fw-semibold gst-amount">₹35.82</small>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">Total</small>
+                    <small class="fw-bold total-amount">₹234.82</small>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -320,6 +333,7 @@ body{ background:var(--bg); }
             data-plan="trial"
             data-amount="199"
             data-credits="30"
+            data-gst="18"
             data-cust="{{ $vendor_id }}">
         Get Trial Access
     </button>
@@ -342,6 +356,18 @@ body{ background:var(--bg); }
         <div class="pack-right">
             <div class="pack-price">₹399</div>
             <div class="pack-credits">70 credits</div>
+
+            {{-- ✅ GST UI (18%) --}}
+            <div class="gst-box mt-2">
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">GST (18%)</small>
+                    <small class="fw-semibold gst-amount">₹71.82</small>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">Total</small>
+                    <small class="fw-bold total-amount">₹470.82</small>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -349,6 +375,7 @@ body{ background:var(--bg); }
             data-plan="starter"
             data-amount="399"
             data-credits="70"
+            data-gst="18"
             data-cust="{{ $vendor_id }}">
         Get Starter Access
     </button>
@@ -374,6 +401,18 @@ body{ background:var(--bg); }
         <div class="pack-right">
             <div class="pack-price">₹799</div>
             <div class="pack-credits">160 credits</div>
+
+            {{-- ✅ GST UI (18%) --}}
+            <div class="gst-box mt-2">
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">GST (18%)</small>
+                    <small class="fw-semibold gst-amount">₹143.82</small>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">Total</small>
+                    <small class="fw-bold total-amount">₹942.82</small>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -381,6 +420,7 @@ body{ background:var(--bg); }
             data-plan="builder"
             data-amount="799"
             data-credits="160"
+            data-gst="18"
             data-cust="{{ $vendor_id }}">
         Get Builder Access
     </button>
@@ -403,6 +443,18 @@ body{ background:var(--bg); }
         <div class="pack-right">
             <div class="pack-price">₹1,499</div>
             <div class="pack-credits">320 credits</div>
+
+            {{-- ✅ GST UI (18%) --}}
+            <div class="gst-box mt-2">
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">GST (18%)</small>
+                    <small class="fw-semibold gst-amount">₹269.82</small>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">Total</small>
+                    <small class="fw-bold total-amount">₹1,768.82</small>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -410,6 +462,7 @@ body{ background:var(--bg); }
             data-plan="pro"
             data-amount="1499"
             data-credits="320"
+            data-gst="18"
             data-cust="{{ $vendor_id }}">
         Get Pro Access
     </button>
@@ -432,6 +485,18 @@ body{ background:var(--bg); }
         <div class="pack-right">
             <div class="pack-price">₹2,999</div>
             <div class="pack-credits">700 credits</div>
+
+            {{-- ✅ GST UI (18%) --}}
+            <div class="gst-box mt-2">
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">GST (18%)</small>
+                    <small class="fw-semibold gst-amount">₹539.82</small>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">Total</small>
+                    <small class="fw-bold total-amount">₹3,538.82</small>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -439,6 +504,7 @@ body{ background:var(--bg); }
             data-plan="power"
             data-amount="2999"
             data-credits="700"
+            data-gst="18"
             data-cust="{{ $vendor_id }}">
         Get Power Access
     </button>
@@ -449,7 +515,6 @@ body{ background:var(--bg); }
     Credits are non-refundable.
 </div>
 
-</div>
 
 {{-- ================= JS ================= --}}
 <script>
