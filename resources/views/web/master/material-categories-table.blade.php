@@ -1,12 +1,12 @@
-<table class="table table-bordered">
-    <thead>
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
         <tr>
-            <th>#</th>
+            <th width="60">#</th>
             <th>Name</th>
             <th>Slug</th>
-            <th>Status</th>
-            <th>Sort</th>
-            <th>Action</th>
+            <th width="120">Status</th>
+            <th width="80">Sort</th>
+            <th width="160">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -23,16 +23,14 @@
             <td>{{ $cat->sort_order }}</td>
             <td>
                 <a href="{{ route('material-categories.edit', $cat->id) }}"
-                class="btn btn-sm btn-warning">
-                    Edit
-                </a>
+                   class="btn btn-sm btn-warning">Edit</a>
 
-                <button class="btn btn-sm btn-danger delete-btn"
+                <button type="button"
+                        class="btn btn-sm btn-danger delete-btn"
                         data-id="{{ $cat->id }}">
                     Delete
                 </button>
             </td>
-
         </tr>
         @empty
         <tr>
@@ -43,10 +41,12 @@
 </table>
 
 <div class="d-flex justify-content-center mt-3">
-    {{ $categories->links('pagination::bootstrap-5') }}
+    {{ $categories->appends(request()->query())->links('pagination::bootstrap-5') }}
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script>
+/* ✅ Delete category (AJAX) + reload current page with current search */
 $(document).on('click', '.delete-btn', function () {
     if (!confirm('Are you sure you want to delete this category?')) return;
 
@@ -60,12 +60,12 @@ $(document).on('click', '.delete-btn', function () {
             _token: "{{ csrf_token() }}"
         },
         success: function (res) {
-            alert(res.message);
+            alert(res.message || 'Deleted');
 
-            // 🔄 Reload current page data
-            $('.pagination .active a').click();
+            // reload current page
+            let currentUrl = $('#table-data .pagination .active a').attr('href') || "{{ route('material-categories.index') }}";
+            loadTable(currentUrl);
         }
     });
 });
 </script>
-

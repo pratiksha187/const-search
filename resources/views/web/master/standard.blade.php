@@ -22,7 +22,17 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <table class="table table-bordered table-hover">
+            {{-- ✅ Search Bar (Client-side) --}}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text"
+                           id="standardSearch"
+                           class="form-control"
+                           placeholder="Search standard name...">
+                </div>
+            </div>
+
+            <table class="table table-bordered table-hover align-middle" id="standardTable">
                 <thead class="table-light">
                     <tr>
                         <th width="60">#</th>
@@ -34,11 +44,11 @@
                     @foreach($standards as $key => $standard)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $standard->standard_name }}</td>
+                        <td class="standard-text">{{ $standard->standard_name }}</td>
                         <td>
                             <button class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editStandard{{ $standard->id }}">
+                                data-bs-target="#editStandardModal{{ $standard->id }}">
                                 Edit
                             </button>
 
@@ -49,34 +59,6 @@
                             </a>
                         </td>
                     </tr>
-
-                    <!-- EDIT MODAL -->
-                    <div class="modal fade" id="editStandard{{ $standard->id }}">
-                        <div class="modal-dialog">
-                            <form method="POST"
-                                  action="{{ route('standard.update',$standard->id) }}">
-                                @csrf
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5>Edit Standard</h5>
-                                        <button type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="text"
-                                               name="standard_name"
-                                               class="form-control"
-                                               value="{{ $standard->standard_name }}"
-                                               required>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-primary">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                     @endforeach
                 </tbody>
             </table>
@@ -85,17 +67,43 @@
     </div>
 </div>
 
+{{-- ✅ EDIT MODALS (outside table for clean HTML) --}}
+@foreach($standards as $standard)
+<div class="modal fade" id="editStandardModal{{ $standard->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('standard.update',$standard->id) }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Standard</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text"
+                           name="standard_name"
+                           class="form-control"
+                           value="{{ $standard->standard_name }}"
+                           required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
 <!-- ADD MODAL -->
-<div class="modal fade" id="addStandardModal">
+<div class="modal fade" id="addStandardModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" action="{{ route('standard.store') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Add Standard</h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Add Standard</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <input type="text"
@@ -105,11 +113,24 @@
                            required>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+{{-- ✅ Search JS --}}
+<script>
+document.getElementById('standardSearch').addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll('#standardTable tbody tr').forEach(function(row){
+        const text = row.querySelector('.standard-text')?.innerText.toLowerCase() || '';
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+</script>
 
 @endsection

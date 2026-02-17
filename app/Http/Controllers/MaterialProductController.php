@@ -8,11 +8,27 @@ use Illuminate\Http\Request;
 
 class MaterialProductController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     $products = MaterialProduct::with('category')
+    //                 ->orderBy('id','desc')
+    //                 ->paginate(10);
+
+    //     return view('web.master.material-product-list', compact('products'));
+    // }
+    public function index(Request $request)
     {
+        $search = $request->search;
+
         $products = MaterialProduct::with('category')
-                    ->orderBy('id','desc')
-                    ->paginate(10);
+            ->when($search, function ($q) use ($search) {
+                $q->where('product_name', 'like', "%{$search}%")
+                ->orWhereHas('category', function ($c) use ($search) {
+                    $c->where('name', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('id','desc')
+            ->paginate(10);
 
         return view('web.master.material-product-list', compact('products'));
     }

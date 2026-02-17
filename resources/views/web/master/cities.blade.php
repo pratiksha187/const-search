@@ -47,10 +47,21 @@
     {{-- CITY LIST --}}
     <div class="card">
         <div class="card-body">
-            <table class="table table-bordered">
+
+            {{-- ✅ Search Bar --}}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text"
+                           id="citySearch"
+                           class="form-control"
+                           placeholder="Search state / region / city...">
+                </div>
+            </div>
+
+            <table class="table table-bordered align-middle" id="cityTable">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th width="80">#</th>
                         <th>State</th>
                         <th>Region</th>
                         <th>City</th>
@@ -60,13 +71,14 @@
                     @foreach($cities as $city)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $city->state_name }}</td>
-                            <td>{{ $city->region_name }}</td>
-                            <td>{{ $city->name }}</td>
+                            <td class="state-text">{{ $city->state_name }}</td>
+                            <td class="region-text">{{ $city->region_name }}</td>
+                            <td class="city-text">{{ $city->name }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
         </div>
     </div>
 
@@ -76,9 +88,13 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
+/* ✅ Cascading: State -> Regions */
 $('#state').change(function () {
     let stateId = $(this).val();
-    if (!stateId) return;
+    if (!stateId) {
+        $('#region').html('<option value="">Select Region</option>');
+        return;
+    }
 
     $('#region').html('<option value="">Loading...</option>');
 
@@ -90,7 +106,19 @@ $('#state').change(function () {
         $('#region').html(html);
     });
 });
-</script>
 
+/* ✅ Search Filter (State/Region/City) */
+document.getElementById('citySearch').addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll('#cityTable tbody tr').forEach(function(row){
+        const state  = row.querySelector('.state-text')?.innerText.toLowerCase() || '';
+        const region = row.querySelector('.region-text')?.innerText.toLowerCase() || '';
+        const city   = row.querySelector('.city-text')?.innerText.toLowerCase() || '';
+
+        row.style.display = (state.includes(value) || region.includes(value) || city.includes(value)) ? '' : 'none';
+    });
+});
+</script>
 
 @endsection

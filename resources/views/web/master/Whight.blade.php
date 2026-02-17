@@ -20,7 +20,17 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <table class="table table-bordered table-hover">
+            {{-- ✅ Search Bar (Client-side) --}}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text"
+                           id="whightSearch"
+                           class="form-control"
+                           placeholder="Search whight name...">
+                </div>
+            </div>
+
+            <table class="table table-bordered table-hover align-middle" id="whightTable">
                 <thead class="table-light">
                     <tr>
                         <th width="60">#</th>
@@ -32,11 +42,11 @@
                     @foreach($Whights as $key => $Whight)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $Whight->name }}</td>
+                        <td class="whight-text">{{ $Whight->name }}</td>
                         <td>
                             <button class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editWhight{{ $Whight->id }}">
+                                data-bs-target="#editWhightModal{{ $Whight->id }}">
                                 Edit
                             </button>
 
@@ -47,29 +57,6 @@
                             </a>
                         </td>
                     </tr>
-
-                    <!-- EDIT MODAL -->
-                    <div class="modal fade" id="editWhight{{ $Whight->id }}">
-                        <div class="modal-dialog">
-                            <form method="POST" action="{{ route('whight.update',$Whight->id) }}">
-                                @csrf
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5>Edit Whight</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="text" name="name"
-                                               class="form-control"
-                                               value="{{ $Whight->name }}" required>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-primary">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                     @endforeach
                 </tbody>
             </table>
@@ -78,14 +65,40 @@
     </div>
 </div>
 
+{{-- ✅ EDIT MODALS (outside table for clean HTML) --}}
+@foreach($Whights as $Whight)
+<div class="modal fade" id="editWhightModal{{ $Whight->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('whight.update',$Whight->id) }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Whight</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="name"
+                           class="form-control"
+                           value="{{ $Whight->name }}" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
 <!-- ADD MODAL -->
-<div class="modal fade" id="addWhightModal">
+<div class="modal fade" id="addWhightModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" action="{{ route('whight.store') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Add Whight</h5>
+                    <h5 class="modal-title">Add Whight</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -93,11 +106,24 @@
                            placeholder="Enter Whight (Kg, Sq Ft, Piece...)" required>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+{{-- ✅ Search JS --}}
+<script>
+document.getElementById('whightSearch').addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll('#whightTable tbody tr').forEach(function(row){
+        const text = row.querySelector('.whight-text')?.innerText.toLowerCase() || '';
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+</script>
 
 @endsection

@@ -38,10 +38,21 @@
     {{-- REGION LIST --}}
     <div class="card">
         <div class="card-body">
-            <table class="table table-bordered">
+
+            {{-- ✅ Search Bar --}}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text"
+                           id="regionSearch"
+                           class="form-control"
+                           placeholder="Search state / region...">
+                </div>
+            </div>
+
+            <table class="table table-bordered align-middle" id="regionTable">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th width="80">#</th>
                         <th>State</th>
                         <th>Region</th>
                     </tr>
@@ -50,14 +61,28 @@
                     @foreach($regions as $region)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $region->state_name }}</td>
-                            <td>{{ $region->name }}</td>
+                            <td class="state-text">{{ $region->state_name }}</td>
+                            <td class="region-text">{{ $region->name }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
         </div>
     </div>
 
 </div>
+
+{{-- ✅ Search JS --}}
+<script>
+document.getElementById('regionSearch').addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll('#regionTable tbody tr').forEach(function(row){
+        const state = row.querySelector('.state-text')?.innerText.toLowerCase() || '';
+        const region = row.querySelector('.region-text')?.innerText.toLowerCase() || '';
+        row.style.display = (state.includes(value) || region.includes(value)) ? '' : 'none';
+    });
+});
+</script>
 @endsection

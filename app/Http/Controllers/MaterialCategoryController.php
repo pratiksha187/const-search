@@ -9,16 +9,30 @@ use Illuminate\Support\Str;
 class MaterialCategoryController extends Controller
 {
    
-    public function index(Request $request)
-    {
-        $categories = MaterialCategory::orderBy('sort_order')->paginate(10);
+ 
+    
+public function index(Request $request)
+{
+    $search = $request->search;
 
-        if ($request->ajax()) {
-            return view('web.master.material-categories-table', compact('categories'))->render();
-        }
+    $categories = MaterialCategory::query()
+        ->when($search, function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('slug', 'like', "%{$search}%");
+        })
+        ->orderBy('sort_order')
+        ->paginate(10);
 
-        return view('web.master.materialcategorylist', compact('categories'));
+    // keep search on pagination links
+    $categories->appends($request->only('search'));
+
+    if ($request->ajax()) {
+        return view('web.master.material-categories-table', compact('categories'))->render();
     }
+
+    return view('web.master.materialcategorylist', compact('categories'));
+}
+
 
 
     public function create()

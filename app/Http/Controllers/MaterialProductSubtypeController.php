@@ -8,14 +8,30 @@ use Illuminate\Http\Request;
 
 class MaterialProductSubtypeController extends Controller
 {
-    public function index()
-    {
-        $subtypes = MaterialProductSubtype::with('product')
-                    ->orderBy('id','desc')
-                    ->paginate(15);
+    // public function index()
+    // {
+    //     $subtypes = MaterialProductSubtype::with('product')
+    //                 ->orderBy('id','desc')
+    //                 ->paginate(15);
 
-        return view('web.master.material-product-subtype-list', compact('subtypes'));
-    }
+    //     return view('web.master.material-product-subtype-list', compact('subtypes'));
+    // }
+    public function index(Request $request)
+{
+    $search = $request->search;
+
+    $subtypes = MaterialProductSubtype::with('product')
+        ->when($search, function ($q) use ($search) {
+            $q->where('material_subproduct', 'like', "%{$search}%")
+              ->orWhereHas('product', function ($p) use ($search) {
+                  $p->where('product_name', 'like', "%{$search}%");
+              });
+        })
+        ->orderBy('id','desc')
+        ->paginate(15);
+
+    return view('web.master.material-product-subtype-list', compact('subtypes'));
+}
 
     public function create()
     {

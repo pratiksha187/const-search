@@ -3,7 +3,6 @@
 @section('title','Unit Master')
 
 @section('content')
-
 <div class="container-fluid mt-4">
 
     <div class="card shadow-sm">
@@ -20,7 +19,14 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <table class="table table-bordered table-hover">
+            {{-- ✅ Search Bar (no controller change) --}}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text" id="unitSearch" class="form-control" placeholder="Search unit name...">
+                </div>
+            </div>
+
+            <table class="table table-bordered table-hover align-middle" id="unitTable">
                 <thead class="table-light">
                     <tr>
                         <th width="60">#</th>
@@ -29,14 +35,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($units as $key => $unit)
+                    @forelse($units as $key => $unit)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $unit->unitname }}</td>
+                        <td class="unit-name">{{ $unit->unitname }}</td>
                         <td>
                             <button class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editUnit{{ $unit->id }}">
+                                data-bs-target="#editUnitModal{{ $unit->id }}">
                                 Edit
                             </button>
 
@@ -47,30 +53,11 @@
                             </a>
                         </td>
                     </tr>
-
-                    <!-- EDIT MODAL -->
-                    <div class="modal fade" id="editUnit{{ $unit->id }}">
-                        <div class="modal-dialog">
-                            <form method="POST" action="{{ route('unit.update',$unit->id) }}">
-                                @csrf
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5>Edit Unit</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="text" name="unitname"
-                                               class="form-control"
-                                               value="{{ $unit->unitname }}" required>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-primary">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No units found</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
 
@@ -78,26 +65,72 @@
     </div>
 </div>
 
-<!-- ADD MODAL -->
-<div class="modal fade" id="addUnitModal">
+{{-- ✅ EDIT MODALS (outside table) --}}
+@foreach($units as $unit)
+<div class="modal fade" id="editUnitModal{{ $unit->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('unit.update',$unit->id) }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Unit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="text"
+                           name="unitname"
+                           class="form-control"
+                           value="{{ $unit->unitname }}"
+                           required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
+{{-- ✅ ADD MODAL --}}
+<div class="modal fade" id="addUnitModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" action="{{ route('unit.store') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Add Unit</h5>
+                    <h5 class="modal-title">Add Unit</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
-                    <input type="text" name="unitname" class="form-control"
-                           placeholder="Enter unit (Kg, Sq Ft, Piece...)" required>
+                    <input type="text"
+                           name="unitname"
+                           class="form-control"
+                           placeholder="Enter unit (Kg, Sq Ft, Piece...)"
+                           required>
                 </div>
+
                 <div class="modal-footer">
-                    <button class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
+{{-- ✅ Simple Search JS (client-side) --}}
+<script>
+document.getElementById('unitSearch').addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+    document.querySelectorAll('#unitTable tbody tr').forEach(function(row){
+        const name = row.querySelector('.unit-name')?.innerText.toLowerCase() || '';
+        row.style.display = name.includes(value) ? '' : 'none';
+    });
+});
+</script>
 @endsection

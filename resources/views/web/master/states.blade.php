@@ -27,10 +27,21 @@
     {{-- STATE LIST --}}
     <div class="card">
         <div class="card-body">
-            <table class="table table-bordered">
+
+            {{-- ✅ Search Bar --}}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text"
+                           id="stateSearch"
+                           class="form-control"
+                           placeholder="Search state name...">
+                </div>
+            </div>
+
+            <table class="table table-bordered align-middle" id="stateTable">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th width="80">#</th>
                         <th>State Name</th>
                     </tr>
                 </thead>
@@ -38,13 +49,26 @@
                     @foreach($states as $state)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $state->name }}</td>
+                            <td class="state-text">{{ $state->name }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
         </div>
     </div>
 
 </div>
+
+{{-- ✅ Search JS --}}
+<script>
+document.getElementById('stateSearch').addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll('#stateTable tbody tr').forEach(function(row){
+        const text = row.querySelector('.state-text')?.innerText.toLowerCase() || '';
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+</script>
 @endsection

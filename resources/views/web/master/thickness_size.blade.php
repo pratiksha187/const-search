@@ -22,7 +22,17 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <table class="table table-bordered table-hover">
+            {{-- ✅ Search Bar (client-side) --}}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text"
+                           id="sizeSearch"
+                           class="form-control"
+                           placeholder="Search thickness / size...">
+                </div>
+            </div>
+
+            <table class="table table-bordered table-hover align-middle" id="sizeTable">
                 <thead class="table-light">
                     <tr>
                         <th width="60">#</th>
@@ -31,14 +41,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($sizes as $key => $size)
+                    @forelse($sizes as $key => $size)
                     <tr>
                         <td>{{ $key + 1 }}</td>
-                        <td>{{ $size->thickness_size }}</td>
+                        <td class="size-text">{{ $size->thickness_size }}</td>
                         <td>
                             <button class="btn btn-sm btn-warning"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editSize{{ $size->id }}">
+                                data-bs-target="#editSizeModal{{ $size->id }}">
                                 Edit
                             </button>
 
@@ -49,35 +59,11 @@
                             </a>
                         </td>
                     </tr>
-
-                    <!-- EDIT MODAL -->
-                    <div class="modal fade" id="editSize{{ $size->id }}">
-                        <div class="modal-dialog">
-                            <form method="POST"
-                                  action="{{ route('thickness.size.update',$size->id) }}">
-                                @csrf
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5>Edit Thickness / Size</h5>
-                                        <button type="button"
-                                                class="btn-close"
-                                                data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="text"
-                                               name="thickness_size"
-                                               class="form-control"
-                                               value="{{ $size->thickness_size }}"
-                                               required>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-primary">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">No records found</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
 
@@ -85,18 +71,47 @@
     </div>
 </div>
 
-<!-- ADD MODAL -->
-<div class="modal fade" id="addSizeModal">
+{{-- ✅ EDIT MODALS (outside table) --}}
+@foreach($sizes as $size)
+<div class="modal fade" id="editSizeModal{{ $size->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="POST" action="{{ route('thickness.size.update',$size->id) }}">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Thickness / Size</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="text"
+                           name="thickness_size"
+                           class="form-control"
+                           value="{{ $size->thickness_size }}"
+                           required>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
+{{-- ✅ ADD MODAL --}}
+<div class="modal fade" id="addSizeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <form method="POST" action="{{ route('thickness.size.store') }}">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Add Thickness / Size</h5>
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Add Thickness / Size</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
                     <input type="text"
                            name="thickness_size"
@@ -104,12 +119,26 @@
                            placeholder="Ex: 0.35–0.50 mm, 6–12 mm"
                            required>
                 </div>
+
                 <div class="modal-footer">
-                    <button class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+{{-- ✅ Search JS (client-side filter) --}}
+<script>
+document.getElementById('sizeSearch').addEventListener('keyup', function () {
+    const value = this.value.toLowerCase();
+
+    document.querySelectorAll('#sizeTable tbody tr').forEach(function(row){
+        const text = row.querySelector('.size-text')?.innerText.toLowerCase() || '';
+        row.style.display = text.includes(value) ? '' : 'none';
+    });
+});
+</script>
 
 @endsection
