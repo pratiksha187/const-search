@@ -24,6 +24,14 @@ use App\Http\Controllers\RegionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgreementController;
+use Illuminate\Support\Facades\Mail;
+
+// Route::get('/test-mail', function () {
+//     Mail::raw('Test email from ConstructKaro', function($m){
+//         $m->to('pirplwebapp@gmail.com')->subject('Test Mail');
+//     });
+//     return "Mail Sent!";
+// });
 
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
 Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');

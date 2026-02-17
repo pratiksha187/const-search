@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Cache;
 use App\Helpers\ProfileCompletionHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Mail\RegisterSuccessMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\HomeController;
 
 
 class LoginRegController extends Controller
@@ -71,145 +75,347 @@ class LoginRegController extends Controller
 
      // ============================= REGISTER ============================
    
-    public function register(Request $request)
-    {
+    // public function register(Request $request)
+    // {
        
-        $request->validate([
-            'role'     => ['required', 'in:customer,vendor,supplier'],
-            'name'     => ['required', 'string', 'max:255'],
-            'mobile'   => ['required'],
-            'email'    => ['required', 'email'],
-            'password' => ['required', 'min:4']
-        ]);
+    //     $request->validate([
+    //         'role'     => ['required', 'in:customer,vendor,supplier'],
+    //         'name'     => ['required', 'string', 'max:255'],
+    //         'mobile'   => ['required'],
+    //         'email'    => ['required', 'email'],
+    //         'password' => ['required', 'min:4']
+    //     ]);
 
-        /* ================= DUPLICATE CHECK ================= */
+    //     /* ================= DUPLICATE CHECK ================= */
 
-        if ($request->role === 'vendor') {
+    //     if ($request->role === 'vendor') {
            
-            $exists = DB::table('vendor_reg')
-                ->where('mobile', $request->mobile)
-                ->orWhere('email', $request->email)
-                ->exists();
-        //  dd($exists);
-            if ($exists) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Vendor already registered with this mobile or email'
-                ]);
-            }
-        }
+    //         $exists = DB::table('vendor_reg')
+    //             ->where('mobile', $request->mobile)
+    //             ->orWhere('email', $request->email)
+    //             ->exists();
+    //     //  dd($exists);
+    //         if ($exists) {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'Vendor already registered with this mobile or email'
+    //             ]);
+    //         }
+    //     }
 
-        if ($request->role === 'supplier') {
-            $exists = DB::table('supplier_reg')
-                ->where('mobile', $request->mobile)
-                ->orWhere('email', $request->email)
-                ->exists();
+    //     if ($request->role === 'supplier') {
+    //         $exists = DB::table('supplier_reg')
+    //             ->where('mobile', $request->mobile)
+    //             ->orWhere('email', $request->email)
+    //             ->exists();
 
-            if ($exists) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Supplier already registered with this mobile or email'
-                ]);
-            }
-        }
-
-
-        if ($request->role === 'customer') {
-            $exists = DB::table('users')
-                ->where('mobile', $request->mobile)
-                ->orWhere('email', $request->email)
-                ->exists();
-
-            if ($exists) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'customer already registered with this mobile or email'
-                ]);
-            }
-        }
+    //         if ($exists) {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'Supplier already registered with this mobile or email'
+    //             ]);
+    //         }
+    //     }
 
 
-        /* ================= ROLE BASE INSERT + SESSION ================= */
+    //     if ($request->role === 'customer') {
+    //         $exists = DB::table('users')
+    //             ->where('mobile', $request->mobile)
+    //             ->orWhere('email', $request->email)
+    //             ->exists();
 
-        if ($request->role === 'vendor') {
+    //         if ($exists) {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'customer already registered with this mobile or email'
+    //             ]);
+    //         }
+    //     }
 
-            $vendorId = DB::table('vendor_reg')->insertGetId([
+
+    //     /* ================= ROLE BASE INSERT + SESSION ================= */
+
+    //     if ($request->role === 'vendor') {
+
+    //         $vendorId = DB::table('vendor_reg')->insertGetId([
                 
-                'name'          => $request->name,
-                'mobile'        => $request->mobile,
-                'email'         => $request->email,
-                'business_name' => $request->business_name ?? null,
-                'gst_number'    => $request->gst_number ?? null,
-                'status'        => 'pending',
-                'password'      => Hash::make($request->password),
-                'lead_balance'  =>150,
-                'created_at'    => now(),
-                'updated_at'    => now()
-            ]);
-            $vendorUid = 'CKV-' . str_pad($vendorId, 6, '0', STR_PAD_LEFT);
-            DB::table('vendor_reg')->where('id', $vendorId)->update([
-                'vendor_uid' => $vendorUid,
-                'updated_at' => now(),
-            ]);
+    //             'name'          => $request->name,
+    //             'mobile'        => $request->mobile,
+    //             'email'         => $request->email,
+    //             'business_name' => $request->business_name ?? null,
+    //             'gst_number'    => $request->gst_number ?? null,
+    //             'status'        => 'pending',
+    //             'password'      => Hash::make($request->password),
+    //             'lead_balance'  =>150,
+    //             'created_at'    => now(),
+    //             'updated_at'    => now()
+    //         ]);
+    //         $vendorUid = 'CKV-' . str_pad($vendorId, 6, '0', STR_PAD_LEFT);
+    //         DB::table('vendor_reg')->where('id', $vendorId)->update([
+    //             'vendor_uid' => $vendorUid,
+    //             'updated_at' => now(),
+    //         ]);
 
-            Session::put('vendor_id', $vendorId);
-        }
+    //         Session::put('vendor_id', $vendorId);
+    //     }
 
-        elseif ($request->role === 'supplier') {
-            // dd($request);
-            $supplierId = DB::table('supplier_reg')->insertGetId([
-                'shop_name'         => $request->shop_name,
-                // 'material_category' => $request->material_category,
-                'contact_person' => $request->name,
-                'mobile'         => $request->mobile,
-                'email'          => $request->email,
-                'status'         => 'pending',
-                'password'       => Hash::make($request->password),
-                'created_at'     => now(),
-                'updated_at'     => now()
-            ]);
+    //     elseif ($request->role === 'supplier') {
+    //         // dd($request);
+    //         $supplierId = DB::table('supplier_reg')->insertGetId([
+    //             'shop_name'         => $request->shop_name,
+    //             // 'material_category' => $request->material_category,
+    //             'contact_person' => $request->name,
+    //             'mobile'         => $request->mobile,
+    //             'email'          => $request->email,
+    //             'status'         => 'pending',
+    //             'password'       => Hash::make($request->password),
+    //             'created_at'     => now(),
+    //             'updated_at'     => now()
+    //         ]);
 
-            Session::put('supplier_id', $supplierId);
-        }
+    //         Session::put('supplier_id', $supplierId);
+    //     }
 
-        elseif($request->role === 'customer') {
+    //     elseif($request->role === 'customer') {
            
-             $customerId = DB::table('users')->insertGetId([
-                // 'user_id'         => $user->id,
-                'name' => $request->name,
-                'mobile'         => $request->mobile,
-                'email'          => $request->email,
-                'role'         => 'pending',
-                'password'       => Hash::make($request->password),
-                'created_at'     => now(),
-                'updated_at'     => now()
+    //          $customerId = DB::table('users')->insertGetId([
+    //             // 'user_id'         => $user->id,
+    //             'name' => $request->name,
+    //             'mobile'         => $request->mobile,
+    //             'email'          => $request->email,
+    //             'role'         => 'pending',
+    //             'password'       => Hash::make($request->password),
+    //             'created_at'     => now(),
+    //             'updated_at'     => now()
+    //         ]);
+
+    //         $customerUid = 'CKC-' . str_pad($customerId, 6, '0', STR_PAD_LEFT);
+
+    //         DB::table('users')->where('id', $customerId)->update([
+    //             'customer_uid' => $customerUid,
+    //             'updated_at'   => now(),
+    //         ]);
+
+    //         //  dd($customerId);
+    //         // customer
+    //        Session::put('customer_id', $customerId);
+    //         app(HomeController::class)->savePostFromSession();
+    //     }
+
+    //     $redirectUrl = match ($request->role) {
+    //         'vendor'   => route('vendordashboard'),
+    //         'supplier' => route('suppliers.profile'),
+    //         'customer'    => route('dashboard'),
+    //     };
+
+    //     return response()->json([
+    //         'status'   => true,
+    //         'message'  => ucfirst($request->role).' registration successful',
+    //         'redirect' => $redirectUrl
+    //     ]);
+    // }
+public function register(Request $request)
+{
+    $request->validate([
+        'role'     => ['required', 'in:customer,vendor,supplier'],
+        'name'     => ['required', 'string', 'max:255'],
+        'mobile'   => ['required'],
+        'email'    => ['required', 'email'],
+        'password' => ['required', 'min:4']
+    ]);
+
+    /* ================= DUPLICATE CHECK ================= */
+
+    if ($request->role === 'vendor') {
+        $exists = DB::table('vendor_reg')
+            ->where('mobile', $request->mobile)
+            ->orWhere('email', $request->email)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Vendor already registered with this mobile or email'
             ]);
+        }
+    }
 
-            $customerUid = 'CKC-' . str_pad($customerId, 6, '0', STR_PAD_LEFT);
+    if ($request->role === 'supplier') {
+        $exists = DB::table('supplier_reg')
+            ->where('mobile', $request->mobile)
+            ->orWhere('email', $request->email)
+            ->exists();
 
-            DB::table('users')->where('id', $customerId)->update([
-                'customer_uid' => $customerUid,
-                'updated_at'   => now(),
+        if ($exists) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Supplier already registered with this mobile or email'
             ]);
+        }
+    }
 
-            //  dd($customerId);
-            // customer
-           Session::put('customer_id', $customerId);
-            app(HomeController::class)->savePostFromSession();
+    if ($request->role === 'customer') {
+        $exists = DB::table('users')
+            ->where('mobile', $request->mobile)
+            ->orWhere('email', $request->email)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Customer already registered with this mobile or email'
+            ]);
+        }
+    }
+
+    /* ================= ROLE BASE INSERT + SESSION ================= */
+    $uid = null;
+    $status = 'pending';
+
+    if ($request->role === 'vendor') {
+
+        $vendorId = DB::table('vendor_reg')->insertGetId([
+            'name'          => $request->name,
+            'mobile'        => $request->mobile,
+            'email'         => $request->email,
+            'business_name' => $request->business_name ?? null,
+            'gst_number'    => $request->gst_number ?? null,
+            'status'        => $status,
+            'password'      => Hash::make($request->password),
+            'lead_balance'  => 150,
+            'created_at'    => now(),
+            'updated_at'    => now()
+        ]);
+
+        $uid = 'CKV-' . str_pad($vendorId, 6, '0', STR_PAD_LEFT);
+
+        DB::table('vendor_reg')->where('id', $vendorId)->update([
+            'vendor_uid' => $uid,
+            'updated_at' => now(),
+        ]);
+
+        Session::put('vendor_id', $vendorId);
+    }
+
+    elseif ($request->role === 'supplier') {
+
+        $supplierId = DB::table('supplier_reg')->insertGetId([
+            'shop_name'      => $request->shop_name ?? null,
+            'contact_person' => $request->name,
+            'mobile'         => $request->mobile,
+            'email'          => $request->email,
+            'status'         => $status,
+            'password'       => Hash::make($request->password),
+            'created_at'     => now(),
+            'updated_at'     => now()
+        ]);
+
+        // Optional supplier UID if you want:
+        // $uid = 'CKS-' . str_pad($supplierId, 6, '0', STR_PAD_LEFT);
+
+        Session::put('supplier_id', $supplierId);
+    }
+
+    elseif ($request->role === 'customer') {
+
+        $customerId = DB::table('users')->insertGetId([
+            'name'       => $request->name,
+            'mobile'     => $request->mobile,
+            'email'      => $request->email,
+            'role'       => $status,
+            'password'   => Hash::make($request->password),
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        $uid = 'CKC-' . str_pad($customerId, 6, '0', STR_PAD_LEFT);
+
+        DB::table('users')->where('id', $customerId)->update([
+            'customer_uid' => $uid,
+            'updated_at'   => now(),
+        ]);
+
+        Session::put('customer_id', $customerId);
+
+        // keep your existing logic
+        app(HomeController::class)->savePostFromSession();
+    }
+
+    /* ================= ✅ SEND EMAIL AFTER REGISTER ================= */
+    try {
+        if (!empty($request->email)) {
+            Mail::to($request->email)->send(
+                new RegisterSuccessMail([
+                    'name'   => $request->name,
+                    'role'   => $request->role,
+                    'uid'    => $uid,
+                    'status' => $status,
+                ])
+            );
+        }
+    } catch (\Throwable $e) {
+        Log::error('Register email failed: ' . $e->getMessage());
+    }
+    // ✅ SEND WHATSAPP AFTER REGISTER (place here)
+    // $this->sendWhatsAppAfterRegister(
+    //     $request->mobile,
+    //     $request->name,
+    //     $request->role,
+    //     $uid ?? null
+    // );
+    /* ================= REDIRECT ================= */
+    $redirectUrl = match ($request->role) {
+        'vendor'   => route('vendordashboard'),
+        'supplier' => route('suppliers.profile'),
+        'customer' => route('dashboard'),
+    };
+
+    return response()->json([
+        'status'   => true,
+        'message'  => ucfirst($request->role) . ' registration successful',
+        'redirect' => $redirectUrl
+    ]);
+}
+  
+
+private function sendWhatsAppAfterRegister($mobile, $name, $role, $uid = null)
+{
+    try {
+        // mobile -> +91XXXXXXXXXX
+        $mobile = preg_replace('/\s+/', '', $mobile);
+        if (!str_starts_with($mobile, '+')) {
+            $mobile = '+91' . ltrim($mobile, '0');
         }
 
-        $redirectUrl = match ($request->role) {
-            'vendor'   => route('vendordashboard'),
-            'supplier' => route('suppliers.profile'),
-            'customer'    => route('dashboard'),
-        };
+        $sid   = env('TWILIO_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
+        $from  = env('TWILIO_WHATSAPP_FROM'); // whatsapp:+14155238886
 
-        return response()->json([
-            'status'   => true,
-            'message'  => ucfirst($request->role).' registration successful',
-            'redirect' => $redirectUrl
-        ]);
+        if (!$sid || !$token || !$from) return;
+
+        $client = new Client($sid, $token);
+
+        $msg = "Hi {$name} 👋\n"
+             . "Welcome to ConstructKaro ✅\n"
+             . "Your ".ucfirst($role)." registration is successful.\n"
+             . ($uid ? "Your ID: {$uid}\n" : "")
+             . "We will verify your profile shortly.\n\n"
+             . "Team ConstructKaro";
+
+        $client->messages->create(
+            "whatsapp:{$mobile}",
+            [
+                'from' => $from,
+                'body' => $msg,
+            ]
+        );
+
+    } catch (\Throwable $e) {
+        Log::error("WhatsApp send failed: " . $e->getMessage());
     }
+}
+
+
     // ============================= LOGIN =============================
    
     public function login(Request $request)
