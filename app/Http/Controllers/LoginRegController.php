@@ -842,24 +842,36 @@ private function sendWhatsAppAfterRegister($mobile, $name, $role, $uid = null)
 
 
     
-   
+
 public function sendOtp(Request $request)
 {
     $request->validate([
-        'mobile' => 'required|regex:/^[0-9+]{10,13}$/',
+        'mobile' => 'required',
         'role'   => 'required|in:customer,vendor,supplier'
     ]);
 
+    // Clean number (remove spaces, dashes, etc.)
     $mobile = preg_replace('/[^0-9]/', '', $request->mobile);
 
-    if (strlen($mobile) == 12 && substr($mobile, 0, 2) == '91') {
+    // If starts with 91 and length 12 → remove 91
+    if (strlen($mobile) === 12 && substr($mobile, 0, 2) === '91') {
         $mobile = substr($mobile, 2);
     }
 
+    // Must be 10 digit Indian number
+    if (strlen($mobile) !== 10) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Invalid mobile number format'
+        ]);
+    }
+
+    $fullMobile = '+91' . $mobile;
+
     $otp = rand(100000, 999999);
 
-    Cache::put('otp_'.$mobile, [
-        'otp' => $otp,
+    Cache::put('otp_' . $mobile, [
+        'otp'  => $otp,
         'role' => $request->role
     ], now()->addMinutes(5));
 
@@ -867,61 +879,40 @@ public function sendOtp(Request $request)
     $token = config('services.twilio.token');
     $from  = config('services.twilio.from');
 
+    // Check config exists
+    if (!$sid || !$token || !$from) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Twilio configuration missing'
+        ]);
+    }
+
     try {
+
         $client = new Client($sid, $token);
+
         $client->messages->create(
-            '+91'.$mobile,
+            $fullMobile,
             [
                 'from' => $from,
                 'body' => "Your ConstructKaro OTP is {$otp}. Valid for 5 minutes."
             ]
         );
+
+        return response()->json([
+            'status' => true,
+            'message' => 'OTP sent successfully'
+        ]);
+
     } catch (\Exception $e) {
+
         return response()->json([
             'status' => false,
-            'message' => $e->getMessage()
+            'message' => 'Twilio Error: ' . $e->getMessage()
         ]);
     }
-
-    return response()->json([
-        'status' => true,
-        'message' => 'OTP sent successfully'
-    ]);
 }
 
-    /* ===========================
-       VERIFY OTP
-    ============================*/
-public function verifyOtp(Request $request)
-{
-    $request->validate([
-        'otp' => 'required|digits:6'
-    ]);
-
-    if (!Session::has('otp')) {
-        return response()->json([
-            'status' => false,
-            'message' => 'OTP expired'
-        ]);
-    }
-
-    if (now()->gt(Session::get('otp_expire'))) {
-        Session::forget(['otp','otp_expire']);
-        return response()->json([
-            'status' => false,
-            'message' => 'OTP expired'
-        ]);
-    }
-
-    if ($request->otp == Session::get('otp')) {
-        return response()->json(['status' => true]);
-    }
-
-    return response()->json([
-        'status' => false,
-        'message' => 'Invalid OTP'
-    ]);
-}
 
 
 
