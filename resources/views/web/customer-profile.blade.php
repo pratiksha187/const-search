@@ -292,6 +292,7 @@
                 </div>
             </div>
 
+            
             {{-- Attachments --}}
             @if(count($filesArr) > 0)
                 <hr>
@@ -299,7 +300,7 @@
                 <div class="d-grid gap-2">
                     @foreach($filesArr as $file)
                         @php
-                            $fileUrl = asset('storage/'.$file);
+                            $fileUrl  = asset('uploads/posts/'.$file);  // ✅ FIX
                             $fileName = basename($file);
                         @endphp
                         <a href="{{ $fileUrl }}" target="_blank" class="btn btn-outline-primary btn-sm file-btn">
@@ -308,6 +309,7 @@
                     @endforeach
                 </div>
             @endif
+
         </div>
 
         {{-- Button Logic --}}
@@ -375,11 +377,7 @@
                     <input type="text" class="form-control" name="vendor_name" required>
                 </div>
 
-                <!-- <div class="mb-3">
-                    <label class="form-label">Type of Work *</label>
-                    <input type="text" class="form-control" name="work_type"
-                        placeholder="e.g. Road construction, Building design" required>
-                </div> -->
+                
 
                 <div class="mb-3">
                     <label class="form-label">Location *</label>
