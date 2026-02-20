@@ -1142,7 +1142,8 @@ class HomeController extends Controller
             
             
         ))->with([
-            'agreement_accepted_at' => $vendor->agreement_accepted_at ?? null
+            'agreement_accepted_at' => $vendor->agreement_accepted_at ?? null,
+            'vendorstatus' => $vendor->status
         ]);
     }
 

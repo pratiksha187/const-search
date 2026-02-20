@@ -495,6 +495,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     window.AGREEMENT_ACCEPTED_AT = @json($agreement_accepted_at);
+    window.VENDOR_STATUS = @json($vendorstatus);
 </script>
 <script>
 
@@ -550,6 +551,21 @@
             });
 
             return;
+        }
+
+
+        if (window.VENDOR_STATUS !== 'approved') {
+             Swal.fire({
+                icon: 'warning',
+                title: 'Vendor Not Approved',
+                html: `
+                    Your vendor account has not been approved yet.<br>
+            You can unlock leads only after approval.
+                `,
+                confirmButtonText: 'Okay',
+                confirmButtonColor: '#f25c05'
+            });
+             return;
         }
 
         /* ===============================
