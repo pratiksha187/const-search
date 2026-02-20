@@ -266,11 +266,12 @@ class HomeController extends Controller
     public function search_customer(Request $request)
     {
         $vendor_id = Session::get('vendor_id');
+    
         $vendor = null;
 
         // flag for blade (to show “Login required” message if needed)
-        $mustLogin = !$vendor_id;
-
+        $mustLogin = !$vendor_id;  
+  
         // common dropdowns
         $states = DB::table('state')->orderBy('name')->get();
         $work_types = DB::table('work_types')->get();
@@ -278,8 +279,8 @@ class HomeController extends Controller
 
         // vendor fetch (optional)
         if ($vendor_id) {
-            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->where('status','approved')->first();
-
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+            // dd($vendor);
             // if session exists but vendor missing
             if (!$vendor) {
                 Session::forget('vendor_id');
@@ -344,7 +345,7 @@ class HomeController extends Controller
             ->orderBy('posts.id', 'desc')
             ->get();
         // dd($projects);
-    //   }
+     //   }
         // optional stats
         $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
         $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
@@ -1046,6 +1047,7 @@ class HomeController extends Controller
 
     public function customerprofileid($id)
     {
+      
         $vendor_id  = session('vendor_id');
 
         $vendor = DB::table('vendor_reg')
@@ -1086,7 +1088,7 @@ class HomeController extends Controller
                 'br.budget_range as budget_range_name'
             )
             ->first();
-
+ 
         if (!$customer_data) {
             return redirect()->back()->with('error', 'Project not found');
         }

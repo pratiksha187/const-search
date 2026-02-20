@@ -338,7 +338,7 @@ $categories = [
             <!-- cement-concrete -->
             <div class="category-page" id="cement-concrete">
                 <div class="card shadow-sm mb-4">
-                    <div class="card-header fw-semibold">Add Product – Cement & Concrete</div>
+                    <div class="card-header fw-semibold">Add Product – Cement</div>
                     <div class="card-body">
                         @include('web.catalog.cementconcrete')
                     </div>

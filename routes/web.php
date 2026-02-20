@@ -24,14 +24,11 @@ use App\Http\Controllers\RegionController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgreementController;
+use App\Http\Controllers\EmployerController;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\EmployerAuthController;
 
-// Route::get('/test-mail', function () {
-//     Mail::raw('Test email from ConstructKaro', function($m){
-//         $m->to('pirplwebapp@gmail.com')->subject('Test Mail');
-//     });
-//     return "Mail Sent!";
-// });
+
 
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
 Route::get('admindashboard', [LoginRegController::class, 'admindashboard'])->name('admindashboard');
@@ -49,10 +46,6 @@ Route::get('/search-customer', [HomeController::class, 'search_customer'])->name
 
 Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name('cutomerprofile');
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
-
-
-// Route::get('/get-regions/{state_id}', [HomeController::class, 'getRegions']);
-// Route::get('/get-cities/{region_id}', [HomeController::class, 'getCities']);
 
 
 Route::post('/register', [LoginRegController::class, 'register'])->name('register');
@@ -485,11 +478,36 @@ Route::post('/admin/vendors/vendor-approve/{id}',
 
     Route::post('/admin/post-agreement/store/{id}', [AdminController::class, 'storePostAgreement'])
         ->name('admin.post.agreement.store');
+    Route::get('/employers', [EmployerController::class, 'index'])->name('admin.employers.index');
+    Route::get('/employers/create', [EmployerController::class, 'create'])->name('admin.employers.create');
+    Route::post('/employers/store', [EmployerController::class, 'store'])->name('admin.employers.store');
+    Route::post('/employers/{id}/toggle', [EmployerController::class, 'toggleStatus'])->name('admin.employers.toggle');
+    Route::delete('/employers/{id}', [EmployerController::class, 'destroy'])->name('admin.employers.destroy');
 
     Route::post('/admin/vendor/{id}/update-description',
         [VenderController::class, 'updateDescription']
     )->name('admin.vendor.updateDescription');
 
+
+    Route::get('/employer/login', [EmployerAuthController::class, 'showLogin'])->name('employer.login');
+    Route::post('/employer/login', [EmployerAuthController::class, 'login'])->name('employer.login.post');
+    Route::post('/employer/logout', [EmployerAuthController::class, 'logout'])->name('employer.logout');
+
+    // Protected routes (Employer)
+    Route::middleware(['employer.auth'])->group(function () {
+        Route::get('/employer/dashboard', function () {
+            return view('web.employers.dashboard');
+        })->name('employers.dashboard');
+
+        Route::get('erp-project', [ERPController::class, 'erpproject'])->name('erpproject');
+        Route::get('boq-rfq-bids', [ERPController::class, 'boq_rfq_bids'])->name('boq_rfq_bids');
+        Route::get('po-grm-invoice', [ERPController::class, 'po_grm_invoice'])->name('po_grm_invoice');
+
+        Route::get('vendor-network', [ERPController::class, 'vendor_network'])->name('vendor_network');
+        Route::get('user-roles', [ERPController::class, 'user_roles'])->name('user_roles');
+        
+
+    });
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
@@ -501,3 +519,4 @@ Route::post('/admin/vendors/vendor-approve/{id}',
 
 
 Route::get('erp', [ERPController::class, 'erp'])->name('erp');
+

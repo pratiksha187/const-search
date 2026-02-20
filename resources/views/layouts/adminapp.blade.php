@@ -245,6 +245,20 @@ body{
                 <!-- <a href="{{ route('admin.post.agreement.list') }}">Post Agreement(CK)</a> -->
                  
             </div>
+            <div class="menu-group-title">ERP Employer</div>
+             <div class="menu-item toggle-menu">
+                <span><i class="bi bi-journal-bookmark"></i>ERP Employer</span>
+                <i class="bi bi-chevron-right menu-arrow"></i>
+            </div>
+            <div class="sub-menu">
+                <a href="{{ route('admin.employers.index') }}" class="{{ request()->routeIs('admin.employers.*') ? 'active' : '' }}">
+                <span class="icon">Employers</span>
+                </a>
+
+                <!-- <a href="{{ route('admin.employers.create') }}" class="{{ request()->routeIs('admin.employers.*') ? 'active' : '' }}">
+                <span class="icon">Employer</span>
+                </a> -->
+            </div>
 
         </nav>
 

@@ -323,15 +323,10 @@
 
         @else
 
-            <button type="button" class="btn-interest mb-2"
+            <button class="btn-interest mb-2"
                     onclick="handleInterested()">
                 🚀 Show Interest & Unlock Contact
             </button>
-            <!-- <button type="button"
-        class="btn-interest mb-2"
-        onclick="alert('clicked')">
-    🚀 Show Interest & Unlock Contact
-</button> -->
 
         @endif
 
@@ -497,8 +492,8 @@
 <script>
 
     // ✅ Customer user id (login check)
-    window.CUSTOMERID = {{($customer_data->id ?? 0) }};
-    // alert(window.CUSTOMERID);
+    window.CUSTOMERID = {{ (int)($customer_data->cust_id ?? 0) }};
+
     /* ===================== HELPERS ===================== */
 
     function openModal(id){
@@ -514,7 +509,60 @@
         if(inst) inst.hide();
     }
 
-  
+    /* ===================== MAIN: HANDLE INTEREST ===================== */
+    // function handleInterested() {
+
+    //     if (!window.CUSTOMERID || window.CUSTOMERID === 0) {
+    //         openModal('authModal');
+    //         return;
+    //     }
+
+    //     $.ajax({
+    //         url: "{{ route('vendor.check_lead_balance') }}",
+    //         method: "GET",
+    //         data: { customer_id: window.CUSTOMERID },
+
+    //         success: function (res) {
+
+    //             if (res.already_exists === true) {
+
+    //                 if (res.customer_mobile) $('#customerMobile').text(res.customer_mobile);
+    //                 if (res.customer_email)  $('#customerEmail').text(res.customer_email);
+
+    //                 Swal.fire({
+    //                     icon: 'info',
+    //                     title: 'Already Unlocked',
+    //                     text: 'You have already unlocked this customer.',
+    //                     confirmButtonColor: '#2563eb'
+    //                 }).then(() => {
+    //                     openModal('customerContactModal');
+    //                 });
+
+    //                 return;
+    //             }
+
+    //             if ((res.balance ?? 0) > 0) {
+    //                 openModal('vendorModal');
+    //                 return;
+    //             }
+
+    //             Swal.fire({
+    //                 icon: 'warning',
+    //                 title: 'Insufficient Balance',
+    //                 text: 'You do not have enough lead balance. Please add credits.',
+    //                 confirmButtonColor: '#f25c05'
+    //             }).then(() => {
+    //                 openModal('paymentModal');
+    //             });
+
+                
+    //         },
+
+    //         error: function () {
+    //             Swal.fire('Error','Failed to check lead balance','error');
+    //         }
+    //     });
+    // }
 
     function handleInterested() {
 
