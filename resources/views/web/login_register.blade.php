@@ -412,5 +412,79 @@ $('#send-otp-btn').click(function () {
 
 });
 
+
+$('#verify-otp-btn').click(function () {
+
+    $.ajax({
+        url: '/forgot-password/verify-otp',
+        method: 'POST',
+        data: {
+            login: $('#fp-login').val(),
+            otp: $('#fp-otp').val(),
+            role: $('#fp-role').val(),
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res){
+
+            if(res.status){
+
+                // Hide OTP step
+                $('#fp-step-2').addClass('d-none');
+
+                // Show password reset step
+                $('#fp-step-3').removeClass('d-none');
+
+            } else {
+                alert(res.message || 'Invalid OTP');
+            }
+
+        },
+        error: function(){
+            alert('OTP verification failed');
+        }
+    });
+
+});
+
+$('#reset-password-btn').click(function(){
+
+    let password = $('#fp-password').val();
+    let confirm  = $('#fp-confirm').val();
+
+    if(password !== confirm){
+        alert('Passwords do not match');
+        return;
+    }
+
+    $.ajax({
+        url: '/forgot-password/reset',
+        method: 'POST',
+        data: {
+            login: $('#fp-login').val(),
+            role: $('#fp-role').val(),
+            password: password,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res){
+
+            if(res.status){
+                alert('Password changed successfully');
+                forgotModal.hide();
+
+                // reset modal
+                $('#fp-step-1').removeClass('d-none');
+                $('#fp-step-3').addClass('d-none');
+            } else {
+                alert(res.message || 'Failed to reset password');
+            }
+
+        },
+        error: function(){
+            alert('Something went wrong');
+        }
+    });
+
+});
+
 </script>
 @endsection

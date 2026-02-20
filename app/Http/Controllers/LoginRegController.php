@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\HomeController;
 
 
+
 class LoginRegController extends Controller
 {
 
@@ -878,7 +879,7 @@ public function sendOtp(Request $request)
     $sid   = config('services.twilio.sid');
     $token = config('services.twilio.token');
     $from  = config('services.twilio.from');
-// dd(config('services.twilio'));
+    // dd(config('services.twilio'));
 
     // Check config exists
     if (!$sid || !$token || !$from) {
@@ -914,7 +915,105 @@ public function sendOtp(Request $request)
     }
 }
 
+public function verifyOtp(Request $request)
+{
+    $login = preg_replace('/[^0-9]/', '', $request->login);
+    $otp   = $request->otp;
+    $role  = $request->role;
+
+    // Remove +91 if present
+    if (strlen($login) === 12 && substr($login, 0, 2) === '91') {
+        $login = substr($login, 2);
+    }
+
+    // 🔐 Get OTP from cache
+    $cached = Cache::get('otp_' . $login);
+
+    if (!$cached) {
+        return response()->json([
+            'status' => false,
+            'message' => 'OTP expired or not found'
+        ]);
+    }
+
+    if ($cached['otp'] != $otp) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Invalid OTP'
+        ]);
+    }
+
+    if ($cached['role'] !== $role) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Role mismatch'
+        ]);
+    }
+
+    // ✅ OTP verified — remove from cache
+    Cache::forget('otp_' . $login);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'OTP verified successfully'
+    ]);
+}
 
 
+public function resetPassword(Request $request)
+{
+    $request->validate([
+        'login'    => 'required',
+        'role'     => 'required|in:customer,vendor,supplier',
+        'password' => 'required|min:6'
+    ]);
 
+    $login = preg_replace('/[^0-9]/', '', $request->login);
+    $role  = $request->role;
+    $password = Hash::make($request->password);
+
+    // 🔐 Map role to correct table
+    $tables = [
+        'customer' => 'users',
+        'vendor'   => 'vendor_reg',
+        'supplier' => 'supplier_reg'
+    ];
+
+    if (!isset($tables[$role])) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Invalid role'
+        ]);
+    }
+
+    $table = $tables[$role];
+// dd($table);
+    // 🔐 Check OTP verification from cache
+    // $verifiedKey = 'otp_verified_' . $login;
+
+    // if (!Cache::get($verifiedKey)) {
+    //     return response()->json([
+    //         'status' => false,
+    //         'message' => 'OTP verification required'
+    //     ]);
+    // }
+
+    // ✅ Update password
+    DB::table($table)
+        ->where(function ($q) use ($login) {
+            $q->where('mobile', $login)
+              ->orWhere('email', $login);
+        })
+        ->update([
+            'password' => $password
+        ]);
+
+    // 🔥 Clear verification flag
+    // Cache::forget($verifiedKey);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Password changed successfully'
+    ]);
+}
 }
