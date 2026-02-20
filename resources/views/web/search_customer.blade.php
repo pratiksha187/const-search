@@ -1281,12 +1281,6 @@ body::before{
     });
   });
 
-  /* ===========================
-     ✅ Vendor Filters
-     IMPORTANT: use IDs to match (recommended)
-     - Dropdown value should be ID
-     - Card dataset should store same ID
-  ============================ */
   function applyFilters() {
 
     const selectedCategories = $('.category-check:checked').map((_, el) => el.value).get();

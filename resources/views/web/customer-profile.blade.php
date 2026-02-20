@@ -493,7 +493,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script>
+    window.AGREEMENT_ACCEPTED_AT = @json($agreement_accepted_at);
+</script>
 <script>
 
     // ✅ Customer user id (login check)
@@ -530,27 +532,47 @@
 
         success: function (res) {
 
-            /* ===============================
-               1️⃣ PROFILE COMPLETION CHECK
-            =============================== */
+         
 
-            if (res.profile_incomplete === true) {
+        if (!window.AGREEMENT_ACCEPTED_AT) {
 
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Complete Your Profile',
-                    html: `
-                        Your profile is only <b>${res.profile_percent}%</b> completed.<br>
-                        Please complete at least 60% to unlock leads.
-                    `,
-                    confirmButtonText: 'Complete Now',
-                    confirmButtonColor: '#f25c05'
-                }).then(() => {
-                    window.location.href = "{{ route('vendor.profile') }}";
-                });
+            Swal.fire({
+                icon: 'warning',
+                title: 'Agreement Required',
+                html: `
+                    You must accept the Vendor Agreement
+                    before unlocking leads.
+                `,
+                confirmButtonText: 'View Agreement',
+                confirmButtonColor: '#f25c05'
+            }).then(() => {
+                window.location.href = "{{ route('vendor.agreement') }}";
+            });
 
-                return;
-            }
+            return;
+        }
+
+        /* ===============================
+        2️⃣ PROFILE COMPLETION CHECK
+        ================================ */
+
+        if (res.profile_incomplete === true) {
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Complete Your Profile',
+                html: `
+                    Your profile is only <b>${res.profile_percent}%</b> completed.<br>
+                    Please complete at least 60% to unlock leads.
+                `,
+                confirmButtonText: 'Complete Now',
+                confirmButtonColor: '#f25c05'
+            }).then(() => {
+                window.location.href = "{{ route('vendor.profile') }}";
+            });
+
+            return;
+        }
 
             /* ===============================
                2️⃣ ALREADY UNLOCKED

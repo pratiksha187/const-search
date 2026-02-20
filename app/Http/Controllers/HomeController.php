@@ -1130,6 +1130,7 @@ class HomeController extends Controller
             $customer_data->lead_credit_value = null;
         }
 
+      
         return view('web.customer-profile', compact(
             'customer_data',
             'freeLeadPlatforms',
@@ -1138,7 +1139,11 @@ class HomeController extends Controller
             'vendor_id',
             'notifications',
             'notificationCount'
-        ));
+            
+            
+        ))->with([
+            'agreement_accepted_at' => $vendor->agreement_accepted_at ?? null
+        ]);
     }
 
     public function postsubscription(){
