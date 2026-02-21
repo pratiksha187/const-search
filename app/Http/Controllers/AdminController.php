@@ -24,6 +24,15 @@ class AdminController extends Controller
             )
             ->orderBy('v.created_at', 'desc')
             ->get();
+
+             // Add profile completion percentage
+            $vendors = $vendors->map(function ($vendor) {
+
+                // Call your helper
+                $vendor->profile_percent = \App\Helpers\ProfileCompletionHelper::vendor($vendor);
+
+                return $vendor;
+            });
             // dd($vendors);
         return view('web.vendor_verification', compact('vendors'));
     }

@@ -27,6 +27,7 @@
                     <th>Document Status</th>
                     <th>Documents Uploaded</th>
                     <th>Vendor Added By</th>
+                    <th>Profile %</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -109,7 +110,22 @@
                                 <option value="D" {{ $vendor->vendor_reg_person  == 'D' ? 'selected' : '' }}>D</option>
                                 <option value="S" {{ $vendor->vendor_reg_person  == 'S' ? 'selected' : '' }}>S</option>
                             </select>
-                        </td>`
+                        </td>
+
+                        <td>
+                            @php
+                                $percent = $vendor->profile_percent ?? 0;
+                            @endphp
+
+                            <div class="progress" style="height: 18px;">
+                                <div class="progress-bar 
+                                    {{ $percent >= 80 ? 'bg-success' : ($percent >= 40 ? 'bg-warning' : 'bg-danger') }}"
+                                    role="progressbar"
+                                    style="width: {{ $percent }}%;">
+                                    {{ $percent }}%
+                                </div>
+                            </div>
+                        </td>
                         {{-- ACTION --}}
                         <td>
                             <div class="dropdown">
