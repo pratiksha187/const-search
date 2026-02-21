@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Mail;
+use Twilio\Rest\Client;
+use Illuminate\Support\Facades\Log;
+
 
 class AdminController extends Controller
 {
@@ -483,6 +487,259 @@ public function storePostAgreement(Request $request, $id)
         ->with('success', 'Post Agreement Added Successfully');
 }
 
+// public function sendPostNotification(Request $request)
+// {
+//     $request->validate([
+//         'post_id' => 'required|integer'
+//     ]);
+
+//     $postId = $request->post_id;
+
+//     /* ================= FETCH POST ================= */
+
+//     $post = DB::table('posts')
+//         ->leftJoin('work_types','work_types.id','=','posts.work_type_id')
+//         ->leftJoin('budget_range','budget_range.id','=','posts.budget_id')
+//         ->where('posts.id',$postId)
+//         ->select(
+//             'posts.*',
+//             'work_types.work_type',
+//             'budget_range.budget_range as budget_range_name'
+//         )
+//         ->first();
+
+//     if(!$post){
+//         return response()->json([
+//             'status'=>false,
+//             'message'=>'Post not found'
+//         ]);
+//     }
+
+//     /* ================= FETCH MATCHING VENDORS ================= */
+
+//     $vendors = DB::table('vendor_reg')
+//         ->where('status','approved')
+//         ->where('work_type_id',$post->work_type_id) // match category
+//         ->whereNotNull('mobile')
+//         ->get();
+
+//     if($vendors->isEmpty()){
+//         return response()->json([
+//             'status'=>false,
+//             'message'=>'No vendors found for this category'
+//         ]);
+//     }
+
+//     /* ================= TWILIO CLIENT ================= */
+
+//     $client = new Client(
+//         config('services.twilio.sid'),
+//         config('services.twilio.token')
+//     );
+
+//     $successCount = 0;
+//     $failCount = 0;
+
+//     foreach($vendors as $vendor){
+
+//         /* ================= EMAIL ================= */
+
+//         if(!empty($vendor->email)){
+
+//             try{
+//                 Mail::raw(
+//                     "🚀 New Project Posted on ConstructKaro!\n\n" .
+//                     "Title: {$post->title}\n" .
+//                     "Category: {$post->work_type}\n" .
+//                     "Budget: {$post->budget_range_name}\n\n" .
+//                     "Login to your dashboard to unlock this lead.\n\n" .
+//                     "Regards,\nConstructKaro Team",
+//                     function ($message) use ($vendor) {
+//                         $message->to($vendor->email)
+//                                 ->subject('🚀 New Lead Available - ConstructKaro');
+//                     }
+//                 );
+//             }catch(\Exception $e){
+//                 Log::error("Email error for {$vendor->email}: ".$e->getMessage());
+//             }
+//         }
+
+//         /* ================= WHATSAPP ================= */
+
+//         $mobile = preg_replace('/[^0-9]/','',$vendor->mobile);
+
+//         if(strlen($mobile) == 10){
+//             $mobile = '+91'.$mobile;
+//         }
+
+//         try{
+
+//             $client->messages->create(
+//                 "whatsapp:".$mobile,
+//                 [
+//                     'from' => "whatsapp:" . config('services.twilio.whatsapp_from'),
+//                     'body' =>
+//                         "🚀 *New Lead on ConstructKaro*\n\n".
+//                         "📌 Title: {$post->title}\n".
+//                         "📂 Category: {$post->work_type}\n".
+//                         "💰 Budget: {$post->budget_range_name}\n\n".
+//                         "👉 Login now to check & unlock this lead."
+//                 ]
+//             );
+
+//             $successCount++;
+
+//         }catch(\Exception $e){
+
+//             $failCount++;
+
+//             Log::error("WhatsApp error for {$mobile}: ".$e->getMessage());
+//         }
+//     }
+
+//     return response()->json([
+//         'status'=>true,
+//         'message'=>"Notification process completed",
+//         'total_vendors'=>$vendors->count(),
+//         'success'=>$successCount,
+//         'failed'=>$failCount
+//     ]);
+// }
 
 
+public function sendPostNotification(Request $request)
+{
+    $request->validate([
+        'post_id' => 'required|integer'
+    ]);
+
+    $postId = $request->post_id;
+
+    /* ================= FETCH POST ================= */
+
+    $post = DB::table('posts')
+        ->leftJoin('work_types','work_types.id','=','posts.work_type_id')
+        ->leftJoin('budget_range','budget_range.id','=','posts.budget_id')
+        ->where('posts.id',$postId)
+        ->select(
+            'posts.*',
+            'work_types.work_type',
+            'budget_range.budget_range as budget_range_name'
+        )
+        ->first();
+
+    if(!$post){
+        return response()->json([
+            'status' => false,
+            'message' => 'Post not found'
+        ]);
+    }
+
+    /* ================= FETCH MATCHING VENDORS ================= */
+
+    $vendors = DB::table('vendor_reg')
+        ->where('status','approved')
+        ->where('work_type_id',$post->work_type_id)
+        ->whereNotNull('mobile')
+        ->get();
+
+    if($vendors->isEmpty()){
+        return response()->json([
+            'status' => false,
+            'message' => 'No vendors found for this category'
+        ]);
+    }
+
+    /* ================= TWILIO CLIENT ================= */
+
+    $client = new Client(
+        config('services.twilio.sid'),
+        config('services.twilio.token')
+    );
+
+    /* ================= TRACKING ARRAYS ================= */
+
+    $successEmails = [];
+    $failedEmails = [];
+    $successWhatsApp = [];
+    $failedWhatsApp = [];
+
+    /* ================= LOOP ================= */
+
+    foreach($vendors as $vendor){
+
+        /* ---------- EMAIL SECTION ---------- */
+
+        if(!empty($vendor->email)){
+
+            try{
+                Mail::raw(
+                    "🚀 New Project Posted on ConstructKaro!\n\n" .
+                    "Title: {$post->title}\n" .
+                    "Category: {$post->work_type}\n" .
+                    "Budget: {$post->budget_range_name}\n\n" .
+                    "Login to your dashboard to unlock this lead.\n\n" .
+                    "Regards,\nConstructKaro Team",
+                    function ($message) use ($vendor) {
+                        $message->to($vendor->email)
+                                ->subject('🚀 New Lead Available - ConstructKaro');
+                    }
+                );
+
+                $successEmails[] = $vendor->email;
+
+            } catch(\Exception $e) {
+
+                $failedEmails[] = $vendor->email;
+                Log::error("Email error for {$vendor->email}: ".$e->getMessage());
+            }
+        }
+
+        /* ---------- WHATSAPP SECTION ---------- */
+
+        $mobile = preg_replace('/[^0-9]/','',$vendor->mobile);
+
+        if(strlen($mobile) == 10){
+            $mobile = '+91'.$mobile;
+        }
+
+        try{
+
+            $client->messages->create(
+                "whatsapp:".$mobile,
+                [
+                    'from' => "whatsapp:" . config('services.twilio.whatsapp_from'),
+                    'body' =>
+                        "🚀 *New Lead on ConstructKaro*\n\n".
+                        "📌 Title: {$post->title}\n".
+                        "📂 Category: {$post->work_type}\n".
+                        "💰 Budget: {$post->budget_range_name}\n\n".
+                        "👉 Login now to check & unlock this lead."
+                ]
+            );
+
+            $successWhatsApp[] = $mobile;
+
+        } catch(\Exception $e){
+
+            $failedWhatsApp[] = $mobile;
+            Log::error("WhatsApp error for {$mobile}: ".$e->getMessage());
+        }
+    }
+
+    /* ================= FINAL RESPONSE ================= */
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Notification process completed',
+
+        'total_vendors' => $vendors->count(),
+
+        'emails_sent_successfully' => $successEmails,
+        'emails_failed' => $failedEmails,
+
+        'whatsapp_sent_successfully' => $successWhatsApp,
+        'whatsapp_failed' => $failedWhatsApp,
+    ]);
+}
 }

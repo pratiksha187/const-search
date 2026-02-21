@@ -65,7 +65,7 @@ Route::post('/posts/{id}', [AdminController::class, 'verifyPost'])
 
 
 Route::get('/postverification', [AdminController::class, 'postverification'])->name('postverification');
-
+Route::post('/admin/send-post-notification', [AdminController::class, 'sendPostNotification']);
 
 // Route::get('/get-subtypes/{id}', [HomeController::class, 'getSubtypes']);
 Route::get('/get-project-types/{workType}', [HomeController::class, 'getProjectTypes']);

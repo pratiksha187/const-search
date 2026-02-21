@@ -839,9 +839,9 @@ body::before{
                   data-work-subtype-id="{{ $project->work_subtype_id }}"
                   data-work-subtype="{{ strtolower($project->work_subtype) }}"
                   data-name="{{ strtolower($project->title) }}"
-                  data-state="{{ strtolower($project->statename ?? '') }}"
-                  data-region="{{ strtolower($project->regionname ?? '') }}"
-                  data-city="{{ strtolower($project->cityname ?? '') }}"
+                data-state-id="{{ $project->state }}"
+data-region-id="{{ $project->region }}"
+data-city-id="{{ $project->city }}"
                   data-project-id="{{ $project->id }}">
                   {{-- HEADER --}}
                

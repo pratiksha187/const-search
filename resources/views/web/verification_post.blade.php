@@ -6,6 +6,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     #postModal .modal-body{
         max-height: 70vh;      /* adjust: 60vh / 75vh */
@@ -38,69 +39,92 @@
     </div>
 
     {{-- ================= TABLE ================= --}}
-    <div class="card shadow-sm">
-        <div class="card-body table-responsive">
-            <table id="postverifyTable" class="table table-bordered table-hover align-middle w-100">
-                <thead class="table-light">
-                    <tr>
-                        <th width="60">#</th>
-                        <th>Project</th>
-                        <th>Type</th>
-                        <th>Location</th>
-                        <th>Budget</th>
-                        <th>Status</th>
-                        <th>Agreement Accepted</th>
-                        <th width="120">Action</th>
-                    </tr>
-                </thead>
+   <div class="card shadow-sm">
+    <div class="card-body table-responsive">
+        <table id="postverifyTable" class="table table-bordered table-hover align-middle w-100">
+            <thead class="table-light">
+                <tr>
+                    <th width="60">#</th>
+                    <th>Project</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Budget</th>
+                    <th>Agreement Accepted</th>
+                    <th>Status</th>
+                    <th width="200">Action</th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    @forelse($posts as $i => $post)
-                        <tr>
-                            <td>{{ $posts->firstItem() + $i }}</td>
-                            <td><strong>{{ $post->title }}</strong></td>
-                            <td>{{ $post->work_type_name ?? '-' }}</td>
-                            <td>
-                                {{ $post->statename ?? '-' }},
-                                {{ $post->regionname ?? '-' }},
-                                {{ $post->cityname ?? '-' }}
-                            </td>
-                            <td>{{ $post->budget_range ?? '-' }}</td>
-                             <td> @if(!empty($post->agreement_accepted_at))
-                                    <span class="badge bg-success mt-1">
-                                        ✅ Agreement Accepted
-                                    </span>
-                                @endif</td>
- 
-                            <td>
-                            <td>
-                                @if($post->post_verify == 1)
-                                    <span class="badge bg-success">Verified</span>
-                                @else
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                @endif
-                            </td>
-                            <td>
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-primary"
-                                    onclick='openViewModal(@json($post))'>
-                                    <i class="bi bi-eye"></i> View
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-ops
-                            <td colspan="7" class="text-center text-muted py-4">
-                                No project posts found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+            <tbody>
+                @forelse($posts as $i => $post)
+                    <tr>
+                        <td>{{ $posts->firstItem() + $i }}</td>
+
+                        <td><strong>{{ $post->title }}</strong></td>
+
+                        <td>{{ $post->work_type_name ?? '-' }}</td>
+
+                        <td>
+                            {{ $post->statename ?? '-' }},
+                            {{ $post->regionname ?? '-' }},
+                            {{ $post->cityname ?? '-' }}
+                        </td>
+
+                        <td>{{ $post->budget_range ?? '-' }}</td>
+
+                        {{-- Agreement --}}
+                        <td>
+                            @if(!empty($post->agreement_accepted_at))
+                                <span class="badge bg-success">
+                                    ✅ Accepted
+                                </span>
+                            @else
+                                <span class="badge bg-danger">
+                                    ❌ Not Accepted
+                                </span>
+                            @endif
+                        </td>
+
+                        {{-- Status --}}
+                        <td>
+                            @if($post->post_verify == 1)
+                                <span class="badge bg-success">Verified</span>
+                            @else
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            @endif
+                        </td>
+
+                        {{-- Actions --}}
+                        <td class="d-flex gap-2">
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-primary"
+                                onclick='openViewModal(@json($post))'>
+                                <i class="bi bi-eye"></i>
+                            </button>
+
+                          
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-success"
+                                onclick="sendPostNotification({{ $post->id }})"
+                                {{ $post->post_verify != 1 ? 'disabled' : '' }}>
+                                🚀 Send
+                            </button>
+                        </td>
+                    </tr>
+
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            No project posts found.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
+</div>
 
     {{-- ================= PAGINATION ================= --}}
     <div class="d-flex justify-content-center mt-4">
@@ -243,5 +267,23 @@ $(function () {
     });
 });
 </script>
+<script>
+    function sendPostNotification(postId){
 
+    if(!confirm('Send this post to all vendors?')) return;
+
+    fetch('/admin/send-post-notification', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ post_id: postId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+    });
+}
+</script>
 @endsection
