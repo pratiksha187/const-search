@@ -657,6 +657,8 @@ public function sendPostNotification(Request $request)
         config('services.twilio.token')
     );
 
+    $templateSid = "HXb7c8926c7e0312bf8f05404923e470d5"; // Your approved template SID
+
     /* ================= TRACKING ARRAYS ================= */
 
     $successEmails = [];
@@ -671,7 +673,6 @@ public function sendPostNotification(Request $request)
         /* ---------- EMAIL SECTION ---------- */
 
         if(!empty($vendor->email)){
-
             try{
                 Mail::raw(
                     "🚀 New Project Posted on ConstructKaro!\n\n" .
@@ -688,14 +689,13 @@ public function sendPostNotification(Request $request)
 
                 $successEmails[] = $vendor->email;
 
-            } catch(\Exception $e) {
-
+            } catch(\Exception $e){
                 $failedEmails[] = $vendor->email;
                 Log::error("Email error for {$vendor->email}: ".$e->getMessage());
             }
         }
 
-        /* ---------- WHATSAPP SECTION ---------- */
+        /* ---------- WHATSAPP SECTION (TEMPLATE BASED) ---------- */
 
         $mobile = preg_replace('/[^0-9]/','',$vendor->mobile);
 
@@ -708,13 +708,15 @@ public function sendPostNotification(Request $request)
             $client->messages->create(
                 "whatsapp:".$mobile,
                 [
-                    'from' => "whatsapp:" . config('services.twilio.whatsapp_from'),
-                    'body' =>
-                        "🚀 *New Lead on ConstructKaro*\n\n".
-                        "📌 Title: {$post->title}\n".
-                        "📂 Category: {$post->work_type}\n".
-                        "💰 Budget: {$post->budget_range_name}\n\n".
-                        "👉 Login now to check & unlock this lead."
+                    "from" => "whatsapp:" . config('services.twilio.whatsapp_from'),
+                    "content_sid" => $templateSid,
+                    "content_variables" => json_encode([
+                        "1" => $vendor->name ?? 'Vendor',
+                        "2" => $post->title,
+                        "3" => $post->work_type,
+                        "4" => $post->budget_range_name,
+                        "5" => "India"
+                    ])
                 ]
             );
 
@@ -732,14 +734,30 @@ public function sendPostNotification(Request $request)
     return response()->json([
         'status' => true,
         'message' => 'Notification process completed',
-
         'total_vendors' => $vendors->count(),
-
         'emails_sent_successfully' => $successEmails,
         'emails_failed' => $failedEmails,
-
         'whatsapp_sent_successfully' => $successWhatsApp,
         'whatsapp_failed' => $failedWhatsApp,
+    ]);
+}
+
+public function updateaddedby(Request $request)
+{
+    $request->validate([
+        'vendor_id' => 'required|integer',
+        'vendor_reg_person' => 'nullable|in:D,S'
+    ]);
+
+    DB::table('vendor_reg')
+        ->where('id', $request->vendor_id)
+        ->update([
+            'vendor_reg_person' => $request->vendor_reg_person
+        ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Vendor type updated successfully'
     ]);
 }
 }

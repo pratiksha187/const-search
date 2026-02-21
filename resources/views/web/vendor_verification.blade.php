@@ -25,7 +25,8 @@
                     <th>Contact</th>
                     <th>Vendor Status</th>
                     <th>Document Status</th>
-                      <th>Documents Uploaded</th>
+                    <th>Documents Uploaded</th>
+                    <th>Vendor Added By</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -101,7 +102,14 @@
                         @endif
 
                         </td>
-
+                        <td>
+                            <select class="form-select form-select-sm vendor-type-select"
+                                    data-id="{{ $vendor->id }}">
+                                <option value="">Select</option>
+                                <option value="D" {{ $vendor->vendor_reg_person  == 'D' ? 'selected' : '' }}>D</option>
+                                <option value="S" {{ $vendor->vendor_reg_person  == 'S' ? 'selected' : '' }}>S</option>
+                            </select>
+                        </td>`
                         {{-- ACTION --}}
                         <td>
                             <div class="dropdown">
@@ -267,6 +275,35 @@ $(function () {
                 form.submit();
             }
         });
+    });
+
+});
+
+
+$(document).on('change', '.vendor-type-select', function() {
+
+    let vendorId = $(this).data('id');
+    let vendor_reg_person = $(this).val();
+
+    $.ajax({
+        url: "{{ route('admin.vendor.addedby') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            vendor_id: vendorId,
+            vendor_reg_person: vendor_reg_person
+        },
+        success: function(response) {
+            if(response.status){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: response.message,
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            }
+        }
     });
 
 });
