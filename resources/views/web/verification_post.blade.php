@@ -104,13 +104,22 @@
                             </button>
 
                           
-                            <button
+                            <!-- <button
                                 type="button"
                                 class="btn btn-sm btn-success"
                                 onclick="sendPostNotification({{ $post->id }})"
                                 {{ $post->post_verify != 1 ? 'disabled' : '' }}>
                                 🚀 Send
-                            </button>
+                            </button> -->
+
+                            <button
+    type="button"
+    id="sendBtn-{{ $post->id }}"
+    class="btn btn-sm btn-success"
+    onclick="sendPostNotification({{ $post->id }})"
+    {{ $post->post_verify != 1 ? 'disabled' : '' }}>
+    🚀 Send
+</button>
                         </td>
                     </tr>
 
@@ -267,7 +276,7 @@ $(function () {
     });
 });
 </script>
-<script>
+<!-- <script>
     function sendPostNotification(postId){
 
     if(!confirm('Send this post to all vendors?')) return;
@@ -283,6 +292,40 @@ $(function () {
     .then(res => res.json())
     .then(data => {
         alert(data.message);
+    });
+}
+</script> -->
+<script>
+function sendPostNotification(postId){
+
+    if(!confirm('Send this post to all vendors?')) return;
+
+    const btn = document.getElementById('sendBtn-' + postId);
+
+    // 🔥 Disable button immediately
+    btn.disabled = true;
+    btn.innerText = "Sending...";
+
+    fetch('/admin/send-post-notification', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({ post_id: postId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+
+        // Optional: keep disabled OR re-enable
+        btn.innerText = "✅ Sent";
+    })
+    .catch(error => {
+        console.error(error);
+        btn.disabled = false;
+        btn.innerText = "🚀 Send";
+        alert("Something went wrong!");
     });
 }
 </script>
