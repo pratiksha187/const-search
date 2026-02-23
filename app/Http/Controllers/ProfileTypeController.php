@@ -8,33 +8,23 @@ use Illuminate\Http\Request;
 
 class ProfileTypeController extends Controller
 {
-    // public function index()
-    // {
-    //     $profiletypes = ProfileType::with('subcategory')
-    //         ->orderBy('id','desc')
-    //         ->paginate(20);
-
-    //     return view(
-    //         'web.master.profiletype-list',
-    //         compact('profiletypes')
-    //     );
-    // }
+   
     public function index(Request $request)
-{
-    $search = $request->search;
+    {
+        $search = $request->search;
 
-    $profiletypes = ProfileType::with('subcategory')
-        ->when($search, function ($q) use ($search) {
-            $q->where('type', 'like', "%{$search}%")
-              ->orWhereHas('subcategory', function ($s) use ($search) {
-                  $s->where('material_subproduct', 'like', "%{$search}%");
-              });
-        })
-        ->orderBy('id','desc')
-        ->paginate(20);
+        $profiletypes = ProfileType::with('subcategory')
+            ->when($search, function ($q) use ($search) {
+                $q->where('type', 'like', "%{$search}%")
+                ->orWhereHas('subcategory', function ($s) use ($search) {
+                    $s->where('material_subproduct', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('id','desc')
+            ->paginate(20);
 
-    return view('web.master.profiletype-list', compact('profiletypes'));
-}
+        return view('web.master.profiletype-list', compact('profiletypes'));
+    }
 
     public function create()
     {

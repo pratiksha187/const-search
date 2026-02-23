@@ -987,16 +987,7 @@ public function resetPassword(Request $request)
     }
 
     $table = $tables[$role];
-// dd($table);
-    // 🔐 Check OTP verification from cache
-    // $verifiedKey = 'otp_verified_' . $login;
 
-    // if (!Cache::get($verifiedKey)) {
-    //     return response()->json([
-    //         'status' => false,
-    //         'message' => 'OTP verification required'
-    //     ]);
-    // }
 
     // ✅ Update password
     DB::table($table)

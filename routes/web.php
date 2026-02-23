@@ -473,6 +473,8 @@ Route::post('/admin/vendors/vendor-approve/{id}',
     Route::get('/admin/post-agreement-list', [AdminController::class, 'postAgreementList'])
     ->name('admin.post.agreement.list');
 
+    Route::put('/admin/vendors/vendor-reject/{id}', [AdminController::class, 'vendorReject']);
+
     Route::get('/admin/post-agreement/{id}', [AdminController::class, 'showPostAgreement'])
         ->name('admin.post.agreement');
 

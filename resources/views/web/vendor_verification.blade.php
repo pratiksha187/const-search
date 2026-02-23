@@ -144,7 +144,7 @@
                                     </li>
 
                                     {{-- 1️⃣ FIRST: Vendor Approve --}}
-                                    @if($vendor->status != 'approved')
+                                    <!-- @if($vendor->status != 'approved')
                                         <li>
                                             <button type="button"
                                                     class="dropdown-item text-primary"
@@ -154,6 +154,34 @@
                                                 Accept Vendor
                                             </button>
                                         </li>
+                                    @endif -->
+                                    {{-- 1️⃣ Vendor Approve / Reject --}}
+                                    @if($vendor->status != 'approved')
+
+                                        {{-- Accept Vendor --}}
+                                        <li>
+                                            <button type="button"
+                                                    class="dropdown-item text-primary"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#acceptVendorModal"
+                                                    data-id="{{ $vendor->id }}">
+                                                Accept Vendor
+                                            </button>
+                                        </li>
+
+                                    @else
+
+                                        {{-- Reject Vendor --}}
+                                        <li>
+                                            <button type="button"
+                                                    class="dropdown-item text-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#rejectVendorModal"
+                                                    data-id="{{ $vendor->id }}">
+                                                Reject Vendor
+                                            </button>
+                                        </li>
+
                                     @endif
 
                                     {{-- 2️⃣ THEN: Document Approve --}}
@@ -221,6 +249,35 @@
     </div>
 </div>
 
+<!-- Reject Vendor Modal -->
+<div class="modal fade" id="rejectVendorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form method="POST" id="rejectVendorForm">
+            @csrf
+            @method('PUT')
+
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Reject Vendor</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    Are you sure you want to reject this vendor?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        Yes, Reject
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 {{-- Document Modal --}}
 <div class="modal fade" id="acceptDocumentModal">
@@ -268,6 +325,12 @@ $(function () {
         let id = $(event.relatedTarget).data('id');
         $('#acceptVendorForm')
             .attr('action', '/admin/vendors/vendor-approve/' + id);
+    });
+
+    $('#rejectVendorModal').on('show.bs.modal', function (event) {
+        let id = $(event.relatedTarget).data('id');
+        $('#rejectVendorForm')
+            .attr('action', '/admin/vendors/vendor-reject/' + id);
     });
 
     $('#acceptDocumentModal').on('show.bs.modal', function (event) {

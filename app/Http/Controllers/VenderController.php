@@ -181,7 +181,7 @@ class VenderController extends Controller
             )
             ->where('v.id', $id)
             ->first();
-
+ 
         // 2️⃣ Safety check
         if (!$vendor_data_byid) {
             abort(404, 'Vendor not found');
@@ -284,55 +284,6 @@ class VenderController extends Controller
     }
 
 
-    // public function checkLeadBalance(Request $request)
-    // {
-    //     $vendorId = session('vendor_id');
-    //     $vendor = DB::table('vendor_reg')
-    //                 ->where('id', $vendorId)
-    //                 ->first();
-    //     $profilePercent = ProfileCompletionHelper::vendor($vendor);
-    //     // dd( $profilePercent ); 
-    //     $custId   = $request->customer_id;
-    //     //    dd( $custId ); 
-    //     /* ===============================
-    //     1️⃣ CHECK ALREADY ENQUIRED
-    //     ================================ */
-    //     $already = DB::table('vendor_interests')
-    //         ->where('vendor_id', $vendorId)
-    //         ->where('customer_id', $custId)
-    //         ->exists();
-       
-    //     if ($already) {
-
-    //         $customer = DB::table('users')->where('id', $custId)->first();
-
-    //         return response()->json([
-    //             'already_exists'  => true,
-    //             'balance'         => null,
-    //             'customer_mobile' => $customer->mobile ?? '',
-    //             'customer_email'  => $customer->email ?? ''
-    //         ]);
-    //     }
-
-    //     /* ===============================
-    //     2️⃣ CHECK LEAD BALANCE
-    //     ================================ */
-    //     $vendor = DB::table('vendor_reg')
-    //         ->where('id', $vendorId)
-    //         ->first();
-
-    //     if (!$vendor) {
-    //         return response()->json([
-    //             'balance' => 0,
-    //             'already_exists' => false
-    //         ]);
-    //     }
-
-    //     return response()->json([
-    //         'already_exists' => false,
-    //         'balance' => $vendor->lead_balance
-    //     ]);
-    // }
 
     public function claimFreeLead(Request $request)
     {
@@ -368,10 +319,7 @@ class VenderController extends Controller
     public function vendorleadhistory(Request $request){
         $vendor_id  = session('vendor_id');
         $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-        // $get_lead_data = DB::table('vendor_interests')
-        //                 ->where('vendor_id', $vendorId)->get();
-        // // dd($get_lead_data );
-        // return view('web.vendorleadhistory');
+       
         $vendIds = DB::table('vendor_reg')
                     ->where('id', $vendor_id)
                     ->pluck('id');
@@ -395,7 +343,7 @@ class VenderController extends Controller
                 $q->where(function ($sub) use ($search) {
                     $sub->where('u.name', 'like', "%{$search}%")
                         ->orWhere('vi.action_status', 'like', "%{$search}%")
-                        ->orWhere('p.title', 'like', "%{$search}%"); // optional search on post title
+                        ->orWhere('p.title', 'like', "%{$search}%"); 
                 });
             })
 

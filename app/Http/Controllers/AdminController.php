@@ -496,6 +496,7 @@ public function storePostAgreement(Request $request, $id)
         ->with('success', 'Post Agreement Added Successfully');
 }
 
+
 public function sendPostNotification(Request $request)
 {
     $request->validate([
@@ -509,14 +510,19 @@ public function sendPostNotification(Request $request)
     $post = DB::table('posts')
         ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
         ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+          ->leftJoin('region', 'region.id', '=', 'posts.region')
+            ->leftJoin('city', 'city.id', '=', 'posts.city')
+            ->leftJoin('state', 'state.id', '=', 'posts.state')
         ->where('posts.id', $postId)
         ->select(
             'posts.*',
-            'work_types.work_type',
+            'work_types.work_type',   'state.name as statename',
+            'region.name as regionname',
+            'city.name as cityname',
             'budget_range.budget_range as budget_range_name'
         )
         ->first();
-
+        // dd($post);
     if (!$post) {
         return response()->json([
             'status' => false,
@@ -543,8 +549,8 @@ public function sendPostNotification(Request $request)
 
     $twilioSid     = config('services.twilio.sid');
     $twilioToken   = config('services.twilio.token');
-    $whatsappFrom  = config('services.twilio.whatsapp_from'); 
-    $templateSid   = "HX9ddb815da92a7e39359e8bfcaeb7554c"; // Your template SID
+    $whatsappFrom  = config('services.twilio.whatsapp_from');
+    $templateSid   = "HX9ddb815da92a7e39359e8bfcaeb7554c";
 
     $client = new Client($twilioSid, $twilioToken);
 
@@ -555,29 +561,51 @@ public function sendPostNotification(Request $request)
     $successWhatsApp = [];
     $failedWhatsApp = [];
 
-    /* ================= LOOP THROUGH VENDORS ================= */
+    /* ================= LOOP ================= */
 
     foreach ($vendors as $vendor) {
-// dd($vendors);
-        /* =======================================================
+
+        /* ===================================================
            EMAIL SECTION
-        ======================================================= */
+        =================================================== */
 
         if (!empty($vendor->email)) {
+
             try {
 
-                Mail::raw(
-                    "🚀 New Project Posted on ConstructKaro!\n\n" .
-                    "Title: {$post->title}\n" .
-                    "Category: {$post->work_type}\n" .
-                    "Budget: {$post->budget_range_name}\n\n" .
-                    "Login to your dashboard to unlock this lead.\n\n" .
-                    "Regards,\nConstructKaro Team",
-                    function ($message) use ($vendor) {
-                        $message->to($vendor->email)
-                                ->subject('🚀 New Lead Available - ConstructKaro');
-                    }
-                );
+                $emailBody =
+                    "Dear Sir / Madam,\n\n" .
+                    "Greetings from Constructkaro.\n\n" .
+
+                    "We are pleased to inform you that a new project opportunity relevant to your profile has been received on our platform. " .
+                    "Based on your expertise and service category, we are sharing the basic project details below for your review and consideration.\n\n" .
+
+                    "Project Details:\n" .
+                    "• Project Title: {$post->title}\n" .
+                    "• Location: {$post->statename}\n" ."{$post->regionname}"."{$post->cityname}".
+                    "• Required Service: {$post->work_type}\n\n" .
+
+                    "If you are interested in executing this project, kindly follow the steps below:\n\n" .
+
+                    "1. Visit our website and log in as a Vendor.\n" .
+                    "2. Open the project and review the complete details.\n" .
+                    "3. 150 credit points are provided to you at the time of your first registration, which can be used to unlock project contact details.\n" .
+                    "4. Click on 'Show Interest & Unlock Contact'.\n" .
+                    "5. After clicking, the contact number will be visible.\n" .
+                    "6. Please contact the concerned person directly for further discussion.\n\n" .
+
+                    "Kindly review the project and proceed accordingly.\n\n" .
+
+                    "For any support or assistance, please feel free to contact us.\n\n" .
+
+                    "Warm regards,\n" .
+                    "Constructkaro\n" .
+                    "📞 7385882657 / 9960614459";
+
+                Mail::raw($emailBody, function ($message) use ($vendor) {
+                    $message->to($vendor->email)
+                            ->subject('New Project Opportunity from Constructkaro');
+                });
 
                 $successEmails[] = $vendor->email;
 
@@ -592,7 +620,9 @@ public function sendPostNotification(Request $request)
             }
         }
 
-      
+        /* ===================================================
+           WHATSAPP SECTION
+        =================================================== */
 
         if (!empty($vendor->mobile)) {
 
@@ -616,7 +646,7 @@ public function sendPostNotification(Request $request)
                 $client->messages->create(
                     "whatsapp:" . $mobile,
                     [
-                        "from" => "whatsapp:" . config('services.twilio.whatsapp_from'),
+                        "from" => "whatsapp:" . $whatsappFrom,
                         "contentSid" => $templateSid,
                         "contentVariables" => json_encode($variables, JSON_UNESCAPED_UNICODE)
                     ]
@@ -649,142 +679,6 @@ public function sendPostNotification(Request $request)
     ]);
 }
 
-
-// public function sendPostNotification(Request $request)
-// {
-//     $request->validate([
-//         'post_id' => 'required|integer'
-//     ]);
-
-//     $postId = $request->post_id;
-
-//     /* ================= FETCH POST ================= */
-
-//     $post = DB::table('posts')
-//         ->leftJoin('work_types','work_types.id','=','posts.work_type_id')
-//         ->leftJoin('budget_range','budget_range.id','=','posts.budget_id')
-//         ->where('posts.id',$postId)
-//         ->select(
-//             'posts.*',
-//             'work_types.work_type',
-//             'budget_range.budget_range as budget_range_name'
-//         )
-//         ->first();
-
-//     if(!$post){
-//         return response()->json([
-//             'status' => false,
-//             'message' => 'Post not found'
-//         ]);
-//     }
-
-//     /* ================= FETCH MATCHING VENDORS ================= */
-
-//     $vendors = DB::table('vendor_reg')
-//         ->where('status','approved')
-//         ->where('work_type_id',$post->work_type_id)
-//         ->whereNotNull('mobile')
-//         ->get();
-
-//     if($vendors->isEmpty()){
-//         return response()->json([
-//             'status' => false,
-//             'message' => 'No vendors found for this category'
-//         ]);
-//     }
-
-//     /* ================= TWILIO CLIENT ================= */
-
-//     $client = new Client(
-//         config('services.twilio.sid'),
-//         config('services.twilio.token')
-//     );
-
-//     $templateSid = "HXb7c8926c7e0312bf8f05404923e470d5"; // Your approved template SID
-
-//     /* ================= TRACKING ARRAYS ================= */
-
-//     $successEmails = [];
-//     $failedEmails = [];
-//     $successWhatsApp = [];
-//     $failedWhatsApp = [];
-
-//     /* ================= LOOP ================= */
-
-//     foreach($vendors as $vendor){
-
-//         /* ---------- EMAIL SECTION ---------- */
-
-//         if(!empty($vendor->email)){
-//             try{
-//                 Mail::raw(
-//                     "🚀 New Project Posted on ConstructKaro!\n\n" .
-//                     "Title: {$post->title}\n" .
-//                     "Category: {$post->work_type}\n" .
-//                     "Budget: {$post->budget_range_name}\n\n" .
-//                     "Login to your dashboard to unlock this lead.\n\n" .
-//                     "Regards,\nConstructKaro Team",
-//                     function ($message) use ($vendor) {
-//                         $message->to($vendor->email)
-//                                 ->subject('🚀 New Lead Available - ConstructKaro');
-//                     }
-//                 );
-
-//                 $successEmails[] = $vendor->email;
-
-//             } catch(\Exception $e){
-//                 $failedEmails[] = $vendor->email;
-//                 Log::error("Email error for {$vendor->email}: ".$e->getMessage());
-//             }
-//         }
-
-//         /* ---------- WHATSAPP SECTION (TEMPLATE BASED) ---------- */
-
-//         $mobile = preg_replace('/[^0-9]/','',$vendor->mobile);
-
-//         if(strlen($mobile) == 10){
-//             $mobile = '+91'.$mobile;
-//         }
-
-//         try{
-
-//             $client->messages->create(
-//                 "whatsapp:".$mobile,
-//                 [
-//                     "from" => "whatsapp:" . config('services.twilio.whatsapp_from'),
-//                     "content_sid" => $templateSid,
-//                     "content_variables" => json_encode([
-//                         "1" => $vendor->name ?? 'Vendor',
-//                         "2" => $post->title,
-//                         "3" => $post->work_type,
-//                         "4" => $post->budget_range_name,
-//                         "5" => "India"
-//                     ])
-//                 ]
-//             );
-
-//             $successWhatsApp[] = $mobile;
-
-//         } catch(\Exception $e){
-
-//             $failedWhatsApp[] = $mobile;
-//             Log::error("WhatsApp error for {$mobile}: ".$e->getMessage());
-//         }
-//     }
-
-//     /* ================= FINAL RESPONSE ================= */
-
-//     return response()->json([
-//         'status' => true,
-//         'message' => 'Notification process completed',
-//         'total_vendors' => $vendors->count(),
-//         'emails_sent_successfully' => $successEmails,
-//         'emails_failed' => $failedEmails,
-//         'whatsapp_sent_successfully' => $successWhatsApp,
-//         'whatsapp_failed' => $failedWhatsApp,
-//     ]);
-// }
-
 public function updateaddedby(Request $request)
 {
     $request->validate([
@@ -802,5 +696,17 @@ public function updateaddedby(Request $request)
         'status' => true,
         'message' => 'Vendor type updated successfully'
     ]);
+}
+
+
+public function vendorReject($id)
+{
+    DB::table('vendor_reg')
+        ->where('id', $id)
+        ->update([
+            'status' => 'pending'
+        ]);
+
+    return redirect()->back()->with('success', 'Vendor rejected successfully.');
 }
 }
