@@ -550,7 +550,7 @@ public function sendPostNotification(Request $request)
     $twilioSid     = config('services.twilio.sid');
     $twilioToken   = config('services.twilio.token');
     $whatsappFrom  = config('services.twilio.whatsapp_from');
-    $templateSid   = "HX9ddb815da92a7e39359e8bfcaeb7554c";
+    $templateSid   = "HXe82078a69230e3cd0b8d3b18d01d26c5";
 
     $client = new Client($twilioSid, $twilioToken);
 
@@ -636,11 +636,24 @@ public function sendPostNotification(Request $request)
 
             try {
 
+                // $variables = [
+                //     "1" => (string) ($vendor->name ?? 'Vendor'),
+                //     "2" => (string) ($post->title ?? 'New Project'),
+                //     "3" => (string) ($post->work_type ?? 'Construction'),
+                //     "4" => (string) ($post->budget_range_name ?? 'Not Mentioned')
+                // ];
+
+              $location = collect([
+                    $post->statename ?? null,
+                    $post->regionname ?? null,
+                    $post->cityname ?? null,
+                ])->filter()->implode(', ');
+
                 $variables = [
                     "1" => (string) ($vendor->name ?? 'Vendor'),
                     "2" => (string) ($post->title ?? 'New Project'),
-                    "3" => (string) ($post->work_type ?? 'Construction'),
-                    "4" => (string) ($post->budget_range_name ?? 'Not Mentioned')
+                    "3" => (string) (!empty($location) ? $location : 'Not Mentioned'),
+                    "4" => (string) ($post->work_type ?? 'Construction')
                 ];
 
                 $client->messages->create(
