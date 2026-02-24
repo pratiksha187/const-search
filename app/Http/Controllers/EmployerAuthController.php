@@ -24,7 +24,7 @@ class EmployerAuthController extends Controller
         $employer = DB::table('employers')
             ->where('email', $request->email)
             ->first();
-
+        // dd($employer);
         if (!$employer) {
             return back()->with('error', 'Invalid email or password.')->withInput();
         }

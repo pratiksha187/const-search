@@ -243,7 +243,7 @@
                 </a>
                 <div class="menu-dd-menu" id="marketplaceDropdown">
                     <a href="{{ route('search_customer') }}">Lead Marketplace</a>
-                    <a href="{{ route('supplierserch') }}">Search Suppliers</a>
+                    <!-- <a href="{{ route('supplierserch') }}">Search Suppliers</a> -->
                 </div>
             </div>
 
@@ -273,7 +273,7 @@
 <div class="mobile-menu" id="mobileMenu">
     <a href="{{ route('vendordashboard') }}">Dashboard</a>
     <a href="{{ route('search_customer') }}">Lead Marketplace</a>
-    <a href="{{ route('supplierserch') }}">Search Suppliers</a>
+    <!-- <a href="{{ route('supplierserch') }}">Search Suppliers</a> -->
     <a href="{{ route('vendorsubscription') }}">Credit Points</a>
     <a href="{{ route('vendor.agreement') }}">Agreement</a>
 </div>

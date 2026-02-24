@@ -1057,7 +1057,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     <span class="trusted-pill"><i class="bi bi-building"></i> <strong>{{$vendors}}+ Vendors</strong></span>
                     <span class="trusted-pill"><i class="bi bi-geo-alt"></i> <strong> {{$cities}}+ Cities</strong></span>
                     <span class="trusted-pill"><i class="bi bi-clipboard-check"></i> <strong>{{$posts}}+ Projects</strong></span>
-                    <span class="trusted-pill"><i class="bi bi-award-fill"></i><strong>{{$supplier}}+ Supplier</strong></span>
+                    <!-- <span class="trusted-pill"><i class="bi bi-award-fill"></i><strong>{{$supplier}}+ Supplier</strong></span> -->
                     
                 </div>
 
@@ -1093,7 +1093,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
         </a>
 
         <!-- FIND SUPPLIERS -->
-        <a href="{{ route('supplierserch') }}" class="text-decoration-none">
+        <!-- <a href="{{ route('supplierserch') }}" class="text-decoration-none">
             <div class="overlap-card">
                 <div class="card-icon icon-orange">
                     <i class="bi bi-geo-alt"></i>
@@ -1106,7 +1106,7 @@ Toast.fire({ icon: 'success', title: "{{ session('success') }}" });
                     </small>
                 </div>
             </div>
-        </a>
+        </a> -->
 
         <!-- FIND CUSTOMER -->
         <a href="{{ route('search_customer') }}" class="text-decoration-none">

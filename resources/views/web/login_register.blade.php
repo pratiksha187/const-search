@@ -118,7 +118,7 @@
     <div class="role-switch">
         <div class="role-box active" data-role="customer">👤 Customer</div>
         <div class="role-box" data-role="vendor">💼 Vendor</div>
-        <div class="role-box" data-role="supplier">🚚 Supplier</div>
+        <!-- <div class="role-box" data-role="supplier">🚚 Supplier</div> -->
     </div>
 
     <input type="hidden" id="selected-role" value="customer">

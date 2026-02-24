@@ -10,7 +10,10 @@
 <div class="container-fluid mt-4">
 
     <h4 class="fw-bold mb-4">Vendor Management</h4>
-
+<a href="{{ route('vendors.export') }}" 
+   class="btn btn-success mb-3">
+    Download Excel
+</a>
     <div class="card shadow-lg border-0 rounded-4">
         <div class="card-body">
 
@@ -143,18 +146,7 @@
                                         </a>
                                     </li>
 
-                                    {{-- 1️⃣ FIRST: Vendor Approve --}}
-                                    <!-- @if($vendor->status != 'approved')
-                                        <li>
-                                            <button type="button"
-                                                    class="dropdown-item text-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#acceptVendorModal"
-                                                    data-id="{{ $vendor->id }}">
-                                                Accept Vendor
-                                            </button>
-                                        </li>
-                                    @endif -->
+                                   
                                     {{-- 1️⃣ Vendor Approve / Reject --}}
                                     @if($vendor->status != 'approved')
 

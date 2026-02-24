@@ -28,6 +28,9 @@ use App\Http\Controllers\EmployerController;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\EmployerAuthController;
 
+use App\Exports\VendorsExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
@@ -388,7 +391,7 @@ Route::post('/admin/vendor/agreement/store/{id}',
     [AdminController::class, 'approveDocument'])
     ->name('admin.vendors.document');
 
-Route::post('/admin/vendors/vendor-approve/{id}',
+    Route::post('/admin/vendors/vendor-approve/{id}',
     [AdminController::class, 'approveVendor'])
     ->name('admin.vendors.vendor');
 
@@ -507,17 +510,23 @@ Route::post('/admin/vendors/vendor-approve/{id}',
 
         Route::get('vendor-network', [ERPController::class, 'vendor_network'])->name('vendor_network');
         Route::get('user-roles', [ERPController::class, 'user_roles'])->name('user_roles');
-        
+    //       Route::get('/admin/vendors/export', function () {
+    // return Excel::download(new VendorsExport, 'vendors.xlsx');
+    // })->name('vendors.export');
+    
 
     });
+
+    
 
     Route::post('/admin/vendors/addedby', [AdminController::class, 'updateaddedby'])
     ->name('admin.vendor.addedby');
 
+  
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "9167981732";
+    $password = "123456789";
     $hash = Hash::make($password);
 
     return $hash; 
@@ -526,3 +535,7 @@ Route::post('/admin/vendors/vendor-approve/{id}',
 
 Route::get('erp', [ERPController::class, 'erp'])->name('erp');
 
+
+Route::get('/vendors/export', function () {
+    return Excel::download(new VendorsExport, 'vendors.xlsx');
+})->name('vendors.export');

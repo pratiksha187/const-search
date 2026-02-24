@@ -135,30 +135,7 @@ public function register(Request $request)
     $uid = null;
     $status = 'pending';
 
-    // if ($request->role === 'vendor') {
-
-    //     $vendorId = DB::table('vendor_reg')->insertGetId([
-    //         'name'          => $request->name,
-    //         'mobile'        => $request->mobile,
-    //         'email'         => $request->email,
-    //         'business_name' => $request->business_name ?? null,
-    //         'gst_number'    => $request->gst_number ?? null,
-    //         'status'        => $status,
-    //         'password'      => Hash::make($request->password),
-    //         'lead_balance'  => 150,
-    //         'created_at'    => now(),
-    //         'updated_at'    => now()
-    //     ]);
-
-    //     $uid = 'CKV-' . str_pad($vendorId, 6, '0', STR_PAD_LEFT);
-
-    //     DB::table('vendor_reg')->where('id', $vendorId)->update([
-    //         'vendor_uid' => $uid,
-    //         'updated_at' => now(),
-    //     ]);
-
-    //     Session::put('vendor_id', $vendorId);
-    // }
+   
 if ($request->role === 'vendor') {
 
     $expiryDate = now()->addDays(45);

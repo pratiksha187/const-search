@@ -21,9 +21,6 @@ class ExpireVendorCredits extends Command
                 'updated_at'   => now()
             ]);
 
-
-            
-
         $this->info("Expired credits updated for {$affected} vendors.");
     }
 }
