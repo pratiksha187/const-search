@@ -26,10 +26,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\EmployerController;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\EmployerAuthController;
 
 use App\Exports\VendorsExport;
 use Maatwebsite\Excel\Facades\Excel;
+
+use App\Http\Controllers\EmployerUserController;
 
 
 
@@ -498,22 +501,52 @@ Route::post('/admin/vendor/agreement/store/{id}',
     Route::post('/employer/login', [EmployerAuthController::class, 'login'])->name('employer.login.post');
     Route::post('/employer/logout', [EmployerAuthController::class, 'logout'])->name('employer.logout');
 
-    // Protected routes (Employer)
-    Route::middleware(['employer.auth'])->group(function () {
+    // Route::middleware(['employer.auth'])->group(function () {
+    Route::middleware(['employer.auth', 'switch.db','tenant'])->group(function () {
+
         Route::get('/employer/dashboard', function () {
             return view('web.employers.dashboard');
         })->name('employers.dashboard');
 
+        Route::get('/employer/projects/{id}', 
+            [ERPController::class, 'showProject']
+        )->name('employer.projects.show');
+
+        Route::post('/send-selected-mail', 
+            [ERPController::class, 'sendSelectedMail']
+        )->name('employer.projects.sendSelectedMail');
+        
         Route::get('erp-project', [ERPController::class, 'erpproject'])->name('erpproject');
         Route::get('boq-rfq-bids', [ERPController::class, 'boq_rfq_bids'])->name('boq_rfq_bids');
         Route::get('po-grm-invoice', [ERPController::class, 'po_grm_invoice'])->name('po_grm_invoice');
 
         Route::get('vendor-network', [ERPController::class, 'vendor_network'])->name('vendor_network');
-        Route::get('user-roles', [ERPController::class, 'user_roles'])->name('user_roles');
-    //       Route::get('/admin/vendors/export', function () {
-    // return Excel::download(new VendorsExport, 'vendors.xlsx');
-    // })->name('vendors.export');
-    
+        Route::get('user-roles', [EmployerUserController::class, 'user_roles'])->name('user_roles');
+   
+        Route::get('/employer/users', [EmployerUserController::class, 'index'])
+        ->name('employer.users');
+
+        Route::post('/employer/users/store', [EmployerUserController::class, 'store'])
+            ->name('employer.users.store');
+
+        Route::post('/employer/users/update/{id}', [EmployerUserController::class, 'update'])
+            ->name('employer.users.update');
+
+        Route::delete('/employer/users/delete/{id}', [EmployerUserController::class, 'destroy'])
+                ->name('employer.users.delete');
+
+     Route::get('/company/users', [CompanyUserController::class, 'index']);
+
+     Route::post('/company/users/update/{id}', 
+        [CompanyUserController::class, 'update'])
+        ->name('employer.users.update');
+    Route::post('/company/users/store', [CompanyUserController::class, 'store']);
+    Route::delete('/company/users/delete/{id}', [CompanyUserController::class, 'destroy']);
+
+
+    Route::post('/save-project-details', 
+        [ERPController::class, 'storeerpproject']
+    )->name('save.project.details');
 
     });
 
@@ -534,6 +567,7 @@ Route::post('/admin/vendor/agreement/store/{id}',
 
 
 Route::get('erp', [ERPController::class, 'erp'])->name('erp');
+
 
 
 Route::get('/vendors/export', function () {

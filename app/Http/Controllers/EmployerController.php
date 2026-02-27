@@ -66,11 +66,12 @@ class EmployerController extends Controller
 
             $employer = Employer::create($validated);
 
-            // ✅ create db + all tables (NO migrations)
             $tenantSql->provision($dbName);
 
-            // ✅ insert first admin user inside tenant DB
+            // Switch DB
             $tenantSql->switchTenantDb($dbName);
+
+            // logger(DB::connection('tenant')->getDatabaseName());
             DB::connection('tenant')->table('users')->insert([
                 'name'       => $validated['name'],
                 'email'      => $validated['email'],
@@ -92,6 +93,18 @@ class EmployerController extends Controller
             return back()->withInput()->with('error', $e->getMessage());
         }
     }
+public function switchTenantDb(string $dbName): void
+{
+    // Set DB name dynamically
+    Config::set('database.connections.tenant.database', $dbName);
+
+    // Forget old connection
+    DB::purge('tenant');
+
+    // Reconnect with new DB
+    DB::reconnect('tenant');
+}
+ 
 
     public function toggleStatus($id)
     {

@@ -1,84 +1,166 @@
- @extends('layouts.employerapp')
+@extends('layouts.employerapp')
 
 @section('title', 'Users & Roles')
 
-@section('page-title', 'Users & Roles')
-@section('page-subtitle', 'Define paid action users vs free viewers')
-
 @section('content')
-<section class="section mt-3" id="sec-settings">
-      <div class="cardx p-3">
-        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-          <div>
-            <h6 class="mb-0" style="font-weight:900;color:var(--navy)">Users & Roles (Billing logic)</h6>
-            <div class="smallmuted">Charge only for "action users" — keep view-only free</div>
-          </div>
-          <button class="btn-ck" onclick="toast('User created (demo).')"><i class="bi bi-person-plus"></i> Add User</button>
-        </div>
-        <div class="divider"></div>
 
-        <div class="row g-3">
-          <div class="col-lg-7">
-            <div class="table-responsive">
-              <table class="table align-middle mb-0">
-                <thead>
-                  <tr>
+<section class="section mt-4">
+
+<div class="card shadow-sm border-0 rounded-4">
+
+    {{-- Header --}}
+    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold mb-1 text-dark">Users & Roles</h5>
+            <small class="text-muted">
+                Charge only for <strong>Action Users</strong> — keep View-only free
+            </small>
+        </div>
+
+        <button class="btn btn-primary rounded-pill px-4"
+                data-bs-toggle="modal"
+                data-bs-target="#addUserModal">
+            <i class="bi bi-person-plus"></i> Add User
+        </button>
+    </div>
+
+    {{-- Table --}}
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table align-middle table-hover">
+                <thead class="table-light">
+                <tr>
                     <th>User</th>
                     <th>Role</th>
                     <th>Type</th>
                     <th>Billing</th>
                     <th class="text-end">Action</th>
-                  </tr>
+                </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td><b>Admin</b><div class="smallmuted">owner@company.in</div></td>
-                    <td>Admin</td>
-                    <td>Action User</td>
-                    <td><span class="badge-soft badge-ok">Paid</span></td>
-                    <td class="text-end"><button class="btn-soft btn-sm" onclick="toast('Permissions opened (demo).')">Permissions</button></td>
-                  </tr>
-                  <tr>
-                    <td><b>Procurement Head</b><div class="smallmuted">proc@company.in</div></td>
-                    <td>Procurement</td>
-                    <td>Action User</td>
-                    <td><span class="badge-soft badge-ok">Paid</span></td>
-                    <td class="text-end"><button class="btn-soft btn-sm" onclick="toast('Permissions opened (demo).')">Permissions</button></td>
-                  </tr>
-                  <tr>
-                    <td><b>Store Keeper</b><div class="smallmuted">store@company.in</div></td>
-                    <td>Store</td>
-                    <td>Action User</td>
-                    <td><span class="badge-soft badge-ok">Paid</span></td>
-                    <td class="text-end"><button class="btn-soft btn-sm" onclick="toast('Permissions opened (demo).')">Permissions</button></td>
-                  </tr>
-                  <tr>
-                    <td><b>Site Engineer</b><div class="smallmuted">site@company.in</div></td>
-                    <td>Viewer</td>
-                    <td>View-Only</td>
-                    <td><span class="badge-soft">Free</span></td>
-                    <td class="text-end"><button class="btn-soft btn-sm" onclick="toast('Viewer role set (demo).')">Set Role</button></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <div class="col-lg-5">
-            <div class="hintbox">
-              <b>Recommended billing rules</b>
-              <div class="divider"></div>
-              <div class="smallmuted">
-                • Charge only for <b>Action Users</b> (create/approve PO, RFQ, bids).<br/>
-                • Keep <b>View-only</b> users free (site team).<br/>
-                • Minimum billing: <b>3 users</b> (₹9,000/month + GST).<br/>
-                • Add fair-use limits: RFQs/month, BOQ lines/month, storage.
-              </div>
-            </div>
-          </div>
+                <tbody>
+                @forelse($users as $user)
+                <tr>
+                    <td>
+                        <div class="fw-semibold">{{ $user->name }}</div>
+                        <small class="text-muted">{{ $user->email }}</small>
+                    </td>
+
+                    <td>
+                        <span class="badge bg-secondary-subtle text-dark px-3 py-2">
+                            {{ $user->role }}
+                        </span>
+                    </td>
+
+                    <td>
+                        @if($user->user_type == 'action')
+                            <span class="badge bg-success-subtle text-success px-3 py-2">
+                                Action User
+                            </span>
+                        @else
+                            <span class="badge bg-light text-dark px-3 py-2">
+                                View Only
+                            </span>
+                        @endif
+                    </td>
+
+                    <td>
+                        @if($user->is_paid)
+                            <span class="badge bg-success px-3 py-2">
+                                Paid
+                            </span>
+                        @else
+                            <span class="badge bg-light text-dark px-3 py-2">
+                                Free
+                            </span>
+                        @endif
+                    </td>
+
+                    <td class="text-end">
+                        <form action="{{ route('employer.users.delete',$user->id) }}"
+                              method="POST"
+                              class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger rounded-pill">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        No users added yet.
+                    </td>
+                </tr>
+                @endforelse
+                </tbody>
+            </table>
         </div>
 
-      </div>
-    </section>
+    </div>
+</div>
 
-    @endsection
+</section>
+
+{{-- Add User Modal --}}
+<div class="modal fade" id="addUserModal" tabindex="-1">
+<div class="modal-dialog modal-lg">
+<div class="modal-content rounded-4 border-0 shadow">
+
+    <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">Add New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+
+    <form action="{{ route('employer.users.store') }}" method="POST">
+        @csrf
+
+        <div class="modal-body">
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="name" class="form-control rounded-3" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" name="email" class="form-control rounded-3" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Role</label>
+                    <select name="role" class="form-select rounded-3">
+                        <option>Admin</option>
+                        <option>Procurement</option>
+                        <option>Store</option>
+                        <option>Viewer</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">User Type</label>
+                    <select name="user_type" class="form-select rounded-3">
+                        <option value="action">Action User</option>
+                        <option value="view">View Only</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer border-0">
+            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                Save User
+            </button>
+        </div>
+    </form>
+
+</div>
+</div>
+</div>
+
+@endsection

@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
         'employer.auth' => \App\Http\Middleware\EmployerAuth::class,
+        'switch.db' => \App\Http\Middleware\SwitchEmployerDatabase::class,
+        'tenant' => \App\Http\Middleware\TenantMiddleware::class,
+
     ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

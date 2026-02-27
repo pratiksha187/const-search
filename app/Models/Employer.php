@@ -9,7 +9,7 @@ class Employer extends Model
     protected $fillable = [
         'name','email','mobile','password',
         'company_name','company_email','company_phone',
-        'gst_number','pan_number','company_address','state','city','pincode','website',
+        'gst_number','pan_number','company_address','state','city','pincode','website','db_name',
         'is_active'
     ];
 

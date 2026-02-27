@@ -30,6 +30,21 @@ class TenantSqlProvisioningService
         // IMPORTANT: disable FK checks while creating tables
         $conn->statement("SET FOREIGN_KEY_CHECKS=0;");
 
+        // 0) sessions table
+        $conn->statement("
+            CREATE TABLE sessions (
+                id VARCHAR(255) PRIMARY KEY,
+                user_id BIGINT UNSIGNED NULL,
+                ip_address VARCHAR(45) NULL,
+                user_agent TEXT NULL,
+                payload LONGTEXT NOT NULL,
+                last_activity INT NOT NULL,
+                INDEX (user_id),
+                INDEX (last_activity)
+            ) ENGINE=InnoDB 
+            DEFAULT CHARSET=utf8mb4 
+            COLLATE=utf8mb4_unicode_ci;
+        ");
         // 1) users table (employer DB)
         $conn->statement("
             CREATE TABLE users (
@@ -48,15 +63,40 @@ class TenantSqlProvisioningService
         $conn->statement("
             CREATE TABLE projects (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                code VARCHAR(50) NULL,
-                name VARCHAR(255) NOT NULL,
-                type VARCHAR(100) NULL,
-                location VARCHAR(150) NULL,
-                budget DECIMAL(15,2) NOT NULL DEFAULT 0,
-                status VARCHAR(50) NOT NULL DEFAULT 'Planning',
-                created_at TIMESTAMP NULL DEFAULT NULL,
-                updated_at TIMESTAMP NULL DEFAULT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+                code VARCHAR(50) NOT NULL UNIQUE,
+                work_type_id INT NOT NULL,
+                work_subtype_id  INT NOT NULL,
+
+                title VARCHAR(100) NULL,
+                state_id INT NULL,
+                region_id INT NULL,
+                city_id INT NULL,
+
+                budget INT NULL,
+               
+                contact_name VARCHAR(150) NULL,
+                mobile VARCHAR(20) NULL,
+                description VARCHAR(150) NULL,
+
+                start_date DATE NULL,
+                end_date DATE NULL,
+
+                status ENUM('Planning','Active','On Hold','Completed','Cancelled') 
+                    NOT NULL DEFAULT 'Planning',
+
+                created_by BIGINT UNSIGNED NULL,
+
+                created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                deleted_at TIMESTAMP NULL DEFAULT NULL,
+
+                INDEX (status),
+                INDEX (created_by)
+
+            ) ENGINE=InnoDB 
+            DEFAULT CHARSET=utf8mb4 
+            COLLATE=utf8mb4_unicode_ci;
         ");
 
         // 3) boq_items table

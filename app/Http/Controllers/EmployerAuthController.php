@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Config;
+use App\Http\Middleware\SwitchEmployerDatabase;
 
 class EmployerAuthController extends Controller
 {
@@ -41,6 +43,7 @@ class EmployerAuthController extends Controller
         Session::put('employer_id', $employer->id);
         Session::put('employer_name', $employer->name);
         Session::put('employer_email', $employer->email);
+        Session::put('employer_db', $employer->db_name);
 
         return redirect()->route('employers.dashboard');
     }
