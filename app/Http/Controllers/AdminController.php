@@ -636,12 +636,7 @@ public function sendPostNotification(Request $request)
 
             try {
 
-                // $variables = [
-                //     "1" => (string) ($vendor->name ?? 'Vendor'),
-                //     "2" => (string) ($post->title ?? 'New Project'),
-                //     "3" => (string) ($post->work_type ?? 'Construction'),
-                //     "4" => (string) ($post->budget_range_name ?? 'Not Mentioned')
-                // ];
+               
 
               $location = collect([
                     $post->statename ?? null,

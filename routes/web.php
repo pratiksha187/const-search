@@ -243,11 +243,16 @@ Route::post('/vendor-interest-check', [HomeController::class, 'vendorinterestche
     ->name('vendor.interest.check');
 Route::post('/claim-free-lead', [VenderController::class, 'claimFreeLead'])
     ->name('claim_free_lead');
+
+Route::get('/vendor/erp-notifications', [VenderController::class, 'erpNotifications'])
+->name('vendor.erp.notifications');
+
 Route::post('/customer-interest-check', [HomeController::class, 'customerinterestcheck'])
     ->name('customer.interest.check');
 
 Route::get('/vendorsubscription', [VenderController::class, 'vendorsubscription'])->name('vendorsubscription');
-
+Route::post('/vendor/erp-notifications/upload-docs', [VenderController::class, 'uploadErpDocs'])
+    ->name('vendor.erp_notifications.upload_docs');
 Route::get('/test', [ImportController::class, 'test'])->name('test');
 
 Route::get('/admin/free-leads', [AdminController::class, 'freeLeadList'])
@@ -559,7 +564,7 @@ Route::post('/admin/vendor/agreement/store/{id}',
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "123456789";
+    $password = "8806561819";
     $hash = Hash::make($password);
 
     return $hash; 

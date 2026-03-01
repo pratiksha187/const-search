@@ -472,5 +472,58 @@ class VenderController extends Controller
         return back()->with('success', 'Description updated successfully.');
     }
 
+    public function erpNotifications()
+    {
+            $vendor_id   = Session::get('vendor_id');
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+        
+          
+            // dd($vendor_id);
+            $notifications = DB::table('project_vendor_emails')
+            
+                ->where('vendor_id', $vendor_id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+// dd($notifications );
+        return view('web.erp_notifications', compact('notifications','vendor_id','vendor'));
+    }
+
+    public function uploadErpDocs(Request $request)
+{
+    // dd($request );
+    $request->validate([
+        'notification_id'  => 'required|integer',
+        'company_profile'  => 'nullable',
+        'pqc_file'         => 'nullable',
+    ]);
+
+    $nid = $request->notification_id;
+
+    // you can change table name/logic as per your DB
+    $data = [];
+
+    if ($request->hasFile('company_profile')) {
+        $file = $request->file('company_profile');
+        $name = time().'_company_'.$file->getClientOriginalName();
+        $file->storeAs('public/vendor_docs', $name);
+        $data['company_profile'] = $name;
+    }
+
+    if ($request->hasFile('pqc_file')) {
+        $file = $request->file('pqc_file');
+        $name = time().'_pqc_'.$file->getClientOriginalName();
+        $file->storeAs('public/vendor_docs', $name);
+        $data['pqc_file'] = $name;
+    }
+
+    if (!empty($data)) {
+        DB::table('project_vendor_emails')
+            ->where('id', $nid)
+            ->update($data + ['updated_at' => now()]);
+    }
+
+    return back()->with('success', 'Files uploaded successfully!');
+}
+
 
 }

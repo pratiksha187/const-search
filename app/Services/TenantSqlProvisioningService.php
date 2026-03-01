@@ -45,6 +45,26 @@ class TenantSqlProvisioningService
             DEFAULT CHARSET=utf8mb4 
             COLLATE=utf8mb4_unicode_ci;
         ");
+
+
+         $conn->statement("CREATE TABLE `project_vendor_emails` (
+                `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `project_id` BIGINT(20) UNSIGNED NOT NULL,
+                `vendor_id` BIGINT(20) UNSIGNED NOT NULL,
+                `vendor_email` VARCHAR(255) NOT NULL,
+                `subject` VARCHAR(255) NOT NULL,
+                `message` TEXT NOT NULL,
+                `sent_at` TIMESTAMP NULL DEFAULT NULL,
+                `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+                `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                `mail_status` ENUM('sent','failed') DEFAULT 'sent',
+                `mail_type` VARCHAR(100) DEFAULT NULL,
+                `opened_at` TIMESTAMP NULL DEFAULT NULL,
+                `responded_at` TIMESTAMP NULL DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                INDEX (`project_id`),
+                INDEX (`vendor_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
         // 1) users table (employer DB)
         $conn->statement("
             CREATE TABLE users (

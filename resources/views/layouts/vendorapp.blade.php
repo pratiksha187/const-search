@@ -249,6 +249,9 @@
 
             <a href="{{ route('vendorsubscription') }}">Credit Points</a>
             <a href="{{ route('vendor.agreement') }}">Agreement</a>
+            <a href="{{ route('vendor.erp.notifications') }}">
+                ERP Notifications
+            </a>
         </div>
 
         <!-- PROFILE -->
@@ -276,6 +279,7 @@
     <!-- <a href="{{ route('supplierserch') }}">Search Suppliers</a> -->
     <a href="{{ route('vendorsubscription') }}">Credit Points</a>
     <a href="{{ route('vendor.agreement') }}">Agreement</a>
+     <a href="{{ route('vendor.erp.notifications') }}">ERP Notifications</a>
 </div>
 
 <!-- PROFILE DROPDOWN -->

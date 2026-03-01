@@ -350,6 +350,17 @@ public function sendSelectedMail(Request $request)
             'updated_at' => now(),
         ]);
 
+        DB::connection('mysql')->table('project_vendor_emails')->insert([
+            'project_id' => $project->id,
+            'vendor_id' => $vendor->id,
+            'vendor_email' => $vendor->email,
+            'subject' => $subject,
+            'message' => $messageBody,
+            'sent_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         // Send Mail
         Mail::raw($messageBody, function ($mail) use ($vendor, $subject) {
             $mail->to($vendor->email)
