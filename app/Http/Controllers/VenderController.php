@@ -217,6 +217,7 @@ class VenderController extends Controller
 
     public function checkLeadBalance(Request $request)
     {
+        // dd($request->customer_id);
         $vendorId = session('vendor_id');
 
         $vendor = DB::table('vendor_reg')
@@ -249,7 +250,7 @@ class VenderController extends Controller
         }
 
         $custId = $request->customer_id;
-
+//  dd($custId );
         /* ===============================
         1️⃣ CHECK ALREADY ENQUIRED
         ================================ */
@@ -258,11 +259,12 @@ class VenderController extends Controller
             ->where('vendor_id', $vendorId)
             ->where('customer_id', $custId)
             ->exists();
-
+// dd($already );
         if ($already) {
 
-            $customer = DB::table('users')->where('id', $custId)->first();
+            $customer = DB::table('posts')->where('id', $custId)->first();
 
+// dd($customer );
             return response()->json([
                 'profile_incomplete' => false,
                 'already_exists'     => true,
