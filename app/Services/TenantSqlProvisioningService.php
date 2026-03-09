@@ -196,6 +196,7 @@ $conn->statement("CREATE TABLE `vendor_boq_replies` (
                 project_id BIGINT UNSIGNED NULL,
                 rfq_no VARCHAR(50) NOT NULL UNIQUE,
                 title VARCHAR(255) NOT NULL,
+                boq_id BIGINT UNSIGNED NULL, 
                 bid_deadline DATE NULL,
                 payment_terms VARCHAR(255) NULL,
                 status VARCHAR(50) NOT NULL DEFAULT 'Draft',
