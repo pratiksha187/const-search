@@ -62,6 +62,7 @@
                             <th>Location</th>
                             <th>Budget</th>
                             <th>Status</th>
+                            <th>PQC</th>
                             <th class="text-end">Action</th>
                         </tr>
                     </thead>
@@ -106,7 +107,24 @@
                                         </span>
                                     @endif
                                 </td>
+                                @php
+                                $stat = $pqcStats[$project->id] ?? null;
+                                @endphp
 
+                                <td>
+                                @if($stat && ($stat->pqc_count > 0 || $stat->company_count > 0))
+                                    <span class="badge bg-success">PQC: {{ $stat->pqc_count }}</span>
+                                    <span class="badge bg-primary">Profile: {{ $stat->company_count }}</span>
+                                    <div class="small text-muted">Submitted: {{ $stat->submitted_count }}</div>
+
+                                    <a href="{{ route('employer.projects.pqc', $project->id) }}"
+                                        class="btn btn-sm btn-outline-dark mt-1">
+                                        View Submissions
+                                    </a>
+                                @else
+                                    <span class="badge bg-light text-dark border">No submissions</span>
+                                @endif
+                                </td>
                                 
                                 <td class="text-end">
                                     <a href="{{ route('employer.projects.show', $project->id) }}"

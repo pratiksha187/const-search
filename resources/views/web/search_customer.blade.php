@@ -778,10 +778,15 @@ body::before{
                   <label class="form-label fw-semibold small text-muted">
                   <i class="bi bi-geo-alt-fill me-1 text-primary"></i> State
                   </label>
+              
                   <select id="stateSelect" class="form-select form-select-custom">
                      <option value="">Select State</option>
-                     @foreach($states as $state)
-                     <option value="{{ $state->id }}">{{ $state->name }}</option>
+                     @foreach($states as $s)
+                        <option value="{{ $s->id }}"
+                              data-slug="{{ $s->name }}"
+                              {{ isset($state) && $state && $state->id == $s->id ? 'selected' : '' }}>
+                              {{ $s->name }}
+                        </option>
                      @endforeach
                   </select>
                </div>
@@ -789,16 +794,46 @@ body::before{
                   <label class="form-label fw-semibold small text-muted">
                   <i class="bi bi-map-fill me-1 text-indigo"></i> District
                   </label>
-                  <select id="regionSelect" class="form-select form-select-custom" disabled>
+                  <!-- <select id="regionSelect" class="form-select form-select-custom" disabled>
                      <option value="">Select District</option>
+                  </select> -->
+                 <select id="regionSelect" class="form-select form-select-custom"
+                     {{ isset($state) && $state ? '' : 'disabled' }}>
+
+                     <option value="">Select District</option>
+
+                     @if(isset($districts))
+                        @foreach($districts as $d)
+                              <option value="{{ $d->id }}"
+                                 data-slug="{{ $d->name }}"
+                                 {{ isset($district) && $district && $district->id == $d->id ? 'selected' : '' }}>
+                                 {{ $d->name }}
+                              </option>
+                        @endforeach
+                     @endif
                   </select>
                </div>
                <div class="col-lg-4 col-md-12">
                   <label class="form-label fw-semibold small text-muted">
                   <i class="bi bi-buildings-fill me-1 text-orange"></i> Region
                   </label>
-                  <select id="citySelect" class="form-select form-select-custom" disabled>
+                  <!-- <select id="citySelect" class="form-select form-select-custom" disabled>
                      <option value="">Select City</option>
+                  </select> -->
+                  <select id="citySelect" class="form-select form-select-custom"
+                     {{ isset($district) && $district ? '' : 'disabled' }}>
+
+                     <option value="">Select City</option>
+
+                     @if(isset($cities))
+                        @foreach($cities as $c)
+                              <option value="{{ $c->id }}"
+                                 data-slug="{{ $c->name }}"
+                                 {{ isset($city) && $city && $city->id == $c->id ? 'selected' : '' }}>
+                                 {{ $c->name }}
+                              </option>
+                        @endforeach
+                     @endif
                   </select>
                </div>
             </div>
@@ -814,7 +849,7 @@ body::before{
 
                      <span class="lead-pill completed">
                         <i class="bi bi-check-circle-fill me-1"></i>
-                        {{ $complited_project->count() }} Completed
+                       {{ $complited_project->count() }} Completed 
                      </span>
 
                      <span class="lead-pill remaining">
@@ -839,9 +874,9 @@ body::before{
                   data-work-subtype-id="{{ $project->work_subtype_id }}"
                   data-work-subtype="{{ strtolower($project->work_subtype) }}"
                   data-name="{{ strtolower($project->title) }}"
-                data-state-id="{{ $project->state }}"
-data-region-id="{{ $project->region }}"
-data-city-id="{{ $project->city }}"
+                  data-state-id="{{ $project->state }}"
+                  data-region-id="{{ $project->region }}"
+                  data-city-id="{{ $project->city }}"
                   data-project-id="{{ $project->id }}">
                   {{-- HEADER --}}
                
@@ -1061,7 +1096,6 @@ data-city-id="{{ $project->city }}"
    </div>
 </div>
 {{-- ================= SCRIPTS ================= --}}
-
 <!-- ✅ Correct order -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -1071,324 +1105,300 @@ data-city-id="{{ $project->city }}"
 <script>
 (function () {
 
-  function showAuthModal() {
-    const el = document.getElementById('authModal');
-    if (!el) return;
-    bootstrap.Modal.getOrCreateInstance(el).show();
-  }
+    $(document).ready(function () {
 
-  function isLoggedInVendor() {
-    return !!window.VENDOR_ID;
-  }
+        /* ============================================================
+           AUTH MODAL
+        ============================================================ */
 
-  function resetLeadModalUI() {
-    $('#projectDetailsSection').addClass('d-none');
-    $('#remainingLeadsInfo').addClass('d-none').text('');
-    $('#lockedBox').addClass('d-none');
-    $('#pricingSection').addClass('d-none');
-  }
-
-  /* ===========================
-     ✅ View Profile Buttons
-  ============================ */
-  document.addEventListener('click', function (e) {
-
-    // Vendor profile
-    const vendorBtn = e.target.closest('.view-vendor-profile-btn');
-    if (vendorBtn) {
-      e.preventDefault();
-      if (!isLoggedInVendor()) return showAuthModal();
-      const id = vendorBtn.dataset.id;
-      window.location.href = `{{ url('vendor/profile/id') }}/${id}`;
-      return;
-    }
-
-    // Customer profile
-    const customerBtn = e.target.closest('.view-profile-btn');
-    if (customerBtn) {
-      e.preventDefault();
-      if (!isLoggedInVendor()) return showAuthModal();
-      const projectId = customerBtn.dataset.id;
-      window.location.href = `{{ url('customer/profile/id') }}/${projectId}`;
-      return;
-    }
-  });
-
-  /* ===========================
-     ✅ Show Interest Button
-  ============================ */
-  document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.show-interest-btn');
-    if (!btn) return;
-
-    e.preventDefault();
-
-    handleInterested(
-      btn.dataset.id,
-      btn.dataset.username,
-      btn.dataset.usersmobile,
-      btn.dataset.useremail,
-      '',
-      btn.dataset.title,
-      btn.dataset.work,
-      btn.dataset.location,
-      btn.dataset.budget,
-      btn.dataset.description,
-      btn.dataset.contactTime
-    );
-  });
-
-  function handleInterested(
-    id,
-    username,
-    usersmobile,
-    useremail,
-    contactName,
-    title,
-    work,
-    location,
-    budget,
-    description,
-    contactTime
-  ) {
-    if (!isLoggedInVendor()) return showAuthModal();
-
-    resetLeadModalUI();
-
-    // Fill modal data
-    $('#modalusername').text(username || '—');
-    $('#modalusersmobile').text(usersmobile || '—');
-    $('#modaluseremail').text(useremail || '—');
-    $('#modalTitle').text(title || '—');
-    $('#modalWork').text(work || '—');
-    $('#modalLocation').text(location || '—');
-    $('#modalBudget').text(budget || 'Flexible');
-    $('#modalDescription').text(description || '—');
-    $('#modalContactTime').text(contactTime || 'Anytime');
-    $('#modalPosted').text('Just now');
-
-    $.ajax({
-      url: "{{ route('customer.interest.check') }}",
-      type: "POST",
-      data: {
-        _token: "{{ csrf_token() }}",
-        cust_id: id
-      },
-      success: function (res) {
-        resetLeadModalUI();
-
-        // 1) Already unlocked
-        if (res.already_exists === true) {
-          $('#projectDetailsSection').removeClass('d-none');
-          bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
-          return;
+        function showAuthModal() {
+            const el = document.getElementById('authModal');
+            if (!el) return;
+            bootstrap.Modal.getOrCreateInstance(el).show();
         }
 
-        const remaining = parseInt(res.remaining, 10) || 0;
-
-        // 2) Free leads available
-        if (remaining > 0 && res.payment_required === false) {
-          $('#projectDetailsSection').removeClass('d-none');
-
-          $('#remainingLeadsInfo')
-            .removeClass('d-none')
-            .text(`🎯 ${remaining} free leads remaining`);
-
-          bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
-          return;
+        function isLoggedInVendor() {
+            return !!window.VENDOR_ID;
         }
 
-        // 3) Payment required
-        $('#lockedBox').removeClass('d-none');
-        $('#pricingSection').removeClass('d-none');
+        function resetLeadModalUI() {
+            $('#projectDetailsSection').addClass('d-none');
+            $('#remainingLeadsInfo').addClass('d-none').text('');
+            $('#lockedBox').addClass('d-none');
+            $('#pricingSection').addClass('d-none');
+        }
 
-        bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
-      },
-      error: function () {
-        Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
-      }
-    });
-  }
+        /* ============================================================
+           PROFILE REDIRECTS
+        ============================================================ */
 
-  /* ===========================
-     ✅ Razorpay Buy Plan
-  ============================ */
-  $(document).on('click', '.buy-plan-btn', function (e) {
-    e.preventDefault();
+        document.addEventListener('click', function (e) {
 
-    const plan   = $(this).data('plan');
-    const amount = parseInt($(this).data('amount'), 10);
-    const custId = $(this).data('cust');
-
-    $.post("{{ route('razorpay.createOrder') }}", {
-      _token: "{{ csrf_token() }}",
-      cust_id: custId,
-      plan: plan,
-      amount: amount
-    }, function (res) {
-
-      if (!res || !res.success) {
-        Swal.fire('Error', 'Order creation failed', 'error');
-        return;
-      }
-
-      const options = {
-        key: res.key,
-        amount: res.amount,
-        currency: "INR",
-        name: "ConstructKaro",
-        description: `${String(plan).toUpperCase()} Lead Package`,
-        order_id: res.order_id,
-        prefill: {
-          name: "ConstructKaro",
-          email: "connect@constructkaro.com",
-          contact: "8806561819"
-        },
-        readonly: { contact: true, email: true },
-        handler: function (response) {
-
-          $.post("{{ route('razorpay.verify') }}", {
-            _token: "{{ csrf_token() }}",
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_signature: response.razorpay_signature,
-            cust_id: btoa(String(custId)),
-            plan: plan,
-            amount: amount
-          }, function (verifyRes) {
-
-            if (verifyRes && verifyRes.success) {
-
-              const modalEl = document.getElementById('vendorModal');
-              bootstrap.Modal.getInstance(modalEl)?.hide();
-
-              Swal.fire({
-                icon: 'success',
-                title: 'Payment Successful',
-                text: `₹${amount} payment completed`,
-                confirmButtonColor: '#10b981'
-              }).then(() => location.reload());
-
-            } else {
-              Swal.fire('Error', 'Payment verification failed', 'error');
+            const vendorBtn = e.target.closest('.view-vendor-profile-btn');
+            if (vendorBtn) {
+                e.preventDefault();
+                if (!isLoggedInVendor()) return showAuthModal();
+                const id = vendorBtn.dataset.id;
+                window.location.href = `{{ url('vendor/profile/id') }}/${id}`;
+                return;
             }
-          });
-        },
-        theme: { color: "#2563eb" }
-      };
 
-      new Razorpay(options).open();
+            const customerBtn = e.target.closest('.view-profile-btn');
+            if (customerBtn) {
+                e.preventDefault();
+                if (!isLoggedInVendor()) return showAuthModal();
+                const projectId = customerBtn.dataset.id;
+                window.location.href = `{{ url('customer/profile/id') }}/${projectId}`;
+                return;
+            }
+        });
+
+        /* ============================================================
+           SHOW INTEREST HANDLER
+        ============================================================ */
+
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.show-interest-btn');
+            if (!btn) return;
+
+            e.preventDefault();
+
+            handleInterested(
+                btn.dataset.id,
+                btn.dataset.username,
+                btn.dataset.usersmobile,
+                btn.dataset.useremail,
+                '',
+                btn.dataset.title,
+                btn.dataset.work,
+                btn.dataset.location,
+                btn.dataset.budget,
+                btn.dataset.description,
+                btn.dataset.contactTime
+            );
+        });
+
+        function handleInterested(
+            id,
+            username,
+            usersmobile,
+            useremail,
+            contactName,
+            title,
+            work,
+            location,
+            budget,
+            description,
+            contactTime
+        ) {
+            if (!isLoggedInVendor()) return showAuthModal();
+
+            resetLeadModalUI();
+
+            $('#modalusername').text(username || '—');
+            $('#modalusersmobile').text(usersmobile || '—');
+            $('#modaluseremail').text(useremail || '—');
+            $('#modalTitle').text(title || '—');
+            $('#modalWork').text(work || '—');
+            $('#modalLocation').text(location || '—');
+            $('#modalBudget').text(budget || 'Flexible');
+            $('#modalDescription').text(description || '—');
+            $('#modalContactTime').text(contactTime || 'Anytime');
+            $('#modalPosted').text('Just now');
+
+            $.ajax({
+                url: "{{ route('customer.interest.check') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    cust_id: id
+                },
+                success: function (res) {
+
+                    resetLeadModalUI();
+
+                    if (res.already_exists === true) {
+                        $('#projectDetailsSection').removeClass('d-none');
+                        bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
+                        return;
+                    }
+
+                    const remaining = parseInt(res.remaining, 10) || 0;
+
+                    if (remaining > 0 && res.payment_required === false) {
+                        $('#projectDetailsSection').removeClass('d-none');
+                        $('#remainingLeadsInfo')
+                            .removeClass('d-none')
+                            .text(`🎯 ${remaining} free leads remaining`);
+                        bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
+                        return;
+                    }
+
+                    $('#lockedBox').removeClass('d-none');
+                    $('#pricingSection').removeClass('d-none');
+                    bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
+                },
+                error: function () {
+                    Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+                }
+            });
+        }
+
+        /* ============================================================
+           RAZORPAY
+        ============================================================ */
+
+        $(document).on('click', '.buy-plan-btn', function (e) {
+
+            e.preventDefault();
+
+            const plan = $(this).data('plan');
+            const amount = parseInt($(this).data('amount'), 10);
+            const custId = $(this).data('cust');
+
+            $.post("{{ route('razorpay.createOrder') }}", {
+                _token: "{{ csrf_token() }}",
+                cust_id: custId,
+                plan: plan,
+                amount: amount
+            }, function (res) {
+
+                if (!res || !res.success) {
+                    Swal.fire('Error', 'Order creation failed', 'error');
+                    return;
+                }
+
+                const options = {
+                    key: res.key,
+                    amount: res.amount,
+                    currency: "INR",
+                    name: "ConstructKaro",
+                    description: `${String(plan).toUpperCase()} Lead Package`,
+                    order_id: res.order_id,
+                    handler: function (response) {
+
+                        $.post("{{ route('razorpay.verify') }}", {
+                            _token: "{{ csrf_token() }}",
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                            cust_id: btoa(String(custId)),
+                            plan: plan,
+                            amount: amount
+                        }, function (verifyRes) {
+
+                            if (verifyRes && verifyRes.success) {
+
+                                const modalEl = document.getElementById('vendorModal');
+                                bootstrap.Modal.getInstance(modalEl)?.hide();
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Payment Successful',
+                                    text: `₹${amount} payment completed`,
+                                    confirmButtonColor: '#10b981'
+                                }).then(() => location.reload());
+
+                            } else {
+                                Swal.fire('Error', 'Payment verification failed', 'error');
+                            }
+                        });
+                    },
+                    theme: { color: "#2563eb" }
+                };
+
+                new Razorpay(options).open();
+            });
+        });
+
+        /* ============================================================
+           FRONTEND FILTERING (CATEGORY)
+        ============================================================ */
+
+        function applyFilters() {
+
+            const selectedCategories = $('.category-check:checked').map((_, el) => el.value).get();
+            const selectedSubtypes = $('.subtype-check:checked').map((_, el) => el.value).get();
+
+            let visible = 0;
+
+            document.querySelectorAll('.vendor-col').forEach(col => {
+
+                const card = col.querySelector('.vendor-card');
+                if (!card) return;
+
+                const cardTypeId = card.dataset.workTypeId || '';
+                const cardSubtypeIds = (card.dataset.workSubtypeId || '').split(',');
+
+                let categoryMatch = true;
+
+                if (selectedCategories.length) {
+                    categoryMatch = selectedCategories.includes(cardTypeId);
+                }
+
+                if (selectedSubtypes.length) {
+                    categoryMatch = categoryMatch &&
+                        selectedSubtypes.some(id => cardSubtypeIds.includes(id));
+                }
+
+                if (categoryMatch) {
+                    col.classList.remove('hidden');
+                    visible++;
+                } else {
+                    col.classList.add('hidden');
+                }
+            });
+
+            $('#categoryCount').text(selectedCategories.length);
+        }
+
+        $('.category-check').on('change', function () {
+            const box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
+            if (box) box.classList.toggle('d-none', !this.checked);
+            applyFilters();
+        });
+
+        $('.subtype-check').on('change', applyFilters);
+
+        /* ============================================================
+           SEO DROPDOWN REDIRECT (STATE / DISTRICT / CITY)
+        ============================================================ */
+
+        $('#stateSelect').on('change', function () {
+
+            const slug = $('#stateSelect option:selected').data('slug');
+
+            if (slug) {
+                window.location.href = `/search-customer/${slug}`;
+            } else {
+                window.location.href = `/search-customer`;
+            }
+        });
+
+        $('#regionSelect').on('change', function () {
+
+            const stateSlug = $('#stateSelect option:selected').data('slug');
+            const districtSlug = $('#regionSelect option:selected').data('slug');
+
+            if (stateSlug && districtSlug) {
+                window.location.href = `/search-customer/${stateSlug}/${districtSlug}`;
+            }
+        });
+
+        $('#citySelect').on('change', function () {
+
+            const stateSlug = $('#stateSelect option:selected').data('slug');
+            const districtSlug = $('#regionSelect option:selected').data('slug');
+            const citySlug = $('#citySelect option:selected').data('slug');
+
+            if (stateSlug && districtSlug && citySlug) {
+                window.location.href = `/search-customer/${stateSlug}/${districtSlug}/${citySlug}`;
+            }
+        });
+
+        applyFilters();
+
     });
-  });
-
-  function applyFilters() {
-
-    const selectedCategories = $('.category-check:checked').map((_, el) => el.value).get();
-    const selectedSubtypes   = $('.subtype-check:checked').map((_, el) => el.value).get();
-
-    const stateId    = $('#stateSelect').val() || '';
-    const districtId = $('#regionSelect').val() || '';
-    const cityId     = $('#citySelect').val() || '';
-
-    let visible = 0;
-
-    document.querySelectorAll('.vendor-col').forEach(col => {
-      const card = col.querySelector('.vendor-card');
-      if (!card) return;
-
-      const cardTypeId = card.dataset.workTypeId || '';
-      const cardSubtypeIds = (card.dataset.workSubtypeId || '')
-        .split(',')
-        .map(x => x.trim())
-        .filter(Boolean);
-
-      // ✅ Use IDs for matching (must match your HTML dataset)
-      const cardStateId    = card.dataset.stateId || '';
-      const cardDistrictId = card.dataset.regionId || '';
-      const cardCityId     = card.dataset.cityId || '';
-
-      // Category match
-      let categoryMatch = true;
-
-      if (selectedCategories.length) {
-        categoryMatch = selectedCategories.includes(cardTypeId);
-      }
-      if (selectedSubtypes.length) {
-        categoryMatch = categoryMatch && selectedSubtypes.some(id => cardSubtypeIds.includes(id));
-      }
-
-      // Location match
-      const stateMatch    = !stateId    || cardStateId === stateId;
-      const districtMatch = !districtId || cardDistrictId === districtId;
-      const cityMatch     = !cityId     || cardCityId === cityId;
-
-      if (categoryMatch && stateMatch && districtMatch && cityMatch) {
-        col.classList.remove('hidden');
-        visible++;
-      } else {
-        col.classList.add('hidden');
-      }
-    });
-
-    $('#vendorCount').text(visible);
-  }
-
-  // Dropdown cascading
-  $('#stateSelect').on('change', function () {
-    const stateId = this.value || '';
-
-    $('#regionSelect').prop('disabled', true).html('<option value="">Loading districts...</option>');
-    $('#citySelect').prop('disabled', true).html('<option value="">Select City</option>');
-
-    if (!stateId) {
-      $('#regionSelect').prop('disabled', true).html('<option value="">Select District</option>');
-      applyFilters();
-      return;
-    }
-
-    $.get(`/locations/regions/${stateId}`, function (regions) {
-      let options = '<option value="">Select District</option>';
-      (regions || []).forEach(r => options += `<option value="${r.id}">${r.name}</option>`);
-      $('#regionSelect').html(options).prop('disabled', false);
-      applyFilters();
-    });
-  });
-
-  $('#regionSelect').on('change', function () {
-    const regionId = this.value || '';
-
-    $('#citySelect').prop('disabled', true).html('<option value="">Loading cities...</option>');
-
-    if (!regionId) {
-      $('#citySelect').prop('disabled', true).html('<option value="">Select City</option>');
-      applyFilters();
-      return;
-    }
-
-    $.get(`/locations/cities/${regionId}`, function (cities) {
-      let options = '<option value="">Select City</option>';
-      (cities || []).forEach(c => options += `<option value="${c.id}">${c.name}</option>`);
-      $('#citySelect').html(options).prop('disabled', false);
-      applyFilters();
-    });
-  });
-
-  $('#citySelect').on('change', applyFilters);
-
-  // Category -> show subtypes
-  document.querySelectorAll('.category-check').forEach(cb => {
-    cb.addEventListener('change', function () {
-      const box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
-      if (box) box.classList.toggle('d-none', !this.checked);
-      applyFilters();
-    });
-  });
-
-  document.querySelectorAll('.subtype-check').forEach(cb => {
-    cb.addEventListener('change', applyFilters);
-  });
-
-  document.addEventListener('DOMContentLoaded', applyFilters);
 
 })();
 </script>

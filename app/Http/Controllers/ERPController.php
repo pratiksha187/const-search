@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
+
+use Illuminate\Support\Facades\Session;
 
 
 class ERPController extends Controller
@@ -19,11 +22,9 @@ class ERPController extends Controller
         $states = DB::connection('mysql')->table('state')->orderBy('name')->get();
         $budget_range = DB::connection('mysql')->table('budget_range')->get();
         $unit = DB::connection('mysql')->table('cust_unit')->get();
-        // $projects = DB::connection('tenant')
-        //             ->table('projects')
-        //             ->orderBy('id', 'desc')
-        //             ->get();
+       
         $masterDb = DB::connection('mysql')->getDatabaseName();
+
 
         $projects = DB::connection('tenant')
             ->table('projects as p')
@@ -43,8 +44,20 @@ class ERPController extends Controller
             )
             ->orderBy('p.id', 'desc')
             ->get();
+            $projectIds = $projects->pluck('id')->toArray();
+            // dd( $projectIds);
+            $pqcStats = DB::table('vendor_pqc_submissions')
+                ->selectRaw('project_id,
+                    SUM(CASE WHEN doc_type="pqc" THEN 1 ELSE 0 END) as pqc_count,
+                    SUM(CASE WHEN doc_type="company" THEN 1 ELSE 0 END) as company_count,
+                    SUM(CASE WHEN status="submitted" THEN 1 ELSE 0 END) as submitted_count
+                ')
+                ->whereIn('project_id', $projectIds)
+                ->groupBy('project_id')
+                ->get()
+                ->keyBy('project_id');
             // dd($projects);
-        return view('web.employers.project',compact('work_types','states','budget_range','unit','projects'));
+        return view('web.employers.project',compact('work_types','states','budget_range','unit','projects','pqcStats'));
 
     }
 
@@ -129,9 +142,68 @@ public function storeerpproject(Request $request)
         ], 500);
     }
 }
-    public function boq_rfq_bids(){
-        return view('web.employers.boq_rfq_bids');
+    // public function boq_rfq_bids(){
+    //     return view('web.employers.boq_rfq_bids');
+    // }
+    public function boq_rfq_bids($projectId)
+    {
+        // 1) fetch project (use your actual projects table name/columns)
+        $project = DB::connection('tenant')->table('projects')->where('id', $projectId)->first();
+        
+
+        if (!$project) {
+            return redirect()->back()->with('error', 'Project not found.');
+        }
+
+        // 2) fetch existing rfq if you have rfqs table, else null
+        $rfq =DB::connection('tenant')->table('rfqs')
+            ->where('project_id', $projectId)
+            ->orderByDesc('id')
+            ->first();
+
+        // dd($rfq);
+        return view('web.employers.boq_rfq_bids', compact('project','rfq'));
     }
+
+
+    public function rfqReplies($projectId)
+{
+    $rfq = DB::connection('tenant')->table('rfqs')
+        ->where('project_id', $projectId)
+        ->orderByDesc('id')
+        ->first();
+
+    if (!$rfq) {
+        return response()->json([
+            'ok' => false,
+            'message' => 'RFQ not found'
+        ]);
+    }
+
+    $rows = DB::connection('tenant')->table('rfq_vendor_invites as rvi')
+        // ->join('const_search.vendor_reg as v', 'v.id', '=', 'rvi.vendor_id') // change if needed
+        ->where('rvi.rfq_id', $rfq->id)
+        ->select(
+            'rvi.id',
+            'rvi.rfq_id',
+            'rvi.vendor_id',
+            'rvi.status',
+            'rvi.reply_file',
+            'rvi.replied_at',
+            'rvi.created_at',
+            // 'v.company_name',
+            // 'v.name',
+            // 'v.mobile'
+        )
+        ->orderByDesc('rvi.id')
+        ->get();
+
+    return response()->json([
+        'ok' => true,
+        'rfq_id' => $rfq->id,
+        'rows' => $rows
+    ]);
+}
 
     public function po_grm_invoice(){
         return view('web.employers.po_grn_invoice');
@@ -261,37 +333,6 @@ public function showProject($id)
     return view('web.employers.project_details', compact('project', 'vendors'));
 }
 
-// public function sendSelectedMail(Request $request)
-// {
-//     $request->validate([
-//         'vendor_ids' => 'required|array',
-//         'project_id' => 'required'
-//     ]);
-
-//     $vendors = DB::connection('mysql')
-//         ->table('vendor_reg')
-//         ->whereIn('id', $request->vendor_ids)
-//         ->get();
-
-//     $project = DB::connection('tenant')
-//         ->table('projects')
-//         ->where('id', $request->project_id)
-//         ->first();
-
-//     foreach ($vendors as $vendor) {
-
-//         // Example Mail
-//         \Mail::raw(
-//             "You have been invited for project: ".$project->contact_name,
-//             function ($message) use ($vendor) {
-//                 $message->to($vendor->email)
-//                         ->subject('New Project Invitation');
-//             }
-//         );
-//     }
-
-//     return back()->with('success', 'Emails sent successfully!');
-// }
 
 public function sendSelectedMail(Request $request)
 {
@@ -369,5 +410,113 @@ public function sendSelectedMail(Request $request)
     }
 
     return back()->with('success', 'Emails sent and saved successfully!');
+}
+public function pqc($projectId)
+{
+    $rows = DB::table('vendor_pqc_submissions as vps')
+        ->join('vendor_reg as v', 'v.id', '=', 'vps.vendor_id')
+        ->where('vps.project_id', $projectId) // Option A
+        // ->join('erp_notifications as en', 'en.id','=','vps.notification_id')
+        // ->where('en.project_id', $projectId) // Option B
+        ->orderByDesc('vps.id')
+        ->get([
+            'vps.*',
+            'v.company_name as vendor_company',
+            'v.name as vendor_name',
+            'v.mobile as vendor_mobile',
+        ]);
+
+    return view('web.employers.pqc_list', compact('rows','projectId'));
+}
+
+public function acceptPqc($id)
+{
+    
+     $employer_id   = Session::get('employer_id');
+    //  dd($employer_id);
+    DB::table('vendor_pqc_submissions')
+        ->where('id', $id)
+        ->update([
+            'accept_status' => 'accepted',
+            'accepted_at'   => now(),
+            'accepted_by'   => $employer_id, // employer logged in user
+            'updated_at'    => now(),
+        ]);
+
+    return back()->with('success', 'Vendor accepted successfully.');
+}
+
+
+public function compareVendorReplies($projectId)
+{
+    $rfq = DB::connection('tenant')->table('rfqs')
+        ->where('project_id', $projectId)
+        ->orderByDesc('id')
+        ->first();
+// dd($rfq);
+    if (!$rfq) {
+        return response()->json([
+            'ok' => false,
+            'message' => 'RFQ not found'
+        ]);
+    }
+
+    $rows = DB::connection('tenant')->table('rfq_vendor_invites as rvi')
+        // ->join('constructkaro_erp.vendor_reg as v', 'v.id', '=', 'rvi.vendor_id')
+        ->where('rvi.rfq_id', $rfq->id)
+        ->whereNotNull('rvi.total_quote')
+        ->orderBy('rvi.total_quote', 'asc')   // LOW TO HIGH
+        ->select(
+            'rvi.id',
+            'rvi.rfq_id',
+            'rvi.vendor_id',
+            'rvi.reply_file',
+            'rvi.total_quote',
+            'rvi.delivery_timeline',
+            'rvi.status',
+            'rvi.replied_at',
+            'rvi.selected_vendor',
+            // 'v.company_name',
+            // 'v.name',
+            // 'v.mobile'
+        )
+        ->get();
+// dd( $rows );
+    return response()->json([
+        'ok' => true,
+        'rfq_id' => $rfq->id,
+        'rows' => $rows
+    ]);
+}
+
+public function selectWinner($id)
+{
+    // dd($id);
+    $selectedRow = DB::connection('tenant')->table('rfq_vendor_invites')->where('project_id', $id)->first();
+// dd($selectedRow);
+    if (!$selectedRow) {
+        return response()->json([
+            'ok' => false,
+            'message' => 'Vendor row not found'
+        ]);
+    }
+
+    DB::connection('tenant')->table('rfq_vendor_invites')
+        ->where('rfq_id', $selectedRow->rfq_id)
+        ->update([
+            'selected_vendor' => 0,
+            'updated_at' => now()
+        ]);
+
+    DB::connection('tenant')->table('rfq_vendor_invites')
+        ->where('id', $id)
+        ->update([
+            'selected_vendor' => 1,
+            'updated_at' => now()
+        ]);
+
+    return response()->json([
+        'ok' => true
+    ]);
 }
 }

@@ -28,12 +28,18 @@ use App\Http\Controllers\EmployerController;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\EmployerAuthController;
-
+// routes/web.php (or vendor routes)
+use App\Http\Controllers\Vendor\PqcSubmissionController;
+use App\Http\Controllers\Employer\ProcurementFlowController;
 use App\Exports\VendorsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
-use App\Http\Controllers\EmployerUserController;
+use App\Http\Controllers\Employer\BoqRfqBidsController;
+use App\Http\Controllers\Employer\EmployerRfqController;
 
+use App\Http\Controllers\EmployerUserController;
+use App\Http\Controllers\Employer\RfqController;
+use App\Http\Controllers\Employer\BoqController;
 
 
 Route::get('/', [HomeController::class, 'homepage'])->name('homepage');
@@ -48,8 +54,13 @@ Route::post('/change-password', [LoginRegController::class, 'changePassword'])->
 Route::get('/search-vendor', [HomeController::class, 'search_vendor'])->name('search_vendor');
 
 // GET Route: To display the search form
-Route::get('/search-customer', [HomeController::class, 'search_customer'])->name('search_customer');
-
+// Route::get('/search-customer', [HomeController::class, 'search_customer'])->name('search_customer');
+// Route::get('/search-customer/{stateSlug?}', 
+//     [HomeController::class, 'search_customer']
+// )->name('search_customer');
+Route::get('/search-customer/{stateSlug?}/{districtSlug?}/{citySlug?}', 
+    [HomeController::class, 'search_customer']
+)->name('search_customer');
 Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name('cutomerprofile');
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
 
@@ -246,6 +257,12 @@ Route::post('/claim-free-lead', [VenderController::class, 'claimFreeLead'])
 
 Route::get('/vendor/erp-notifications', [VenderController::class, 'erpNotifications'])
 ->name('vendor.erp.notifications');
+
+
+Route::post('/vendor/boq-reply-upload', [VenderController::class, 'uploadBoqReply'])
+    ->name('vendor.boq.reply.upload');
+
+   
 
 Route::post('/customer-interest-check', [HomeController::class, 'customerinterestcheck'])
     ->name('customer.interest.check');
@@ -516,13 +533,33 @@ Route::post('/admin/vendor/agreement/store/{id}',
         Route::get('/employer/projects/{id}', 
             [ERPController::class, 'showProject']
         )->name('employer.projects.show');
+Route::post('/employer/projects/{projectId}/select-winner', [ERPController::class, 'selectWinner']);
+        // routes/web.php
+        Route::post('/employer/pqc/{id}/accept', [ERPController::class, 'acceptPqc'])
+        ->name('employer.pqc.accept');
+
+         Route::get('/employer/projects/{projectId}/rfq-replies', [ERPController::class, 'rfqReplies'])
+        ->name('employer.rfq.replies');
+
 
         Route::post('/send-selected-mail', 
             [ERPController::class, 'sendSelectedMail']
         )->name('employer.projects.sendSelectedMail');
         
         Route::get('erp-project', [ERPController::class, 'erpproject'])->name('erpproject');
-        Route::get('boq-rfq-bids', [ERPController::class, 'boq_rfq_bids'])->name('boq_rfq_bids');
+        Route::get('/employer/projects/{projectId}/compare-vendor-replies',
+    [ERPController::class, 'compareVendorReplies']
+)->name('employer.compare.vendor.replies');
+        Route::get('/employer/projects/{project}/pqc', [ERPController::class,'pqc'])
+        ->name('employer.projects.pqc');
+        // Route::get('boq-rfq-bids', [ERPController::class, 'boq_rfq_bids'])->name('boq_rfq_bids');
+        Route::get('/employer/boq-rfq-bids/{projectId}', [ERPController::class, 'boq_rfq_bids'])
+        ->name('boq_rfq_bids');
+
+    Route::post('/employer/rfq-invite/{id}/select-winner', [ERPController::class, 'selectWinner'])
+    ->name('employer.select.winner');
+    Route::post('/employer/rfq/invite', [RfqController::class,'invite'])->name('employer.rfq.invite');
+    
         Route::get('po-grm-invoice', [ERPController::class, 'po_grm_invoice'])->name('po_grm_invoice');
 
         Route::get('vendor-network', [ERPController::class, 'vendor_network'])->name('vendor_network');
@@ -553,6 +590,49 @@ Route::post('/admin/vendor/agreement/store/{id}',
         [ERPController::class, 'storeerpproject']
     )->name('save.project.details');
 
+
+     Route::get('/projects/{projectId}/sourcing', [ProcurementFlowController::class,'page'])
+      ->name('employer.sourcing.page');
+
+  // step2 create rfq
+  Route::post('/rfq/create', [ProcurementFlowController::class,'createRfq'])
+      ->name('employer.rfq.create');
+
+  // step3 fetch accepted vendors (from vendor_pqc_submissions)
+  Route::get('/projects/{projectId}/accepted-vendors', [ProcurementFlowController::class,'acceptedVendors'])
+      ->name('employer.accepted.vendors');
+      
+
+  // step3 invite vendor
+//   Route::post('/rfq/invite', [ProcurementFlowController::class,'inviteVendor'])
+//       ->name('employer.rfq.invite');
+
+  // step3 list invited vendors
+//   Route::get('/rfq/{rfqId}/invited', [ProcurementFlowController::class,'invitedVendors'])
+//       ->name('employer.rfq.invited');
+Route::get('/rfq/{rfq}/invited', [RfqController::class, 'invited'])->name('rfq.invited');
+  // step4 submit/simulate bid
+  Route::post('/rfq/bid', [ProcurementFlowController::class,'submitBid'])
+      ->name('employer.rfq.bid');
+
+  // step4 list bids
+  Route::get('/rfq/{rfqId}/bids', [ProcurementFlowController::class,'listBids'])
+      ->name('employer.rfq.bids');
+
+  // step5 compare
+  Route::get('/rfq/{rfqId}/compare', [ProcurementFlowController::class,'compareBids'])
+      ->name('employer.rfq.compare');
+
+      Route::post('/employer/boq/upload', [BoqController::class,'upload'])->name('employer.boq.upload');
+      // routes/web.php
+Route::get('/employer/boq/latest/{projectId}', [BoqController::class,'latest'])
+    ->name('employer.boq.latest');
+
+    Route::post('/employer/rfq/create', [RfqController::class, 'create'])->name('employer.rfq.create');
+
+    // routes/web.php
+Route::get('/employer/rfq/latest/{projectId}', [RfqController::class,'latest'])
+  ->name('employer.rfq.latest');
     });
 
     
@@ -564,7 +644,7 @@ Route::post('/admin/vendor/agreement/store/{id}',
     Route::get('/make-hash', function () {
     // $password = "Trimurti@1234";
     //  $password = "Civilworker123@";
-    $password = "8806561819";
+    $password = "123456789";
     $hash = Hash::make($password);
 
     return $hash; 
@@ -573,7 +653,9 @@ Route::post('/admin/vendor/agreement/store/{id}',
 
 Route::get('erp', [ERPController::class, 'erp'])->name('erp');
 
-
+Route::get('/vendor/pqc/check', [PqcSubmissionController::class, 'check'])->name('vendor.pqc.check');
+Route::post('/vendor/notifications/pqc/save', [PqcSubmissionController::class, 'storeOrUpdate'])
+    ->name('vendor.pqc.save');
 
 Route::get('/vendors/export', function () {
     return Excel::download(new VendorsExport, 'vendors.xlsx');

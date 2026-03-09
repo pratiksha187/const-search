@@ -25,7 +25,7 @@
     </div>
   </a>
 
-  <a href="{{ route('boq_rfq_bids') }}"
+  <a href=""
      class="nav-pill {{ request()->routeIs('boq_rfq_bids') ? 'active' : '' }}">
     <div class="left">
       <i class="bi bi-clipboard2-data"></i> BOQ → RFQ → Bids
