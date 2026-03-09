@@ -142,12 +142,15 @@ class TenantSqlProvisioningService
         ");
 
 
-       $conn->statement(" CREATE TABLE `rfq_vendor_invites` (
+       $conn->statement("CREATE TABLE `rfq_vendor_invites` (
             `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             `rfq_id` BIGINT UNSIGNED NOT NULL,
             `vendor_id` BIGINT UNSIGNED NOT NULL,
             `project_id` BIGINT UNSIGNED NOT NULL,
-            
+            `reply_file` VARCHAR(255) NULL DEFAULT NULL,
+            `total_quote`  decimal(15,2) NULL DEFAULT NULL,
+            `delivery_timeline` VARCHAR(255) NULL DEFAULT NULL,
+            `selected_vendor` BIGINT UNSIGNED NULL,
             `status` VARCHAR(30) NOT NULL DEFAULT 'invited',
             `invited_at` TIMESTAMP NULL DEFAULT NULL,
             `created_at` TIMESTAMP NULL DEFAULT NULL,

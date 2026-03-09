@@ -662,7 +662,44 @@ class VenderController extends Controller
 
     //     return redirect()->back()->with('success', 'BOQ reply uploaded successfully.');
     // }
-    public function uploadBoqReply(Request $request)
+//     public function uploadBoqReply(Request $request)
+// {
+//     $vendorId = Session::get('vendor_id');
+
+//     if (!$vendorId) {
+//         return redirect()->back()->with('error', 'Vendor not logged in.');
+//     }
+
+//     $request->validate([
+//         'rfq_id'            => 'required|integer',
+//         'project_id'        => 'required|integer',
+//         'reply_file'        => 'required|file|mimes:pdf,xls,xlsx,csv,jpg,jpeg,png,txt|max:10240',
+//         'total_quote'       => 'required|numeric|min:0',
+//         'delivery_timeline' => 'required|string|max:255',
+//     ]);
+
+//     $path = $request->file('reply_file')->store('vendor/boq-replies', 'public');
+
+//     $updated = DB::connection('tenant')->table('rfq_vendor_invites')
+//         ->where('rfq_id', $request->rfq_id)
+//         ->where('project_id', $request->project_id)
+//         ->where('vendor_id', $vendorId)
+//         ->update([
+//             'reply_file'        => $path,
+//             'total_quote'       => $request->total_quote,
+//             'delivery_timeline' => $request->delivery_timeline,
+//             'status'            => 'replied',
+//             'replied_at'        => now(),
+//             'updated_at'        => now(),
+//         ]);
+
+//     if (!$updated) {
+//         return redirect()->back()->with('error', 'Upload done, but RFQ invite row not found.');
+//     }
+
+//     return redirect()->back()->with('success', 'BOQ reply uploaded successfully.');
+// }
+public function uploadBoqReply(Request $request)
 {
     $vendorId = Session::get('vendor_id');
 
@@ -678,8 +715,22 @@ class VenderController extends Controller
         'delivery_timeline' => 'required|string|max:255',
     ]);
 
+    // ✅ get tenant database name
+    $employer = DB::table('employers')->first();
+
+    if (!$employer || empty($employer->db_name)) {
+        return redirect()->back()->with('error', 'Tenant database not configured.');
+    }
+
+    // ✅ set tenant db dynamically
+    config(['database.connections.tenant.database' => $employer->db_name]);
+    DB::purge('tenant');
+    DB::reconnect('tenant');
+
+    // ✅ store file in public disk
     $path = $request->file('reply_file')->store('vendor/boq-replies', 'public');
 
+    // ✅ update tenant table
     $updated = DB::connection('tenant')->table('rfq_vendor_invites')
         ->where('rfq_id', $request->rfq_id)
         ->where('project_id', $request->project_id)
