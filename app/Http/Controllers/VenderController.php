@@ -535,14 +535,16 @@ class VenderController extends Controller
         ->where('vendor_id', $vendor_id)
         ->orderBy('created_at', 'desc')
         ->get();
-// dd($notifications);
-    $employer = DB::table('employers')->get();
-// dd($employer);
+    // dd($notifications);
+        $employer = DB::table('employers')->get();
+    // dd($employer);
     $rfqInviteNotifications = collect();
 
-    if ($employer->isNotEmpty() && !empty($employer[0]->db_name)) {
-        $dbName = $employer[0]->db_name;
+    // if ($employer->isNotEmpty() && !empty($employer[0]->db_name)) {
+    //     $dbName = $employer[0]->db_name;
+ if ($employer && !empty($employer->db_name)) {
 
+        $dbName = $employer->db_name;
         config(['database.connections.tenant.database' => $dbName]);
         DB::purge('tenant');
         DB::reconnect('tenant');
@@ -563,7 +565,7 @@ class VenderController extends Controller
                 'b.file_path as boq_file'
             )
             ->get();
-// dd($rfqInviteNotifications );
+        // dd($rfqInviteNotifications );
 
     }
 
