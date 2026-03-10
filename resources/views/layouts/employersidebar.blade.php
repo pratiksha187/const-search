@@ -25,12 +25,12 @@
     </div>
   </a>
 
-  <a href=""
+  <!-- <a href=""
      class="nav-pill {{ request()->routeIs('boq_rfq_bids') ? 'active' : '' }}">
     <div class="left">
       <i class="bi bi-clipboard2-data"></i> BOQ → RFQ → Bids
     </div>
-  </a>
+  </a> -->
 
   <a href="{{ route('po_grm_invoice') }}"
      class="nav-pill {{ request()->routeIs('po_grm_invoice') ? 'active' : '' }}">
@@ -39,7 +39,7 @@
     </div>
   </a>
 
-  <div class="small mt-3">ADMIN</div>
+  <!-- <div class="small mt-3">ADMIN</div>
 
   <a href="{{ route('vendor_network') }}"
      class="nav-pill {{ request()->routeIs('vendor_network') ? 'active' : '' }}">
@@ -53,7 +53,7 @@
     <div class="left">
       <i class="bi bi-gear"></i> Users & Roles
     </div>
-  </a>
+  </a> -->
 
   <div class="divider"></div>
   <div class="smallmuted px-2">

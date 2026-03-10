@@ -101,14 +101,14 @@
                 <div class="col-md-4 mb-3">
                     <strong>Client Name</strong>
                     <div class="text-muted">
-                        {{ $project->client_name ?? '-' }}
+                        {{ $project->contact_name ?? '-' }}
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
                     <strong>Client Mobile</strong>
                     <div class="text-muted">
-                        {{ $project->client_mobile ?? '-' }}
+                        {{ $project->mobile ?? '-' }}
                     </div>
                 </div>
 

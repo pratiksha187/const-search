@@ -16,6 +16,73 @@ class ERPController extends Controller
     public function erp(){
         return view('web.erp');
     }
+    
+    // public function dashboard()
+    // {
+    //     $activeprojects = DB::connection('tenant')->table('projects')->get();
+    //     $countactiveprojects = count($activeprojects);
+
+    //     $rfqs =  DB::connection('tenant')->table('rfqs')->get();
+    //     $countrfqs = count($rfqs);
+
+    //     $vendor_boq_replies =DB::connection('tenant')->table('vendor_boq_replies')->get();
+    //     $countvendor_boq_replies =count($vendor_boq_replies);
+
+    //     // dd($countactiveprojects);
+    //     return view('web.employers.dashboard',compact('countactiveprojects','countrfqs','countvendor_boq_replies'));
+    // }
+    public function dashboard()
+{
+    $tenant = DB::connection('tenant');
+
+    $countactiveprojects = $tenant->table('projects')->count();
+
+    $countrfqs = $tenant->table('rfqs')->count();
+
+    $countvendor_boq_replies = $tenant->table('vendor_boq_replies')->count();
+
+    // latest RFQ
+    $latestRfq = $tenant->table('rfqs')
+        ->orderByDesc('id')
+        ->first();
+
+    $latestRfqBids = 0;
+    $latestRfqVendors = 0;
+
+    if ($latestRfq) {
+        $latestRfqBids = $tenant->table('vendor_boq_replies')
+            ->where('rfq_id', $latestRfq->id)
+            ->count();
+
+        $latestRfqVendors = $tenant->table('rfq_vendor_invites')
+            ->where('rfq_id', $latestRfq->id)
+            ->count();
+    }
+
+    // latest purchase order
+    $latestPo = $tenant->table('purchase_orders')
+        ->orderByDesc('id')
+        ->first();
+
+    // latest GRN count for PO
+    $latestPoGrnCount = 0;
+    if ($latestPo) {
+        $latestPoGrnCount = $tenant->table('grns')
+            ->where('purchase_order_id', $latestPo->id)
+            ->count();
+    }
+
+    return view('web.employers.dashboard', compact(
+        'countactiveprojects',
+        'countrfqs',
+        'countvendor_boq_replies',
+        'latestRfq',
+        'latestRfqBids',
+        'latestRfqVendors',
+        'latestPo',
+        'latestPoGrnCount'
+    ));
+}
 
     public function erpproject(){
         $work_types = DB::connection('mysql')->table('work_types')->get();
@@ -233,7 +300,7 @@ class ERPController extends Controller
             )
             ->where('p.id', $id)
             ->first();
-
+// dd( $project);
         if (!$project) {
             abort(404);
         }

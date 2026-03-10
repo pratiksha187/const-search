@@ -528,9 +528,12 @@ Route::post('/admin/vendor/agreement/store/{id}',
     // Route::middleware(['employer.auth'])->group(function () {
     Route::middleware(['employer.auth', 'switch.db','tenant'])->group(function () {
 
-        Route::get('/employer/dashboard', function () {
-            return view('web.employers.dashboard');
-        })->name('employers.dashboard');
+        // Route::get('/employer/dashboard', function () {
+        //     return view('web.employers.dashboard');
+        // })->name('employers.dashboard');
+
+        Route::get('/employer/dashboard', [ERPController::class, 'dashboard'])
+        ->name('employers.dashboard');
 
         Route::get('/employer/projects/{id}', 
             [ERPController::class, 'showProject']
