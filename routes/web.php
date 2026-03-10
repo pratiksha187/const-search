@@ -509,6 +509,8 @@ Route::post('/admin/vendor/agreement/store/{id}',
     Route::post('/admin/post-agreement/store/{id}', [AdminController::class, 'storePostAgreement'])
         ->name('admin.post.agreement.store');
     Route::get('/employers', [EmployerController::class, 'index'])->name('admin.employers.index');
+    Route::get('/registeremployers', [EmployerController::class, 'registeremployers'])->name('admin.employers.registeremployers');
+    
     Route::get('/employers/create', [EmployerController::class, 'create'])->name('admin.employers.create');
     Route::post('/employers/store', [EmployerController::class, 'store'])->name('admin.employers.store');
     Route::post('/employers/{id}/toggle', [EmployerController::class, 'toggleStatus'])->name('admin.employers.toggle');
@@ -533,7 +535,7 @@ Route::post('/admin/vendor/agreement/store/{id}',
         Route::get('/employer/projects/{id}', 
             [ERPController::class, 'showProject']
         )->name('employer.projects.show');
-Route::post('/employer/projects/{projectId}/select-winner', [ERPController::class, 'selectWinner']);
+        Route::post('/employer/projects/{projectId}/select-winner', [ERPController::class, 'selectWinner']);
         // routes/web.php
         Route::post('/employer/pqc/{id}/accept', [ERPController::class, 'acceptPqc'])
         ->name('employer.pqc.accept');

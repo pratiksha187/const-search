@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Employer extends Model
 {
+    protected $table= 'employers';
     protected $fillable = [
         'name','email','mobile','password',
         'company_name','company_email','company_phone',

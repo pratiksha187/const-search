@@ -58,6 +58,7 @@
                     <thead class="table-light">
                         <tr>
                             <th>Project</th>
+                            <th>Mobile</th>
                             <th>Type</th>
                             <th>Location</th>
                             <th>Budget</th>
@@ -74,6 +75,9 @@
                                     <div class="small text-muted">
                                         {{ $project->code }}
                                     </div>
+                                </td>
+                                <td>
+                                    {{ $project->mobile ?? '-' }}
                                 </td>
 
                                 <td>

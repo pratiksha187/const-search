@@ -71,6 +71,7 @@ class TenantSqlProvisioningService
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL UNIQUE,
+                mobile VARCHAR(25) NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 role VARCHAR(50) NOT NULL DEFAULT 'employer_admin',
                 active TINYINT(1) NOT NULL DEFAULT 1,
@@ -151,6 +152,7 @@ class TenantSqlProvisioningService
             `total_quote`  decimal(15,2) NULL DEFAULT NULL,
             `delivery_timeline` VARCHAR(255) NULL DEFAULT NULL,
             `selected_vendor` BIGINT UNSIGNED NULL,
+            `replied_at` TIMESTAMP NULL DEFAULT NULL,
             `status` VARCHAR(30) NOT NULL DEFAULT 'invited',
             `invited_at` TIMESTAMP NULL DEFAULT NULL,
             `created_at` TIMESTAMP NULL DEFAULT NULL,
@@ -162,36 +164,36 @@ class TenantSqlProvisioningService
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
 
- $conn->statement("CREATE TABLE `mail_logs` (
-  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `type` VARCHAR(60) NOT NULL,
-  `rfq_id` BIGINT UNSIGNED NULL,
-  `vendor_id` BIGINT UNSIGNED NULL,
-  `to_email` VARCHAR(255) NOT NULL,
-  `subject` VARCHAR(255) NULL,
-  `status` VARCHAR(30) NOT NULL DEFAULT 'queued',
-  `error` TEXT NULL,
-  `created_at` TIMESTAMP NULL DEFAULT NULL,
-  `updated_at` TIMESTAMP NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_type` (`type`),
-  KEY `idx_rfq_id` (`rfq_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $conn->statement("CREATE TABLE `mail_logs` (
+            `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            `type` VARCHAR(60) NOT NULL,
+            `rfq_id` BIGINT UNSIGNED NULL,
+            `vendor_id` BIGINT UNSIGNED NULL,
+            `to_email` VARCHAR(255) NOT NULL,
+            `subject` VARCHAR(255) NULL,
+            `status` VARCHAR(30) NOT NULL DEFAULT 'queued',
+            `error` TEXT NULL,
+            `created_at` TIMESTAMP NULL DEFAULT NULL,
+            `updated_at` TIMESTAMP NULL DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `idx_type` (`type`),
+            KEY `idx_rfq_id` (`rfq_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
 
 
 
-$conn->statement("CREATE TABLE `vendor_boq_replies` (
-  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `vendor_id` BIGINT UNSIGNED DEFAULT NULL,
-  `rfq_id` BIGINT UNSIGNED DEFAULT NULL,
-  `project_id` BIGINT UNSIGNED DEFAULT NULL,
-  `file_path` VARCHAR(255) DEFAULT NULL,
-  `status` VARCHAR(50) DEFAULT 'uploaded',
-  `remarks` TEXT DEFAULT NULL,
-  `created_at` TIMESTAMP NULL DEFAULT NULL,
-  `updated_at` TIMESTAMP NULL DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        $conn->statement("CREATE TABLE `vendor_boq_replies` (
+            `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+            `vendor_id` BIGINT UNSIGNED DEFAULT NULL,
+            `rfq_id` BIGINT UNSIGNED DEFAULT NULL,
+            `project_id` BIGINT UNSIGNED DEFAULT NULL,
+            `file_path` VARCHAR(255) DEFAULT NULL,
+            `status` VARCHAR(50) DEFAULT 'uploaded',
+            `remarks` TEXT DEFAULT NULL,
+            `created_at` TIMESTAMP NULL DEFAULT NULL,
+            `updated_at` TIMESTAMP NULL DEFAULT NULL,
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
         // 4) rfqs table
         $conn->statement("
             CREATE TABLE rfqs (
@@ -227,7 +229,7 @@ $conn->statement("CREATE TABLE `vendor_boq_replies` (
                 "
         );
 
-         $conn->statement("
+        $conn->statement("
          CREATE TABLE rfq_bids (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             rfq_id BIGINT UNSIGNED NOT NULL,
@@ -268,7 +270,7 @@ $conn->statement("CREATE TABLE `vendor_boq_replies` (
                 id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 po_no VARCHAR(50) NOT NULL UNIQUE,
                 project_id BIGINT UNSIGNED NULL,
-                vendor_name VARCHAR(255) NOT NULL,
+                vendor_name VARCHAR(255) NOT NULL, 
                 total DECIMAL(15,2) NOT NULL DEFAULT 0,
                 status VARCHAR(50) NOT NULL DEFAULT 'Open',
                 created_at TIMESTAMP NULL DEFAULT NULL,

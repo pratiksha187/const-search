@@ -19,168 +19,168 @@
       gtag('config', 'G-EM9F50FXF3');
     </script>
     @stack('styles')
-<style>
-:root{
-    --navy:#1c2c3e;
-    --orange:#f25c05;
-    --bg:#f5f6fa;
-    --border:#e5e7eb;
-}
+    <style>
+    :root{
+        --navy:#1c2c3e;
+        --orange:#f25c05;
+        --bg:#f5f6fa;
+        --border:#e5e7eb;
+    }
 
-body{
-    margin:0;
-    font-family:'Poppins',sans-serif;
-    background:var(--bg);
-}
+    body{
+        margin:0;
+        font-family:'Poppins',sans-serif;
+        background:var(--bg);
+    }
 
-/* ================= LAYOUT ================= */
+    /* ================= LAYOUT ================= */
 
-.app-layout{
-    display:flex;
-    min-height:100vh;
-}
+    .app-layout{
+        display:flex;
+        min-height:100vh;
+    }
 
-/* ================= SIDEBAR ================= */
+    /* ================= SIDEBAR ================= */
 
-.sidebar{
-    width:270px;
-    background:#fff;
-    border-right:1px solid var(--border);
-    position:fixed;
-    top:0;
-    bottom:0;
-    left:0;
-    overflow-y:auto;
-}
-
-/* LOGO */
-.sidebar-logo{
-    height:85px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-bottom:1px solid var(--border);
-}
-
-.sidebar-logo img{
-    height:55px;
-}
-
-/* MENU */
-.sidebar-menu{
-    padding:20px 14px;
-}
-
-/* MENU ITEM */
-.menu-item{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:12px 16px;
-    border-radius:12px;
-    font-weight:600;
-    font-size:14px;
-    color:var(--navy);
-    text-decoration:none;
-    margin-bottom:6px;
-    transition:.25s;
-    cursor:pointer;
-}
-
-.menu-item i{
-    font-size:18px;
-}
-
-.menu-item:hover,
-.menu-item.active{
-    background:var(--orange);
-    color:#fff;
-}
-
-/* GROUP TITLE */
-.menu-group-title{
-    font-size:11px;
-    font-weight:700;
-    color:#94a3b8;
-    margin:20px 16px 10px;
-    text-transform:uppercase;
-}
-
-/* SUB MENU */
-.sub-menu{
-    display:none;
-    padding-left:10px;
-}
-
-.sub-menu a{
-    display:block;
-    padding:10px 14px;
-    font-size:13px;
-    border-radius:10px;
-    text-decoration:none;
-    color:var(--navy);
-    margin-bottom:5px;
-}
-
-.sub-menu a:hover,
-.sub-menu a.active{
-    background:#fff3ec;
-    color:var(--orange);
-}
-
-/* ARROW */
-.menu-arrow{
-    font-size:14px;
-    transition:.3s;
-}
-
-.rotate{
-    transform:rotate(90deg);
-}
-
-/* FOOTER */
-.sidebar-footer{
-    padding:15px;
-    border-top:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.profile-avatar{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:var(--orange);
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:700;
-}
-
-/* ================= CONTENT ================= */
-
-.main-content{
-    margin-left:270px;
-    padding:32px;
-    width:calc(100% - 270px);
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:768px){
     .sidebar{
-        transform:translateX(-100%);
+        width:270px;
+        background:#fff;
+        border-right:1px solid var(--border);
+        position:fixed;
+        top:0;
+        bottom:0;
+        left:0;
+        overflow-y:auto;
     }
-    .main-content{
-        margin-left:0;
-        width:100%;
-    }
-}
 
-</style>
+    /* LOGO */
+    .sidebar-logo{
+        height:85px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-bottom:1px solid var(--border);
+    }
+
+    .sidebar-logo img{
+        height:55px;
+    }
+
+    /* MENU */
+    .sidebar-menu{
+        padding:20px 14px;
+    }
+
+    /* MENU ITEM */
+    .menu-item{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        padding:12px 16px;
+        border-radius:12px;
+        font-weight:600;
+        font-size:14px;
+        color:var(--navy);
+        text-decoration:none;
+        margin-bottom:6px;
+        transition:.25s;
+        cursor:pointer;
+    }
+
+    .menu-item i{
+        font-size:18px;
+    }
+
+    .menu-item:hover,
+    .menu-item.active{
+        background:var(--orange);
+        color:#fff;
+    }
+
+    /* GROUP TITLE */
+    .menu-group-title{
+        font-size:11px;
+        font-weight:700;
+        color:#94a3b8;
+        margin:20px 16px 10px;
+        text-transform:uppercase;
+    }
+
+    /* SUB MENU */
+    .sub-menu{
+        display:none;
+        padding-left:10px;
+    }
+
+    .sub-menu a{
+        display:block;
+        padding:10px 14px;
+        font-size:13px;
+        border-radius:10px;
+        text-decoration:none;
+        color:var(--navy);
+        margin-bottom:5px;
+    }
+
+    .sub-menu a:hover,
+    .sub-menu a.active{
+        background:#fff3ec;
+        color:var(--orange);
+    }
+
+    /* ARROW */
+    .menu-arrow{
+        font-size:14px;
+        transition:.3s;
+    }
+
+    .rotate{
+        transform:rotate(90deg);
+    }
+
+    /* FOOTER */
+    .sidebar-footer{
+        padding:15px;
+        border-top:1px solid var(--border);
+        display:flex;
+        align-items:center;
+        gap:12px;
+    }
+
+    .profile-avatar{
+        width:42px;
+        height:42px;
+        border-radius:50%;
+        background:var(--orange);
+        color:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:700;
+    }
+
+    /* ================= CONTENT ================= */
+
+    .main-content{
+        margin-left:270px;
+        padding:32px;
+        width:calc(100% - 270px);
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @media(max-width:768px){
+        .sidebar{
+            transform:translateX(-100%);
+        }
+        .main-content{
+            margin-left:0;
+            width:100%;
+        }
+    }
+
+    </style>
 </head>
 
 <body>
@@ -259,13 +259,14 @@ body{
                 <i class="bi bi-chevron-right menu-arrow"></i>
             </div>
             <div class="sub-menu">
+                <a href="{{ route('admin.employers.registeremployers') }}" class="{{ request()->routeIs('admin.employers.*') ? 'active' : '' }}">
+                <span class="icon">Register Employer</span>
+                </a>
                 <a href="{{ route('admin.employers.index') }}" class="{{ request()->routeIs('admin.employers.*') ? 'active' : '' }}">
                 <span class="icon">Employers</span>
                 </a>
 
-                <!-- <a href="{{ route('admin.employers.create') }}" class="{{ request()->routeIs('admin.employers.*') ? 'active' : '' }}">
-                <span class="icon">Employer</span>
-                </a> -->
+               
             </div>
 
         </nav>

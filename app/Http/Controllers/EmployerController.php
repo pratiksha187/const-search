@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 use App\Services\TenantSqlProvisioningService;
 use Illuminate\Support\Str;
 
+use App\Mail\EmployerWelcomeMail;
+use Illuminate\Support\Facades\Mail;
+
 class EmployerController extends Controller
 {
 
@@ -20,79 +23,148 @@ class EmployerController extends Controller
 
         return view('web.employers.index', compact('employers'));
     }
+
+    public function registeremployers(){
+        $reg_employee = DB::table('erp_interest_registrations')
+            ->orderByDesc('id')
+            ->get();
+            // dd($reg_employee);
+        return view('web.employers.registeremployers',compact('reg_employee'));
+    }
+
     public function create()
     {
         return view('web.employers.create');
     }
 
  
-    
     public function store(Request $request, TenantSqlProvisioningService $tenantSql)
-    {
-        $validated = $request->validate([
-            // employer
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|max:255|unique:employers,email',
-            'mobile'   => 'nullable|string|max:20',
-            'password' => 'required|string|min:6|confirmed',
+{
+    $validated = $request->validate([
+        'name'     => 'required|string|max:255',
+        'email'    => 'required|email|max:255|unique:employers,email',
+        'mobile'   => 'nullable|string|max:20',
+        'password' => 'required|string|min:6|confirmed',
 
-            // company
-            'company_name'    => 'required|string|max:255',
-            'company_email'   => 'nullable|email|max:255',
-            'company_phone'   => 'nullable|string|max:20',
-            'gst_number'      => 'nullable|string|max:30',
-            'pan_number'      => 'nullable|string|max:20',
-            'company_address' => 'nullable|string|max:1000',
-            'state'           => 'nullable|string|max:100',
-            'city'            => 'nullable|string|max:100',
-            'pincode'         => 'nullable|string|max:10',
-            'website'         => 'nullable|string|max:255',
+        'company_name'    => 'required|string|max:255',
+        'company_email'   => 'nullable|email|max:255',
+        'company_phone'   => 'nullable|string|max:20',
+        'gst_number'      => 'nullable|string|max:30',
+        'pan_number'      => 'nullable|string|max:20',
+        'company_address' => 'nullable|string|max:1000',
+        'state'           => 'nullable|string|max:100',
+        'city'            => 'nullable|string|max:100',
+        'pincode'         => 'nullable|string|max:10',
+        'website'         => 'nullable|string|max:255',
+        'is_active'       => 'nullable|boolean',
+    ]);
 
-            'is_active'       => 'nullable|boolean',
-        ]);
+    $slug = Str::slug($validated['company_name'], '_');
+    $dbName = 'ck_erp_' . $slug . '_' . time();
 
-        DB::beginTransaction();
+    $plainPassword = $validated['password'];
 
-        try {
-            // ✅ create tenant database name
-            $slug = Str::slug($validated['company_name'], '_');
-            $dbName = 'ck_erp_' . $slug . '_' . time();  // ex: ck_erp_company_170...
+    $validated['password'] = Hash::make($validated['password']);
+    $validated['is_active'] = $request->boolean('is_active', true);
+    $validated['db_name'] = $dbName;
 
-            // ✅ save employer in MASTER db
-            $plainPassword = $validated['password']; // keep before hashing
-            $validated['password'] = Hash::make($validated['password']);
-            $validated['is_active'] = $request->boolean('is_active', true);
-            $validated['db_name'] = $dbName;
+    // save employer in master db
+    $employer = Employer::create($validated);
 
-            $employer = Employer::create($validated);
+    // create tenant db
+    $tenantSql->provision($dbName);
 
-            $tenantSql->provision($dbName);
+    // switch tenant db
+    $tenantSql->switchTenantDb($dbName);
 
-            // Switch DB
-            $tenantSql->switchTenantDb($dbName);
+    // insert employer admin in tenant users table
+    DB::connection('tenant')->table('users')->insert([
+        'name'       => $validated['name'],
+        'email'      => $validated['email'],
+        'mobile'     => $validated['mobile'] ?? null,
+        'password'   => Hash::make($plainPassword),
+        'role'       => 'employer_admin',
+        'active'     => 1,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
 
-            // logger(DB::connection('tenant')->getDatabaseName());
-            DB::connection('tenant')->table('users')->insert([
-                'name'       => $validated['name'],
-                'email'      => $validated['email'],
-                'mobile'     => $validated['mobile'] ?? null,
-                'password'   => Hash::make($plainPassword),
-                'role'       => 'employer_admin',
-                'active'     => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+    // send welcome mail
+    $loginUrl = url('/employer/login');
 
-            DB::commit();
+    Mail::to($employer->email)->send(
+        new EmployerWelcomeMail($employer, $plainPassword, $loginUrl)
+    );
 
-            return redirect()->route('admin.employers.create')
-                ->with('success', 'Employer added successfully + Tenant DB created ✅');
+    return redirect()->route('admin.employers.create')
+        ->with('success', 'Employer added successfully + Tenant DB created + Welcome mail sent ✅');
+}
+    // public function store(Request $request, TenantSqlProvisioningService $tenantSql)
+    // {
+    //     $validated = $request->validate([
+    //         // employer
+    //         'name'     => 'required|string|max:255',
+    //         'email'    => 'required|email|max:255|unique:employers,email',
+    //         'mobile'   => 'nullable|string|max:20',
+    //         'password' => 'required|string|min:6|confirmed',
 
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return back()->withInput()->with('error', $e->getMessage());
-        }
-    }
+    //         // company
+    //         'company_name'    => 'required|string|max:255',
+    //         'company_email'   => 'nullable|email|max:255',
+    //         'company_phone'   => 'nullable|string|max:20',
+    //         'gst_number'      => 'nullable|string|max:30',
+    //         'pan_number'      => 'nullable|string|max:20',
+    //         'company_address' => 'nullable|string|max:1000',
+    //         'state'           => 'nullable|string|max:100',
+    //         'city'            => 'nullable|string|max:100',
+    //         'pincode'         => 'nullable|string|max:10',
+    //         'website'         => 'nullable|string|max:255',
+
+    //         'is_active'       => 'nullable|boolean',
+    //     ]);
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         // ✅ create tenant database name
+    //         $slug = Str::slug($validated['company_name'], '_');
+    //         $dbName = 'ck_erp_' . $slug . '_' . time();  // ex: ck_erp_company_170...
+
+    //         // ✅ save employer in MASTER db
+    //         $plainPassword = $validated['password']; // keep before hashing
+    //         $validated['password'] = Hash::make($validated['password']);
+    //         $validated['is_active'] = $request->boolean('is_active', true);
+    //         $validated['db_name'] = $dbName;
+
+    //         $employer = Employer::create($validated);
+
+    //         $tenantSql->provision($dbName);
+
+    //         // Switch DB
+    //         $tenantSql->switchTenantDb($dbName);
+
+    //         // logger(DB::connection('tenant')->getDatabaseName());
+    //         DB::connection('tenant')->table('users')->insert([
+    //             'name'       => $validated['name'],
+    //             'email'      => $validated['email'],
+    //             'mobile'     => $validated['mobile'] ?? null,
+    //             'password'   => Hash::make($plainPassword),
+    //             'role'       => 'employer_admin',
+    //             'active'     => 1,
+    //             'created_at' => now(),
+    //             'updated_at' => now(),
+    //         ]);
+
+    //         DB::commit();
+
+    //         return redirect()->route('admin.employers.create')
+    //             ->with('success', 'Employer added successfully + Tenant DB created ✅');
+
+    //     } catch (\Throwable $e) {
+    //         DB::rollBack();
+    //         return back()->withInput()->with('error', $e->getMessage());
+    //     }
+    // }
 public function switchTenantDb(string $dbName): void
 {
     // Set DB name dynamically
