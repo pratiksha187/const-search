@@ -563,8 +563,21 @@ $(document).on('click','.buy-credit-btn',function(){
                     credits:credits
                 },function(v){
                     if(v.success){
-                        Swal.fire('Success','Payment completed & credits added!','success')
-                        .then(()=>location.reload());
+                        // Swal.fire('Success','Payment completed & credits added!','success')
+                        // .then(()=>location.reload());
+                        Swal.fire({
+                            icon:'success',
+                            title:'Payment Successful',
+                            text:'Credits added. Invoice downloading...'
+                        });
+
+                        if(v.invoice_url){
+                            window.open(v.invoice_url,'_blank');
+                        }
+
+                        setTimeout(()=>{
+                            location.reload();
+                        },2000);
                     }else{
                         Swal.fire('Error','Verification failed','error');
                     }

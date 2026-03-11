@@ -120,6 +120,10 @@ Route::post('/razorpay/create-order', [RazorpayController::class, 'createOrder']
 Route::post('/razorpay/verify', [RazorpayController::class, 'verifyPayment'])
     ->name('razorpay.verify');
 
+Route::get('/invoice/{paymentId}',[RazorpayController::class,'downloadInvoice'])
+->name('invoice.download');
+
+
 Route::get('/vendor_reg_form', [HomeController::class, 'vendor_reg_form'])->name('vendor_reg_form');
 
 Route::get('/supplierorder', [SuppliersController::class, 'supplierandorder'])->name('supplier.orders');
