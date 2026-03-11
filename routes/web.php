@@ -528,9 +528,6 @@ Route::post('/admin/vendor/agreement/store/{id}',
     // Route::middleware(['employer.auth'])->group(function () {
     Route::middleware(['employer.auth', 'switch.db','tenant'])->group(function () {
 
-        // Route::get('/employer/dashboard', function () {
-        //     return view('web.employers.dashboard');
-        // })->name('employers.dashboard');
 
         Route::get('/employer/dashboard', [ERPController::class, 'dashboard'])
         ->name('employers.dashboard');
@@ -553,17 +550,17 @@ Route::post('/admin/vendor/agreement/store/{id}',
         
         Route::get('erp-project', [ERPController::class, 'erpproject'])->name('erpproject');
         Route::get('/employer/projects/{projectId}/compare-vendor-replies',
-    [ERPController::class, 'compareVendorReplies']
-)->name('employer.compare.vendor.replies');
+            [ERPController::class, 'compareVendorReplies']
+        )->name('employer.compare.vendor.replies');
         Route::get('/employer/projects/{project}/pqc', [ERPController::class,'pqc'])
         ->name('employer.projects.pqc');
         // Route::get('boq-rfq-bids', [ERPController::class, 'boq_rfq_bids'])->name('boq_rfq_bids');
         Route::get('/employer/boq-rfq-bids/{projectId}', [ERPController::class, 'boq_rfq_bids'])
         ->name('boq_rfq_bids');
 
-    Route::post('/employer/rfq-invite/{id}/select-winner', [ERPController::class, 'selectWinner'])
-    ->name('employer.select.winner');
-    Route::post('/employer/rfq/invite', [RfqController::class,'invite'])->name('employer.rfq.invite');
+        Route::post('/employer/rfq-invite/{id}/select-winner', [ERPController::class, 'selectWinner'])
+        ->name('employer.select.winner');
+        Route::post('/employer/rfq/invite', [RfqController::class,'invite'])->name('employer.rfq.invite');
     
         Route::get('po-grm-invoice', [ERPController::class, 'po_grm_invoice'])->name('po_grm_invoice');
 
@@ -582,13 +579,13 @@ Route::post('/admin/vendor/agreement/store/{id}',
         Route::delete('/employer/users/delete/{id}', [EmployerUserController::class, 'destroy'])
                 ->name('employer.users.delete');
 
-     Route::get('/company/users', [CompanyUserController::class, 'index']);
+        Route::get('/company/users', [CompanyUserController::class, 'index']);
 
-     Route::post('/company/users/update/{id}', 
-        [CompanyUserController::class, 'update'])
-        ->name('employer.users.update');
-    Route::post('/company/users/store', [CompanyUserController::class, 'store']);
-    Route::delete('/company/users/delete/{id}', [CompanyUserController::class, 'destroy']);
+        Route::post('/company/users/update/{id}', 
+            [CompanyUserController::class, 'update'])
+            ->name('employer.users.update');
+        Route::post('/company/users/store', [CompanyUserController::class, 'store']);
+        Route::delete('/company/users/delete/{id}', [CompanyUserController::class, 'destroy']);
 
 
     Route::post('/save-project-details', 
@@ -608,13 +605,6 @@ Route::post('/admin/vendor/agreement/store/{id}',
       ->name('employer.accepted.vendors');
       
 
-  // step3 invite vendor
-//   Route::post('/rfq/invite', [ProcurementFlowController::class,'inviteVendor'])
-//       ->name('employer.rfq.invite');
-
-  // step3 list invited vendors
-//   Route::get('/rfq/{rfqId}/invited', [ProcurementFlowController::class,'invitedVendors'])
-//       ->name('employer.rfq.invited');
 Route::get('/rfq/{rfq}/invited', [RfqController::class, 'invited'])->name('rfq.invited');
   // step4 submit/simulate bid
   Route::post('/rfq/bid', [ProcurementFlowController::class,'submitBid'])

@@ -9,7 +9,7 @@
     <h4 class="mb-1">Welcome, {{ session('employer_name') }}</h4>
     <p class="smallmuted mb-0">{{ session('employer_email') }}</p>
 
-         <section class="section active mt-3" id="sec-dash">
+    <section class="section active mt-3" id="sec-dash">
       <div class="row g-3">
         <div class="col-lg-3 col-md-6">
           <div class="cardx kpi">
@@ -144,43 +144,31 @@
             </div>
         </div>
 
-        <!-- <div class="col-lg-4">
-          <div class="cardx p-3">
-            <h6 class="mb-1" style="font-weight:900;color:var(--navy)">Quick Actions</h6>
-            <div class="smallmuted mb-3">One-click actions MSMEs need</div>
-
-            <div class="d-grid gap-2">
-              <button class="btn-soft" onclick="go('projects')"><i class="bi bi-plus-circle"></i> Create Project</button>
-              <button class="btn-soft" onclick="go('sourcing'); setStep(1);"><i class="bi bi-upload"></i> Upload BOQ</button>
-              <button class="btn-soft" onclick="go('sourcing'); setStep(3);"><i class="bi bi-megaphone"></i> Invite Vendors</button>
-              <button class="btn-soft" onclick="go('po')"><i class="bi bi-receipt"></i> Create Purchase Order</button>
-            </div>
-          </div>
-        </div> -->
+      
         <div class="col-lg-4">
-    <div class="cardx p-3">
-        <h6 class="mb-1" style="font-weight:900;color:var(--navy)">Quick Actions</h6>
-        <div class="smallmuted mb-3">One-click actions MSMEs need</div>
+            <div class="cardx p-3">
+                <h6 class="mb-1" style="font-weight:900;color:var(--navy)">Quick Actions</h6>
+                <div class="smallmuted mb-3">One-click actions MSMEs need</div>
 
-        <div class="d-grid gap-2">
+                <div class="d-grid gap-2">
 
-            <a href="{{ route('erpproject') }}" class="btn-soft text-decoration-none">
-                <i class="bi bi-plus-circle"></i> Create Project
-            </a>
+                    <a href="{{ route('erpproject') }}" class="btn-soft text-decoration-none">
+                        <i class="bi bi-plus-circle"></i> Create Project
+                    </a>
 
-            <a href="{{ route('erpproject') }}" class="btn-soft text-decoration-none">
-                <i class="bi bi-upload"></i> Upload BOQ
-            </a>
+                    <a href="{{ route('erpproject') }}" class="btn-soft text-decoration-none">
+                        <i class="bi bi-upload"></i> Upload BOQ
+                    </a>
 
-            <a href="{{ route('erpproject') }}" class="btn-soft text-decoration-none">
-                <i class="bi bi-megaphone"></i> Invite Vendors
-            </a>
+                    <a href="{{ route('erpproject') }}" class="btn-soft text-decoration-none">
+                        <i class="bi bi-megaphone"></i> Invite Vendors
+                    </a>
 
-            
+                    
 
+                </div>
+            </div>
         </div>
-    </div>
-</div>
       </div>
     </section>
 @endsection
