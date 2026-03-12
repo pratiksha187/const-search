@@ -58,9 +58,13 @@ Route::get('/search-vendor', [HomeController::class, 'search_vendor'])->name('se
 // Route::get('/search-customer/{stateSlug?}', 
 //     [HomeController::class, 'search_customer']
 // )->name('search_customer');
-Route::get('/search-customer/{stateSlug?}/{districtSlug?}/{citySlug?}', 
-    [HomeController::class, 'search_customer']
-)->name('search_customer');
+// Route::get('/search-customer/{stateSlug?}/{districtSlug?}/{citySlug?}', 
+//     [HomeController::class, 'search_customer']
+// )->name('search_customer');
+
+Route::get('/search-customer/{workCategorySlug?}/{workSubcategorySlug?}/{stateSlug?}/{districtSlug?}/{citySlug?}', [HomeController::class, 'search_customer'])->name('search_customer');
+
+
 Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name('cutomerprofile');
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
 

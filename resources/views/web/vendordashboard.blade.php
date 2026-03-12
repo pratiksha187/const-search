@@ -353,10 +353,9 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
             <div class="hero-title">Hi {{ $vendor->name }} 👋</div>
             <div class="hero-sub">Track your leads, bids and projects at a glance.</div>
               {{-- AGREEMENT HIGHLIGHT SECTION --}}
-              @if(!empty($vendor->custntructkaro_agreement_file))
+             @if(!empty($vendor->custntructkaro_agreement_file))
 
-                  <div class="agreement-highlight agreement-active">
-
+                  <div class="agreement-highlight agreement-active d-flex justify-content-between align-items-center flex-wrap gap-2">
                       <div>
                           <i class="bi bi-shield-check text-success me-2"></i>
                           ConstructKaro Agreement Uploaded & Active
@@ -367,20 +366,19 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
                         class="agreement-btn btn btn-success btn-sm">
                           View Agreement
                       </a>
-
                   </div>
 
               @else
 
-                  <div class="agreement-highlight agreement-missing">
-
+                  <div class="agreement-highlight agreement-missing d-flex justify-content-between align-items-center flex-wrap gap-2">
                       <div>
                           <i class="bi bi-exclamation-triangle text-danger me-2"></i>
-                          Agreement Not Uploaded Yet
+                          Agreement Not Uploaded Yet. Please upload your agreement to activate it.
                       </div>
 
-                     
-
+                      <a href="{{ url('/vendor/agreement') }}" class="agreement-btn btn btn-outline-danger btn-sm">
+                          Upload Now
+                      </a>
                   </div>
 
               @endif
@@ -390,15 +388,17 @@ body{ background:var(--bg); font-family: Inter, system-ui, -apple-system, Segoe 
                 <i class="bi bi-shield-check"></i> Verified Vendor
               </span>
 
-              @if(($profilePercent ?? 0) >= 100)
-                <span class="pill">
-                  <i class="bi bi-check2-circle"></i> Profile Completed
-                </span>
-              @else
-                <span class="pill warn">
-                  <i class="bi bi-exclamation-circle"></i> Complete profile for more leads
-                </span>
-              @endif
+              <a href="{{ url('/vendor/profile') }}" class="text-decoration-none">
+                  @if(($profilePercent ?? 0) >= 100)
+                      <span class="pill">
+                          <i class="bi bi-check2-circle"></i> Profile Completed
+                      </span>
+                  @else
+                      <span class="pill warn">
+                          <i class="bi bi-exclamation-circle"></i> Complete profile for more leads
+                      </span>
+                  @endif
+              </a>
 
               <a href="javascript:void(0)" class="pill" data-bs-toggle="modal" data-bs-target="#howItWorksModal" style="text-decoration:none;">
                 <i class="bi bi-play-circle"></i> How it works?

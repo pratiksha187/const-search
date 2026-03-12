@@ -7,9 +7,9 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- <script>
    window.VENDOR_ID = @json($vendor_id);
-</script> -->
+   </script> -->
 <script>
-    window.VENDOR_ID = {!! $vendor_id ? $vendor_id : 'null' !!};
+   window.VENDOR_ID = {!! $vendor_id ? $vendor_id : 'null' !!};
 </script>
 <style>
    /* ================= ROOT ================= */
@@ -231,13 +231,11 @@
    font-weight:600;
    color:#4f46e5;
    }
-
    .lead-role-range{
    font-size:15px;
    font-weight:600;
    color:#f25c05;
    }
-   
    .verified-pill{
    background:#22c55e;
    color:#fff;
@@ -418,424 +416,403 @@
    font-weight:600;
    }
    /* ===== GRID STABILITY FIX ===== */
-.vendor-col {
-    display: flex;
-}
-
-.vendor-col.hidden {
-    display: none !important;
-}
-
-.lead-card.vendor-card {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-}
-
-/* Ensure actions always stay bottom */
-.lead-card{
-    position:relative;
-    overflow:hidden;
-}
-
-/* CORNER RIBBON */
-.corner-ribbon {
-    position: absolute;
-    top: 35px;
-    right: -52px;
-    transform: rotate(45deg);
-    background: #f25c05;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 5px 41px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
-    z-index: 20;
-}
-
-.corner-ribbon-coming{
-    position: absolute;
-    top: 22px;
-    right: -52px;
-    transform: rotate(45deg);
-    background: #dfb82b;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 5px 41px;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
-    z-index: 20;
-}
-
-.lead-header{
-    padding:14px 0;
-}
-
-.lead-title-wrap{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    flex-wrap:wrap;
-}
-
-/* title */
-.lead-title{
-    font-size:28px;
-    font-weight:800;
-    color:#0f172a;
-    margin:0;
-}
-
-/* pills */
-.lead-pill{
-    font-size:13px;
-    font-weight:600;
-    padding:6px 14px;
-    border-radius:999px;
-    line-height:1;
-    white-space:nowrap;
-}
-
-.lead-pill.completed{
-    background:#dcfce7;
-    color:#15803d;
-}
-
-.lead-pill.remaining{
-    background:#fff7ed;
-    color:#c2410c;
-}
-@media(max-width:576px){
-    .lead-title{
-        font-size:22px;
-    }
-}
-
-/* ====== PREMIUM LEAD CARD UI ====== */
-.lead-card.vendor-card{
-    background:#fff;
-    border:1px solid #e8eef5;
-    border-radius:16px;
-    padding:18px 18px 16px;
-    box-shadow:0 10px 26px rgba(15,23,42,.06);
-    transition:.25s;
-    position:relative;
-    overflow:hidden;
-}
-
-.lead-card.vendor-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 18px 46px rgba(15,23,42,.10);
-    border-color:#dbe7ff;
-}
-
-/* Left accent line like screenshot */
-.lead-card.vendor-card:before{
-    content:'';
-    position:absolute;
-    left:0;
-    top:0;
-    height:100%;
-    width:5px;
-    background:linear-gradient(180deg,#3b82f6,#8b5cf6);
-}
-
-/* Header */
-.lead-head{ margin-bottom:8px; }
-
-.lead-title-wrap{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap:14px;
-}
-
-.lead-title{
-    font-size:30px;
-    font-weight:900;
-    letter-spacing:.3px;
-    color:#0f172a;
-    text-transform:uppercase;
-    line-height:1.15;
-}
-
-/* Badges (Verified + Credits) */
-.lead-badges{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-    justify-content:flex-end;
-}
-
-.verified-pill{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding:8px 14px;
-    border-radius:999px;
-    font-size:13px;
-    font-weight:900;
-    background:#22c55e;
-    color:#fff;
-    white-space:nowrap;
-}
-
-.credits-pill{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    padding:8px 14px;
-    border-radius:999px;
-    font-size:13px;
-    font-weight:900;
-    background:#eef2ff;
-    color:#3730a3;
-    border:1px solid #c7d2fe;
-    white-space:nowrap;
-}
-.credits-pill.prime{
-    background:#fff7ed;
-    color:#b45309;
-    border-color:#fed7aa;
-}
-.credits-pill i{ font-size:14px; }
-
-/* Role + Location + Budget */
-.lead-role{
-    font-weight:900;
-    color:#4f46e5;
-    font-size:16px;
-}
-
-.lead-location{
-    color:#64748b;
-    font-weight:700;
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
-.lead-role-range{
-    margin-top:6px;
-    font-weight:900;
-    color:#f25c05;
-}
-
-/* Tags */
-.lead-tags{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:12px;
-}
-
-.lead-tag{
-    background:#f1f5f9;
-    border:1px solid #e2e8f0;
-    color:#0f172a;
-    font-weight:800;
-    font-size:13px;
-    padding:8px 12px;
-    border-radius:14px;
-}
-
-/* Contact box */
-.contact-box{
-    margin-top:14px;
-    padding:14px 14px;
-    background:#f8fafc;
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-}
-
-.contact-box strong{ color:#0f172a; }
-
-/* Button */
-.lead-actions{
-    margin-top:14px;
-}
-
-.btn-outline-lead{
-    width:100%;
-    display:inline-flex;
-    justify-content:center;
-    align-items:center;
-    padding:13px 14px;
-    border-radius:14px;
-    font-weight:900;
-    font-size:16px;
-    border:2px solid #8aa1ff;
-    color:#4f46e5;
-    text-decoration:none;
-    transition:.2s;
-    background:#fff;
-}
-.btn-outline-lead:hover{
-    background:#4f46e5;
-    border-color:#4f46e5;
-    color:#fff;
-}
-
-/* Corner ribbons */
-.corner-ribbon, .corner-ribbon-coming{
-    position:absolute;
-    top:43px;
-    right:-46px;
-    transform:rotate(45deg);
-    padding:10px 60px;
-    font-size:12px;
-    font-weight:900;
-    color:#fff;
-    text-transform:uppercase;
-}
-.corner-ribbon{ background:#16a34a; }
-.corner-ribbon-coming{ background:#f59e0b; }
-
-/* Responsive title */
-@media(max-width: 768px){
-    .lead-title{ font-size:22px; }
-}
-
-body{
-    background:
-        linear-gradient(rgba(244,246,251,0.95), rgba(244,246,251,0.95)),
-        url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=60');
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-}
-
-/* Add subtle overlay texture */
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image: url('https://www.transparenttextures.com/patterns/concrete-wall.png');
-    opacity:0.08;
-    pointer-events:none;
-}
-.lead-title{
-    font-weight:900;
-    font-size:28px;
-    color:#1c2c3e;
-    text-transform:uppercase;
-    letter-spacing:1px;
-}
-
+   .vendor-col {
+   display: flex;
+   }
+   .vendor-col.hidden {
+   display: none !important;
+   }
+   .lead-card.vendor-card {
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+   height: 100%;
+   }
+   /* Ensure actions always stay bottom */
+   .lead-card{
+   position:relative;
+   overflow:hidden;
+   }
+   /* CORNER RIBBON */
+   .corner-ribbon {
+   position: absolute;
+   top: 35px;
+   right: -52px;
+   transform: rotate(45deg);
+   background: #f25c05;
+   color: #fff;
+   font-size: 11px;
+   font-weight: 700;
+   padding: 5px 41px;
+   text-transform: uppercase;
+   letter-spacing: .5px;
+   box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+   z-index: 20;
+   }
+   .corner-ribbon-coming{
+   position: absolute;
+   top: 22px;
+   right: -52px;
+   transform: rotate(45deg);
+   background: #dfb82b;
+   color: #fff;
+   font-size: 11px;
+   font-weight: 700;
+   padding: 5px 41px;
+   text-transform: uppercase;
+   letter-spacing: .5px;
+   box-shadow: 0 6px 16px rgba(0, 0, 0, .25);
+   z-index: 20;
+   }
+   .lead-header{
+   padding:14px 0;
+   }
+   .lead-title-wrap{
+   display:flex;
+   align-items:center;
+   gap:14px;
+   flex-wrap:wrap;
+   }
+   /* title */
+   .lead-title{
+   font-size:28px;
+   font-weight:800;
+   color:#0f172a;
+   margin:0;
+   }
+   /* pills */
+   .lead-pill{
+   font-size:13px;
+   font-weight:600;
+   padding:6px 14px;
+   border-radius:999px;
+   line-height:1;
+   white-space:nowrap;
+   }
+   .lead-pill.completed{
+   background:#dcfce7;
+   color:#15803d;
+   }
+   .lead-pill.remaining{
+   background:#fff7ed;
+   color:#c2410c;
+   }
+   @media(max-width:576px){
+   .lead-title{
+   font-size:22px;
+   }
+   }
+   /* ====== PREMIUM LEAD CARD UI ====== */
+   .lead-card.vendor-card{
+   background:#fff;
+   border:1px solid #e8eef5;
+   border-radius:16px;
+   padding:18px 18px 16px;
+   box-shadow:0 10px 26px rgba(15,23,42,.06);
+   transition:.25s;
+   position:relative;
+   overflow:hidden;
+   }
+   .lead-card.vendor-card:hover{
+   transform:translateY(-4px);
+   box-shadow:0 18px 46px rgba(15,23,42,.10);
+   border-color:#dbe7ff;
+   }
+   /* Left accent line like screenshot */
+   .lead-card.vendor-card:before{
+   content:'';
+   position:absolute;
+   left:0;
+   top:0;
+   height:100%;
+   width:5px;
+   background:linear-gradient(180deg,#3b82f6,#8b5cf6);
+   }
+   /* Header */
+   .lead-head{ margin-bottom:8px; }
+   .lead-title-wrap{
+   display:flex;
+   align-items:flex-start;
+   justify-content:space-between;
+   gap:14px;
+   }
+   .lead-title{
+   font-size:30px;
+   font-weight:900;
+   letter-spacing:.3px;
+   color:#0f172a;
+   text-transform:uppercase;
+   line-height:1.15;
+   }
+   /* Badges (Verified + Credits) */
+   .lead-badges{
+   display:flex;
+   align-items:center;
+   gap:10px;
+   flex-wrap:wrap;
+   justify-content:flex-end;
+   }
+   .verified-pill{
+   display:inline-flex;
+   align-items:center;
+   gap:8px;
+   padding:8px 14px;
+   border-radius:999px;
+   font-size:13px;
+   font-weight:900;
+   background:#22c55e;
+   color:#fff;
+   white-space:nowrap;
+   }
+   .credits-pill{
+   display:inline-flex;
+   align-items:center;
+   gap:8px;
+   padding:8px 14px;
+   border-radius:999px;
+   font-size:13px;
+   font-weight:900;
+   background:#eef2ff;
+   color:#3730a3;
+   border:1px solid #c7d2fe;
+   white-space:nowrap;
+   }
+   .credits-pill.prime{
+   background:#fff7ed;
+   color:#b45309;
+   border-color:#fed7aa;
+   }
+   .credits-pill i{ font-size:14px; }
+   /* Role + Location + Budget */
+   .lead-role{
+   font-weight:900;
+   color:#4f46e5;
+   font-size:16px;
+   }
+   .lead-location{
+   color:#64748b;
+   font-weight:700;
+   display:flex;
+   align-items:center;
+   gap:8px;
+   }
+   .lead-role-range{
+   margin-top:6px;
+   font-weight:900;
+   color:#f25c05;
+   }
+   /* Tags */
+   .lead-tags{
+   display:flex;
+   flex-wrap:wrap;
+   gap:10px;
+   margin-top:12px;
+   }
+   .lead-tag{
+   background:#f1f5f9;
+   border:1px solid #e2e8f0;
+   color:#0f172a;
+   font-weight:800;
+   font-size:13px;
+   padding:8px 12px;
+   border-radius:14px;
+   }
+   /* Contact box */
+   .contact-box{
+   margin-top:14px;
+   padding:14px 14px;
+   background:#f8fafc;
+   border:1px solid #e2e8f0;
+   border-radius:14px;
+   }
+   .contact-box strong{ color:#0f172a; }
+   /* Button */
+   .lead-actions{
+   margin-top:14px;
+   }
+   .btn-outline-lead{
+   width:100%;
+   display:inline-flex;
+   justify-content:center;
+   align-items:center;
+   padding:13px 14px;
+   border-radius:14px;
+   font-weight:900;
+   font-size:16px;
+   border:2px solid #8aa1ff;
+   color:#4f46e5;
+   text-decoration:none;
+   transition:.2s;
+   background:#fff;
+   }
+   .btn-outline-lead:hover{
+   background:#4f46e5;
+   border-color:#4f46e5;
+   color:#fff;
+   }
+   /* Corner ribbons */
+   .corner-ribbon, .corner-ribbon-coming{
+   position:absolute;
+   top:43px;
+   right:-46px;
+   transform:rotate(45deg);
+   padding:10px 60px;
+   font-size:12px;
+   font-weight:900;
+   color:#fff;
+   text-transform:uppercase;
+   }
+   .corner-ribbon{ background:#16a34a; }
+   .corner-ribbon-coming{ background:#f59e0b; }
+   /* Responsive title */
+   @media(max-width: 768px){
+   .lead-title{ font-size:22px; }
+   }
+   body{
+   background:
+   linear-gradient(rgba(244,246,251,0.95), rgba(244,246,251,0.95)),
+   url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1600&q=60');
+   background-size: cover;
+   background-attachment: fixed;
+   background-position: center;
+   }
+   /* Add subtle overlay texture */
+   body::before{
+   content:"";
+   position:fixed;
+   inset:0;
+   background-image: url('https://www.transparenttextures.com/patterns/concrete-wall.png');
+   opacity:0.08;
+   pointer-events:none;
+   }
+   .lead-title{
+   font-weight:900;
+   font-size:28px;
+   color:#1c2c3e;
+   text-transform:uppercase;
+   letter-spacing:1px;
+   }
 </style>
-
 {{-- ================= MAIN CONTENT ================= --}}
 <div class="container-fluid px-4 py-4">
    <div class="row g-4">
       {{-- ================= SIDEBAR ================= --}}
       <div class="col-lg-3">
-         <div class="filter-sidebar">
+        <div class="filter-sidebar">
             <div class="filter-header">
-               <div class="filter-icon-box"><i class="bi bi-funnel-fill"></i></div>
-               <div>
-                  <h5 class="mb-0 fw-bold">Smart Filters</h5>
-                  <small class="text-muted">Refine your search</small>
-               </div>
+                <div class="filter-icon-box"><i class="bi bi-funnel-fill"></i></div>
+                <div>
+                    <h5 class="mb-0 fw-bold">Smart Filters</h5>
+                    <small class="text-muted">Refine your search</small>
+                </div>
             </div>
+
             <div class="mb-4">
-               <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h6 class="fw-bold mb-0">Work Category</h6>
-                  <span class="badge bg-primary rounded-pill" id="categoryCount">0</span>
-               </div>
-               <div id="categoryFilters">
-                  @foreach($work_types as $work)
-                  <div class="mb-2">
-                     <label class="filter-category-item d-flex align-items-center gap-3">
-                        <input type="checkbox" class="form-check-input m-0 category-check" value="{{ $work->id }}">
-                        <div class="category-icon"><i class="bi {{ $work->icon }}"></i></div>
-                        <span class="fw-semibold">{{ $work->work_type }}</span>
-                     </label>
-                     <div class="ms-5 mt-2 d-none subtype-box" data-type="{{ $work->id }}">
-                        @foreach(DB::table('work_subtypes')->where('work_type_id',$work->id)->get() as $sub)
-                        <label class="d-flex align-items-center gap-2 mb-1 small">
-                        <input type="checkbox" class="form-check-input subtype-check" value="{{ $sub->id }}">
-                        {{ $sub->work_subtype }}
-                        </label>
-                        @endforeach
-                     </div>
-                  </div>
-                  @endforeach
-               </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-bold mb-0">Work Category</h6>
+                    <span class="badge bg-primary rounded-pill" id="categoryCount">
+                        {{ isset($selectedWorkType) && $selectedWorkType ? 1 : 0 }}
+                    </span>
+                </div>
+
+                <div id="categoryFilters">
+                    @foreach($work_types as $work)
+                        @php
+                            $isSelectedCategory = isset($selectedWorkType) && $selectedWorkType && $selectedWorkType->id == $work->id;
+                            $subtypes = $work_subtypes[$work->id] ?? collect();
+                        @endphp
+
+                        <div class="mb-2">
+                            <label class="filter-category-item d-flex align-items-center gap-3">
+                                <input type="checkbox"
+                                    class="form-check-input m-0 category-check"
+                                    value="{{ $work->id }}"
+                                    data-slug="{{ \Illuminate\Support\Str::slug($work->work_type) }}"
+                                    {{ $isSelectedCategory ? 'checked' : '' }}>
+
+                                <div class="category-icon">
+                                    <i class="bi {{ $work->icon }}"></i>
+                                </div>
+
+                                <span class="fw-semibold">{{ $work->work_type }}</span>
+                            </label>
+
+                            <div class="ms-5 mt-2 subtype-box {{ $isSelectedCategory ? '' : 'd-none' }}"
+                                data-type="{{ $work->id }}">
+
+                                @foreach($subtypes as $sub)
+                                    @php
+                                        $isSelectedSubcategory = isset($selectedWorkSubType) && $selectedWorkSubType && $selectedWorkSubType->id == $sub->id;
+                                    @endphp
+
+                                    <label class="d-flex align-items-center gap-2 mb-1 small">
+                                        <input type="checkbox"
+                                            class="form-check-input subtype-check"
+                                            value="{{ $sub->id }}"
+                                            data-parent-type="{{ $work->id }}"
+                                            data-slug="{{ \Illuminate\Support\Str::slug($sub->work_subtype) }}"
+                                            {{ $isSelectedSubcategory ? 'checked' : '' }}>
+                                        {{ $sub->work_subtype }}
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-         </div>
-      </div>
+        </div>
+    </div>
       {{-- ================= MAIN LIST ================= --}}
       <div class="col-lg-9">
          <div class="search-section mb-4">
             <div class="row g-3 align-items-end">
-               <div class="col-lg-4 col-md-6">
-                  <label class="form-label fw-semibold small text-muted">
-                  <i class="bi bi-geo-alt-fill me-1 text-primary"></i> State
-                  </label>
-              
-                  <select id="stateSelect" class="form-select form-select-custom">
-                     <option value="">Select State</option>
-                     @foreach($states as $s)
-                        <option value="{{ $s->id }}"
-                              data-slug="{{ $s->name }}"
-                              {{ isset($state) && $state && $state->id == $s->id ? 'selected' : '' }}>
-                              {{ $s->name }}
-                        </option>
-                     @endforeach
-                  </select>
-               </div>
-               <div class="col-lg-4 col-md-6">
-                  <label class="form-label fw-semibold small text-muted">
-                  <i class="bi bi-map-fill me-1 text-indigo"></i> District
-                  </label>
-                  <!-- <select id="regionSelect" class="form-select form-select-custom" disabled>
-                     <option value="">Select District</option>
-                  </select> -->
-                 <select id="regionSelect" class="form-select form-select-custom"
-                     {{ isset($state) && $state ? '' : 'disabled' }}>
+             <div class="col-lg-4 col-md-6">
+                    <label class="form-label fw-semibold small text-muted">
+                        <i class="bi bi-geo-alt-fill me-1 text-primary"></i> State
+                    </label>
+                    <select id="stateSelect" class="form-select form-select-custom">
+                        <option value="">Select State</option>
+                        @foreach($states as $s)
+                            <option value="{{ $s->id }}"
+                                    data-slug="{{ \Illuminate\Support\Str::slug($s->name) }}"
+                                    {{ isset($state) && $state && $state->id == $s->id ? 'selected' : '' }}>
+                                {{ $s->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-                     <option value="">Select District</option>
-
-                     @if(isset($districts))
+                <div class="col-lg-4 col-md-6">
+                    <label class="form-label fw-semibold small text-muted">
+                        <i class="bi bi-map-fill me-1 text-indigo"></i> District
+                    </label>
+                    <select id="regionSelect" class="form-select form-select-custom" {{ isset($state) && $state ? '' : 'disabled' }}>
+                        <option value="">Select District</option>
                         @foreach($districts as $d)
-                              <option value="{{ $d->id }}"
-                                 data-slug="{{ $d->name }}"
-                                 {{ isset($district) && $district && $district->id == $d->id ? 'selected' : '' }}>
-                                 {{ $d->name }}
-                              </option>
+                            <option value="{{ $d->id }}"
+                                    data-slug="{{ \Illuminate\Support\Str::slug($d->name) }}"
+                                    {{ isset($district) && $district && $district->id == $d->id ? 'selected' : '' }}>
+                                {{ $d->name }}
+                            </option>
                         @endforeach
-                     @endif
-                  </select>
-               </div>
-               <div class="col-lg-4 col-md-12">
-                  <label class="form-label fw-semibold small text-muted">
-                  <i class="bi bi-buildings-fill me-1 text-orange"></i> Region
-                  </label>
-                  <!-- <select id="citySelect" class="form-select form-select-custom" disabled>
-                     <option value="">Select City</option>
-                  </select> -->
-                  <select id="citySelect" class="form-select form-select-custom"
-                     {{ isset($district) && $district ? '' : 'disabled' }}>
+                    </select>
+                </div>
 
-                     <option value="">Select City</option>
-
-                     @if(isset($cities))
+                <div class="col-lg-4 col-md-12">
+                    <label class="form-label fw-semibold small text-muted">
+                        <i class="bi bi-buildings-fill me-1 text-orange"></i> Region
+                    </label>
+                    <select id="citySelect" class="form-select form-select-custom" {{ isset($district) && $district ? '' : 'disabled' }}>
+                        <option value="">Select Region</option>
                         @foreach($cities as $c)
-                              <option value="{{ $c->id }}"
-                                 data-slug="{{ $c->name }}"
-                                 {{ isset($city) && $city && $city->id == $c->id ? 'selected' : '' }}>
-                                 {{ $c->name }}
-                              </option>
+                            <option value="{{ $c->id }}"
+                                    data-slug="{{ \Illuminate\Support\Str::slug($c->name) }}"
+                                    {{ isset($city) && $city && $city->id == $c->id ? 'selected' : '' }}>
+                                {{ $c->name }}
+                            </option>
                         @endforeach
-                     @endif
-                  </select>
-               </div>
+                    </select>
+                </div>
             </div>
          </div>
          <div class="mb-4">
@@ -845,30 +822,23 @@ body::before{
                      <h2 class="lead-title">
                         <i class="bi bi-building-fill text-warning me-2"></i>
                         {{ $projects->count() }} Professional Construction Leads
-                    </h2>   
-
+                     </h2>
                      <span class="lead-pill completed">
-                        <i class="bi bi-check-circle-fill me-1"></i>
-                       {{ $complited_project->count() }} Completed 
+                     <i class="bi bi-check-circle-fill me-1"></i>
+                     {{ $complited_project->count() }} Completed 
                      </span>
-
                      <span class="lead-pill remaining">
-                        <i class="bi bi-hourglass-split me-1"></i>
-                        {{ $remaining_projects->count() }} Remaining
+                     <i class="bi bi-hourglass-split me-1"></i>
+                     {{ $remaining_projects->count() }} Remaining
                      </span>
-
                   </div>
                </div>
-
             </div>
          </div>
          {{-- RESULTS --}}
          <div class="row g-4">
-            
             @foreach($projects as $project)
-           
-               <div class="col-xl-6 col-lg-6 col-md-12 vendor-col">
-
+            <div class="col-xl-6 col-lg-6 col-md-12 vendor-col">
                <div class="lead-card vendor-card"
                   data-work-type-id="{{ $project->work_type_id }}"
                   data-work-subtype-id="{{ $project->work_subtype_id }}"
@@ -879,37 +849,32 @@ body::before{
                   data-city-id="{{ $project->city }}"
                   data-project-id="{{ $project->id }}">
                   {{-- HEADER --}}
-               
                   {{-- HEADER --}}
-                    <div class="lead-head">
-                        <div class="lead-title-wrap">
-                            <div class="lead-title">{{ strtoupper($project->title) }}</div>
-
-                            <div class="lead-badges">
-                                <span class="verified-pill">
-                                    <i class="bi bi-check-circle-fill"></i> Verified
-                                </span>
-
-                                @if(($project->lead_credit_label ?? '') === 'Prime Lead')
-                                    <span class="credits-pill prime">
-                                        <i class="bi bi-lightning-charge-fill"></i> Prime Lead
-                                    </span>
-                                @elseif(!empty($project->lead_credit_value))
-                                    <span class="credits-pill credits">
-                                        <i class="bi bi-coin"></i> {{ $project->lead_credit_value }} Credits
-                                    </span>
-                                @endif
-                            </div>
+                  <div class="lead-head">
+                     <div class="lead-title-wrap">
+                        <div class="lead-title">{{ strtoupper($project->title) }}</div>
+                        <div class="lead-badges">
+                           <span class="verified-pill">
+                           <i class="bi bi-check-circle-fill"></i> Verified
+                           </span>
+                           @if(($project->lead_credit_label ?? '') === 'Prime Lead')
+                           <span class="credits-pill prime">
+                           <i class="bi bi-lightning-charge-fill"></i> Prime Lead
+                           </span>
+                           @elseif(!empty($project->lead_credit_value))
+                           <span class="credits-pill credits">
+                           <i class="bi bi-coin"></i> {{ $project->lead_credit_value }} Credits
+                           </span>
+                           @endif
                         </div>
-
-                        {{-- CORNER RIBBONS --}}
-                        @if($project->get_vendor == 1)
-                            <div class="corner-ribbon">Vendor Matched</div>
-                        @elseif($project->get_vendor == 2)
-                            <div class="corner-ribbon-coming">Coming Soon</div>
-                        @endif
-                    </div>
-
+                     </div>
+                     {{-- CORNER RIBBONS --}}
+                     @if($project->get_vendor == 1)
+                     <div class="corner-ribbon">Vendor Matched</div>
+                     @elseif($project->get_vendor == 2)
+                     <div class="corner-ribbon-coming">Coming Soon</div>
+                     @endif
+                  </div>
                   {{-- ROLE --}}
                   <div class="lead-role mb-1">
                      {{ $project->work_type }}
@@ -921,12 +886,9 @@ body::before{
                      {{ $project->regionname }},
                      {{ $project->cityname }}
                   </div>
-
-                   <div class="lead-role-range mb-1">
+                  <div class="lead-role-range mb-1">
                      {{ $project->budget_range_name }}
                   </div>
-
-
                   {{-- TAGS --}}
                   <div class="lead-tags">
                      @foreach(explode(',', $project->work_subtype) as $sub)
@@ -973,23 +935,21 @@ body::before{
                      </div>
                   </div>
                   {{-- ACTIONS (SAME handleInterested) --}}
-                 
                   <div class="lead-actions">
                      @if($project->get_vendor == 1 || $project->get_vendor == 2)
-                        <a href="javascript:void(0)"
-                           class="btn-outline-lead disabled"
-                           style="pointer-events:none;opacity:0.5;">
-                           View Profile
-                        </a>
+                     <a href="javascript:void(0)"
+                        class="btn-outline-lead disabled"
+                        style="pointer-events:none;opacity:0.5;">
+                     View Profile
+                     </a>
                      @else
-                        <a href="javascript:void(0)"
-                           class="btn-outline-lead view-profile-btn"
-                           data-id="{{ $project->id }}">
-                           View Profile
-                        </a>
+                     <a href="javascript:void(0)"
+                        class="btn-outline-lead view-profile-btn"
+                        data-id="{{ $project->id }}">
+                     View Profile
+                     </a>
                      @endif
                   </div>
-
                </div>
             </div>
             @endforeach
@@ -1066,7 +1026,6 @@ body::before{
                </small>
             </div>
          </div>
-       
       </div>
    </div>
 </div>
@@ -1101,306 +1060,182 @@ body::before{
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<!-- <script>
+   (function () {
+   
+       $(document).ready(function () {
+   
+           function getSelectedCategorySlug() {
+               return $('.category-check:checked').first().data('slug') || '';
+           }
+   
+           function getSelectedSubcategorySlug() {
+               return $('.subtype-check:checked').first().data('slug') || '';
+           }
+   
+           function buildSearchUrl() {
+               const categorySlug    = getSelectedCategorySlug();
+               const subcategorySlug = getSelectedSubcategorySlug();
+               const stateSlug       = $('#stateSelect option:selected').data('slug') || '';
+               const districtSlug    = $('#regionSelect option:selected').data('slug') || '';
+               const citySlug        = $('#citySelect option:selected').data('slug') || '';
+   
+               let parts = ['/search-customer'];
+   
+               if (categorySlug) parts.push(categorySlug);
+               if (subcategorySlug) parts.push(subcategorySlug);
+               if (stateSlug) parts.push(stateSlug);
+               if (districtSlug) parts.push(districtSlug);
+               if (citySlug) parts.push(citySlug);
+   
+               return parts.join('/');
+           }
+   
+           $('.category-check').on('change', function () {
+               $('.category-check').not(this).prop('checked', false);
+               $('.subtype-check').prop('checked', false);
+               $('.subtype-box').addClass('d-none');
+   
+               if (this.checked) {
+                   const box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
+                   if (box) box.classList.remove('d-none');
+               }
+   
+               window.location.href = buildSearchUrl();
+           });
+   
+           $('.subtype-check').on('change', function () {
+               $('.subtype-check').not(this).prop('checked', false);
+               window.location.href = buildSearchUrl();
+           });
+   
+           $('#stateSelect').on('change', function () {
+               window.location.href = buildSearchUrl();
+           });
+   
+           $('#regionSelect').on('change', function () {
+               window.location.href = buildSearchUrl();
+           });
+   
+           $('#citySelect').on('change', function () {
+               window.location.href = buildSearchUrl();
+           });
+   
+       });
+   
+   })();
+</script> -->
 <script>
 (function () {
-
     $(document).ready(function () {
 
-        /* ============================================================
-           AUTH MODAL
-        ============================================================ */
-
-        function showAuthModal() {
-            const el = document.getElementById('authModal');
-            if (!el) return;
-            bootstrap.Modal.getOrCreateInstance(el).show();
+        function getSelectedCategory() {
+            return $('.category-check:checked').first();
         }
 
-        function isLoggedInVendor() {
-            return !!window.VENDOR_ID;
+        function getSelectedSubcategory() {
+            return $('.subtype-check:checked').first();
         }
 
-        function resetLeadModalUI() {
-            $('#projectDetailsSection').addClass('d-none');
-            $('#remainingLeadsInfo').addClass('d-none').text('');
-            $('#lockedBox').addClass('d-none');
-            $('#pricingSection').addClass('d-none');
+        function getSelectedCategorySlug() {
+            const el = getSelectedCategory();
+            return el.length ? (el.data('slug') || '') : '';
         }
 
-        /* ============================================================
-           PROFILE REDIRECTS
-        ============================================================ */
+        function getSelectedSubcategorySlug() {
+            const el = getSelectedSubcategory();
+            return el.length ? (el.data('slug') || '') : '';
+        }
 
-        document.addEventListener('click', function (e) {
+        function buildSearchUrl() {
+            const categorySlug    = getSelectedCategorySlug();
+            const subcategorySlug = getSelectedSubcategorySlug();
+            const stateSlug       = $('#stateSelect option:selected').data('slug') || '';
+            const districtSlug    = $('#regionSelect option:selected').data('slug') || '';
+            const citySlug        = $('#citySelect option:selected').data('slug') || '';
 
-            const vendorBtn = e.target.closest('.view-vendor-profile-btn');
-            if (vendorBtn) {
-                e.preventDefault();
-                if (!isLoggedInVendor()) return showAuthModal();
-                const id = vendorBtn.dataset.id;
-                window.location.href = `{{ url('vendor/profile/id') }}/${id}`;
-                return;
+            let parts = ['/search-customer'];
+
+            if (categorySlug) {
+                parts.push(categorySlug);
+
+                if (subcategorySlug) {
+                    parts.push(subcategorySlug);
+                }
             }
 
-            const customerBtn = e.target.closest('.view-profile-btn');
-            if (customerBtn) {
-                e.preventDefault();
-                if (!isLoggedInVendor()) return showAuthModal();
-                const projectId = customerBtn.dataset.id;
-                window.location.href = `{{ url('customer/profile/id') }}/${projectId}`;
-                return;
+            if (stateSlug) {
+                parts.push(stateSlug);
             }
-        });
 
-        /* ============================================================
-           SHOW INTEREST HANDLER
-        ============================================================ */
+            if (districtSlug) {
+                parts.push(districtSlug);
+            }
 
-        document.addEventListener('click', function (e) {
-            const btn = e.target.closest('.show-interest-btn');
-            if (!btn) return;
+            if (citySlug) {
+                parts.push(citySlug);
+            }
 
-            e.preventDefault();
-
-            handleInterested(
-                btn.dataset.id,
-                btn.dataset.username,
-                btn.dataset.usersmobile,
-                btn.dataset.useremail,
-                '',
-                btn.dataset.title,
-                btn.dataset.work,
-                btn.dataset.location,
-                btn.dataset.budget,
-                btn.dataset.description,
-                btn.dataset.contactTime
-            );
-        });
-
-        function handleInterested(
-            id,
-            username,
-            usersmobile,
-            useremail,
-            contactName,
-            title,
-            work,
-            location,
-            budget,
-            description,
-            contactTime
-        ) {
-            if (!isLoggedInVendor()) return showAuthModal();
-
-            resetLeadModalUI();
-
-            $('#modalusername').text(username || '—');
-            $('#modalusersmobile').text(usersmobile || '—');
-            $('#modaluseremail').text(useremail || '—');
-            $('#modalTitle').text(title || '—');
-            $('#modalWork').text(work || '—');
-            $('#modalLocation').text(location || '—');
-            $('#modalBudget').text(budget || 'Flexible');
-            $('#modalDescription').text(description || '—');
-            $('#modalContactTime').text(contactTime || 'Anytime');
-            $('#modalPosted').text('Just now');
-
-            $.ajax({
-                url: "{{ route('customer.interest.check') }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    cust_id: id
-                },
-                success: function (res) {
-
-                    resetLeadModalUI();
-
-                    if (res.already_exists === true) {
-                        $('#projectDetailsSection').removeClass('d-none');
-                        bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
-                        return;
-                    }
-
-                    const remaining = parseInt(res.remaining, 10) || 0;
-
-                    if (remaining > 0 && res.payment_required === false) {
-                        $('#projectDetailsSection').removeClass('d-none');
-                        $('#remainingLeadsInfo')
-                            .removeClass('d-none')
-                            .text(`🎯 ${remaining} free leads remaining`);
-                        bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
-                        return;
-                    }
-
-                    $('#lockedBox').removeClass('d-none');
-                    $('#pricingSection').removeClass('d-none');
-                    bootstrap.Modal.getOrCreateInstance(document.getElementById('vendorModal')).show();
-                },
-                error: function () {
-                    Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
-                }
-            });
+            return parts.join('/');
         }
 
-        /* ============================================================
-           RAZORPAY
-        ============================================================ */
+        function refreshSidebarUI() {
+            const selectedCategory = getSelectedCategory();
+            const selectedCategoryId = selectedCategory.length ? selectedCategory.val() : null;
 
-        $(document).on('click', '.buy-plan-btn', function (e) {
+            $('.subtype-box').each(function () {
+                const boxType = $(this).data('type').toString();
 
-            e.preventDefault();
-
-            const plan = $(this).data('plan');
-            const amount = parseInt($(this).data('amount'), 10);
-            const custId = $(this).data('cust');
-
-            $.post("{{ route('razorpay.createOrder') }}", {
-                _token: "{{ csrf_token() }}",
-                cust_id: custId,
-                plan: plan,
-                amount: amount
-            }, function (res) {
-
-                if (!res || !res.success) {
-                    Swal.fire('Error', 'Order creation failed', 'error');
-                    return;
-                }
-
-                const options = {
-                    key: res.key,
-                    amount: res.amount,
-                    currency: "INR",
-                    name: "ConstructKaro",
-                    description: `${String(plan).toUpperCase()} Lead Package`,
-                    order_id: res.order_id,
-                    handler: function (response) {
-
-                        $.post("{{ route('razorpay.verify') }}", {
-                            _token: "{{ csrf_token() }}",
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_signature: response.razorpay_signature,
-                            cust_id: btoa(String(custId)),
-                            plan: plan,
-                            amount: amount
-                        }, function (verifyRes) {
-
-                            if (verifyRes && verifyRes.success) {
-
-                                const modalEl = document.getElementById('vendorModal');
-                                bootstrap.Modal.getInstance(modalEl)?.hide();
-
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Payment Successful',
-                                    text: `₹${amount} payment completed`,
-                                    confirmButtonColor: '#10b981'
-                                }).then(() => location.reload());
-
-                            } else {
-                                Swal.fire('Error', 'Payment verification failed', 'error');
-                            }
-                        });
-                    },
-                    theme: { color: "#2563eb" }
-                };
-
-                new Razorpay(options).open();
-            });
-        });
-
-        /* ============================================================
-           FRONTEND FILTERING (CATEGORY)
-        ============================================================ */
-
-        function applyFilters() {
-
-            const selectedCategories = $('.category-check:checked').map((_, el) => el.value).get();
-            const selectedSubtypes = $('.subtype-check:checked').map((_, el) => el.value).get();
-
-            let visible = 0;
-
-            document.querySelectorAll('.vendor-col').forEach(col => {
-
-                const card = col.querySelector('.vendor-card');
-                if (!card) return;
-
-                const cardTypeId = card.dataset.workTypeId || '';
-                const cardSubtypeIds = (card.dataset.workSubtypeId || '').split(',');
-
-                let categoryMatch = true;
-
-                if (selectedCategories.length) {
-                    categoryMatch = selectedCategories.includes(cardTypeId);
-                }
-
-                if (selectedSubtypes.length) {
-                    categoryMatch = categoryMatch &&
-                        selectedSubtypes.some(id => cardSubtypeIds.includes(id));
-                }
-
-                if (categoryMatch) {
-                    col.classList.remove('hidden');
-                    visible++;
+                if (selectedCategoryId && boxType === selectedCategoryId.toString()) {
+                    $(this).removeClass('d-none');
                 } else {
-                    col.classList.add('hidden');
+                    $(this).addClass('d-none');
                 }
             });
 
-            $('#categoryCount').text(selectedCategories.length);
+            $('#categoryCount').text(selectedCategory.length ? 1 : 0);
         }
+
+        refreshSidebarUI();
 
         $('.category-check').on('change', function () {
-            const box = document.querySelector(`.subtype-box[data-type="${this.value}"]`);
-            if (box) box.classList.toggle('d-none', !this.checked);
-            applyFilters();
+            if ($(this).is(':checked')) {
+                $('.category-check').not(this).prop('checked', false);
+                $('.subtype-check').prop('checked', false);
+            }
+
+            if (!$(this).is(':checked')) {
+                $('.subtype-check').prop('checked', false);
+            }
+
+            refreshSidebarUI();
+            window.location.href = buildSearchUrl();
         });
 
-        $('.subtype-check').on('change', applyFilters);
+        $('.subtype-check').on('change', function () {
+            const parentType = $(this).data('parent-type');
 
-        /* ============================================================
-           SEO DROPDOWN REDIRECT (STATE / DISTRICT / CITY)
-        ============================================================ */
+            $('.category-check').prop('checked', false);
+            $('.category-check[value="' + parentType + '"]').prop('checked', true);
+
+            $('.subtype-check').not(this).prop('checked', false);
+
+            refreshSidebarUI();
+            window.location.href = buildSearchUrl();
+        });
 
         $('#stateSelect').on('change', function () {
-
-            const slug = $('#stateSelect option:selected').data('slug');
-
-            if (slug) {
-                window.location.href = `/search-customer/${slug}`;
-            } else {
-                window.location.href = `/search-customer`;
-            }
+            window.location.href = buildSearchUrl();
         });
 
         $('#regionSelect').on('change', function () {
-
-            const stateSlug = $('#stateSelect option:selected').data('slug');
-            const districtSlug = $('#regionSelect option:selected').data('slug');
-
-            if (stateSlug && districtSlug) {
-                window.location.href = `/search-customer/${stateSlug}/${districtSlug}`;
-            }
+            window.location.href = buildSearchUrl();
         });
 
         $('#citySelect').on('change', function () {
-
-            const stateSlug = $('#stateSelect option:selected').data('slug');
-            const districtSlug = $('#regionSelect option:selected').data('slug');
-            const citySlug = $('#citySelect option:selected').data('slug');
-
-            if (stateSlug && districtSlug && citySlug) {
-                window.location.href = `/search-customer/${stateSlug}/${districtSlug}/${citySlug}`;
-            }
+            window.location.href = buildSearchUrl();
         });
-
-        applyFilters();
-
     });
-
 })();
 </script>
-
 @endsection
