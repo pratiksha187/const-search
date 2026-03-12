@@ -208,7 +208,7 @@
                                     </td>
 
                                     <td>
-                                        {{ $vendor->experience_year_name ?? 0 }} Years
+                                        {{ $vendor->experience_year_name ?? 0 }} 
                                     </td>
 
                                     <td>

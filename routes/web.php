@@ -560,6 +560,9 @@ Route::post('/admin/vendor/agreement/store/{id}',
         Route::get('/employer/projects/{projectId}/compare-vendor-replies',
             [ERPController::class, 'compareVendorReplies']
         )->name('employer.compare.vendor.replies');
+
+
+        
         Route::get('/employer/projects/{project}/pqc', [ERPController::class,'pqc'])
         ->name('employer.projects.pqc');
         // Route::get('boq-rfq-bids', [ERPController::class, 'boq_rfq_bids'])->name('boq_rfq_bids');
