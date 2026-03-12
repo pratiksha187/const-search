@@ -287,45 +287,82 @@ class ERPController extends Controller
             )
             ->where('p.id', $id)
             ->first();
-// dd( $project);
+        // dd( $project);
         if (!$project) {
             abort(404);
         }
 
         $search = $request->search;
 
+        // $vendors = DB::connection('mysql')
+        //     ->table('vendor_reg')
+        //     ->where('work_type_id', $project->work_type_id)
+        //     ->where('status', 'approved')
+        //     ->when($project->work_subtype_id, function ($query) use ($project) {
+        //         $query->whereRaw(
+        //             "JSON_CONTAINS(work_subtype_id, ?)",
+        //             ['"' . $project->work_subtype_id . '"']
+        //         );
+        //     })
+        //     ->when($project->city_id, function ($query) use ($project) {
+        //         $query->where(function ($q) use ($project) {
+        //             $q->where('city', $project->city_id)
+        //             ->orWhere('region', $project->region_id)
+        //             ->orWhere('state', $project->state_id)
+        //             ->orWhereNull('state');
+        //         });
+        //     })
+        //     ->when($search, function ($query) use ($search) {
+        //         $query->where(function ($q) use ($search) {
+        //             $q->where('business_name', 'like', '%' . $search . '%')
+        //             ->orWhere('email', 'like', '%' . $search . '%')
+        //             ->orWhere('mobile', 'like', '%' . $search . '%')
+        //             ->orWhere('contact_person_name', 'like', '%' . $search . '%')
+        //             ->orWhere('name', 'like', '%' . $search . '%');
+        //         });
+        //     })
+        //     ->orderByDesc('experience_years')
+        //     ->orderByDesc('lead_balance')
+        //     ->paginate(10)
+        //     ->withQueryString();
         $vendors = DB::connection('mysql')
-            ->table('vendor_reg')
-            ->where('work_type_id', $project->work_type_id)
-            ->where('status', 'approved')
-            ->when($project->work_subtype_id, function ($query) use ($project) {
-                $query->whereRaw(
-                    "JSON_CONTAINS(work_subtype_id, ?)",
-                    ['"' . $project->work_subtype_id . '"']
-                );
-            })
-            ->when($project->city_id, function ($query) use ($project) {
-                $query->where(function ($q) use ($project) {
-                    $q->where('city', $project->city_id)
-                    ->orWhere('region', $project->region_id)
-                    ->orWhere('state', $project->state_id)
-                    ->orWhereNull('state');
-                });
-            })
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('business_name', 'like', '%' . $search . '%')
-                    ->orWhere('email', 'like', '%' . $search . '%')
-                    ->orWhere('mobile', 'like', '%' . $search . '%')
-                    ->orWhere('contact_person_name', 'like', '%' . $search . '%')
-                    ->orWhere('name', 'like', '%' . $search . '%');
-                });
-            })
-            ->orderByDesc('experience_years')
-            ->orderByDesc('lead_balance')
-            ->paginate(10)
-            ->withQueryString();
-
+        ->table('vendor_reg')
+        ->leftJoin('experience_years', 'vendor_reg.experience_years', '=', 'experience_years.id')
+         ->leftJoin('team_size', 'vendor_reg.team_size', '=', 'team_size.id')
+        ->where('vendor_reg.work_type_id', $project->work_type_id)
+        ->where('vendor_reg.status', 'approved')
+        ->when($project->work_subtype_id, function ($query) use ($project) {
+            $query->whereRaw(
+                "JSON_CONTAINS(vendor_reg.work_subtype_id, ?)",
+                ['"' . $project->work_subtype_id . '"']
+            );
+        })
+        ->when($project->city_id, function ($query) use ($project) {
+            $query->where(function ($q) use ($project) {
+                $q->where('vendor_reg.city', $project->city_id)
+                ->orWhere('vendor_reg.region', $project->region_id)
+                ->orWhere('vendor_reg.state', $project->state_id)
+                ->orWhereNull('vendor_reg.state');
+            });
+        })
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('vendor_reg.business_name', 'like', '%' . $search . '%')
+                ->orWhere('vendor_reg.email', 'like', '%' . $search . '%')
+                ->orWhere('vendor_reg.mobile', 'like', '%' . $search . '%')
+                ->orWhere('vendor_reg.contact_person_name', 'like', '%' . $search . '%')
+                ->orWhere('vendor_reg.name', 'like', '%' . $search . '%');
+            });
+        })
+        ->select(
+            'vendor_reg.*',
+            'experience_years.experiance as experience_year_name','team_size.team_size as team_size_name'
+        )
+        ->orderByDesc('experience_years.experiance')
+        ->orderByDesc('vendor_reg.lead_balance')
+        ->paginate(10)
+        ->withQueryString();
+// dd($vendors);
         return view('web.employers.project_details', compact('project', 'vendors', 'search'));
     }
     public function sendSelectedMail(Request $request)

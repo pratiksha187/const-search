@@ -179,7 +179,7 @@
                                     <th>Contact</th>
                                     <th>Experience</th>
                                     <th>Team</th>
-                                    <th>Lead Balance</th>
+                                    <!-- <th>Lead Balance</th> -->
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -208,17 +208,12 @@
                                     </td>
 
                                     <td>
-                                        {{ $vendor->experience_years ?? 0 }} Years
+                                        {{ $vendor->experience_year_name ?? 0 }} Years
                                     </td>
 
                                     <td>
-                                        {{ $vendor->team_size ?? '-' }}
+                                        {{ $vendor->team_size_name ?? '-' }}
                                     </td>
-
-                                    <td>
-                                        {{ $vendor->lead_balance ?? 0 }}
-                                    </td>
-
                                     <td>
                                         <span class="badge
                                             @if($vendor->status == 'approved') bg-success
