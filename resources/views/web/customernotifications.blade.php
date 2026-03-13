@@ -256,7 +256,7 @@
 
                     <div class="col-md-4">
                         <label class="fw-bold text-muted small">Experience Years</label>
-                        <div>{{ $note->experience_years ?? '—' }}</div>
+                        <div>{{ $note->experiance_name ?? '—' }}</div>
                     </div>
 
                     <div class="col-md-4">
@@ -266,7 +266,7 @@
 
                     <div class="col-md-4">
                         <label class="fw-bold text-muted small">Team Size</label>
-                        <div>{{ $note->team_size ?? '—' }}</div>
+                        <div>{{ $note->team_size_name ?? '—' }}</div>
                     </div>
 
                     <div class="col-md-4">

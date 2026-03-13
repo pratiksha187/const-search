@@ -483,14 +483,21 @@ private function sendWhatsAppAfterRegister($mobile, $name, $role, $uid = null)
         ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
         ->leftJoin('entity_type as et', 'et.id', '=', 'v.entity_type')
         ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
-         ->leftJoin('region as r', 'r.id', '=', 'v.region')
-            ->leftJoin('city as c', 'c.id', '=', 'v.city')
-            ->leftJoin('state as s', 's.id', '=', 'v.state')
+        ->leftJoin('region as r', 'r.id', '=', 'v.region')
+        ->leftJoin('city as c', 'c.id', '=', 'v.city')
+        ->leftJoin('state as s', 's.id', '=', 'v.state')
+        ->leftJoin('team_size as ts', 'ts.id', '=', 'v.team_size')
+        ->leftJoin('experience_years as ey', 'ey.id', '=', 'v.experience_years')
+
+        
+
         ->whereIn('vi.customer_id', $postIds)
         ->select(
              's.name as statename',
+             'ts.team_size as team_size_name',
                     'r.name as regionname',
                     'c.name as cityname',
+                    'ey.experiance as experiance_name',
 
             'vi.*',
             'v.*',
