@@ -240,28 +240,12 @@ document.addEventListener('DOMContentLoaded', function () {
       {k:'Warehouse Address', v:p.address?.warehouse},
     ]);
 
-    const contactBlock = twoColTable([
-      {k:'Mobile', v:p.contact_numbers?.mobile},
-      {k:'Telephone', v:p.contact_numbers?.telephone},
-      {k:'Fax', v:p.contact_numbers?.fax},
-      {k:'Email', v:p.contact_numbers?.email},
-      {k:'Contact Person', v:p.contact_person?.name},
-      {k:'Designation', v:p.contact_person?.designation},
-      {k:'Contact Mobile', v:p.contact_person?.mobile},
-    ]);
-
+  
     // ---------- Org Capability / Proposed Team ----------
     const staffBlock = twoColTable([
       {k:'Org: Project Managers', v:p.org_capability?.project_managers},
       {k:'Org: Supervisors', v:p.org_capability?.supervisors},
-      {k:'Org: Safety Engineers', v:p.org_capability?.safety_engineers},
-      {k:'Org: Quality Engineers', v:p.org_capability?.quality_engineers},
-
-      {k:'Team: Project Managers', v:p.proposed_team?.project_managers},
-      {k:'Team: Supervisors', v:p.proposed_team?.supervisors},
-      {k:'Team: Safety Engineers', v:p.proposed_team?.safety_engineers},
-      {k:'Team: Quality Engineers', v:p.proposed_team?.quality_engineers},
-      {k:'Team: QS/Billing', v:p.proposed_team?.qs_billing},
+     
     ]);
 
     // ---------- Financials ----------
@@ -288,59 +272,20 @@ document.addEventListener('DOMContentLoaded', function () {
       ])
     );
 
-    // ---------- Insurance ----------
-    const ins = p.insurance || {};
-    const insuranceBlock = twoColTable([
-      {k:'Contractor All Risk', v:ins.contractor_all_risk},
-      {k:'Workmen Compensation', v:ins.workmen_comp},
-      {k:'Group Personal Accident', v:ins.group_personal_accident},
-      {k:'Group Mediclaim', v:ins.group_mediclaim},
-      {k:'Plant & Machinery', v:ins.plant_machinery},
-    ]);
-
-    // ---------- Statutory ----------
-    const st = p.statutory || {};
-    const statutoryBlock = twoColTable([
-      {k:'PF Reg No', v:st.pf},
-      {k:'ESI/WC Reg No', v:st.esi_wc},
-      {k:'GST Reg No', v:st.gst},
-      {k:'Labour License', v:st.labour_license},
-      {k:'MLWF', v:st.mlwf},
-      {k:'PT Employer', v:st.pt_employer},
-      {k:'PT Employee', v:st.pt_employee},
-      {k:'BOCWA', v:st.bocwa},
-      {k:'MSME', v:st.msme},
-      {k:'CA Certificate', v:st.ca_certificate},
-    ]);
-
-    // ---------- PAN / ISO / Legal ----------
-    const pan = p.pan || {};
-    const miscBlock = twoColTable([
-      {k:'PAN Number', v:pan.number},
-      {k:'IT Clearance', v:pan.it_clearance},
-      {k:'ISO Certified', v:p.iso_certified},
-      {k:'Legal Disputes', v:p.legal_disputes},
-      {k:'Quality Assurance', v:p.quality_assurance},
-      {k:'EHS System', v:p.ehs_system},
-      {k:'Prepared By', v:p.prepared_by},
-    ]);
+  
 
     // ---------- Layout ----------
     return `
       <div class="row g-3">
         <div class="col-md-6">${card('Company Details', companyBlock)}</div>
-        <div class="col-md-6">${card('Contact Details', contactBlock)}</div>
-
+       
         <div class="col-12">${card('Staff Strength & Proposed Team', staffBlock)}</div>
 
         <div class="col-12">${card('Financial Capacity', financialBlock)}</div>
 
         <div class="col-12">${card('Completed Projects', completedBlock)}</div>
 
-        <div class="col-md-6">${card('Insurance Cover', insuranceBlock)}</div>
-        <div class="col-md-6">${card('Statutory Compliances', statutoryBlock)}</div>
-
-        <div class="col-12">${card('PAN / ISO / Legal / QA / EHS', miscBlock)}</div>
+       
       </div>
     `;
   }
