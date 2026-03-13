@@ -1060,6 +1060,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <!-- <script>
    (function () {
    
@@ -1238,4 +1240,309 @@
     });
 })();
 </script>
+<script>
+    <script>
+   function requireLogin(callback) {
+    if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return false;
+    }
+    callback();
+}
+
+function viewProfile(id) {
+   if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
+    window.location.href = "{{ url('vendor/profile/id') }}/" + id;
+}
+</script>
+<script>
+document.addEventListener('click', function (e) {
+
+    const btn = e.target.closest('.view-profile-btn');
+    if (!btn) return;
+
+    e.preventDefault(); // ⛔ STOP default navigation
+
+    const projectId = btn.dataset.id;
+
+    // 🔐 LOGIN CHECK
+    if (!window.VENDOR_ID) {
+        new bootstrap.Modal(document.getElementById('authModal')).show();
+        return;
+    }
+
+    // ✅ Logged in → redirect
+    window.location.href = "{{ url('customer/profile/id') }}/" + projectId;
+});
+</script>
+
+<script>
+   document.addEventListener('click', function (e) {
+       const btn = e.target.closest('.show-interest-btn');
+       if (!btn) return;
+   
+       handleInterested(
+           btn.dataset.id,
+           btn.dataset.username,
+           btn.dataset.usersmobile,
+           btn.dataset.useremail,
+           '',
+           btn.dataset.title,
+           btn.dataset.work,
+           btn.dataset.location,
+           btn.dataset.budget,
+           btn.dataset.description,
+           btn.dataset.contactTime
+       );
+   });
+   
+   
+   function resetLeadModalUI() {
+       $('#projectDetailsSection').addClass('d-none');
+       $('#remainingLeadsInfo').addClass('d-none').text('');
+       $('#lockedBox').addClass('d-none');
+       $('#pricingSection').addClass('d-none');
+   }
+   
+   
+   function handleInterested(
+       id,
+       username,
+       usersmobile,
+       useremail,
+       contactName,
+       title,
+       work,
+       location,
+       budget,
+       description,
+       contactTime
+   ) {
+   
+       // 🔐 AUTH CHECK
+       if (!window.VENDOR_ID) {
+           new bootstrap.Modal(document.getElementById('authModal')).show();
+           return;
+       }
+   
+       resetLeadModalUI();
+   
+       // Fill modal data
+       $('#modalusername').text(username || '—');
+       $('#modalusersmobile').text(usersmobile || '—');
+       $('#modaluseremail').text(useremail || '—');
+       $('#modalTitle').text(title || '—');
+       $('#modalWork').text(work || '—');
+       $('#modalLocation').text(location || '—');
+       $('#modalBudget').text(budget || 'Flexible');
+       $('#modalDescription').text(description || '—');
+       $('#modalContactTime').text(contactTime || 'Anytime');
+       $('#modalPosted').text('Just now');
+   
+       $.ajax({
+           url: "{{ route('customer.interest.check') }}",
+           type: "POST",
+           data: {
+               _token: "{{ csrf_token() }}",
+               cust_id: id
+           },
+   
+          success: function (res) {
+          
+              resetLeadModalUI();
+          
+              /* ===============================
+                  1️⃣ ALREADY UNLOCKED
+              ================================ */
+              if (res.already_exists === true) {
+          
+                  $('#projectDetailsSection').removeClass('d-none');
+          
+                  new bootstrap.Modal(
+                      document.getElementById('vendorModal')
+                  ).show();
+          
+                  return; // ⛔ STOP HERE
+              }
+          
+              let remaining = parseInt(res.remaining, 10) || 0;
+          
+              /* ===============================
+                  2️⃣ FREE LEADS AVAILABLE
+              ================================ */
+              if (remaining > 0 && res.payment_required === false) {
+          
+                  $('#projectDetailsSection').removeClass('d-none');
+          
+                  $('#remainingLeadsInfo')
+                      .removeClass('d-none')
+                      .text(`🎯 ${remaining} free leads remaining`);
+          
+                  new bootstrap.Modal(
+                      document.getElementById('vendorModal')
+                  ).show();
+          
+                  return;
+              }
+          
+              /* ===============================
+                  3️⃣ PAYMENT REQUIRED
+              ================================ */
+              $('#lockedBox').removeClass('d-none');
+              $('#pricingSection').removeClass('d-none');
+          
+              new bootstrap.Modal(
+                  document.getElementById('vendorModal')
+              ).show();
+          },
+   
+           error: function () {
+               Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+           }
+       });
+   }
+</script>
+<script>
+
+   $(document).on('click', '.buy-plan-btn', function () {
+   
+       const plan   = $(this).data('plan');
+       const amount = parseInt($(this).data('amount'), 10);
+       const custId = $(this).data('cust');
+   
+       $.post("{{ route('razorpay.createOrder') }}", {
+           _token: "{{ csrf_token() }}",
+           cust_id: custId,
+           plan: plan,
+           amount: amount
+       }, function (res) {
+   
+           if (!res.success) {
+               Swal.fire('Error', 'Order creation failed', 'error');
+               return;
+           }
+   
+           const options = {
+               key: res.key,
+               amount: res.amount,
+               currency: "INR",
+               name: "ConstructKaro",
+               description: `${plan.toUpperCase()} Lead Package`,
+               order_id: res.order_id,
+               prefill: {
+                       name: "ConstructKaro",
+                       email: "connect@constructkaro.com",
+                       contact: "8806561819" 
+                   },
+   
+                   readonly: {
+                       contact: true,
+                       email: true
+                   },
+               handler: function (response) {
+   
+                   $.post("{{ route('razorpay.verify') }}", {
+                       _token: "{{ csrf_token() }}",
+                       razorpay_payment_id: response.razorpay_payment_id,
+                       razorpay_order_id: response.razorpay_order_id,
+                       razorpay_signature: response.razorpay_signature,
+                       cust_id: btoa(custId),
+                       plan: plan,
+                       amount: amount
+                   }, function (verifyRes) {
+   
+                       if (verifyRes.success) {
+                           document.activeElement?.blur();
+   
+                           bootstrap.Modal.getInstance(
+                               document.getElementById('vendorModal')
+                           ).hide();
+   
+                           Swal.fire({
+                               icon: 'success',
+                               title: 'Payment Successful',
+                               text: `₹${amount} payment completed`,
+                               confirmButtonColor: '#10b981'
+                           }).then(() => location.reload());
+                       } else {
+                           Swal.fire('Error', 'Payment verification failed', 'error');
+                       }
+                   });
+               },
+   
+               theme: { color: "#2563eb" }
+           };
+   
+           new Razorpay(options).open();
+       });
+   });
+</script>
+<script>
+
+function applyFilters() {
+
+    let selectedCategories = [];
+    let selectedSubtypes   = [];
+
+    $('.category-check:checked').each(function () {
+        selectedCategories.push(this.value);
+    });
+
+    $('.subtype-check:checked').each(function () {
+        selectedSubtypes.push(this.value);
+    });
+
+    let stateText    = $('#stateSelect option:selected').text().toLowerCase().trim();
+    let districtText = $('#regionSelect option:selected').text().toLowerCase().trim();
+    let cityText     = $('#citySelect option:selected').text().toLowerCase().trim();
+
+    if (stateText === 'select state') stateText = '';
+    if (districtText === 'select district') districtText = '';
+    if (cityText === 'select city') cityText = '';
+
+    let visible = 0;
+
+    $('.vendor-col').each(function () {
+
+        let card = this.querySelector('.vendor-card');
+
+        let cardTypeId     = card.dataset.workTypeId || '';
+        let cardSubtypeIds = (card.dataset.workSubtypeId || '').split(',');
+
+        let cardState    = (card.dataset.state || '').toLowerCase();
+        let cardDistrict = (card.dataset.region || '').toLowerCase();
+        let cardCity     = (card.dataset.city || '').toLowerCase();
+
+        /* ===== CATEGORY MATCH ===== */
+        let categoryMatch = true;
+
+        if (selectedCategories.length > 0) {
+            categoryMatch = selectedCategories.includes(cardTypeId);
+        }
+
+        if (selectedSubtypes.length > 0) {
+            categoryMatch = categoryMatch &&
+                selectedSubtypes.some(id => cardSubtypeIds.includes(id));
+        }
+
+        /* ===== LOCATION MATCH ===== */
+        let stateMatch    = !stateText    || cardState === stateText;
+        let districtMatch = !districtText || cardDistrict === districtText;
+        let cityMatch     = !cityText     || cardCity === cityText;
+
+        if (categoryMatch && stateMatch && districtMatch && cityMatch) {
+            this.classList.remove('hidden');
+            visible++;
+        } else {
+            this.classList.add('hidden');
+        }
+    });
+
+    $('#vendorCount').text(visible);
+}
+    </script>
+
 @endsection

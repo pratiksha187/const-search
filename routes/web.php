@@ -562,7 +562,7 @@ Route::post('/admin/vendor/agreement/store/{id}',
         )->name('employer.compare.vendor.replies');
 
 
-Route::get('/vendor/pqc/check', [ERPController::class, 'check'])->name('vendor.pqc.check');
+        Route::get('/vendor/pqc/check', [ERPController::class, 'check'])->name('vendor.pqc.check');
         
         Route::get('/employer/projects/{project}/pqc', [ERPController::class,'pqc'])
         ->name('employer.projects.pqc');

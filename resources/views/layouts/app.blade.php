@@ -17,12 +17,21 @@
 <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
   <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EM9F50FXF3"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-EM9F50FXF3"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-EM9F50FXF3');
+    </script> -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RL72MP1GV3"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RL72MP1GV3');
     </script>
     @stack('styles')
 </head>

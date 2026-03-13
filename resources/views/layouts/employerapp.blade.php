@@ -13,12 +13,19 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EM9F50FXF3"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-EM9F50FXF3"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-EM9F50FXF3');
+    </script> -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RL72MP1GV3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-RL72MP1GV3');
     </script>
     @stack('styles')
 <style>
