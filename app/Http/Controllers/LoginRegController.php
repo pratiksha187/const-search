@@ -511,7 +511,7 @@ private function sendWhatsAppAfterRegister($mobile, $name, $role, $uid = null)
             'v.min_project_value',
             'v.company_name',
             'v.entity_type',
-            'et.name as entity_type_name',
+            'et.entity_type as entity_type_name',
             'wt.work_type as work_type_name',
             'v.aadhar_card_no',
             'v.cin_no',
