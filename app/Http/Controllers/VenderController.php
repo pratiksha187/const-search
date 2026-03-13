@@ -473,111 +473,61 @@ class VenderController extends Controller
 
         return back()->with('success', 'Description updated successfully.');
     }
-    // public function erpNotifications()
-    // {
-    //     $vendor_id = Session::get('vendor_id');
-    //     // dd($vendor_id);
-    //     $vendor = DB::table('vendor_reg')
-    //         ->where('id', $vendor_id)
-    //         ->first();
-    //     //   dd($vendor);
-    //     $notifications = DB::table('project_vendor_emails')
-    //         ->where('vendor_id', $vendor_id)
-    //         ->orderBy('created_at', 'desc')
-    //         ->get();
-
-    //     $employer = DB::table('employers')
-    //         // ->where('id', 9)
-    //         ->get();
-
-    //     $rfqInviteNotifications = collect();
-
-    //     if ($employer->isNotEmpty() && !empty($employer[0]->db_name)) {
-    //         $dbName = $employer[0]->db_name;
-
-    //         config(['database.connections.tenant.database' => $dbName]);
-    //         DB::purge('tenant');
-    //         DB::reconnect('tenant');
-
-          
-    //     $rfqInviteNotifications = DB::connection('tenant')
-    //                         ->table('rfq_vendor_invites as rvi')
-    //                         ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
-    //                         ->leftJoin('boqs as b', 'b.project_id', '=', 'r.project_id') // agar rfq me boq_id hai
-    //                         ->where('rvi.vendor_id', $vendor_id)
-    //                         ->orderBy('rvi.created_at', 'desc')
-    //                         ->select(
-    //                             'rvi.id',
-    //                             'rvi.rfq_id',
-    //                             'rvi.vendor_id',
-    //                             'rvi.status',
-    //                             'rvi.created_at',
-    //                             'r.project_id',
-    //                             'b.file_path as boq_file'
-    //                         )
-    //                         ->get();
-
-    //             // dd($rfqInviteNotifications);
-    //     }
-
-
-    //     return view('web.erp_notifications', compact('notifications', 'rfqInviteNotifications', 'vendor_id', 'vendor'));
-    // }
-    public function erpNotifications()
-{
-    $vendor_id = Session::get('vendor_id');
-
-    $vendor = DB::table('vendor_reg')
-        ->where('id', $vendor_id)
-        ->first();
-
-    $notifications = DB::table('project_vendor_emails')
-        ->where('vendor_id', $vendor_id)
-        ->orderBy('created_at', 'desc')
-        ->get();
-    
-        $employer = DB::table('employers')->get();
    
-    $rfqInviteNotifications = collect();
+    public function erpNotifications()
+    {
+        $vendor_id = Session::get('vendor_id');
 
-    // if ($employer->isNotEmpty() && !empty($employer[0]->db_name)) {
-        $dbName = $employer[0]->db_name;
-     
- if ($employer && !empty($employer[0]->db_name)) {
- 
-        $dbName = $employer[0]->db_name;
-          
-        config(['database.connections.tenant.database' => $dbName]);
-        DB::purge('tenant');
-        DB::reconnect('tenant');
+        $vendor = DB::table('vendor_reg')
+            ->where('id', $vendor_id)
+            ->first();
 
-        $rfqInviteNotifications = DB::connection('tenant')
-            ->table('rfq_vendor_invites as rvi')
-            ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
-            ->leftJoin('boqs as b', 'b.project_id', '=', 'r.project_id')
-            ->where('rvi.vendor_id', $vendor_id)
-            ->orderBy('rvi.created_at', 'desc')
-            ->select(
-                'rvi.id',
-                'rvi.rfq_id',
-                'rvi.vendor_id',
-                'rvi.status',
-                'rvi.created_at',
-                'r.project_id',
-                'b.file_path as boq_file'
-            )
+        $notifications = DB::table('project_vendor_emails')
+            ->where('vendor_id', $vendor_id)
+            ->orderBy('created_at', 'desc')
             ->get();
-        // dd($rfqInviteNotifications );
 
+        // dd($notifications);
+        
+        $employer = DB::table('employers')->get();
+    
+        $rfqInviteNotifications = collect();
+
+        $dbName = $employer[0]->db_name;
+    
+        if ($employer && !empty($employer[0]->db_name)) {
+    
+            $dbName = $employer[0]->db_name;
+            
+            config(['database.connections.tenant.database' => $dbName]);
+            DB::purge('tenant');
+            DB::reconnect('tenant');
+
+            $rfqInviteNotifications = DB::connection('tenant')
+                ->table('rfq_vendor_invites as rvi')
+                ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
+                ->leftJoin('boqs as b', 'b.project_id', '=', 'r.project_id')
+                ->where('rvi.vendor_id', $vendor_id)
+                ->orderBy('rvi.created_at', 'desc')
+                ->select(
+                    'rvi.id',
+                    'rvi.rfq_id',
+                    'rvi.vendor_id',
+                    'rvi.status',
+                    'rvi.created_at',
+                    'r.project_id',
+                    'b.file_path as boq_file'
+                )
+                ->get();
+        }
+
+        return view('web.erp_notifications', compact(
+            'notifications',
+            'rfqInviteNotifications',
+            'vendor_id',
+            'vendor'
+        ));
     }
-
-    return view('web.erp_notifications', compact(
-        'notifications',
-        'rfqInviteNotifications',
-        'vendor_id',
-        'vendor'
-    ));
-}
     public function uploadErpDocs(Request $request)
     {
         // dd($request );
@@ -616,138 +566,55 @@ class VenderController extends Controller
     }
 
 
-    // public function uploadBoqReply(Request $request)
-    // {
-    //     $vendorId = Session::get('vendor_id');
+    public function uploadBoqReply(Request $request)
+    {
+        $vendorId = Session::get('vendor_id');
 
-    //     if (!$vendorId) {
-    //         return redirect()->back()->with('error', 'Vendor not logged in.');
-    //     }
+        if (!$vendorId) {
+            return redirect()->back()->with('error', 'Vendor not logged in.');
+        }
 
-    //     $request->validate([
-    //         'rfq_id'     => 'required|integer',
-    //         'project_id' => 'required|integer',
-    //         'reply_file' => 'required|file|max:10240|mimes:pdf,xls,xlsx,csv,txt,jpg,jpeg,png',
-    //     ]);
-
-    //     // 1. upload file in public disk
-    //     $path = $request->file('reply_file')->store('vendor/boq-replies', 'public');
-
-    //     // 2. get employer / tenant db name
-    //     $employer = DB::table('employers')->first();
-
-    //     if (!$employer || empty($employer->db_name)) {
-    //         return redirect()->back()->with('error', 'Tenant database not found.');
-    //     }
-
-    //     // 3. set tenant db connection dynamically
-    //     config(['database.connections.tenant.database' => $employer->db_name]);
-    //     DB::purge('tenant');
-    //     DB::reconnect('tenant');
-
-    //     // 4. update tenant table
-    //     $updated = DB::connection('tenant')->table('rfq_vendor_invites')
-    //         ->where('rfq_id', $request->rfq_id)
-    //         ->where('vendor_id', $vendorId)
-    //         ->update([
-    //             'reply_file' => $path,
-    //             'status'     => 'replied',
-    //             'replied_at' => now(),
-    //             'updated_at' => now(),
-    //         ]);
-
-    //     if (!$updated) {
-    //         return redirect()->back()->with('error', 'File uploaded, but RFQ invite row not found.');
-    //     }
-
-    //     return redirect()->back()->with('success', 'BOQ reply uploaded successfully.');
-    // }
-//     public function uploadBoqReply(Request $request)
-// {
-//     $vendorId = Session::get('vendor_id');
-
-//     if (!$vendorId) {
-//         return redirect()->back()->with('error', 'Vendor not logged in.');
-//     }
-
-//     $request->validate([
-//         'rfq_id'            => 'required|integer',
-//         'project_id'        => 'required|integer',
-//         'reply_file'        => 'required|file|mimes:pdf,xls,xlsx,csv,jpg,jpeg,png,txt|max:10240',
-//         'total_quote'       => 'required|numeric|min:0',
-//         'delivery_timeline' => 'required|string|max:255',
-//     ]);
-
-//     $path = $request->file('reply_file')->store('vendor/boq-replies', 'public');
-
-//     $updated = DB::connection('tenant')->table('rfq_vendor_invites')
-//         ->where('rfq_id', $request->rfq_id)
-//         ->where('project_id', $request->project_id)
-//         ->where('vendor_id', $vendorId)
-//         ->update([
-//             'reply_file'        => $path,
-//             'total_quote'       => $request->total_quote,
-//             'delivery_timeline' => $request->delivery_timeline,
-//             'status'            => 'replied',
-//             'replied_at'        => now(),
-//             'updated_at'        => now(),
-//         ]);
-
-//     if (!$updated) {
-//         return redirect()->back()->with('error', 'Upload done, but RFQ invite row not found.');
-//     }
-
-//     return redirect()->back()->with('success', 'BOQ reply uploaded successfully.');
-// }
-public function uploadBoqReply(Request $request)
-{
-    $vendorId = Session::get('vendor_id');
-
-    if (!$vendorId) {
-        return redirect()->back()->with('error', 'Vendor not logged in.');
-    }
-
-    $request->validate([
-        'rfq_id'            => 'required|integer',
-        'project_id'        => 'required|integer',
-        'reply_file'        => 'required|file|mimes:pdf,xls,xlsx,csv,jpg,jpeg,png,txt|max:10240',
-        'total_quote'       => 'required|numeric|min:0',
-        'delivery_timeline' => 'required|string|max:255',
-    ]);
-
-    // ✅ get tenant database name
-    $employer = DB::table('employers')->first();
-
-    if (!$employer || empty($employer->db_name)) {
-        return redirect()->back()->with('error', 'Tenant database not configured.');
-    }
-
-    // ✅ set tenant db dynamically
-    config(['database.connections.tenant.database' => $employer->db_name]);
-    DB::purge('tenant');
-    DB::reconnect('tenant');
-
-    // ✅ store file in public disk
-    $path = $request->file('reply_file')->store('vendor/boq-replies', 'public');
-
-    // ✅ update tenant table
-    $updated = DB::connection('tenant')->table('rfq_vendor_invites')
-        ->where('rfq_id', $request->rfq_id)
-        ->where('project_id', $request->project_id)
-        ->where('vendor_id', $vendorId)
-        ->update([
-            'reply_file'        => $path,
-            'total_quote'       => $request->total_quote,
-            'delivery_timeline' => $request->delivery_timeline,
-            'status'            => 'replied',
-            'replied_at'        => now(),
-            'updated_at'        => now(),
+        $request->validate([
+            'rfq_id'            => 'required|integer',
+            'project_id'        => 'required|integer',
+            'reply_file'        => 'required|file|mimes:pdf,xls,xlsx,csv,jpg,jpeg,png,txt|max:10240',
+            'total_quote'       => 'required|numeric|min:0',
+            'delivery_timeline' => 'required|string|max:255',
         ]);
 
-    if (!$updated) {
-        return redirect()->back()->with('error', 'Upload done, but RFQ invite row not found.');
-    }
+        // ✅ get tenant database name
+        $employer = DB::table('employers')->first();
 
-    return redirect()->back()->with('success', 'BOQ reply uploaded successfully.');
-}
+        if (!$employer || empty($employer->db_name)) {
+            return redirect()->back()->with('error', 'Tenant database not configured.');
+        }
+
+        // ✅ set tenant db dynamically
+        config(['database.connections.tenant.database' => $employer->db_name]);
+        DB::purge('tenant');
+        DB::reconnect('tenant');
+
+        // ✅ store file in public disk
+        $path = $request->file('reply_file')->store('vendor/boq-replies', 'public');
+
+        // ✅ update tenant table
+        $updated = DB::connection('tenant')->table('rfq_vendor_invites')
+            ->where('rfq_id', $request->rfq_id)
+            ->where('project_id', $request->project_id)
+            ->where('vendor_id', $vendorId)
+            ->update([
+                'reply_file'        => $path,
+                'total_quote'       => $request->total_quote,
+                'delivery_timeline' => $request->delivery_timeline,
+                'status'            => 'replied',
+                'replied_at'        => now(),
+                'updated_at'        => now(),
+            ]);
+
+        if (!$updated) {
+            return redirect()->back()->with('error', 'Upload done, but RFQ invite row not found.');
+        }
+
+        return redirect()->back()->with('success', 'BOQ reply uploaded successfully.');
+    }
 }

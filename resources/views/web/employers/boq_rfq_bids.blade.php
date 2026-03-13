@@ -84,14 +84,7 @@
             </div>
 
             <div class="row g-2">
-              <!-- <div class="col-md-6">
-                <label class="form-label smallmuted">BOQ Type</label>
-                <select class="form-select" id="boqType">
-                  <option value="RCC Flooring BOQ">RCC Flooring BOQ</option>
-                  <option value="Steel & TMT BOQ">Steel & TMT BOQ</option>
-                  <option value="MEP Procurement BOQ">MEP Procurement BOQ</option>
-                </select>
-              </div> -->
+              
 
               <div class="col-md-6">
                 <label class="form-label smallmuted">Upload File</label>
