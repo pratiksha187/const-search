@@ -473,61 +473,121 @@ class VenderController extends Controller
 
         return back()->with('success', 'Description updated successfully.');
     }
-   
-    public function erpNotifications()
-    {
-        $vendor_id = Session::get('vendor_id');
+   public function erpNotifications()
+{
+    $vendor_id = Session::get('vendor_id');
 
-        $vendor = DB::table('vendor_reg')
-            ->where('id', $vendor_id)
-            ->first();
+    $vendor = DB::table('vendor_reg')
+        ->where('id', $vendor_id)
+        ->first();
 
-        $notifications = DB::table('project_vendor_emails')
-            ->where('vendor_id', $vendor_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+    $notifications = DB::table('project_vendor_emails')
+        ->where('vendor_id', $vendor_id)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        // dd($notifications);
-        
-        $employer = DB::table('employers')->get();
-    
-        $rfqInviteNotifications = collect();
+    $employer = DB::table('employers')->get();
+
+    $rfqInviteNotifications = collect();
+    $selectedProjects = collect();
+
+    if ($employer->isNotEmpty() && !empty($employer[0]->db_name)) {
 
         $dbName = $employer[0]->db_name;
-    
-        if ($employer && !empty($employer[0]->db_name)) {
-    
-            $dbName = $employer[0]->db_name;
-            
-            config(['database.connections.tenant.database' => $dbName]);
-            DB::purge('tenant');
-            DB::reconnect('tenant');
 
-            $rfqInviteNotifications = DB::connection('tenant')
-                ->table('rfq_vendor_invites as rvi')
-                ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
-                ->leftJoin('boqs as b', 'b.project_id', '=', 'r.project_id')
-                ->where('rvi.vendor_id', $vendor_id)
-                ->orderBy('rvi.created_at', 'desc')
-                ->select(
-                    'rvi.id',
-                    'rvi.rfq_id',
-                    'rvi.vendor_id',
-                    'rvi.status',
-                    'rvi.created_at',
-                    'r.project_id',
-                    'b.file_path as boq_file'
-                )
-                ->get();
-        }
+        config(['database.connections.tenant.database' => $dbName]);
+        DB::purge('tenant');
+        DB::reconnect('tenant');
 
-        return view('web.erp_notifications', compact(
-            'notifications',
-            'rfqInviteNotifications',
-            'vendor_id',
-            'vendor'
-        ));
+        $rfqInviteNotifications = DB::connection('tenant')
+            ->table('rfq_vendor_invites as rvi')
+            ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
+            ->leftJoin('boqs as b', 'b.project_id', '=', 'r.project_id')
+            ->where('rvi.vendor_id', $vendor_id)
+            ->orderBy('rvi.created_at', 'desc')
+            ->select(
+                'rvi.id',
+                'rvi.rfq_id',
+                'rvi.vendor_id',
+                'rvi.status',
+                'rvi.created_at',
+                'r.project_id',
+                'b.file_path as boq_file'
+            )
+            ->get();
+
+        // ✅ Find all projects where any vendor is already selected
+        $selectedProjects = DB::connection('tenant')
+            ->table('rfq_vendor_invites as rvi')
+            ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
+            ->where('rvi.status', 'selected') // change this if your selected value is different
+            ->pluck('r.project_id')
+            ->unique()
+            ->toArray();
     }
+
+    return view('web.erp_notifications', compact(
+        'notifications',
+        'rfqInviteNotifications',
+        'vendor_id',
+        'vendor',
+        'selectedProjects'
+    ));
+}
+    // public function erpNotifications()
+    // {
+    //     $vendor_id = Session::get('vendor_id');
+
+    //     $vendor = DB::table('vendor_reg')
+    //         ->where('id', $vendor_id)
+    //         ->first();
+
+    //     $notifications = DB::table('project_vendor_emails')
+    //         ->where('vendor_id', $vendor_id)
+    //         ->orderBy('created_at', 'desc')
+    //         ->get();
+
+    //     // dd($notifications);
+        
+    //     $employer = DB::table('employers')->get();
+    
+    //     $rfqInviteNotifications = collect();
+
+    //     $dbName = $employer[0]->db_name;
+    
+    //     if ($employer && !empty($employer[0]->db_name)) {
+    
+    //         $dbName = $employer[0]->db_name;
+            
+    //         config(['database.connections.tenant.database' => $dbName]);
+    //         DB::purge('tenant');
+    //         DB::reconnect('tenant');
+
+    //         $rfqInviteNotifications = DB::connection('tenant')
+    //             ->table('rfq_vendor_invites as rvi')
+    //             ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
+    //             ->leftJoin('boqs as b', 'b.project_id', '=', 'r.project_id')
+    //             ->where('rvi.vendor_id', $vendor_id)
+    //             ->orderBy('rvi.created_at', 'desc')
+    //             ->select(
+    //                 'rvi.id',
+    //                 'rvi.rfq_id',
+    //                 'rvi.vendor_id',
+    //                 'rvi.status',
+    //                 'rvi.created_at',
+    //                 'r.project_id',
+    //                 'b.file_path as boq_file'
+    //             )
+    //             ->get();
+    //     }
+
+    //     return view('web.erp_notifications', compact(
+    //         'notifications',
+    //         'rfqInviteNotifications',
+    //         'vendor_id',
+    //         'vendor'
+    //     ));
+    // }
     public function uploadErpDocs(Request $request)
     {
         // dd($request );

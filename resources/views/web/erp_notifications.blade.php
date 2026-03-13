@@ -143,7 +143,7 @@ $allNotifications = $mergedNotifications
                                 </small>
                             </td>
 
-                            <td class="text-center">
+                            <!-- <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2 flex-wrap">
 
                                     @if(!empty($n->notification_id))
@@ -183,6 +183,70 @@ $allNotifications = $mergedNotifications
                                                 data-boq-file="{{ $n->boq_file ?? '' }}">
                                             ⬆ Upload
                                         </button>
+                                    @endif
+
+                                    <button class="btn btn-view action-btn"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#viewMessageModal"
+                                            data-title="ERP Notification"
+                                            data-message="{{ $n->has_rfq && $n->has_email 
+                                                ? $n->message . "\n\nRFQ Invitation available. RFQ ID: " . $n->rfq_id 
+                                                : ($n->has_rfq 
+                                                    ? "You have received a new RFQ invitation from employer. RFQ ID: " . $n->rfq_id 
+                                                    : $n->message) }}">
+                                        👁 View
+                                    </button>
+
+                                </div>
+                            </td> -->
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2 flex-wrap">
+
+                                    @if(in_array($n->project_id, $selectedProjects ?? []))
+                                        <span class="badge bg-success px-3 py-2">
+                                            Already Selected this Project
+                                        </span>
+                                    @else
+
+                                        @if(!empty($n->notification_id))
+                                            <button class="btn btn-profile action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#uploadDocsModal"
+                                                    data-notification-id="{{ $n->notification_id }}"
+                                                    data-project-id="{{ $n->project_id ?? '' }}"
+                                                    data-type="company">
+                                                📤 Profile
+                                            </button>
+
+                                            <button class="btn btn-pqc action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#uploadDocsModal"
+                                                    data-notification-id="{{ $n->notification_id }}"
+                                                    data-project-id="{{ $n->project_id ?? '' }}"
+                                                    data-type="pqc">
+                                                📎 PQC
+                                            </button>
+                                        @endif
+
+                                        @if($n->has_rfq && !empty($n->boq_file))
+                                            <a href="{{ asset('storage/' . $n->boq_file) }}"
+                                            target="_blank"
+                                            class="btn btn-outline-success action-btn">
+                                                📥 BOQ
+                                            </a>
+                                        @endif
+
+                                        @if($n->has_rfq)
+                                            <button class="btn btn-outline-warning action-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#uploadBoqReplyModal"
+                                                    data-rfq-id="{{ $n->rfq_id }}"
+                                                    data-project-id="{{ $n->project_id ?? '' }}"
+                                                    data-boq-file="{{ $n->boq_file ?? '' }}">
+                                                ⬆ Upload
+                                            </button>
+                                        @endif
+
                                     @endif
 
                                     <button class="btn btn-view action-btn"
