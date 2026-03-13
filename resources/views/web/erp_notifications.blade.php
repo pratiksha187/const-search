@@ -390,8 +390,8 @@ $allNotifications = $mergedNotifications
                     </div>
                 </div>
 
-                <div id="alreadySubmittedAlert" class="alert alert-warning d-none mt-3">
-                    <div class="fw-bold">Already Submitted ✅</div>
+                <div id="alreadySubmittedAlert" class="alert d-none mt-3">
+                    <div class="fw-bold" id="alreadySubmittedTitle">Record Found</div>
                     <div class="small" id="alreadySubmittedText"></div>
                 </div>
 
@@ -519,8 +519,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const companyUploadedLinkWrap = document.getElementById('companyUploadedLinkWrap');
     const companyFileInput        = document.getElementById('companyFileInput');
 
-    const alertBox  = document.getElementById('alreadySubmittedAlert');
-    const alertText = document.getElementById('alreadySubmittedText');
+    const alertBox   = document.getElementById('alreadySubmittedAlert');
+    const alertTitle = document.getElementById('alreadySubmittedTitle');
+    const alertText  = document.getElementById('alreadySubmittedText');
 
     const completedWrap = document.getElementById('completedProjectsWrap');
     const workWrap      = document.getElementById('workInHandWrap');
@@ -543,12 +544,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setPqcDisabled(disabled) {
         if (!pqcWrap) return;
+
         pqcWrap.querySelectorAll('input, textarea, select').forEach(el => {
             el.disabled = disabled;
         });
 
         const addCompletedBtn = document.getElementById('addCompletedProjectBtn');
         const addWorkBtn = document.getElementById('addWorkInHandBtn');
+
         if (addCompletedBtn) addCompletedBtn.disabled = disabled;
         if (addWorkBtn) addWorkBtn.disabled = disabled;
     }
@@ -563,8 +566,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function resetPqcForm() {
         if (!pqcWrap) return;
-        pqcWrap.querySelectorAll('input[type="text"], input[type="number"], input[type="email"], textarea').forEach(el => el.value = '');
-        pqcWrap.querySelectorAll('select').forEach(el => el.value = '');
+
+        pqcWrap.querySelectorAll('input[type="text"], input[type="number"], input[type="email"], textarea').forEach(el => {
+            el.value = '';
+        });
+
+        pqcWrap.querySelectorAll('select').forEach(el => {
+            el.value = '';
+        });
     }
 
     function resetDynamicBlocks() {
@@ -641,17 +650,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('addCompletedProjectBtn')?.addEventListener('click', function () {
         if (!completedWrap) return;
+
         const count = completedWrap.querySelectorAll('[data-completed-item]').length;
         if (count >= 5) {
             alert('Maximum 5 completed projects allowed.');
             return;
         }
+
         completedWrap.insertAdjacentHTML('beforeend', completedProjectBlock(completedIndex));
         completedIndex++;
     });
 
     document.getElementById('addWorkInHandBtn')?.addEventListener('click', function () {
         if (!workWrap) return;
+
         workWrap.insertAdjacentHTML('beforeend', workInHandBlock(workIndex));
         workIndex++;
     });
@@ -727,7 +739,10 @@ document.addEventListener('DOMContentLoaded', function () {
         hidPid.value  = pid || '';
 
         alertBox?.classList.add('d-none');
+        alertBox?.classList.remove('alert-warning', 'alert-success');
+        if (alertTitle) alertTitle.innerText = 'Record Found';
         if (alertText) alertText.innerHTML = '';
+
         resetCompanyUI();
         resetPqcForm();
         resetDynamicBlocks();
@@ -751,17 +766,31 @@ document.addEventListener('DOMContentLoaded', function () {
             if (type === 'company') {
                 if (data.exists && data.company_profile_path) {
                     companyUploadedAlert.classList.remove('d-none');
-                    companyUploadedText.innerHTML = `Status: <b>${data.status}</b><br>Uploaded at: ${data.created_at ?? '-'}`;
+                    companyUploadedText.innerHTML = `Status: <b>${data.status ?? '-'}</b><br>Uploaded at: ${data.created_at ?? '-'}`;
                     const fileUrl = `{{ asset('storage') }}/${data.company_profile_path}`;
                     companyUploadedLinkWrap.innerHTML = `<a href="${fileUrl}" target="_blank" class="btn btn-sm btn-outline-success">View / Download</a>`;
-                    if (data.status === 'submitted') setCompanyDisabled(true);
+
+                    if (data.status === 'submitted') {
+                        setCompanyDisabled(true);
+                    }
                 }
                 return;
             }
 
             if (data.exists) {
                 alertBox.classList.remove('d-none');
-                alertText.innerHTML = `Status: <b>${data.status}</b><br>Created at: ${data.created_at ?? '-'}`;
+
+                if (data.status === 'submitted') {
+                    alertBox.classList.add('alert-success');
+                    if (alertTitle) alertTitle.innerText = 'Already Submitted ✅';
+                } else {
+                    alertBox.classList.add('alert-warning');
+                    if (alertTitle) alertTitle.innerText = 'Draft Already Saved';
+                }
+
+                if (alertText) {
+                    alertText.innerHTML = `Status: <b>${data.status ?? '-'}</b><br>Created at: ${data.created_at ?? '-'}`;
+                }
 
                 if (data.pqc_data) {
                     prefillPqc(data.pqc_data);

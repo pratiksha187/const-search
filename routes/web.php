@@ -562,6 +562,7 @@ Route::post('/admin/vendor/agreement/store/{id}',
         )->name('employer.compare.vendor.replies');
 
 
+Route::get('/vendor/pqc/check', [ERPController::class, 'check'])->name('vendor.pqc.check');
         
         Route::get('/employer/projects/{project}/pqc', [ERPController::class,'pqc'])
         ->name('employer.projects.pqc');
@@ -659,7 +660,7 @@ Route::get('/employer/rfq/latest/{projectId}', [RfqController::class,'latest'])
 
 Route::get('erp', [ERPController::class, 'erp'])->name('erp');
 
-Route::get('/vendor/pqc/check', [PqcSubmissionController::class, 'check'])->name('vendor.pqc.check');
+// Route::get('/vendor/pqc/check', [PqcSubmissionController::class, 'check'])->name('vendor.pqc.check');
 Route::post('/vendor/notifications/pqc/save', [PqcSubmissionController::class, 'storeOrUpdate'])
     ->name('vendor.pqc.save');
 

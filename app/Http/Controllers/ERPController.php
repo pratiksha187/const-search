@@ -332,7 +332,7 @@ class ERPController extends Controller
             // dd($vendors);
         return view('web.employers.project_details', compact('project', 'vendors', 'search'));
     }
-    
+
     public function sendSelectedMail(Request $request)
     {
         $request->validate([
@@ -518,4 +518,31 @@ class ERPController extends Controller
             'ok' => true
         ]);
     }
+
+    public function check(Request $request)
+{
+    $notificationId = $request->notification_id;
+    $docType = $request->doc_type;
+
+    $row = DB::connection('tenant')
+        ->table('vendor_pqc_submissions')
+        ->where('notification_id', $notificationId)
+        ->where('doc_type', $docType)
+        ->latest('id')
+        ->first();
+
+    if (!$row) {
+        return response()->json([
+            'exists' => false,
+        ]);
+    }
+
+    return response()->json([
+        'exists' => true,
+        'status' => $row->status ?? 'draft',
+        'created_at' => $row->created_at ?? null,
+        'company_profile_path' => $row->company_profile_path ?? null,
+        'pqc_data' => !empty($row->pqc_data) ? json_decode($row->pqc_data, true) : null,
+    ]);
+}
 }
