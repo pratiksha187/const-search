@@ -163,74 +163,7 @@
 </div>
 </div>
 
-{{-- ================= MODALS ================= --}}
-<!-- @foreach($notifications as $note)
 
-<div class="modal fade" id="viewModal{{ $note->id }}" tabindex="-1">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-
-<div class="modal-header">
-    <h5 class="modal-title">Vendor Full Details</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-</div>
-
-<div class="modal-body">
-
-<div class="row g-3">
-
-<div class="col-md-6">
-<label class="fw-bold text-muted small">Vendor Name</label>
-<div>{{ $note->vendor_name ?? $note->name }}</div>
-</div>
-
-<div class="col-md-6">
-<label class="fw-bold text-muted small">Company</label>
-<div>{{ $note->company_name ?? '—' }}</div>
-</div>
-
-<div class="col-md-6">
-<label class="fw-bold text-muted small">Mobile</label>
-<div>{{ $note->mobile }}</div>
-</div>
-
-<div class="col-md-6">
-<label class="fw-bold text-muted small">Email</label>
-<div>{{ $note->email }}</div>
-</div>
-
-<div class="col-md-6">
-<label class="fw-bold text-muted small">Location</label>
-<div>{{ $note->location ?? '—' }}</div>
-</div>
-
-<div class="col-md-6">
-<label class="fw-bold text-muted small">Credits Used</label>
-<div>{{ $note->credits_used ?? 0 }}</div>
-</div>
-
-<div class="col-md-12">
-<label class="fw-bold text-muted small">Description</label>
-<div>{{ $note->description ?? 'No description' }}</div>
-</div>
-
-
-</div>
-</div>
-
-<div class="modal-footer">
-<button type="button"
-        class="btn btn-secondary"
-        data-bs-dismiss="modal">
-Close
-</button>
-</div>
-
-</div>
-</div>
-</div>
-
-@endforeach -->
 
 @foreach($notifications as $note)
 <div class="modal fade" id="viewModal{{ $note->id }}" tabindex="-1" aria-hidden="true">
@@ -293,7 +226,7 @@ Close
 
                     <div class="col-md-4">
                         <label class="fw-bold text-muted small">Entity Type</label>
-                        <div>{{ $note->entity_type ?? '—' }}</div>
+                        <div>{{ $note->entity_type_name ?? '—' }}</div>
                     </div>
 
                     <div class="col-md-12">
@@ -308,12 +241,12 @@ Close
 
                     <div class="col-md-4">
                         <label class="fw-bold text-muted small">Work Type ID</label>
-                        <div>{{ $note->work_type_id ?? '—' }}</div>
+                        <div>{{ $note->work_type_name ?? '—' }}</div>
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Work Subtype ID</label>
-                        <div>{{ $note->work_subtype_id ?? '—' }}</div>
+                   <div class="col-md-6">
+                        <label class="fw-bold text-muted small">Work Subtypes</label>
+                        <div>{{ !empty($note->work_subtype_names) ? implode(', ', $note->work_subtype_names) : '—' }}</div>
                     </div>
 
                     <div class="col-md-4">
@@ -358,17 +291,17 @@ Close
 
                     <div class="col-md-3">
                         <label class="fw-bold text-muted small">State</label>
-                        <div>{{ $note->state ?? '—' }}</div>
+                        <div>{{ $note->statename ?? '—' }}</div>
                     </div>
 
                     <div class="col-md-3">
                         <label class="fw-bold text-muted small">Region</label>
-                        <div>{{ $note->region ?? '—' }}</div>
+                        <div>{{ $note->regionname ?? '—' }}</div>
                     </div>
 
                     <div class="col-md-3">
                         <label class="fw-bold text-muted small">City</label>
-                        <div>{{ $note->city ?? '—' }}</div>
+                        <div>{{ $note->cityname ?? '—' }}</div>
                     </div>
 
                     <div class="col-md-3">
@@ -506,46 +439,7 @@ Close
                         <div>{{ $note->close_time ?? '—' }}</div>
                     </div>
 
-                    {{-- Agreement Details --}}
-                    <div class="col-12 mt-3">
-                        <h6 class="border-bottom pb-2 mb-3">Agreement Details</h6>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Agreement Accepted At</label>
-                        <div>{{ $note->agreement_accepted_at ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Agreement Version</label>
-                        <div>{{ $note->agreement_version ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Agreement IP</label>
-                        <div>{{ $note->agreement_ip ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Agreement Device Type</label>
-                        <div>{{ $note->agreement_device_type ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Agreement Browser</label>
-                        <div>{{ $note->agreement_browser ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Vendor Reg Person</label>
-                        <div>{{ $note->vendor_reg_person ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-12">
-                        <label class="fw-bold text-muted small">Agreement User Agent</label>
-                        <div style="word-break: break-word;">{{ $note->agreement_user_agent ?? '—' }}</div>
-                    </div>
-
+                  
                     {{-- Files --}}
                     <div class="col-12 mt-3">
                         <h6 class="border-bottom pb-2 mb-3">Uploaded Files</h6>
@@ -694,30 +588,7 @@ Close
                         </div>
                     </div>
 
-                    {{-- Meta --}}
-                    <div class="col-12 mt-3">
-                        <h6 class="border-bottom pb-2 mb-3">Meta</h6>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Required Document Approve</label>
-                        <div>{{ $note->requerd_documnet_approve ?? '0' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Vendor Created At</label>
-                        <div>{{ $note->vendor_created_at ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Vendor Updated At</label>
-                        <div>{{ $note->vendor_updated_at ?? '—' }}</div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Credit Expiry At</label>
-                        <div>{{ $note->credit_expiry_at ?? '—' }}</div>
-                    </div>
+                   
 
                 </div>
             </div>

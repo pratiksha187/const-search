@@ -469,28 +469,228 @@ private function sendWhatsAppAfterRegister($mobile, $name, $role, $uid = null)
         return view('web.customerdashboard',compact('post_data','notifications','count_customer_interests','count_supplier_reg','notificationCount','count_post_data','count_vendor_data','vendor_data','cust_data','count_suppliers','count_customer_interests_data')); 
     }
 
-   
-    public function customerNotificationsPage()
-    {
-        $customer_id = Session::get('customer_id');
-          
-        $cust_data = DB::table('users')->where('id',$customer_id)->first();
-        // $post_id = DB::table('posts')->where('user_id',$customer_id )->get();
-           
-        $postIds = DB::table('posts')
-                    ->where('user_id', $customer_id)
-                    ->pluck('id');
-        // dd($postIds);
-        $notifications = DB::table('vendor_interests as vi')
-                ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
-                ->whereIn('vi.customer_id', $postIds)
-                ->select('v.*','vi.*')
-                ->get();
-                //  dd($notifications);
-        $notificationCount = $notifications->count();
+   public function customerNotificationsPage()
+{
+    $customer_id = Session::get('customer_id');
 
-        return view('web.customernotifications', compact('notifications','cust_data','notificationCount'));
-    }
+    $cust_data = DB::table('users')->where('id', $customer_id)->first();
+
+    $postIds = DB::table('posts')
+        ->where('user_id', $customer_id)
+        ->pluck('id');
+
+    $notifications = DB::table('vendor_interests as vi')
+        ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+        ->leftJoin('entity_type as et', 'et.id', '=', 'v.entity_type')
+        ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+         ->leftJoin('region as r', 'r.id', '=', 'v.region')
+            ->leftJoin('city as c', 'c.id', '=', 'v.city')
+            ->leftJoin('state as s', 's.id', '=', 'v.state')
+        ->whereIn('vi.customer_id', $postIds)
+        ->select(
+             's.name as statename',
+                    'r.name as regionname',
+                    'c.name as cityname',
+
+            'vi.*',
+            'v.id as vendor_id',
+            'v.name',
+            'v.mobile',
+            'v.email',
+            'v.business_name',
+            'v.gst_number',
+            'v.status as vendor_status',
+            'v.remarks',
+            'v.work_type_id',
+            'v.work_subtype_id',
+            'v.experience_years',
+            'v.team_size',
+            'v.state',
+            'v.region',
+            'v.city',
+            'v.min_project_value',
+            'v.company_name',
+            'v.entity_type',
+            'et.name as entity_type_name',
+            'wt.work_type as work_type_name',
+            'v.aadhar_card_no',
+            'v.cin_no',
+            'v.lpin_no',
+            'v.partnershipdeed_no',
+            'v.registered_address',
+            'v.contact_person_designation',
+            'v.contact_person_name',
+            'v.pan_number',
+            'v.tan_number',
+            'v.esic_number',
+            'v.pf_code',
+            'v.msme_registered',
+            'v.msme_file',
+            'v.bank_name',
+            'v.account_number',
+            'v.ifsc_code',
+            'v.account_type',
+            'v.cancelled_cheque_file',
+            'v.pan_card_file',
+            'v.gst_certificate_file',
+            'v.aadhaar_card_file',
+            'v.certificate_of_incorporation_file',
+            'v.work_completion_certificates_file1',
+            'v.work_completion_certificates_file2',
+            'v.work_completion_certificates_file3',
+            'v.pf_documents_file',
+            'v.esic_documents_file',
+            'v.credit_days',
+            'v.open_time',
+            'v.close_time',
+            'v.delivery_type',
+            'v.delivery_days',
+            'v.minimum_order_cost',
+            'v.primary_type',
+            'v.years_in_business',
+            'v.lead_balance',
+            'v.requerd_documnet_approve',
+            'v.company_logo',
+            'v.agreement_accepted_at',
+            'v.agreement_version',
+            'v.agreement_ip',
+            'v.agreement_user_agent',
+            'v.agreement_device_type',
+            'v.agreement_browser',
+            'v.description',
+            'v.vendor_uid',
+            'v.custntructkaro_agreement_file',
+            'v.vendor_reg_person',
+            'v.credit_expiry_at',
+            'v.created_at as vendor_created_at',
+            'v.updated_at as vendor_updated_at'
+        )
+        ->orderByDesc('vi.created_at')
+        ->get();
+
+    $notifications = $notifications->map(function ($note) {
+        $subtypeIds = json_decode($note->work_subtype_id, true);
+
+        $note->work_subtype_names = [];
+
+        if (is_array($subtypeIds) && count($subtypeIds)) {
+            $note->work_subtype_names = DB::table('work_subtypes')
+                ->whereIn('id', $subtypeIds)
+                ->pluck('work_subtype')
+                ->toArray();
+        }
+
+        return $note;
+    });
+
+    $notificationCount = $notifications->count();
+
+    return view('web.customernotifications', compact(
+        'notifications',
+        'cust_data',
+        'notificationCount'
+    ));
+}
+    // public function customerNotificationsPage()
+    // {
+    //     $customer_id = Session::get('customer_id');
+          
+    //     $cust_data = DB::table('users')->where('id',$customer_id)->first();
+    //     // $post_id = DB::table('posts')->where('user_id',$customer_id )->get();
+           
+    //     $postIds = DB::table('posts')
+    //                 ->where('user_id', $customer_id)
+    //                 ->pluck('id');
+        
+    //     $notifications = DB::table('vendor_interests as vi')
+    //         ->join('vendor_reg as v', 'v.id', '=', 'vi.vendor_id')
+    //         ->leftJoin('entity_type as et', 'et.id', '=', 'v.entity_type')
+    //         ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
+    //         ->leftJoin('work_subtypes as wst', 'wst.id', '=', 'v.work_subtype_id')
+
+            
+    //         ->whereIn('vi.customer_id', $postIds)
+    //         ->select(
+    //             'vi.*',
+    //             'v.id as vendor_id',
+    //             'v.name',
+    //             'v.mobile',
+    //             'v.email',
+    //             'v.business_name',
+    //             'v.gst_number',
+    //             'v.status as vendor_status',
+    //             'v.remarks',
+    //             'v.work_type_id',
+    //             'v.work_subtype_id',
+    //             'v.experience_years',
+    //             'v.team_size',
+    //             'v.state',
+    //             'v.region',
+    //             'v.city',
+    //             'v.min_project_value',
+    //             'v.company_name',
+    //             'v.entity_type',
+    //             'et.name as entity_type_name', 
+    //             'wt.work_type as work_type_name',  
+    //             'wst.work_subtype as work_subtype_name',
+    //             'v.aadhar_card_no',
+    //             'v.cin_no',
+    //             'v.lpin_no',
+    //             'v.partnershipdeed_no',
+    //             'v.registered_address',
+    //             'v.contact_person_designation',
+    //             'v.contact_person_name',
+    //             'v.pan_number',
+    //             'v.tan_number',
+    //             'v.esic_number',
+    //             'v.pf_code',
+    //             'v.msme_registered',
+    //             'v.msme_file',
+    //             'v.bank_name',
+    //             'v.account_number',
+    //             'v.ifsc_code',
+    //             'v.account_type',
+    //             'v.cancelled_cheque_file',
+    //             'v.pan_card_file',
+    //             'v.gst_certificate_file',
+    //             'v.aadhaar_card_file',
+    //             'v.certificate_of_incorporation_file',
+    //             'v.work_completion_certificates_file1',
+    //             'v.work_completion_certificates_file2',
+    //             'v.work_completion_certificates_file3',
+    //             'v.pf_documents_file',
+    //             'v.esic_documents_file',
+    //             'v.credit_days',
+    //             'v.open_time',
+    //             'v.close_time',
+    //             'v.delivery_type',
+    //             'v.delivery_days',
+    //             'v.minimum_order_cost',
+    //             'v.primary_type',
+    //             'v.years_in_business',
+    //             'v.lead_balance',
+    //             'v.requerd_documnet_approve',
+    //             'v.company_logo',
+    //             'v.agreement_accepted_at',
+    //             'v.agreement_version',
+    //             'v.agreement_ip',
+    //             'v.agreement_user_agent',
+    //             'v.agreement_device_type',
+    //             'v.agreement_browser',
+    //             'v.description',
+    //             'v.vendor_uid',
+    //             'v.custntructkaro_agreement_file',
+    //             'v.vendor_reg_person',
+    //             'v.credit_expiry_at',
+    //             'v.created_at as vendor_created_at',
+    //             'v.updated_at as vendor_updated_at'
+    //         )
+    //         ->get();
+    //             //  dd($notifications);
+    //     $notificationCount = $notifications->count();
+
+    //     return view('web.customernotifications', compact('notifications','cust_data','notificationCount'));
+    // }
 
     public function vendorNotificationsPage()
     {
