@@ -164,7 +164,7 @@
 </div>
 
 {{-- ================= MODALS ================= --}}
-@foreach($notifications as $note)
+<!-- @foreach($notifications as $note)
 
 <div class="modal fade" id="viewModal{{ $note->id }}" tabindex="-1">
 <div class="modal-dialog modal-lg">
@@ -213,19 +213,7 @@
 <label class="fw-bold text-muted small">Description</label>
 <div>{{ $note->description ?? 'No description' }}</div>
 </div>
-<!-- 
-<div class="col-md-12">
-<label class="fw-bold text-muted small">Agreement</label>
-@if(!empty($note->custntructkaro_agreement_file))
-    <a href="{{ asset('storage/'.$note->custntructkaro_agreement_file) }}"
-       target="_blank"
-       class="btn btn-sm btn-success">
-       View Agreement
-    </a>
-@else
-    <span class="text-danger">Not Uploaded</span>
-@endif
-</div> -->
+
 
 </div>
 </div>
@@ -242,9 +230,506 @@ Close
 </div>
 </div>
 
+@endforeach -->
+
+@foreach($notifications as $note)
+<div class="modal fade" id="viewModal{{ $note->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Vendor Full Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row g-3">
+
+                    {{-- Basic Details --}}
+                    <div class="col-12">
+                        <h6 class="border-bottom pb-2 mb-3">Basic Details</h6>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Vendor ID</label>
+                        <div>{{ $note->vendor_reg_id ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Vendor UID</label>
+                        <div>{{ $note->vendor_uid ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Vendor Name</label>
+                        <div>{{ $note->name ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Mobile</label>
+                        <div>{{ $note->mobile ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Email</label>
+                        <div>{{ $note->email ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Status</label>
+                        <div>{{ $note->vendor_status ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Business Name</label>
+                        <div>{{ $note->business_name ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Company Name</label>
+                        <div>{{ $note->company_name ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Entity Type</label>
+                        <div>{{ $note->entity_type ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="fw-bold text-muted small">Remarks</label>
+                        <div>{{ $note->remarks ?? '—' }}</div>
+                    </div>
+
+                    {{-- Work Details --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Work Details</h6>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Work Type ID</label>
+                        <div>{{ $note->work_type_id ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Work Subtype ID</label>
+                        <div>{{ $note->work_subtype_id ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Primary Type</label>
+                        <div>{{ $note->primary_type ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Experience Years</label>
+                        <div>{{ $note->experience_years ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Years in Business</label>
+                        <div>{{ $note->years_in_business ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Team Size</label>
+                        <div>{{ $note->team_size ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Min Project Value</label>
+                        <div>{{ $note->min_project_value ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Minimum Order Cost</label>
+                        <div>{{ $note->minimum_order_cost ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Description</label>
+                        <div>{{ $note->description ?? '—' }}</div>
+                    </div>
+
+                    {{-- Location Details --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Location Details</h6>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">State</label>
+                        <div>{{ $note->state ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Region</label>
+                        <div>{{ $note->region ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">City</label>
+                        <div>{{ $note->city ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Registered Address</label>
+                        <div>{{ $note->registered_address ?? '—' }}</div>
+                    </div>
+
+                    {{-- Compliance Details --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Compliance Details</h6>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">GST Number</label>
+                        <div>{{ $note->gst_number ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">PAN Number</label>
+                        <div>{{ $note->pan_number ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">TAN Number</label>
+                        <div>{{ $note->tan_number ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Aadhar Card No</label>
+                        <div>{{ $note->aadhar_card_no ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">CIN No</label>
+                        <div>{{ $note->cin_no ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">LPIN No</label>
+                        <div>{{ $note->lpin_no ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Partnership Deed No</label>
+                        <div>{{ $note->partnershipdeed_no ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">ESIC Number</label>
+                        <div>{{ $note->esic_number ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">PF Code</label>
+                        <div>{{ $note->pf_code ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">MSME Registered</label>
+                        <div>{{ $note->msme_registered ?? '—' }}</div>
+                    </div>
+
+                    {{-- Contact Person --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Contact Person</h6>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold text-muted small">Contact Person Name</label>
+                        <div>{{ $note->contact_person_name ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold text-muted small">Contact Person Designation</label>
+                        <div>{{ $note->contact_person_designation ?? '—' }}</div>
+                    </div>
+
+                    {{-- Banking Details --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Banking Details</h6>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Bank Name</label>
+                        <div>{{ $note->bank_name ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Account Number</label>
+                        <div>{{ $note->account_number ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">IFSC Code</label>
+                        <div>{{ $note->ifsc_code ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Account Type</label>
+                        <div>{{ $note->account_type ?? '—' }}</div>
+                    </div>
+
+                    {{-- Delivery / Credit --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Delivery / Credit Details</h6>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Credit Days</label>
+                        <div>{{ $note->credit_days ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Delivery Type</label>
+                        <div>{{ $note->delivery_type ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Delivery Days</label>
+                        <div>{{ $note->delivery_days ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Lead Balance</label>
+                        <div>{{ $note->lead_balance ?? '0' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Open Time</label>
+                        <div>{{ $note->open_time ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Close Time</label>
+                        <div>{{ $note->close_time ?? '—' }}</div>
+                    </div>
+
+                    {{-- Agreement Details --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Agreement Details</h6>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Agreement Accepted At</label>
+                        <div>{{ $note->agreement_accepted_at ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Agreement Version</label>
+                        <div>{{ $note->agreement_version ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Agreement IP</label>
+                        <div>{{ $note->agreement_ip ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Agreement Device Type</label>
+                        <div>{{ $note->agreement_device_type ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Agreement Browser</label>
+                        <div>{{ $note->agreement_browser ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Vendor Reg Person</label>
+                        <div>{{ $note->vendor_reg_person ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="fw-bold text-muted small">Agreement User Agent</label>
+                        <div style="word-break: break-word;">{{ $note->agreement_user_agent ?? '—' }}</div>
+                    </div>
+
+                    {{-- Files --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Uploaded Files</h6>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">MSME File</label>
+                        <div>
+                            @if(!empty($note->msme_file))
+                                <a href="{{ asset('storage/' . $note->msme_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Cancelled Cheque</label>
+                        <div>
+                            @if(!empty($note->cancelled_cheque_file))
+                                <a href="{{ asset('storage/' . $note->cancelled_cheque_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">PAN Card File</label>
+                        <div>
+                            @if(!empty($note->pan_card_file))
+                                <a href="{{ asset('storage/' . $note->pan_card_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">GST Certificate</label>
+                        <div>
+                            @if(!empty($note->gst_certificate_file))
+                                <a href="{{ asset('storage/' . $note->gst_certificate_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Aadhaar Card File</label>
+                        <div>
+                            @if(!empty($note->aadhaar_card_file))
+                                <a href="{{ asset('storage/' . $note->aadhaar_card_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Certificate of Incorporation</label>
+                        <div>
+                            @if(!empty($note->certificate_of_incorporation_file))
+                                <a href="{{ asset('storage/' . $note->certificate_of_incorporation_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Work Completion Certificate 1</label>
+                        <div>
+                            @if(!empty($note->work_completion_certificates_file1))
+                                <a href="{{ asset('storage/' . $note->work_completion_certificates_file1) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Work Completion Certificate 2</label>
+                        <div>
+                            @if(!empty($note->work_completion_certificates_file2))
+                                <a href="{{ asset('storage/' . $note->work_completion_certificates_file2) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Work Completion Certificate 3</label>
+                        <div>
+                            @if(!empty($note->work_completion_certificates_file3))
+                                <a href="{{ asset('storage/' . $note->work_completion_certificates_file3) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">PF Documents</label>
+                        <div>
+                            @if(!empty($note->pf_documents_file))
+                                <a href="{{ asset('storage/' . $note->pf_documents_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">ESIC Documents</label>
+                        <div>
+                            @if(!empty($note->esic_documents_file))
+                                <a href="{{ asset('storage/' . $note->esic_documents_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Company Logo</label>
+                        <div>
+                            @if(!empty($note->company_logo))
+                                <a href="{{ asset('storage/' . $note->company_logo) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="fw-bold text-muted small">ConstructKaro Agreement File</label>
+                        <div>
+                            @if(!empty($note->custntructkaro_agreement_file))
+                                <a href="{{ asset('storage/' . $note->custntructkaro_agreement_file) }}" target="_blank">View File</a>
+                            @else
+                                —
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Meta --}}
+                    <div class="col-12 mt-3">
+                        <h6 class="border-bottom pb-2 mb-3">Meta</h6>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Required Document Approve</label>
+                        <div>{{ $note->requerd_documnet_approve ?? '0' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Vendor Created At</label>
+                        <div>{{ $note->vendor_created_at ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Vendor Updated At</label>
+                        <div>{{ $note->vendor_updated_at ?? '—' }}</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Credit Expiry At</label>
+                        <div>{{ $note->credit_expiry_at ?? '—' }}</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 @endforeach
-
-
 {{-- ================= SCRIPTS ================= --}}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
