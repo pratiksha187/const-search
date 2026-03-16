@@ -141,6 +141,7 @@
             'cancelled_cheque_file' => 'Cancelled Cheque',
             'pf_documents_file' => 'PF Document',
             'esic_documents_file' => 'ESIC Document'
+            'msme_file' => 'Msme File'
         ] as $field => $label)
             @if(!empty($vendor->$field))
                 <div class="col-md-4">
