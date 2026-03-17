@@ -54,7 +54,7 @@ Route::post('/change-password', [LoginRegController::class, 'changePassword'])->
 Route::get('/search-vendor', [HomeController::class, 'search_vendor'])->name('search_vendor');
 
 // GET Route: To display the search form
-// Route::get('/search-customer', [HomeController::class, 'search_customer'])->name('search_customer');
+Route::get('/search-customer', [HomeController::class, 'search_customer'])->name('search_customer');
 // Route::get('/search-customer/{stateSlug?}', 
 //     [HomeController::class, 'search_customer']
 // )->name('search_customer');
@@ -62,10 +62,13 @@ Route::get('/search-vendor', [HomeController::class, 'search_vendor'])->name('se
 //     [HomeController::class, 'search_customer']
 // )->name('search_customer');
 
-Route::get('/search-customer/{workCategorySlug?}/{workSubcategorySlug?}/{stateSlug?}/{districtSlug?}/{citySlug?}', [HomeController::class, 'search_customer'])->name('search_customer');
+// Route::get('/search-customer/{workCategorySlug?}/{workSubcategorySlug?}/{stateSlug?}/{districtSlug?}/{citySlug?}', [HomeController::class, 'search_customer'])->name('search_customer');
 
 
 Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name('cutomerprofile');
+
+Route::get('/knowledge-hub', [HomeController::class, 'knowledgehub'])->name('knowledgehub');
+
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');
 
 

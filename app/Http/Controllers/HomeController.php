@@ -264,618 +264,316 @@ class HomeController extends Controller
         ]);
     }
 
-   public function search_customer(Request $request, $workCategorySlug = null, $workSubcategorySlug = null, $stateSlug = null, $districtSlug = null, $citySlug = null)
-{
-    $vendor_id = Session::get('vendor_id');
-    $vendor = null;
-    $mustLogin = !$vendor_id;
+//    public function search_customer(Request $request, $workCategorySlug = null, $workSubcategorySlug = null, $stateSlug = null, $districtSlug = null, $citySlug = null)
+// {
+//     $vendor_id = Session::get('vendor_id');
+//     $vendor = null;
+//     $mustLogin = !$vendor_id;
 
-    $selectedWorkType = null;
-    $selectedWorkSubType = null;
-    $state = null;
-    $district = null;
-    $city = null;
-
-    // ==========================
-    // FIND WORK CATEGORY
-    // ==========================
-    if ($workCategorySlug) {
-        $workTypes = DB::table('work_types')->get();
-
-        $selectedWorkType = $workTypes->first(function ($item) use ($workCategorySlug) {
-            return Str::slug($item->work_type) === Str::slug($workCategorySlug);
-        });
-
-        if (!$selectedWorkType) {
-            abort(404);
-        }
-    }
-
-    // ==========================
-    // FIND WORK SUBCATEGORY
-    // ==========================
-    if ($workSubcategorySlug && $selectedWorkType) {
-        $workSubTypes = DB::table('work_subtypes')
-            ->where('work_type_id', $selectedWorkType->id)
-            ->get();
-
-        $selectedWorkSubType = $workSubTypes->first(function ($item) use ($workSubcategorySlug) {
-            return Str::slug($item->work_subtype) === Str::slug($workSubcategorySlug);
-        });
-
-        if (!$selectedWorkSubType) {
-            abort(404);
-        }
-    }
-
-    // ==========================
-    // FIND STATE
-    // ==========================
-    if ($stateSlug) {
-        $statesData = DB::table('state')->get();
-
-        $state = $statesData->first(function ($item) use ($stateSlug) {
-            return Str::slug($item->name) === Str::slug($stateSlug);
-        });
-
-        if (!$state) {
-            abort(404);
-        }
-    }
-
-    // ==========================
-    // FIND DISTRICT
-    // ==========================
-    if ($districtSlug && $state) {
-        $districtsData = DB::table('region')
-            ->where('state_id', $state->id)
-            ->get();
-
-        $district = $districtsData->first(function ($item) use ($districtSlug) {
-            return Str::slug($item->name) === Str::slug($districtSlug);
-        });
-
-        if (!$district) {
-            abort(404);
-        }
-    }
-
-    // ==========================
-    // FIND CITY
-    // ==========================
-    if ($citySlug && $district) {
-        $citiesData = DB::table('city')
-            ->where('region_id', $district->id)
-            ->get();
-
-        $city = $citiesData->first(function ($item) use ($citySlug) {
-            return Str::slug($item->name) === Str::slug($citySlug);
-        });
-
-        if (!$city) {
-            abort(404);
-        }
-    }
-
-    // ==========================
-    // DROPDOWNS
-    // ==========================
-    $states = DB::table('state')->orderBy('name')->get();
-    $districts = $state ? DB::table('region')->where('state_id', $state->id)->orderBy('name')->get() : collect();
-    $cities = $district ? DB::table('city')->where('region_id', $district->id)->orderBy('name')->get() : collect();
-
-    $work_types = DB::table('work_types')->get();
-    $work_subtypes = DB::table('work_subtypes')->get()->groupBy('work_type_id');
-
-    // ==========================
-    // VENDOR
-    // ==========================
-    if ($vendor_id) {
-        $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-
-        if (!$vendor) {
-            Session::forget('vendor_id');
-            $vendor_id = null;
-            $mustLogin = true;
-        }
-    }
-
-    // ==========================
-    // NOTIFICATIONS
-    // ==========================
-    $notifications = collect();
-    $notificationCount = 0;
-
-    if ($vendor_id) {
-        $notifications = DB::table('customer_interests as ci')
-            ->join('users as u', 'u.id', '=', 'ci.customer_id')
-            ->where('ci.vendor_id', $vendor_id)
-            ->select('ci.*', 'u.name as customer_name')
-            ->orderBy('ci.id', 'desc')
-            ->get();
-
-        $notificationCount = $notifications->count();
-    }
-
-    // ==========================
-    // PROJECT QUERY
-    // ==========================
-    $projectsQuery = DB::table('posts')
-        ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
-        ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-        ->leftJoin('users', 'users.id', '=', 'posts.user_id')
-        ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-        ->leftJoin('region', 'region.id', '=', 'posts.region')
-        ->leftJoin('state', 'state.id', '=', 'posts.state')
-        ->leftJoin('city', 'city.id', '=', 'posts.city')
-        ->where('posts.post_verify', 1)
-        ->select(
-            'posts.*',
-            'users.name as username',
-            'work_types.work_type',
-            'work_subtypes.work_subtype',
-            'budget_range.budget_range as budget_range_name',
-            'region.name as regionname',
-            'state.name as statename',
-            'city.name as cityname'
-        );
-
-    if ($selectedWorkType) {
-        $projectsQuery->where('posts.work_type_id', $selectedWorkType->id);
-    }
-
-    if ($selectedWorkSubType) {
-        $projectsQuery->where('posts.work_subtype_id', $selectedWorkSubType->id);
-    }
-
-    if ($state) {
-        $projectsQuery->where('posts.state', $state->id);
-    }
-
-    if ($district) {
-        $projectsQuery->where('posts.region', $district->id);
-    }
-
-    if ($city) {
-        $projectsQuery->where('posts.city', $city->id);
-    }
-
-    $projects = $projectsQuery
-        ->orderBy('posts.id', 'desc')
-        ->get();
-
-    // ==========================
-    // STATS
-    // ==========================
-    $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
-    $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
-
-    return view('web.search_customer', compact(
-        'notifications',
-        'notificationCount',
-        'states',
-        'districts',
-        'cities',
-        'work_types',
-        'work_subtypes',
-        'projects',
-        'complited_project',
-        'remaining_projects',
-        'vendor_id',
-        'vendor',
-        'mustLogin',
-        'selectedWorkType',
-        'selectedWorkSubType',
-        'state',
-        'district',
-        'city'
-    ));
-}
-    // public function search_customer(Request $request, $stateSlug = null, $districtSlug = null, $citySlug = null)
-    // public function search_customer(Request $request, $workCategorySlug = null, $stateSlug = null, $districtSlug = null, $citySlug = null)
-    // {
-    //     $vendor_id = Session::get('vendor_id');
-    //     $vendor = null;
-    //     $mustLogin = !$vendor_id;
-
-    //     $state = null;
-    //     $district = null;
-    //     $city = null;
-
-    //     // ==========================
-    //     // FIND STATE (Use SLUG not name)
-    //     // ==========================
-    //     if ($stateSlug) {
-    //         $state = DB::table('state')
-    //             ->where('name', strtolower($stateSlug))
-    //             ->first();
-
-    //         if (!$state) abort(404);
-    //     }
-
-    //     // ==========================
-    //     // FIND DISTRICT
-    //     // ==========================
-    //     if ($districtSlug && $state) {
-    //         $district = DB::table('region')
-    //             ->where('name', strtolower($districtSlug))
-    //             ->where('state_id', $state->id)
-    //             ->first();
-
-    //         if (!$district) abort(404);
-    //     }
-
-    //     // ==========================
-    //     // FIND CITY
-    //     // ==========================
-    //     if ($citySlug && $district) {
-    //         $city = DB::table('city')
-    //             ->where('name', strtolower($citySlug))
-    //             ->where('region_id', $district->id)
-    //             ->first();
-
-    //         if (!$city) abort(404);
-    //     }
-
-    //     // ==========================
-    //     // DROPDOWNS
-    //     // ==========================
-    //     $states = DB::table('state')->orderBy('name')->get();
-    //     $districts = $state ? DB::table('region')->where('state_id', $state->id)->orderBy('name')->get() : collect();
-    //     $cities = $district ? DB::table('city')->where('region_id', $district->id)->orderBy('name')->get() : collect();
-
-    //     $work_types = DB::table('work_types')->get();
-    //     $work_subtypes = DB::table('work_subtypes')->get()->groupBy('work_type_id');
-
-    //     // ==========================
-    //     // VENDOR
-    //     // ==========================
-    //     if ($vendor_id) {
-    //         $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-
-    //         if (!$vendor) {
-    //             Session::forget('vendor_id');
-    //             $vendor_id = null;
-    //             $mustLogin = true;
-    //         }
-    //     }
-
-    //     // ==========================
-    //     // NOTIFICATIONS
-    //     // ==========================
-    //     $notifications = collect();
-    //     $notificationCount = 0;
-
-    //     if ($vendor_id) {
-    //         $notifications = DB::table('customer_interests as ci')
-    //             ->join('users as u', 'u.id', '=', 'ci.customer_id')
-    //             ->where('ci.vendor_id', $vendor_id)
-    //             ->select('ci.*', 'u.name as customer_name')
-    //             ->orderBy('ci.id', 'desc')
-    //             ->get();
-
-    //         $notificationCount = $notifications->count();
-    //     }
-
-    //     // ==========================
-    //     // PROJECT QUERY
-    //     // ==========================
-    //     $projectsQuery = DB::table('posts')
-    //         ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
-    //         ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-    //         ->leftJoin('users', 'users.id', '=', 'posts.user_id')
-    //         ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-    //         ->leftJoin('region', 'region.id', '=', 'posts.region')
-    //         ->leftJoin('state', 'state.id', '=', 'posts.state')
-    //         ->leftJoin('city', 'city.id', '=', 'posts.city')
-    //         ->where('posts.post_verify', 1)
-    //         ->select(
-    //             'posts.*',
-    //             'users.name as username',
-    //             'work_types.work_type',
-    //             'work_subtypes.work_subtype',
-    //             'budget_range.budget_range as budget_range_name',
-    //             'region.name as regionname',
-    //             'state.name as statename',
-    //             'city.name as cityname'
-    //         );
-
-    //     if ($state) {
-    //         $projectsQuery->where('posts.state', $state->id);
-    //     }
-
-    //     if ($district) {
-    //         $projectsQuery->where('posts.region', $district->id);
-    //     }
-
-    //     if ($city) {
-    //         $projectsQuery->where('posts.city', $city->id);
-    //     }
-
-    //     $projects = $projectsQuery
-    //         ->orderBy('posts.id', 'desc')
-    //         ->get();
-
-    //     // ==========================
-    //     // STATS
-    //     // ==========================
-    //     $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
-    //     $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
-
-    //     return view('web.search_customer', compact(
-    //         'notifications',
-    //         'notificationCount',
-    //         'states',
-    //         'districts',
-    //         'cities',
-    //         'work_types',
-    //         'work_subtypes',
-    //         'projects',
-    //         'complited_project',
-    //         'remaining_projects',
-    //         'vendor_id',
-    //         'vendor',
-    //         'mustLogin',
-    //         'state',
-    //         'district',
-    //         'city'
-    //     ));
-    // }
-    // public function search_customer(Request $request)
-    // {
-    //     $vendor_id = Session::get('vendor_id');
-    
-    //     $vendor = null;
-
-    //     // flag for blade (to show “Login required” message if needed)
-    //     $mustLogin = !$vendor_id;  
-  
-    //     // common dropdowns
-    //     $states = DB::table('state')->orderBy('name')->get();
-    //     $work_types = DB::table('work_types')->get();
-    //     $work_subtypes = DB::table('work_subtypes')->get()->groupBy('work_type_id');
-
-    //     // vendor fetch (optional)
-    //     if ($vendor_id) {
-    //         $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-    //         // dd($vendor);
-    //         // if session exists but vendor missing
-    //         if (!$vendor) {
-    //             Session::forget('vendor_id');
-    //             $vendor_id = null;
-    //             $vendor = null;
-    //             $mustLogin = true;
-    //         }
-    //     }
-    //     // dd($vendor->status);
-    //     // notifications only if logged in
-    //     $notifications = collect();
-    //     $notificationCount = 0;
-
-    //     if ($vendor_id) {
-    //         $notifications = DB::table('customer_interests as ci')
-    //             ->join('users as u', 'u.id', '=', 'ci.customer_id')
-    //             ->where('ci.vendor_id', $vendor_id)
-    //             ->select('ci.*', 'u.name as customer_name', 'u.email as customer_email', 'u.mobile as customer_mobile')
-    //             ->orderBy('ci.id', 'desc')
-    //             ->get();
-
-    //         $notificationCount = $notifications->count();
-    //     }
-    //     $projects = collect();
-    //     // if($vendor->status == 'approved') {
-    //     $projects = DB::table('posts')
-    //         ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
-    //         ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-    //         ->leftJoin('users', 'users.id', '=', 'posts.user_id')
-    //         ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-    //         ->leftJoin('region', 'region.id', '=', 'posts.region')
-    //         ->leftJoin('state', 'state.id', '=', 'posts.state')
-    //         ->leftJoin('city', 'city.id', '=', 'posts.city')
-    //         ->select(
-    //             'posts.*',
-    //             'users.name as username',
-    //             'work_types.work_type as work_type',
-    //             'work_subtypes.work_subtype as work_subtype',
-    //             'budget_range.budget_range as budget_range_name',
-    //             'region.name as regionname',
-    //             'state.name as statename',
-    //             'city.name as cityname',
-    //             DB::raw("
-    //                 CASE
-    //                     WHEN posts.budget_id = 1 THEN '30 Credits'
-    //                     WHEN posts.budget_id = 2 THEN '120 Credits'
-    //                     WHEN posts.budget_id = 3 THEN '250 Credits'
-    //                     WHEN posts.budget_id IN (4,5,6,7) THEN 'Prime Lead'
-    //                     ELSE ''
-    //                 END as lead_credit_label
-    //             "),
-    //             DB::raw("
-    //                 CASE
-    //                     WHEN posts.budget_id = 1 THEN 30
-    //                     WHEN posts.budget_id = 2 THEN 120
-    //                     WHEN posts.budget_id = 3 THEN 250
-    //                     ELSE NULL
-    //                 END as lead_credit_value
-    //             ")
-    //         )
-    //         ->where('posts.post_verify', 1)
-    //         ->orderBy('posts.id', 'desc')
-    //         ->get();
-    //     // dd($projects);
-    //  //   }
-    //     // optional stats
-    //     $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
-    //     $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
-
-    //     return view('web.search_customer', [
-    //         'notifications'       => $notifications,
-    //         'notificationCount'   => $notificationCount,
-    //         'states'              => $states,
-    //         'work_types'          => $work_types,
-    //         'work_subtypes'       => $work_subtypes,
-    //         'projects'            => $projects,
-    //         'complited_project'   => $complited_project,
-    //         'remaining_projects'  => $remaining_projects,
-    //         'vendor_id'           => $vendor_id,
-    //         'vendor'              => $vendor,
-    //         'filters'             => [],
-    //         'mustLogin'           => $mustLogin,
-    //     ]);
-    // }
-
-//     public function search_customer(Request $request,$stateSlug = null, $districtSlug = null, $citySlug = null)
-//     {
-//         $vendor_id = Session::get('vendor_id');
-    
-//         $vendor = null;
-
-//         // flag for blade (to show “Login required” message if needed)
-//         $mustLogin = !$vendor_id;  
-//         $state = null;
-
+//     $selectedWorkType = null;
+//     $selectedWorkSubType = null;
+//     $state = null;
 //     $district = null;
 //     $city = null;
-//         if ($stateSlug) {
-//             $state = DB::table('state')
-//                 ->where('name', $stateSlug)
-//                 ->first();
 
-//             if (!$state) {
-//                 abort(404);
-//             }
+//     // ==========================
+//     // FIND WORK CATEGORY
+//     // ==========================
+//     if ($workCategorySlug) {
+//         $workTypes = DB::table('work_types')->get();
+
+//         $selectedWorkType = $workTypes->first(function ($item) use ($workCategorySlug) {
+//             return Str::slug($item->work_type) === Str::slug($workCategorySlug);
+//         });
+
+//         if (!$selectedWorkType) {
+//             abort(404);
 //         }
+//     }
 
-//         if ($districtSlug && $state) {
-//         $district = DB::table('region')
-//             ->where('name', $districtSlug)
+//     // ==========================
+//     // FIND WORK SUBCATEGORY
+//     // ==========================
+//     if ($workSubcategorySlug && $selectedWorkType) {
+//         $workSubTypes = DB::table('work_subtypes')
+//             ->where('work_type_id', $selectedWorkType->id)
+//             ->get();
+
+//         $selectedWorkSubType = $workSubTypes->first(function ($item) use ($workSubcategorySlug) {
+//             return Str::slug($item->work_subtype) === Str::slug($workSubcategorySlug);
+//         });
+
+//         if (!$selectedWorkSubType) {
+//             abort(404);
+//         }
+//     }
+
+//     // ==========================
+//     // FIND STATE
+//     // ==========================
+//     if ($stateSlug) {
+//         $statesData = DB::table('state')->get();
+
+//         $state = $statesData->first(function ($item) use ($stateSlug) {
+//             return Str::slug($item->name) === Str::slug($stateSlug);
+//         });
+
+//         if (!$state) {
+//             abort(404);
+//         }
+//     }
+
+//     // ==========================
+//     // FIND DISTRICT
+//     // ==========================
+//     if ($districtSlug && $state) {
+//         $districtsData = DB::table('region')
 //             ->where('state_id', $state->id)
-//             ->first();
-//         if (!$district) abort(404);
+//             ->get();
+
+//         $district = $districtsData->first(function ($item) use ($districtSlug) {
+//             return Str::slug($item->name) === Str::slug($districtSlug);
+//         });
+
+//         if (!$district) {
+//             abort(404);
+//         }
 //     }
 
+//     // ==========================
+//     // FIND CITY
+//     // ==========================
 //     if ($citySlug && $district) {
-//         $city = DB::table('city')
-//             ->where('name', $citySlug)
+//         $citiesData = DB::table('city')
 //             ->where('region_id', $district->id)
-//             ->first();
-//         if (!$city) abort(404);
+//             ->get();
+
+//         $city = $citiesData->first(function ($item) use ($citySlug) {
+//             return Str::slug($item->name) === Str::slug($citySlug);
+//         });
+
+//         if (!$city) {
+//             abort(404);
+//         }
 //     }
-//         // common dropdowns
-//         $states = DB::table('state')->orderBy('name')->get();
-//         $work_types = DB::table('work_types')->get();
-//         $work_subtypes = DB::table('work_subtypes')->get()->groupBy('work_type_id');
 
-//         // vendor fetch (optional)
-//         if ($vendor_id) {
-//             $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
-//             // dd($vendor);
-//             // if session exists but vendor missing
-//             if (!$vendor) {
-//                 Session::forget('vendor_id');
-//                 $vendor_id = null;
-//                 $vendor = null;
-//                 $mustLogin = true;
-//             }
+//     // ==========================
+//     // DROPDOWNS
+//     // ==========================
+//     $states = DB::table('state')->orderBy('name')->get();
+//     $districts = $state ? DB::table('region')->where('state_id', $state->id)->orderBy('name')->get() : collect();
+//     $cities = $district ? DB::table('city')->where('region_id', $district->id)->orderBy('name')->get() : collect();
+
+//     $work_types = DB::table('work_types')->get();
+//     $work_subtypes = DB::table('work_subtypes')->get()->groupBy('work_type_id');
+
+//     // ==========================
+//     // VENDOR
+//     // ==========================
+//     if ($vendor_id) {
+//         $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+
+//         if (!$vendor) {
+//             Session::forget('vendor_id');
+//             $vendor_id = null;
+//             $mustLogin = true;
 //         }
-//         // dd($vendor->status);
-//         // notifications only if logged in
-//         $notifications = collect();
-//         $notificationCount = 0;
+//     }
 
-//         if ($vendor_id) {
-//             $notifications = DB::table('customer_interests as ci')
-//                 ->join('users as u', 'u.id', '=', 'ci.customer_id')
-//                 ->where('ci.vendor_id', $vendor_id)
-//                 ->select('ci.*', 'u.name as customer_name', 'u.email as customer_email', 'u.mobile as customer_mobile')
-//                 ->orderBy('ci.id', 'desc')
-//                 ->get();
+//     // ==========================
+//     // NOTIFICATIONS
+//     // ==========================
+//     $notifications = collect();
+//     $notificationCount = 0;
 
-//             $notificationCount = $notifications->count();
-//         }
-//         $projects = collect();
-//         // if($vendor->status == 'approved') {
-//          $projectsQuery  = DB::table('posts')
-//             ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
-//             ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
-//             ->leftJoin('users', 'users.id', '=', 'posts.user_id')
-//             ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
-//             ->leftJoin('region', 'region.id', '=', 'posts.region')
-//             ->leftJoin('state', 'state.id', '=', 'posts.state')
-//             ->leftJoin('city', 'city.id', '=', 'posts.city')
-//             ->select(
-//                 'posts.*',
-//                 'users.name as username',
-//                 'work_types.work_type as work_type',
-//                 'work_subtypes.work_subtype as work_subtype',
-//                 'budget_range.budget_range as budget_range_name',
-//                 'region.name as regionname',
-//                 'state.name as statename',
-//                 'city.name as cityname',
-//                 DB::raw("
-//                     CASE
-//                         WHEN posts.budget_id = 1 THEN '30 Credits'
-//                         WHEN posts.budget_id = 2 THEN '120 Credits'
-//                         WHEN posts.budget_id = 3 THEN '250 Credits'
-//                         WHEN posts.budget_id IN (4,5,6,7) THEN 'Prime Lead'
-//                         ELSE ''
-//                     END as lead_credit_label
-//                 "),
-//                 DB::raw("
-//                     CASE
-//                         WHEN posts.budget_id = 1 THEN 30
-//                         WHEN posts.budget_id = 2 THEN 120
-//                         WHEN posts.budget_id = 3 THEN 250
-//                         ELSE NULL
-//                     END as lead_credit_value
-//                 ")
-//             )
-//             ->where('posts.post_verify', 1);
+//     if ($vendor_id) {
+//         $notifications = DB::table('customer_interests as ci')
+//             ->join('users as u', 'u.id', '=', 'ci.customer_id')
+//             ->where('ci.vendor_id', $vendor_id)
+//             ->select('ci.*', 'u.name as customer_name')
+//             ->orderBy('ci.id', 'desc')
+//             ->get();
 
-//               if ($state) {
+//         $notificationCount = $notifications->count();
+//     }
+
+//     // ==========================
+//     // PROJECT QUERY
+//     // ==========================
+//     $projectsQuery = DB::table('posts')
+//         ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
+//         ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
+//         ->leftJoin('users', 'users.id', '=', 'posts.user_id')
+//         ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+//         ->leftJoin('region', 'region.id', '=', 'posts.region')
+//         ->leftJoin('state', 'state.id', '=', 'posts.state')
+//         ->leftJoin('city', 'city.id', '=', 'posts.city')
+//         ->where('posts.post_verify', 1)
+//         ->select(
+//             'posts.*',
+//             'users.name as username',
+//             'work_types.work_type',
+//             'work_subtypes.work_subtype',
+//             'budget_range.budget_range as budget_range_name',
+//             'region.name as regionname',
+//             'state.name as statename',
+//             'city.name as cityname'
+//         );
+
+//     if ($selectedWorkType) {
+//         $projectsQuery->where('posts.work_type_id', $selectedWorkType->id);
+//     }
+
+//     if ($selectedWorkSubType) {
+//         $projectsQuery->where('posts.work_subtype_id', $selectedWorkSubType->id);
+//     }
+
+//     if ($state) {
 //         $projectsQuery->where('posts.state', $state->id);
 //     }
 
-//      if ($district) {
+//     if ($district) {
 //         $projectsQuery->where('posts.region', $district->id);
 //     }
 
 //     if ($city) {
 //         $projectsQuery->where('posts.city', $city->id);
 //     }
-//       $projects = $projectsQuery
+
+//     $projects = $projectsQuery
 //         ->orderBy('posts.id', 'desc')
 //         ->get();
-//  $projects = $projectsQuery->get();
 
-//     $states = DB::table('state')->get();
-//     $districts = $state ? DB::table('region')->where('state_id', $state->id)->get() : collect();
-//     $cities = $district ? DB::table('city')->where('region_id', $district->id)->get() : collect();
+//     // ==========================
+//     // STATS
+//     // ==========================
+//     $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
+//     $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
 
-//             // ->orderBy('posts.id', 'desc')
-//             // ->get();
-//         // dd($projects);
-//      //   }
-//         // optional stats
-//         $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
-//         $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
+//     return view('web.search_customer', compact(
+//         'notifications',
+//         'notificationCount',
+//         'states',
+//         'districts',
+//         'cities',
+//         'work_types',
+//         'work_subtypes',
+//         'projects',
+//         'complited_project',
+//         'remaining_projects',
+//         'vendor_id',
+//         'vendor',
+//         'mustLogin',
+//         'selectedWorkType',
+//         'selectedWorkSubType',
+//         'state',
+//         'district',
+//         'city'
+//     ));
+// }
+   
+    public function search_customer(Request $request)
+    {
+        $vendor_id = Session::get('vendor_id');
+    
+        $vendor = null;
 
-//         return view('web.search_customer', [
-//             'notifications'       => $notifications,
-//             'notificationCount'   => $notificationCount,
-//             'selectedState' => $state,
-//             'states'              => $states,
-//             'work_types'          => $work_types,
-//             'work_subtypes'       => $work_subtypes,
-//             'projects'            => $projects,
-//             'complited_project'   => $complited_project,
-//             'remaining_projects'  => $remaining_projects,
-//             'vendor_id'           => $vendor_id,
-//             'vendor'              => $vendor,
-//             'filters'             => [],
-//             'mustLogin'           => $mustLogin,
-//         ]);
-//     }
+        // flag for blade (to show “Login required” message if needed)
+        $mustLogin = !$vendor_id;  
+  
+        // common dropdowns
+        $states = DB::table('state')->orderBy('name')->get();
+        $work_types = DB::table('work_types')->get();
+        $work_subtypes = DB::table('work_subtypes')->get()->groupBy('work_type_id');
+
+        // vendor fetch (optional)
+        if ($vendor_id) {
+            $vendor = DB::table('vendor_reg')->where('id', $vendor_id)->first();
+            // dd($vendor);
+            // if session exists but vendor missing
+            if (!$vendor) {
+                Session::forget('vendor_id');
+                $vendor_id = null;
+                $vendor = null;
+                $mustLogin = true;
+            }
+        }
+        // dd($vendor->status);
+        // notifications only if logged in
+        $notifications = collect();
+        $notificationCount = 0;
+
+        if ($vendor_id) {
+            $notifications = DB::table('customer_interests as ci')
+                ->join('users as u', 'u.id', '=', 'ci.customer_id')
+                ->where('ci.vendor_id', $vendor_id)
+                ->select('ci.*', 'u.name as customer_name', 'u.email as customer_email', 'u.mobile as customer_mobile')
+                ->orderBy('ci.id', 'desc')
+                ->get();
+
+            $notificationCount = $notifications->count();
+        }
+        $projects = collect();
+        // if($vendor->status == 'approved') {
+        $projects = DB::table('posts')
+            ->leftJoin('work_types', 'work_types.id', '=', 'posts.work_type_id')
+            ->leftJoin('work_subtypes', 'work_subtypes.id', '=', 'posts.work_subtype_id')
+            ->leftJoin('users', 'users.id', '=', 'posts.user_id')
+            ->leftJoin('budget_range', 'budget_range.id', '=', 'posts.budget_id')
+            ->leftJoin('region', 'region.id', '=', 'posts.region')
+            ->leftJoin('state', 'state.id', '=', 'posts.state')
+            ->leftJoin('city', 'city.id', '=', 'posts.city')
+            ->select(
+                'posts.*',
+                'users.name as username',
+                'work_types.work_type as work_type',
+                'work_subtypes.work_subtype as work_subtype',
+                'budget_range.budget_range as budget_range_name',
+                'region.name as regionname',
+                'state.name as statename',
+                'city.name as cityname',
+                DB::raw("
+                    CASE
+                        WHEN posts.budget_id = 1 THEN '30 Credits'
+                        WHEN posts.budget_id = 2 THEN '120 Credits'
+                        WHEN posts.budget_id = 3 THEN '250 Credits'
+                        WHEN posts.budget_id IN (4,5,6,7) THEN 'Prime Lead'
+                        ELSE ''
+                    END as lead_credit_label
+                "),
+                DB::raw("
+                    CASE
+                        WHEN posts.budget_id = 1 THEN 30
+                        WHEN posts.budget_id = 2 THEN 120
+                        WHEN posts.budget_id = 3 THEN 250
+                        ELSE NULL
+                    END as lead_credit_value
+                ")
+            )
+            ->where('posts.post_verify', 1)
+            ->orderBy('posts.id', 'desc')
+            ->get();
+        // dd($projects);
+     //   }
+        // optional stats
+        $complited_project = DB::table('posts')->where('get_vendor', 1)->get();
+        $remaining_projects = DB::table('posts')->where('get_vendor', 0)->get();
+
+        return view('web.search_customer', [
+            'notifications'       => $notifications,
+            'notificationCount'   => $notificationCount,
+            'states'              => $states,
+            'work_types'          => $work_types,
+            'work_subtypes'       => $work_subtypes,
+            'projects'            => $projects,
+            'complited_project'   => $complited_project,
+            'remaining_projects'  => $remaining_projects,
+            'vendor_id'           => $vendor_id,
+            'vendor'              => $vendor,
+            'filters'             => [],
+            'mustLogin'           => $mustLogin,
+        ]);
+    }
 
     public function vendorinterestcheck(Request $request)
     {
