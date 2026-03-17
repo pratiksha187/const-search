@@ -89,7 +89,8 @@ img{
 }
 
 .hero-title img{
-    width:min(898px, 100%);
+    width:min(1186px, 100%)
+    
 }
 
 .hero-subtitle{
