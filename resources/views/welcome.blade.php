@@ -5,7 +5,6 @@
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
 <style>
 :root{
     --ck-primary:#1c2c3e;
@@ -55,19 +54,36 @@ img{
 /* HERO */
 .hero-section{
     background:transparent;
-    padding:56px 0 22px;
     text-align:center;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 0;
 }
 
 .custom-section{
+    width:100%;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     background:radial-gradient(78.42% 19.37% at 50.03% 96.63%, rgba(205,216,237,0.86) 23.88%, rgba(255,255,255,0.86) 100%);
     box-shadow:0 4px 4px 0 rgba(0,0,0,0.25);
-    border-radius:1px;
-    padding:56px 32px;
+    border-radius:0;
+    padding:40px 24px;
+}
+
+.hero-section .container-custom{
+    width:min(1220px, 92%);
+    margin:0 auto;
 }
 
 .hero-title{
-    margin-top:12px;
+    margin-top:0;
+    margin-bottom:18px;
     display:flex;
     justify-content:center;
 }
@@ -129,8 +145,8 @@ img{
 }
 
 .stats-wrap{
-    margin-top:24px;
-    padding-top:20px;
+    margin-top:26px;
+    padding-top:8px;
 }
 
 .stats-row{

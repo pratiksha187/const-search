@@ -1470,44 +1470,13 @@ class HomeController extends Controller
     }
 
 
-     public function viewcustQuotation(){
+     public function knowledgehub(){
+        return view('web.knowledgehub');
 
     }
-     // View quotation
-    // public function viewQuotation($enquiry_id)
-    // {
-    //     $quotationItems = DB::table('quotations')
-    //         ->where('enquiry_id', $enquiry_id)
-    //         ->get();
 
-    //     abort_if($quotationItems->isEmpty(), 404);
 
-    //     $enquiry = DB::table('supplier_enquiries')
-    //         ->where('id', $enquiry_id)
-    //         ->first();
-
-    //     return view('customer.view-quotation', compact('quotationItems', 'enquiry'));
-    // }
-
-    // Accept / Reject
-    // public function quotationAction(Request $request)
-    // {
-    //     $request->validate([
-    //         'enquiry_id' => 'required',
-    //         'action'     => 'required|in:accepted,rejected',
-    //     ]);
-
-    //     DB::table('quotations')
-    //         ->where('enquiry_id', $request->enquiry_id)
-    //         ->update([
-    //             'status' => $request->action,
-    //             'customer_response_at' => now()
-    //         ]);
-
-    //     return redirect()
-    //         ->back()
-    //         ->with('success', 'Your response has been recorded.');
-    // }
+  
 
 
 
