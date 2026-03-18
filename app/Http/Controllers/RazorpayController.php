@@ -14,6 +14,7 @@ class RazorpayController extends Controller
 {
     public function createOrder(Request $request)
     {
+        dd($request);
         $request->validate([
             'cust_id' => 'required',
             'plan'    => 'required',
