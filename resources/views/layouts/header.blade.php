@@ -298,6 +298,9 @@ body {
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('knowledgehub') }}">Eduction</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('findpros') }}">Find Pros</a>
+                </li>
             </ul>
 
             <div class="d-flex flex-column flex-lg-row align-items-center ms-lg-3">

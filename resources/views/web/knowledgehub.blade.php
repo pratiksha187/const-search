@@ -4,98 +4,214 @@
 
 @section('content')
 <style>
-    .knowledge-hub-section{
-    background:#f8fafc;
-    padding:40px 0 30px;
+:root{
+    --ck-primary:#1c2c3e;
+    --ck-secondary:#f25c05;
+    --ck-secondary-dark:#d94f04;
+    --ck-accent:#f4c21b;
+    --ck-bg:#f7f9fc;
+    --ck-card:#ffffff;
+    --ck-text:#1b2430;
+    --ck-muted:#667085;
+    --ck-border:#e8edf3;
+    --ck-shadow:0 10px 30px rgba(28,44,62,0.07);
+    --ck-shadow-hover:0 18px 40px rgba(28,44,62,0.12);
+}
+
+body{
+    background:var(--ck-bg);
+}
+
+.container-custom{
+    width:min(1280px, 94%);
+    margin:0 auto;
+}
+
+/* =========================
+   COMMON
+========================= */
+.section-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+}
+
+.section-title-wrap{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.section-line{
+    width:5px;
+    height:32px;
+    border-radius:20px;
+    background:var(--ck-secondary);
+    flex-shrink:0;
+}
+
+.section-title{
+    margin:0;
+    font-size:30px;
+    line-height:1.2;
+    font-weight:900;
+    color:var(--ck-primary);
+    letter-spacing:-0.5px;
+}
+
+.section-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+    color:var(--ck-primary);
+    font-size:15px;
+    font-weight:700;
+    transition:0.3s ease;
+}
+
+.section-link i{
+    transition:0.3s ease;
+}
+
+.section-link:hover{
+    color:var(--ck-secondary);
+}
+
+.section-link:hover i{
+    transform:translateX(4px);
+}
+
+/* =========================
+   HERO
+========================= */
+.knowledge-hub-section{
+    padding:34px 0 26px;
+    background:var(--ck-bg);
 }
 
 .knowledge-hub-inner{
     position:relative;
-    background:
-        linear-gradient(rgba(28,44,62,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(28,44,62,0.04) 1px, transparent 1px),
-        #f8fafc;
-    background-size:48px 48px, 48px 48px, auto;
-    border-radius:8px;
     overflow:hidden;
-    min-height:360px;
+    border-radius:28px;
+    padding:72px 22px 78px;
+    min-height:420px;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:50px 20px 70px;
+    background:
+        linear-gradient(rgba(28,44,62,0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(28,44,62,0.045) 1px, transparent 1px),
+        linear-gradient(180deg, #fbfcfe 0%, #f4f7fb 100%);
+    background-size:44px 44px, 44px 44px, auto;
+    border:1px solid rgba(28,44,62,0.06);
+    box-shadow:var(--ck-shadow);
+}
+
+.knowledge-hub-inner::before{
+    content:"";
+    position:absolute;
+    top:-80px;
+    left:-60px;
+    width:220px;
+    height:220px;
+    background:radial-gradient(circle, rgba(242,92,5,0.10), transparent 70%);
+    pointer-events:none;
+}
+
+.knowledge-hub-inner::after{
+    content:"";
+    position:absolute;
+    right:-60px;
+    bottom:-80px;
+    width:260px;
+    height:260px;
+    background:radial-gradient(circle, rgba(28,44,62,0.10), transparent 70%);
+    pointer-events:none;
 }
 
 .knowledge-hub-content{
-    text-align:center;
-    max-width:760px;
-    margin:0 auto;
     position:relative;
     z-index:2;
+    text-align:center;
+    max-width:850px;
+    margin:0 auto;
 }
 
 .knowledge-badge{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    background:#1f1f1f;
-    color:var(--ck-secondary);
+    background:#111;
+    color:#fff;
+    border-radius:999px;
+    padding:10px 18px;
     font-size:11px;
     font-weight:800;
-    letter-spacing:1.2px;
-    padding:8px 16px;
-    border-radius:999px;
-    margin-bottom:22px;
-    box-shadow:0 10px 24px rgba(0,0,0,0.08);
+    letter-spacing:1.8px;
+    margin-bottom:20px;
+    box-shadow:0 10px 24px rgba(0,0,0,0.10);
+}
+
+.knowledge-badge span{
+    color:var(--ck-secondary);
+    margin-left:6px;
 }
 
 .knowledge-title{
-    font-size:58px;
-    line-height:1.08;
+    margin:0 0 14px;
+    font-size:62px;
+    line-height:1.02;
     font-weight:900;
     color:var(--ck-primary);
-    margin-bottom:14px;
-    letter-spacing:-1.4px;
+    letter-spacing:-2px;
 }
 
 .knowledge-highlight{
+    margin:0 0 16px;
     font-size:26px;
     line-height:1.5;
-    color:var(--ck-secondary);
+    color:#111827;
     font-weight:700;
-    margin-bottom:18px;
+}
+
+.knowledge-highlight strong{
+    color:var(--ck-secondary);
 }
 
 .knowledge-desc{
-    max-width:660px;
     margin:0 auto 34px;
-    font-size:18px;
-    line-height:1.75;
-    color:#6f6f6f;
+    max-width:720px;
+    font-size:17px;
+    line-height:1.9;
+    color:var(--ck-muted);
     font-weight:500;
 }
 
 .knowledge-search-box{
-    width:100%;
-    max-width:620px;
+    max-width:650px;
     margin:0 auto;
     background:#fff;
-    border:1px solid rgba(28,44,62,0.10);
-    border-radius:16px;
+    border:1px solid var(--ck-border);
+    border-radius:18px;
     display:flex;
     align-items:center;
-    padding:8px 8px 8px 14px;
     gap:10px;
-    box-shadow:0 12px 28px rgba(28,44,62,0.08);
+    padding:8px 8px 8px 16px;
+    box-shadow:0 14px 36px rgba(28,44,62,0.08);
 }
 
 .knowledge-search-icon{
-    width:34px;
-    height:34px;
+    width:36px;
+    height:36px;
     display:flex;
     align-items:center;
     justify-content:center;
-    color:#8a8a8a;
-    font-size:20px;
+    color:#98a2b3;
+    font-size:18px;
     flex-shrink:0;
 }
 
@@ -104,33 +220,33 @@
     border:none;
     outline:none;
     background:transparent;
-    font-size:16px;
-    font-weight:500;
     color:var(--ck-primary);
-    padding:10px 4px;
+    font-size:15px;
+    font-weight:600;
+    padding:12px 2px;
 }
 
 .knowledge-search-input::placeholder{
-    color:#9b9b9b;
+    color:#98a2b3;
+    font-weight:500;
 }
 
 .knowledge-search-btn{
     border:none;
     outline:none;
-    background:#111111;
-    color:var(--ck-secondary);
-    font-size:15px;
+    background:#111;
+    color:#fff;
+    border-radius:14px;
+    padding:14px 26px;
+    min-width:120px;
+    font-size:14px;
     font-weight:800;
-    border-radius:12px;
-    padding:14px 24px;
-    min-width:110px;
-    transition:all 0.3s ease;
-    box-shadow:0 8px 18px rgba(0,0,0,0.12);
+    transition:0.3s ease;
+    box-shadow:0 8px 22px rgba(0,0,0,0.10);
 }
 
 .knowledge-search-btn:hover{
-    background:var(--ck-primary);
-    color:#fff;
+    background:var(--ck-secondary);
     transform:translateY(-2px);
 }
 
@@ -139,21 +255,21 @@
     left:0;
     bottom:0;
     width:100%;
-    height:10px;
+    height:9px;
     background:repeating-linear-gradient(
         -45deg,
-        #111111 0 8px,
-        #111111 8px 12px,
-        var(--ck-secondary) 12px 20px,
-        var(--ck-secondary) 20px 24px
+        #111 0 10px,
+        #111 10px 16px,
+        var(--ck-secondary) 16px 26px,
+        var(--ck-secondary) 26px 32px
     );
 }
 
 .kh-corner{
     position:absolute;
-    width:28px;
-    height:28px;
-    pointer-events:none;
+    width:34px;
+    height:34px;
+    z-index:1;
 }
 
 .kh-corner::before,
@@ -161,389 +277,128 @@
     content:"";
     position:absolute;
     background:rgba(242,92,5,0.45);
-}
-
-.kh-corner-top-left{
-    top:12px;
-    left:12px;
-}
-
-.kh-corner-top-left::before{
-    top:0;
-    left:0;
-    width:28px;
-    height:2px;
-}
-
-.kh-corner-top-left::after{
-    top:0;
-    left:0;
-    width:2px;
-    height:28px;
-}
-
-.kh-corner-top-right{
-    top:12px;
-    right:12px;
-}
-
-.kh-corner-top-right::before{
-    top:0;
-    right:0;
-    width:28px;
-    height:2px;
-}
-
-.kh-corner-top-right::after{
-    top:0;
-    right:0;
-    width:2px;
-    height:28px;
-}
-
-.kh-corner-bottom-left{
-    bottom:18px;
-    left:12px;
-}
-
-.kh-corner-bottom-left::before{
-    bottom:0;
-    left:0;
-    width:28px;
-    height:2px;
-}
-
-.kh-corner-bottom-left::after{
-    bottom:0;
-    left:0;
-    width:2px;
-    height:28px;
-}
-
-.kh-corner-bottom-right{
-    bottom:18px;
-    right:12px;
-}
-
-.kh-corner-bottom-right::before{
-    bottom:0;
-    right:0;
-    width:28px;
-    height:2px;
-}
-
-.kh-corner-bottom-right::after{
-    bottom:0;
-    right:0;
-    width:2px;
-    height:28px;
-}
-
-@media (max-width: 991px){
-    .knowledge-hub-inner{
-        min-height:330px;
-        padding:44px 20px 60px;
-    }
-
-    .knowledge-title{
-        font-size:42px;
-    }
-
-    .knowledge-highlight{
-        font-size:22px;
-    }
-
-    .knowledge-desc{
-        font-size:16px;
-        max-width:580px;
-    }
-
-    .knowledge-search-box{
-        max-width:560px;
-    }
-}
-
-@media (max-width: 767px){
-    .knowledge-hub-section{
-        padding:24px 0 22px;
-    }
-
-    .knowledge-hub-inner{
-        min-height:auto;
-        padding:34px 14px 52px;
-        background-size:34px 34px, 34px 34px, auto;
-    }
-
-    .knowledge-badge{
-        font-size:10px;
-        padding:7px 14px;
-        margin-bottom:18px;
-    }
-
-    .knowledge-title{
-        font-size:30px;
-        line-height:1.15;
-        margin-bottom:12px;
-    }
-
-    .knowledge-highlight{
-        font-size:17px;
-        line-height:1.5;
-        margin-bottom:14px;
-    }
-
-    .knowledge-desc{
-        font-size:14px;
-        line-height:1.7;
-        margin-bottom:24px;
-    }
-
-    .knowledge-search-box{
-        flex-wrap:wrap;
-        padding:10px;
-        gap:8px;
-        border-radius:14px;
-    }
-
-    .knowledge-search-icon{
-        width:28px;
-        height:28px;
-        font-size:18px;
-    }
-
-    .knowledge-search-input{
-        min-width:0;
-        width:calc(100% - 38px);
-        font-size:14px;
-        padding:8px 0;
-    }
-
-    .knowledge-search-btn{
-        width:100%;
-        min-width:100%;
-        padding:12px 18px;
-        font-size:14px;
-    }
-
-    .knowledge-bottom-strip{
-        height:8px;
-    }
-}
-
-@media (max-width: 480px){
-    .knowledge-title{
-        font-size:26px;
-    }
-
-    .knowledge-highlight{
-        font-size:15px;
-    }
-
-    .knowledge-desc{
-        font-size:13px;
-    }
-
-    .kh-corner{
-        width:20px;
-        height:20px;
-    }
-
-    .kh-corner-top-left::before,
-    .kh-corner-top-right::before,
-    .kh-corner-bottom-left::before,
-    .kh-corner-bottom-right::before{
-        width:20px;
-    }
-
-    .kh-corner-top-left::after,
-    .kh-corner-top-right::after,
-    .kh-corner-bottom-left::after,
-    .kh-corner-bottom-right::after{
-        height:20px;
-    }
-}
-
-
-.explore-topics-section{
-    background:#efefef;
-    padding:38px 0 48px;
-    position:relative;
-}
-
-.explore-topics-wrap{
-    position:relative;
-}
-
-.explore-topics-heading{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:28px;
-}
-
-.explore-line{
-    width:4px;
-    height:28px;
-    background:var(--ck-secondary);
     border-radius:10px;
-    flex-shrink:0;
 }
 
-.explore-topics-heading h2{
-    margin:0;
-    font-size:24px;
-    line-height:1.2;
-    font-weight:800;
-    color:var(--ck-primary);
+.kh-corner-top-left{ top:16px; left:16px; }
+.kh-corner-top-right{ top:16px; right:16px; }
+.kh-corner-bottom-left{ bottom:16px; left:16px; }
+.kh-corner-bottom-right{ bottom:16px; right:16px; }
+
+.kh-corner-top-left::before,
+.kh-corner-top-right::before,
+.kh-corner-bottom-left::before,
+.kh-corner-bottom-right::before{
+    width:34px; height:2px;
+}
+
+.kh-corner-top-left::after,
+.kh-corner-top-right::after,
+.kh-corner-bottom-left::after,
+.kh-corner-bottom-right::after{
+    width:2px; height:34px;
+}
+
+.kh-corner-top-right::before,
+.kh-corner-bottom-right::before{ right:0; }
+.kh-corner-top-right::after,
+.kh-corner-bottom-right::after{ right:0; }
+
+.kh-corner-bottom-left::before,
+.kh-corner-bottom-right::before{ bottom:0; }
+
+.kh-corner-bottom-left::after,
+.kh-corner-bottom-right::after{ bottom:0; }
+
+/* =========================
+   TOPICS
+========================= */
+.explore-topics-section{
+    padding:26px 0 20px;
 }
 
 .explore-topics-grid{
     display:grid;
-    grid-template-columns:repeat(5, 1fr);
-    gap:14px;
+    grid-template-columns:repeat(5,1fr);
+    gap:18px;
 }
 
 .topic-card{
-    background:#f7f7f7;
-    border:1px solid #dddddd;
-    border-radius:18px;
-    padding:22px 20px;
+    background:#fff;
+    border:1px solid var(--ck-border);
+    border-radius:22px;
+    padding:24px 22px;
     text-decoration:none;
-    min-height:230px;
-    transition:all 0.3s ease;
-    box-shadow:0 4px 14px rgba(28,44,62,0.03);
+    min-height:210px;
+    box-shadow:var(--ck-shadow);
+    transition:0.3s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+.topic-card::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:5px;
+    background:linear-gradient(90deg, var(--ck-secondary), var(--ck-accent));
+    opacity:0;
+    transition:0.3s ease;
 }
 
 .topic-card:hover{
-    transform:translateY(-4px);
-    border-color:#cfd8e3;
-    box-shadow:0 14px 28px rgba(28,44,62,0.08);
+    transform:translateY(-6px);
+    box-shadow:var(--ck-shadow-hover);
+    border-color:#d8e0ea;
+}
+
+.topic-card:hover::before{
+    opacity:1;
 }
 
 .topic-icon-box{
-    width:44px;
-    height:44px;
-    border-radius:12px;
-    background:#f0efec;
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    background:linear-gradient(135deg, rgba(242,92,5,0.12), rgba(28,44,62,0.06));
     display:flex;
     align-items:center;
     justify-content:center;
-    margin-bottom:18px;
-    color:#3a3a3a;
-    font-size:21px;
+    margin-bottom:16px;
+    font-size:22px;
+    color:var(--ck-primary);
 }
 
 .topic-title{
-    font-size:16px;
-    line-height:1.45;
-    font-weight:800;
-    color:#2d2d2d;
     margin:0 0 10px;
+    font-size:17px;
+    line-height:1.4;
+    font-weight:800;
+    color:var(--ck-primary);
 }
 
 .topic-desc{
-    font-size:13px;
-    line-height:1.9;
-    color:#6d6d6d;
     margin:0;
+    font-size:13px;
+    line-height:1.8;
+    color:var(--ck-muted);
     font-weight:500;
 }
 
-@media (max-width: 1199px){
-    .explore-topics-grid{
-        grid-template-columns:repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 767px){
-    .explore-topics-section{
-        padding:28px 0 34px;
-    }
-
-    .explore-topics-heading{
-        margin-bottom:20px;
-    }
-
-    .explore-line{
-        height:24px;
-    }
-
-    .explore-topics-heading h2{
-        font-size:21px;
-    }
-
-    .explore-topics-grid{
-        grid-template-columns:repeat(2, 1fr);
-        gap:12px;
-    }
-
-    .topic-card{
-        min-height:210px;
-        padding:18px 16px;
-        border-radius:16px;
-    }
-
-    .topic-icon-box{
-        width:40px;
-        height:40px;
-        font-size:18px;
-        margin-bottom:14px;
-    }
-
-    .topic-title{
-        font-size:15px;
-    }
-
-    .topic-desc{
-        font-size:12px;
-        line-height:1.75;
-    }
-}
-
-@media (max-width: 520px){
-    .explore-topics-grid{
-        grid-template-columns:1fr;
-    }
-
-    .topic-card{
-        min-height:auto;
-    }
-}
-
+/* =========================
+   FEATURED INSIGHTS
+========================= */
 .featured-insights-section{
-    background:#f8fafc;
-    padding:36px 0 54px;
+    padding:30px 0 20px;
 }
 
-.featured-insights-wrap{
-    position:relative;
-}
-
-.featured-insights-head{
-    margin-bottom:26px;
-}
-
-.featured-title-wrap{
+.featured-title-group{
     display:flex;
     align-items:center;
     gap:12px;
     flex-wrap:wrap;
-}
-
-.featured-line{
-    width:4px;
-    height:30px;
-    background:var(--ck-secondary);
-    border-radius:10px;
-    flex-shrink:0;
-}
-
-.featured-title-wrap h2{
-    margin:0;
-    font-size:24px;
-    line-height:1.2;
-    font-weight:800;
-    color:var(--ck-primary);
 }
 
 .featured-badge{
@@ -551,39 +406,38 @@
     align-items:center;
     justify-content:center;
     background:#f4c21b;
-    color:#1f1f1f;
+    color:#111;
     font-size:10px;
     font-weight:800;
     letter-spacing:1px;
-    padding:5px 10px;
-    border-radius:6px;
-    line-height:1;
+    padding:6px 10px;
+    border-radius:999px;
 }
 
 .featured-insights-grid{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:20px;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
 }
 
 .insight-card{
-    background:#ffffff;
-    border:1px solid #e4e7eb;
-    border-radius:18px;
+    background:#fff;
+    border:1px solid var(--ck-border);
+    border-radius:22px;
     overflow:hidden;
     text-decoration:none;
-    box-shadow:0 8px 24px rgba(28,44,62,0.05);
-    transition:all 0.3s ease;
+    box-shadow:var(--ck-shadow);
+    transition:0.3s ease;
 }
 
 .insight-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 18px 36px rgba(28,44,62,0.10);
+    transform:translateY(-6px);
+    box-shadow:var(--ck-shadow-hover);
 }
 
 .insight-thumb{
     position:relative;
-    height:155px;
+    height:170px;
     overflow:hidden;
     display:flex;
     align-items:center;
@@ -591,11 +445,11 @@
 }
 
 .insight-thumb-dark{
-    background:#1c2c3e;
+    background:linear-gradient(135deg, #162536, #243850);
 }
 
 .insight-thumb-yellow{
-    background:#e6aa00;
+    background:linear-gradient(135deg, #f0b000, #d89200);
 }
 
 .insight-grid-overlay{
@@ -605,19 +459,17 @@
         linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size:22px 22px;
-    opacity:0.45;
 }
 
 .insight-ghost-icon{
     position:relative;
     z-index:2;
-    font-size:72px;
-    line-height:1;
-    color:rgba(244,194,27,0.18);
+    font-size:68px;
+    color:rgba(255,255,255,0.16);
 }
 
 .insight-thumb-yellow .insight-ghost-icon{
-    color:rgba(28,44,62,0.15);
+    color:rgba(28,44,62,0.14);
 }
 
 .insight-tag{
@@ -629,41 +481,40 @@
     align-items:center;
     justify-content:center;
     background:#f4c21b;
-    color:#1f1f1f;
+    color:#111;
     font-size:10px;
     font-weight:800;
     letter-spacing:1px;
     padding:6px 10px;
-    border-radius:6px;
-    line-height:1;
+    border-radius:8px;
 }
 
 .insight-tag-dark{
-    background:#111111;
+    background:#111;
     color:#f4c21b;
 }
 
 .insight-body{
-    padding:18px 18px 16px;
+    padding:20px;
 }
 
 .insight-title{
-    font-size:16px;
+    margin:0 0 10px;
+    font-size:18px;
     line-height:1.45;
     font-weight:800;
-    color:#222;
-    margin:0 0 10px;
+    color:#17202b;
 }
 
 .insight-title-highlight{
-    color:#e0a10b;
+    color:#d88d00;
 }
 
 .insight-desc{
-    font-size:13px;
-    line-height:1.8;
-    color:#6b7280;
     margin:0 0 14px;
+    font-size:14px;
+    line-height:1.8;
+    color:var(--ck-muted);
     font-weight:500;
 }
 
@@ -673,190 +524,53 @@
     gap:10px;
     flex-wrap:wrap;
     font-size:12px;
-    color:#8b8f97;
-    font-weight:600;
-}
-
-.insight-meta i{
-    margin-right:4px;
-}
-
-@media (max-width: 991px){
-    .featured-insights-grid{
-        grid-template-columns:1fr;
-    }
-
-    .insight-thumb{
-        height:170px;
-    }
-}
-
-@media (max-width: 767px){
-    .featured-insights-section{
-        padding:28px 0 40px;
-    }
-
-    .featured-insights-head{
-        margin-bottom:20px;
-    }
-
-    .featured-line{
-        height:24px;
-    }
-
-    .featured-title-wrap h2{
-        font-size:21px;
-    }
-
-    .featured-badge{
-        font-size:9px;
-        padding:5px 8px;
-    }
-
-    .featured-insights-grid{
-        gap:16px;
-    }
-
-    .insight-thumb{
-        height:145px;
-    }
-
-    .insight-ghost-icon{
-        font-size:60px;
-    }
-
-    .insight-body{
-        padding:16px;
-    }
-
-    .insight-title{
-        font-size:15px;
-    }
-
-    .insight-desc{
-        font-size:12px;
-        line-height:1.75;
-    }
-
-    .insight-meta{
-        font-size:11px;
-        gap:8px;
-    }
-}
-
-.latest-articles-section{
-    background:#f8fafc;
-    padding:38px 0 54px;
-}
-
-.latest-articles-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
-    margin-bottom:26px;
-    flex-wrap:wrap;
-}
-
-.latest-title-wrap{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.latest-line{
-    width:4px;
-    height:38px;
-    border-radius:10px;
-    background:var(--ck-secondary);
-    flex-shrink:0;
-}
-
-.latest-title-wrap h2{
-    margin:0;
-    font-size:30px;
-    line-height:1.2;
-    font-weight:900;
-    color:var(--ck-primary);
-}
-
-.latest-view-all{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    text-decoration:none;
-    color:var(--ck-primary);
-    font-size:16px;
+    color:#8b95a5;
     font-weight:700;
-    transition:all 0.3s ease;
 }
 
-.latest-view-all i{
-    font-size:18px;
-    transition:transform 0.3s ease;
-}
-
-.latest-view-all:hover{
-    color:var(--ck-secondary);
-}
-
-.latest-view-all:hover i{
-    transform:translateX(4px);
+/* =========================
+   LATEST ARTICLES
+========================= */
+.latest-articles-section{
+    padding:30px 0 20px;
 }
 
 .latest-articles-grid{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:28px;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
 }
 
 .article-card{
-    background:#ffffff;
-    border:1px solid #dddddd;
+    background:#fff;
+    border:1px solid var(--ck-border);
     border-radius:22px;
     overflow:hidden;
     text-decoration:none;
-    box-shadow:0 6px 22px rgba(28,44,62,0.04);
-    transition:all 0.3s ease;
+    box-shadow:var(--ck-shadow);
+    transition:0.3s ease;
 }
 
 .article-card:hover{
-    transform:translateY(-5px);
-    box-shadow:0 18px 38px rgba(28,44,62,0.10);
+    transform:translateY(-6px);
+    box-shadow:var(--ck-shadow-hover);
 }
 
 .article-thumb{
     position:relative;
-    height:178px;
+    height:180px;
     display:flex;
     align-items:center;
     justify-content:center;
     overflow:hidden;
 }
 
-.article-thumb-dark{
-    background:linear-gradient(135deg, #4b5768, #1f2f46);
-}
-
-.article-thumb-orange{
-    background:linear-gradient(135deg, #e28700, #bf6a00);
-}
-
-.article-thumb-blue{
-    background:linear-gradient(135deg, #0d72b1, #1a4f9c);
-}
-
-.article-thumb-green{
-    background:linear-gradient(135deg, #0a8c5b, #096744);
-}
-
-.article-thumb-purple{
-    background:linear-gradient(135deg, #8c2be2, #40329e);
-}
-
-.article-thumb-red{
-    background:linear-gradient(135deg, #de1e1e, #b01036);
-}
+.article-thumb-dark{ background:linear-gradient(135deg,#455367,#1d2b3f); }
+.article-thumb-orange{ background:linear-gradient(135deg,#f59f00,#d97706); }
+.article-thumb-blue{ background:linear-gradient(135deg,#0d7cc0,#1d4ed8); }
+.article-thumb-green{ background:linear-gradient(135deg,#0c9e67,#08724a); }
+.article-thumb-purple{ background:linear-gradient(135deg,#8b3dff,#5b2ab9); }
+.article-thumb-red{ background:linear-gradient(135deg,#ef233c,#b5173f); }
 
 .article-grid-overlay{
     position:absolute;
@@ -865,7 +579,7 @@
         linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size:22px 22px;
-    opacity:0.35;
+    opacity:0.4;
 }
 
 .article-tag{
@@ -879,71 +593,49 @@
     font-size:10px;
     font-weight:800;
     letter-spacing:1px;
-    padding:7px 10px;
-    border-radius:6px;
-    line-height:1;
-}
-
-.article-tag-light{
-    background:rgba(255,255,255,0.18);
-    color:#f4f4f4;
+    padding:7px 11px;
+    border-radius:8px;
     backdrop-filter:blur(2px);
 }
 
-.article-tag-soft{
-    background:rgba(255,255,255,0.22);
-    color:#fff7e8;
-}
-
-.article-tag-blue{
-    background:rgba(255,255,255,0.16);
-    color:#dcecff;
-}
-
-.article-tag-green{
-    background:rgba(255,255,255,0.16);
-    color:#e0fff0;
-}
-
-.article-tag-purple{
-    background:rgba(255,255,255,0.16);
-    color:#f0e1ff;
-}
-
+.article-tag-light,
+.article-tag-soft,
+.article-tag-blue,
+.article-tag-green,
+.article-tag-purple,
 .article-tag-red{
-    background:rgba(255,255,255,0.16);
-    color:#ffe6ea;
+    background:rgba(255,255,255,0.18);
+    color:#fff;
 }
 
 .article-ghost-icon{
     position:relative;
     z-index:2;
-    font-size:78px;
-    line-height:1;
-    color:rgba(255,255,255,0.13);
+    font-size:74px;
+    color:rgba(255,255,255,0.14);
 }
 
 .article-body{
-    padding:22px 24px 20px;
+    padding:20px;
 }
 
 .article-title{
-    margin:0 0 14px;
+    margin:0 0 12px;
     font-size:18px;
     line-height:1.45;
     font-weight:800;
-    color:#121212;
+    color:#101828;
 }
 
 .article-title-accent{
-    color:#e0a200;
+    color:#d88d00;
 }
 
 .article-desc{
-    margin:0 0 20px;
-    font-size:15px;
+    margin:0 0 18px;
+    font-size:14px;
     line-height:1.8;
-    color:#5f6672;
+    color:var(--ck-muted);
     font-weight:500;
 }
 
@@ -956,123 +648,49 @@
 }
 
 .article-time{
-    font-size:14px;
-    color:#666;
-    font-weight:600;
     display:flex;
     align-items:center;
     gap:7px;
-}
-
-.article-time i{
-    font-size:15px;
+    font-size:13px;
+    color:#667085;
+    font-weight:700;
 }
 
 .article-readmore{
     display:inline-flex;
     align-items:center;
     gap:8px;
-    color:#e0a200;
-    font-size:15px;
+    color:var(--ck-secondary);
+    font-size:14px;
     font-weight:800;
-    transition:all 0.3s ease;
 }
 
 .article-readmore i{
-    transition:transform 0.3s ease;
+    transition:0.3s ease;
 }
 
 .article-card:hover .article-readmore i{
     transform:translateX(4px);
 }
 
-@media (max-width: 1199px){
-    .latest-articles-grid{
-        gap:20px;
-    }
-
-    .article-body{
-        padding:20px 20px 18px;
-    }
-}
-
-@media (max-width: 991px){
-    .latest-articles-grid{
-        grid-template-columns:repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 767px){
-    .latest-articles-section{
-        padding:28px 0 40px;
-    }
-
-    .latest-articles-head{
-        margin-bottom:18px;
-    }
-
-    .latest-title-wrap h2{
-        font-size:24px;
-    }
-
-    .latest-line{
-        height:32px;
-    }
-
-    .latest-view-all{
-        font-size:14px;
-    }
-
-    .latest-articles-grid{
-        grid-template-columns:1fr;
-        gap:16px;
-    }
-
-    .article-thumb{
-        height:158px;
-    }
-
-    .article-ghost-icon{
-        font-size:66px;
-    }
-
-    .article-body{
-        padding:18px 18px 16px;
-    }
-
-    .article-title{
-        font-size:16px;
-        margin-bottom:10px;
-    }
-
-    .article-desc{
-        font-size:14px;
-        line-height:1.75;
-        margin-bottom:16px;
-    }
-
-    .article-time,
-    .article-readmore{
-        font-size:13px;
-    }
-}
+/* =========================
+   FROM THE FIELD
+========================= */
 .from-field-section{
-    background:#0f1115;
-    padding:34px 0 0;
-    position:relative;
-    overflow:hidden;
+    padding:36px 0 0;
+    background:#0d1117;
 }
 
 .from-field-wrap{
     position:relative;
-    padding:44px 0 70px;
+    border-radius:28px 28px 0 0;
+    overflow:hidden;
+    padding:38px 0 70px;
     background:
-        linear-gradient(rgba(242, 193, 21, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(242, 193, 21, 0.05) 1px, transparent 1px),
-        #14161b;
-    background-size:42px 42px, 42px 42px, auto;
-    border-top:1px solid rgba(255,255,255,0.05);
-    border-bottom:1px solid rgba(255,255,255,0.05);
+        linear-gradient(rgba(244,194,27,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244,194,27,0.06) 1px, transparent 1px),
+        linear-gradient(180deg, #121722 0%, #0b1018 100%);
+    background-size:34px 34px, 34px 34px, auto;
 }
 
 .from-field-header{
@@ -1080,9 +698,9 @@
     align-items:center;
     justify-content:space-between;
     gap:20px;
-    margin-bottom:34px;
     flex-wrap:wrap;
-    padding:0 10px;
+    margin-bottom:28px;
+    padding:0 16px;
 }
 
 .from-field-title-group{
@@ -1094,60 +712,51 @@
 
 .from-field-line{
     width:5px;
-    height:44px;
-    border-radius:10px;
-    background:#f4c21b;
-    flex-shrink:0;
+    height:34px;
+    border-radius:20px;
+    background:var(--ck-accent);
 }
 
 .from-field-title-group h2{
     margin:0;
-    font-size:38px;
-    line-height:1.1;
+    font-size:30px;
     font-weight:900;
-    color:#ffffff;
-    letter-spacing:-0.8px;
+    color:#fff;
 }
 
 .from-field-live{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    padding:8px 12px;
-    border-radius:8px;
-    background:rgba(244,194,27,0.14);
-    color:#f4c21b;
-    font-size:12px;
+    background:rgba(244,194,27,0.12);
+    color:var(--ck-accent);
+    padding:7px 12px;
+    border-radius:999px;
+    font-size:11px;
     font-weight:800;
-    letter-spacing:1.2px;
-    line-height:1;
+    letter-spacing:1px;
 }
 
 .from-field-handle{
     display:inline-flex;
     align-items:center;
-    gap:10px;
+    gap:8px;
     text-decoration:none;
-    color:#f4c21b;
-    font-size:16px;
+    color:var(--ck-accent);
+    font-size:15px;
     font-weight:700;
-    transition:all 0.3s ease;
-}
-
-.from-field-handle i{
-    font-size:20px;
 }
 
 .from-field-handle:hover{
-    color:#ffffff;
+    color:#fff;
 }
 
 .from-field-cards{
     display:grid;
-    grid-template-columns:repeat(6, minmax(220px, 1fr));
-    gap:18px;
+    grid-template-columns:repeat(6, minmax(180px, 1fr));
+    gap:16px;
     overflow-x:auto;
-    padding:0 10px 8px;
+    padding:0 16px 8px;
     scrollbar-width:none;
 }
 
@@ -1157,18 +766,20 @@
 
 .field-card{
     position:relative;
-    min-height:338px;
-    border-radius:24px;
-    padding:18px 16px 18px;
+    min-height:270px;
+    border-radius:22px;
+    padding:14px;
     text-decoration:none;
     overflow:hidden;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        0 16px 36px rgba(0,0,0,0.30);
-    transition:transform 0.3s ease, box-shadow 0.3s ease;
+    transition:0.3s ease;
+    box-shadow:0 16px 34px rgba(0,0,0,0.28);
+}
+
+.field-card:hover{
+    transform:translateY(-6px);
 }
 
 .field-card::before{
@@ -1179,80 +790,40 @@
         linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
     background-size:18px 18px;
-    opacity:0.25;
-    pointer-events:none;
+    opacity:0.3;
 }
 
-.field-card::after{
-    content:"";
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
-    height:90px;
-    background:linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
-    pointer-events:none;
-}
-
-.field-card:hover{
-    transform:translateY(-6px);
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.12),
-        0 22px 46px rgba(0,0,0,0.36);
-}
-
-.field-card-yellow{
-    background:linear-gradient(180deg, #f3a900 0%, #d89000 62%, #996400 100%);
-}
-
-.field-card-slate{
-    background:linear-gradient(180deg, #59677d 0%, #3a4659 60%, #111826 100%);
-}
-
-.field-card-blue{
-    background:linear-gradient(180deg, #2f68f3 0%, #2049b9 62%, #10246d 100%);
-}
-
-.field-card-pink{
-    background:linear-gradient(180deg, #f33d57 0%, #db2252 60%, #7a0038 100%);
-}
-
-.field-card-orange{
-    background:linear-gradient(180deg, #ff7d08 0%, #ec7100 60%, #8c4600 100%);
-}
-
-.field-card-green{
-    background:linear-gradient(180deg, #1db97b 0%, #0ea96d 60%, #056f47 100%);
-}
+.field-card-yellow{ background:linear-gradient(180deg,#f4b000 0%,#cb8500 100%); }
+.field-card-slate{ background:linear-gradient(180deg,#71809b 0%,#253040 100%); }
+.field-card-blue{ background:linear-gradient(180deg,#3572ff 0%,#143b9c 100%); }
+.field-card-pink{ background:linear-gradient(180deg,#ff4562 0%,#a30d3f 100%); }
+.field-card-orange{ background:linear-gradient(180deg,#ff8a00 0%,#a64c00 100%); }
+.field-card-green{ background:linear-gradient(180deg,#1fcf86 0%,#08764b 100%); }
 
 .field-card-badge{
     position:relative;
     z-index:2;
-    align-self:flex-end;
+    align-self:flex-start;
     display:inline-flex;
     align-items:center;
     gap:6px;
-    background:rgba(0,0,0,0.30);
-    color:#f2f2f2;
-    padding:8px 12px;
-    border-radius:8px;
-    font-size:11px;
+    padding:7px 10px;
+    border-radius:999px;
+    background:rgba(0,0,0,0.22);
+    color:#fff;
+    font-size:10px;
     font-weight:800;
-    letter-spacing:1px;
-    line-height:1;
-    box-shadow:0 6px 12px rgba(0,0,0,0.12);
+    letter-spacing:0.8px;
 }
 
 .field-card-icon{
     position:relative;
     z-index:2;
-    flex:1;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:64px;
-    line-height:1;
-    filter:drop-shadow(0 6px 12px rgba(0,0,0,0.18));
+    flex:1;
+    font-size:54px;
 }
 
 .field-card-title{
@@ -1260,17 +831,16 @@
     z-index:2;
     margin:0;
     font-size:20px;
-    line-height:1.25;
+    line-height:1.3;
+    color:#fff;
     font-weight:900;
-    color:#ffffff;
-    letter-spacing:-0.3px;
 }
 
 .from-field-bottom-strip{
     position:absolute;
     left:0;
-    right:0;
     bottom:0;
+    width:100%;
     height:9px;
     background:repeating-linear-gradient(
         -45deg,
@@ -1281,149 +851,32 @@
     );
 }
 
-@media (max-width: 1399px){
-    .from-field-cards{
-        grid-template-columns:repeat(6, 240px);
-    }
-}
-
-@media (max-width: 991px){
-    .from-field-wrap{
-        padding:34px 0 62px;
-        background-size:32px 32px, 32px 32px, auto;
-    }
-
-    .from-field-title-group h2{
-        font-size:30px;
-    }
-
-    .from-field-cards{
-        grid-template-columns:repeat(6, 220px);
-        gap:16px;
-    }
-
-    .field-card{
-        min-height:310px;
-        border-radius:20px;
-    }
-
-    .field-card-icon{
-        font-size:54px;
-    }
-
-    .field-card-title{
-        font-size:18px;
-    }
-}
-
-@media (max-width: 767px){
-    .from-field-section{
-        padding-top:22px;
-    }
-
-    .from-field-wrap{
-        padding:28px 0 52px;
-    }
-
-    .from-field-header{
-        margin-bottom:22px;
-        padding:0 4px;
-    }
-
-    .from-field-line{
-        height:34px;
-    }
-
-    .from-field-title-group h2{
-        font-size:24px;
-    }
-
-    .from-field-live{
-        font-size:10px;
-        padding:7px 10px;
-    }
-
-    .from-field-handle{
-        font-size:14px;
-    }
-
-    .from-field-handle i{
-        font-size:18px;
-    }
-
-    .from-field-cards{
-        grid-template-columns:repeat(6, 190px);
-        gap:14px;
-        padding:0 4px 8px;
-    }
-
-    .field-card{
-        min-height:280px;
-        padding:14px 14px 16px;
-        border-radius:18px;
-    }
-
-    .field-card-badge{
-        font-size:10px;
-        padding:7px 10px;
-    }
-
-    .field-card-icon{
-        font-size:46px;
-    }
-
-    .field-card-title{
-        font-size:16px;
-    }
-}
-
-@media (max-width: 480px){
-    .from-field-title-group{
-        gap:10px;
-    }
-
-    .from-field-title-group h2{
-        font-size:22px;
-    }
-
-    .from-field-cards{
-        grid-template-columns:repeat(6, 175px);
-    }
-
-    .field-card{
-        min-height:255px;
-    }
-
-    .field-card-icon{
-        font-size:42px;
-    }
-
-    .field-card-title{
-        font-size:15px;
-    }
-}
-
+/* =========================
+   CTA
+========================= */
 .construction-cta-section{
-    background:#f8fafc;
-    padding:42px 0 0;
+    padding:34px 0 0;
+    background:var(--ck-bg);
 }
 
 .construction-cta-wrap{
     position:relative;
-    min-height:560px;
-    padding:70px 24px 90px;
+    overflow:hidden;
+    border-radius:28px 28px 0 0;
+    padding:64px 20px 72px;
     background:
         linear-gradient(rgba(28,44,62,0.04) 1px, transparent 1px),
         linear-gradient(90deg, rgba(28,44,62,0.04) 1px, transparent 1px),
-        #f8fafc;
-    background-size:48px 48px, 48px 48px, auto;
-    overflow:hidden;
+        linear-gradient(180deg,#fbfcfd 0%, #f4f7fb 100%);
+    background-size:40px 40px, 40px 40px, auto;
+    border:1px solid rgba(28,44,62,0.05);
+    box-shadow:var(--ck-shadow);
 }
 
 .construction-cta-content{
     position:relative;
     z-index:2;
-    max-width:980px;
+    max-width:860px;
     margin:0 auto;
     text-align:center;
 }
@@ -1432,37 +885,36 @@
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:10px;
-    background:#efe7d4;
+    gap:8px;
+    background:#f6ecdb;
     color:var(--ck-primary);
-    font-size:14px;
-    font-weight:700;
-    letter-spacing:2px;
-    padding:12px 20px;
+    padding:10px 18px;
     border-radius:999px;
-    margin-bottom:28px;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:1.4px;
+    margin-bottom:22px;
 }
 
 .construction-cta-badge i{
     color:var(--ck-secondary);
-    font-size:16px;
 }
 
 .construction-cta-title{
-    margin:0 0 22px;
-    font-size:58px;
-    line-height:1.14;
+    margin:0 0 16px;
+    font-size:52px;
+    line-height:1.12;
     font-weight:900;
     color:var(--ck-primary);
     letter-spacing:-1.4px;
 }
 
 .construction-cta-desc{
-    max-width:920px;
-    margin:0 auto 54px;
-    font-size:24px;
-    line-height:1.75;
-    color:#5d6673;
+    margin:0 auto 32px;
+    max-width:720px;
+    font-size:18px;
+    line-height:1.85;
+    color:var(--ck-muted);
     font-weight:500;
 }
 
@@ -1470,337 +922,226 @@
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:18px;
-    min-width:640px;
+    gap:14px;
+    min-width:430px;
     max-width:100%;
-    min-height:84px;
-    padding:18px 34px;
-    background:#161616;
-    color:#f4c21b;
+    min-height:68px;
+    padding:16px 28px;
+    border-radius:18px;
+    background:#111;
+    color:#fff;
     text-decoration:none;
-    font-size:24px;
+    font-size:20px;
     font-weight:800;
-    border-radius:20px;
-    box-shadow:0 16px 34px rgba(0,0,0,0.14);
-    transition:all 0.3s ease;
-}
-
-.construction-cta-btn i{
-    font-size:28px;
-    transition:transform 0.3s ease;
+    box-shadow:0 14px 34px rgba(0,0,0,0.12);
+    transition:0.3s ease;
 }
 
 .construction-cta-btn:hover{
-    background:var(--ck-primary);
-    color:#ffffff;
+    background:var(--ck-secondary);
     transform:translateY(-3px);
 }
 
+.construction-cta-btn i{
+    transition:0.3s ease;
+}
+
 .construction-cta-btn:hover i{
-    transform:translateX(5px);
+    transform:translateX(4px);
 }
 
 .cta-dot-shape{
     position:absolute;
-    right:28%;
-    top:49%;
-    width:42px;
-    height:42px;
+    right:24%;
+    top:48%;
+    width:26px;
+    height:26px;
     border-radius:50%;
-    background:#2bbac8;
-    z-index:1;
+    background:#1fc7d4;
+    opacity:0.9;
 }
 
 .cta-corner{
     position:absolute;
-    width:56px;
-    height:56px;
-    pointer-events:none;
-    z-index:1;
+    width:44px;
+    height:44px;
 }
 
 .cta-corner::before,
 .cta-corner::after{
     content:"";
     position:absolute;
-    background:rgba(244,194,27,0.38);
+    background:rgba(244,194,27,0.45);
 }
 
-.cta-corner-top-left{
-    top:54px;
-    left:19%;
-}
+.cta-corner-top-left{ top:26px; left:18%; }
+.cta-corner-top-right{ top:26px; right:18%; }
+.cta-corner-bottom-left{ bottom:26px; left:18%; }
+.cta-corner-bottom-right{ bottom:26px; right:18%; }
 
-.cta-corner-top-left::before{
-    top:0;
-    left:0;
-    width:56px;
-    height:3px;
-}
-
-.cta-corner-top-left::after{
-    top:0;
-    left:0;
-    width:3px;
-    height:56px;
-}
-
-.cta-corner-top-right{
-    top:54px;
-    right:19%;
-}
-
-.cta-corner-top-right::before{
-    top:0;
-    right:0;
-    width:56px;
-    height:3px;
-}
-
-.cta-corner-top-right::after{
-    top:0;
-    right:0;
-    width:3px;
-    height:56px;
-}
-
-.cta-corner-bottom-left{
-    bottom:62px;
-    left:19%;
-}
-
-.cta-corner-bottom-left::before{
-    bottom:0;
-    left:0;
-    width:56px;
-    height:3px;
-}
-
-.cta-corner-bottom-left::after{
-    bottom:0;
-    left:0;
-    width:3px;
-    height:56px;
-}
-
-.cta-corner-bottom-right{
-    bottom:62px;
-    right:19%;
-}
-
+.cta-corner-top-left::before,
+.cta-corner-top-right::before,
+.cta-corner-bottom-left::before,
 .cta-corner-bottom-right::before{
-    bottom:0;
-    right:0;
-    width:56px;
-    height:3px;
+    width:44px;
+    height:2px;
 }
 
+.cta-corner-top-left::after,
+.cta-corner-top-right::after,
+.cta-corner-bottom-left::after,
 .cta-corner-bottom-right::after{
-    bottom:0;
-    right:0;
-    width:3px;
-    height:56px;
+    width:2px;
+    height:44px;
 }
+
+.cta-corner-top-right::before,
+.cta-corner-bottom-right::before{ right:0; }
+.cta-corner-top-right::after,
+.cta-corner-bottom-right::after{ right:0; }
+
+.cta-corner-bottom-left::before,
+.cta-corner-bottom-right::before{ bottom:0; }
+.cta-corner-bottom-left::after,
+.cta-corner-bottom-right::after{ bottom:0; }
 
 .construction-cta-bottom-strip{
     position:absolute;
     left:0;
     bottom:0;
     width:100%;
-    height:10px;
+    height:9px;
     background:repeating-linear-gradient(
         -45deg,
-        #111111 0 10px,
-        #111111 10px 16px,
+        #111 0 10px,
+        #111 10px 16px,
         #f4c21b 16px 26px,
         #f4c21b 26px 32px
     );
 }
 
+/* =========================
+   RESPONSIVE
+========================= */
 @media (max-width: 1199px){
-    .construction-cta-wrap{
-        min-height:500px;
-        padding:60px 20px 78px;
-    }
-
-    .construction-cta-title{
-        font-size:48px;
-    }
-
-    .construction-cta-desc{
-        font-size:20px;
-        max-width:760px;
-    }
-
-    .construction-cta-btn{
-        min-width:540px;
-        font-size:21px;
-        min-height:76px;
-    }
+    .knowledge-title{ font-size:52px; }
+    .explore-topics-grid{ grid-template-columns:repeat(3,1fr); }
+    .featured-insights-grid{ grid-template-columns:1fr; }
+    .latest-articles-grid{ grid-template-columns:repeat(2,1fr); }
 }
 
 @media (max-width: 991px){
-    .construction-cta-wrap{
-        background-size:38px 38px, 38px 38px, auto;
-    }
+    .knowledge-hub-inner{ min-height:auto; padding:56px 18px 66px; }
+    .knowledge-title{ font-size:42px; }
+    .knowledge-highlight{ font-size:22px; }
+    .knowledge-desc{ font-size:15px; }
 
-    .construction-cta-title{
-        font-size:40px;
-    }
-
-    .construction-cta-desc{
-        font-size:18px;
-        line-height:1.7;
-        margin-bottom:42px;
-    }
-
+    .construction-cta-title{ font-size:40px; }
     .construction-cta-btn{
-        min-width:100%;
         width:100%;
-        font-size:20px;
-        min-height:72px;
-        border-radius:18px;
-    }
-
-    .cta-dot-shape{
-        right:16%;
-        top:53%;
-        width:34px;
-        height:34px;
+        min-width:100%;
     }
 
     .cta-corner-top-left,
-    .cta-corner-bottom-left{
-        left:8%;
-    }
+    .cta-corner-bottom-left{ left:8%; }
 
     .cta-corner-top-right,
-    .cta-corner-bottom-right{
-        right:8%;
-    }
+    .cta-corner-bottom-right{ right:8%; }
 }
 
 @media (max-width: 767px){
-    .construction-cta-section{
-        padding-top:24px;
+    .section-title{ font-size:24px; }
+
+    .knowledge-hub-section{ padding:24px 0 18px; }
+    .knowledge-hub-inner{
+        border-radius:22px;
+        padding:40px 14px 54px;
+        background-size:28px 28px, 28px 28px, auto;
+    }
+    .knowledge-title{
+        font-size:31px;
+        line-height:1.12;
+        letter-spacing:-1px;
+    }
+    .knowledge-highlight{
+        font-size:17px;
+        margin-bottom:12px;
+    }
+    .knowledge-desc{
+        font-size:14px;
+        line-height:1.8;
+        margin-bottom:22px;
+    }
+    .knowledge-search-box{
+        flex-wrap:wrap;
+        padding:10px;
+        border-radius:16px;
+    }
+    .knowledge-search-input{
+        width:calc(100% - 48px);
+        font-size:14px;
+    }
+    .knowledge-search-btn{
+        width:100%;
+    }
+
+    .explore-topics-grid{ grid-template-columns:1fr; }
+    .latest-articles-grid{ grid-template-columns:1fr; }
+
+    .from-field-title-group h2,
+    .construction-cta-title{
+        font-size:30px;
     }
 
     .construction-cta-wrap{
-        min-height:auto;
-        padding:42px 16px 62px;
+        padding:42px 14px 56px;
+        border-radius:22px 22px 0 0;
         background-size:28px 28px, 28px 28px, auto;
     }
 
-    .construction-cta-badge{
-        font-size:11px;
-        letter-spacing:1.4px;
-        padding:10px 16px;
-        margin-bottom:22px;
-    }
-
-    .construction-cta-title{
-        font-size:30px;
-        line-height:1.2;
-        margin-bottom:16px;
-    }
-
     .construction-cta-desc{
         font-size:15px;
-        line-height:1.8;
-        margin-bottom:30px;
+        margin-bottom:24px;
     }
 
     .construction-cta-btn{
-        font-size:17px;
-        min-height:62px;
-        padding:16px 20px;
-        gap:12px;
+        font-size:16px;
+        min-height:58px;
         border-radius:16px;
     }
 
-    .construction-cta-btn i{
-        font-size:22px;
-    }
-
-    .cta-dot-shape{
-        width:24px;
-        height:24px;
-        right:10%;
-        top:48%;
-    }
-
-    .cta-corner{
-        width:34px;
-        height:34px;
-    }
-
-    .cta-corner-top-left,
-    .cta-corner-top-right{
-        top:28px;
-    }
-
-    .cta-corner-bottom-left,
-    .cta-corner-bottom-right{
-        bottom:36px;
-    }
-
-    .cta-corner-top-left::before,
-    .cta-corner-top-right::before,
-    .cta-corner-bottom-left::before,
-    .cta-corner-bottom-right::before{
-        width:34px;
-        height:2px;
-    }
-
-    .cta-corner-top-left::after,
-    .cta-corner-top-right::after,
-    .cta-corner-bottom-left::after,
-    .cta-corner-bottom-right::after{
-        width:2px;
-        height:34px;
-    }
+    .cta-dot-shape{ display:none; }
+    .cta-corner{ width:28px; height:28px; }
+    .cta-corner::before{ width:28px !important; height:2px !important; }
+    .cta-corner::after{ height:28px !important; width:2px !important; }
 }
 
-@media (max-width: 480px){
-    .construction-cta-title{
-        font-size:26px;
-    }
-
-    .construction-cta-desc{
-        font-size:14px;
-    }
-
-    .construction-cta-btn{
-        font-size:15px;
-        min-height:58px;
-    }
-
-    .cta-dot-shape{
-        display:none;
-    }
+@media (max-width: 520px){
+    .featured-insights-grid{ grid-template-columns:1fr; }
+    .from-field-cards{ grid-template-columns:repeat(6, 180px); }
 }
 </style>
+
 <section class="knowledge-hub-section">
     <div class="container-custom">
         <div class="knowledge-hub-inner">
-
             <div class="kh-corner kh-corner-top-left"></div>
             <div class="kh-corner kh-corner-top-right"></div>
             <div class="kh-corner kh-corner-bottom-left"></div>
             <div class="kh-corner kh-corner-bottom-right"></div>
 
             <div class="knowledge-hub-content">
-                <span class="knowledge-badge">KNOWLEDGE HUB ●</span>
+                <span class="knowledge-badge">KNOWLEDGE HUB <span>●</span></span>
 
                 <h1 class="knowledge-title">ConstructKaro Knowledge Hub</h1>
 
                 <p class="knowledge-highlight">
-                    Learn. Plan. Build — All in One Place.
+                    Learn. Plan. <strong>Build</strong> — All in One Place.
                 </p>
 
                 <p class="knowledge-desc">
-                    India's first platform where you can understand construction, explore insights, and start
-                    your project with confidence.
+                    India’s first platform where you can understand construction, explore practical insights,
+                    compare topics, and start your project with more confidence.
                 </p>
 
                 <form class="knowledge-search-box" action="#" method="GET">
@@ -1808,16 +1149,10 @@
                         <i class="bi bi-search"></i>
                     </div>
 
-                    <input
-                        type="text"
-                        class="knowledge-search-input"
-                        placeholder="Search articles, topics, guides..."
-                        name="search"
-                    >
+                    <input type="text" class="knowledge-search-input"
+                        placeholder="Search articles, topics, guides..." name="search">
 
-                    <button type="submit" class="knowledge-search-btn">
-                        Search
-                    </button>
+                    <button type="submit" class="knowledge-search-btn">Search</button>
                 </form>
             </div>
 
@@ -1825,206 +1160,143 @@
         </div>
     </div>
 </section>
+
 <section class="explore-topics-section">
     <div class="container-custom">
-        <div class="explore-topics-wrap">
-
-            <div class="explore-topics-heading">
-                <span class="explore-line"></span>
-                <h2>Explore Topics</h2>
+        <div class="section-head">
+            <div class="section-title-wrap">
+                <span class="section-line"></span>
+                <h2 class="section-title">Explore Topics</h2>
             </div>
+        </div>
 
-            <div class="explore-topics-grid">
+        <div class="explore-topics-grid">
+            <a href="#" class="topic-card">
+                <div class="topic-icon-box"><i class="bi bi-bricks"></i></div>
+                <h3 class="topic-title">Construction Education</h3>
+                <p class="topic-desc">Understand construction basics, costing, materials, and processes.</p>
+            </a>
 
-                <a href="#" class="topic-card">
-                    <div class="topic-icon-box">
-                        <i class="bi bi-bricks"></i>
-                    </div>
-                    <h3 class="topic-title">Construction Education</h3>
-                    <p class="topic-desc">
-                        Understand construction basics, costing, materials, and processes.
-                    </p>
-                </a>
+            <a href="#" class="topic-card">
+                <div class="topic-icon-box"><i class="bi bi-compass"></i></div>
+                <h3 class="topic-title">How ConstructKaro Works</h3>
+                <p class="topic-desc">Step-by-step guide for customers and vendors using the platform.</p>
+            </a>
 
-                <a href="#" class="topic-card">
-                    <div class="topic-icon-box">
-                        <i class="bi bi-compass"></i>
-                    </div>
-                    <h3 class="topic-title">How ConstructKaro Works</h3>
-                    <p class="topic-desc">
-                        Step-by-step guide for customers and vendors.
-                    </p>
-                </a>
+            <a href="#" class="topic-card">
+                <div class="topic-icon-box"><i class="bi bi-send"></i></div>
+                <h3 class="topic-title">Blogs & Insights</h3>
+                <p class="topic-desc">Latest construction trends, expert ideas, and practical updates.</p>
+            </a>
 
-                <a href="#" class="topic-card">
-                    <div class="topic-icon-box">
-                        <i class="bi bi-send"></i>
-                    </div>
-                    <h3 class="topic-title">Blogs &amp; Insights</h3>
-                    <p class="topic-desc">
-                        Latest trends, updates, and expert opinions in construction.
-                    </p>
-                </a>
+            <a href="#" class="topic-card">
+                <div class="topic-icon-box"><i class="bi bi-tv"></i></div>
+                <h3 class="topic-title">Social Feed</h3>
+                <p class="topic-desc">Live updates, reels, field work visuals, and on-site activities.</p>
+            </a>
 
-                <a href="#" class="topic-card">
-                    <div class="topic-icon-box">
-                        <i class="bi bi-tv"></i>
-                    </div>
-                    <h3 class="topic-title">Social Feed</h3>
-                    <p class="topic-desc">
-                        Live updates, reels, and on-site activities.
-                    </p>
-                </a>
-
-                <a href="#" class="topic-card">
-                    <div class="topic-icon-box">
-                        <i class="bi bi-bar-chart-line"></i>
-                    </div>
-                    <h3 class="topic-title">Case Studies</h3>
-                    <p class="topic-desc">
-                        Real project breakdowns and success stories.
-                    </p>
-                </a>
-
-            </div>
+            <a href="#" class="topic-card">
+                <div class="topic-icon-box"><i class="bi bi-bar-chart-line"></i></div>
+                <h3 class="topic-title">Case Studies</h3>
+                <p class="topic-desc">Real project breakdowns, learnings, and practical success stories.</p>
+            </a>
         </div>
     </div>
 </section>
 
 <section class="featured-insights-section">
     <div class="container-custom">
-        <div class="featured-insights-wrap">
-
-            <div class="featured-insights-head">
-                <div class="featured-title-wrap">
-                    <span class="featured-line"></span>
-                    <h2>Featured Insights</h2>
-                    <span class="featured-badge">TRENDING</span>
+        <div class="section-head">
+            <div class="featured-title-group">
+                <div class="section-title-wrap">
+                    <span class="section-line"></span>
+                    <h2 class="section-title">Featured Insights</h2>
                 </div>
+                <span class="featured-badge">TRENDING</span>
             </div>
+        </div>
 
-            <div class="featured-insights-grid">
-
-                <a href="#" class="insight-card">
-                    <div class="insight-thumb insight-thumb-dark">
-                        <div class="insight-grid-overlay"></div>
-                        <span class="insight-tag">GUIDE</span>
-                        <div class="insight-ghost-icon">
-                            <i class="bi bi-calculator"></i>
-                        </div>
+        <div class="featured-insights-grid">
+            <a href="#" class="insight-card">
+                <div class="insight-thumb insight-thumb-dark">
+                    <div class="insight-grid-overlay"></div>
+                    <span class="insight-tag">GUIDE</span>
+                    <div class="insight-ghost-icon"><i class="bi bi-calculator"></i></div>
+                </div>
+                <div class="insight-body">
+                    <h3 class="insight-title">How to Calculate Construction Cost per Sqft</h3>
+                    <p class="insight-desc">A practical breakdown of materials, labour, and overhead costs for residential construction in India.</p>
+                    <div class="insight-meta">
+                        <span><i class="bi bi-clock"></i> 8 min read</span>
+                        <span>•</span>
+                        <span>Dec 2024</span>
                     </div>
+                </div>
+            </a>
 
-                    <div class="insight-body">
-                        <h3 class="insight-title">
-                            How to Calculate Construction Cost per Sqft
-                        </h3>
-
-                        <p class="insight-desc">
-                            A detailed breakdown of costs including materials, labour, and overheads for residential construction in India.
-                        </p>
-
-                        <div class="insight-meta">
-                            <span><i class="bi bi-clock"></i> 8 min read</span>
-                            <span>·</span>
-                            <span>Dec 2024</span>
-                        </div>
+            <a href="#" class="insight-card">
+                <div class="insight-thumb insight-thumb-yellow">
+                    <div class="insight-grid-overlay"></div>
+                    <span class="insight-tag insight-tag-dark">TIPS</span>
+                    <div class="insight-ghost-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                </div>
+                <div class="insight-body">
+                    <h3 class="insight-title">5 Mistakes to Avoid While Building a Bungalow</h3>
+                    <p class="insight-desc">Common first-time builder mistakes and smart planning steps to avoid delays, confusion, and cost issues.</p>
+                    <div class="insight-meta">
+                        <span><i class="bi bi-clock"></i> 6 min read</span>
+                        <span>•</span>
+                        <span>Nov 2024</span>
                     </div>
-                </a>
+                </div>
+            </a>
 
-                <a href="#" class="insight-card">
-                    <div class="insight-thumb insight-thumb-yellow">
-                        <div class="insight-grid-overlay"></div>
-                        <span class="insight-tag insight-tag-dark">TIPS</span>
-                        <div class="insight-ghost-icon">
-                            <i class="bi bi-exclamation-triangle"></i>
-                        </div>
+            <a href="#" class="insight-card">
+                <div class="insight-thumb insight-thumb-dark">
+                    <div class="insight-grid-overlay"></div>
+                    <span class="insight-tag">PROCESS</span>
+                    <div class="insight-ghost-icon"><i class="bi bi-layers"></i></div>
+                </div>
+                <div class="insight-body">
+                    <h3 class="insight-title insight-title-highlight">Step-by-Step Construction Process Explained</h3>
+                    <p class="insight-desc">From excavation to finishing, understand each major phase before you start your home construction journey.</p>
+                    <div class="insight-meta">
+                        <span><i class="bi bi-clock"></i> 12 min read</span>
+                        <span>•</span>
+                        <span>Oct 2024</span>
                     </div>
-
-                    <div class="insight-body">
-                        <h3 class="insight-title">
-                            5 Mistakes to Avoid While Building a Bungalow
-                        </h3>
-
-                        <p class="insight-desc">
-                            Common pitfalls first-time builders face and how to plan smarter from day one.
-                        </p>
-
-                        <div class="insight-meta">
-                            <span><i class="bi bi-clock"></i> 6 min read</span>
-                            <span>·</span>
-                            <span>Nov 2024</span>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="#" class="insight-card">
-                    <div class="insight-thumb insight-thumb-dark">
-                        <div class="insight-grid-overlay"></div>
-                        <span class="insight-tag">PROCESS</span>
-                        <div class="insight-ghost-icon">
-                            <i class="bi bi-layers"></i>
-                        </div>
-                    </div>
-
-                    <div class="insight-body">
-                        <h3 class="insight-title insight-title-highlight">
-                            Step-by-Step Construction Process Explained
-                        </h3>
-
-                        <p class="insight-desc">
-                            From foundation to finishing — understand every phase of building your dream home.
-                        </p>
-
-                        <div class="insight-meta">
-                            <span><i class="bi bi-clock"></i> 12 min read</span>
-                            <span>·</span>
-                            <span>Oct 2024</span>
-                        </div>
-                    </div>
-                </a>
-
-            </div>
+                </div>
+            </a>
         </div>
     </div>
 </section>
+
 <section class="latest-articles-section">
     <div class="container-custom">
-
-        <div class="latest-articles-head">
-            <div class="latest-title-wrap">
-                <span class="latest-line"></span>
-                <h2>Latest Articles</h2>
+        <div class="section-head">
+            <div class="section-title-wrap">
+                <span class="section-line"></span>
+                <h2 class="section-title">Latest Articles</h2>
             </div>
 
-            <a href="#" class="latest-view-all">
+            <a href="#" class="section-link">
                 View all <i class="bi bi-arrow-right"></i>
             </a>
         </div>
 
         <div class="latest-articles-grid">
-
             <a href="#" class="article-card">
                 <div class="article-thumb article-thumb-dark">
                     <div class="article-grid-overlay"></div>
                     <span class="article-tag article-tag-light">MATERIALS</span>
-                    <div class="article-ghost-icon">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
+                    <div class="article-ghost-icon"><i class="bi bi-box-seam"></i></div>
                 </div>
-
                 <div class="article-body">
                     <h3 class="article-title">Choosing the Right Cement for Your Home</h3>
-                    <p class="article-desc">
-                        OPC vs PPC — which cement grade works best for different parts of your house?
-                    </p>
-
+                    <p class="article-desc">OPC vs PPC — understand which cement grade works best for different parts of your house.</p>
                     <div class="article-footer">
-                        <div class="article-time">
-                            <i class="bi bi-clock"></i> 5 min
-                        </div>
-                        <span class="article-readmore">
-                            Read More <i class="bi bi-arrow-right"></i>
-                        </span>
+                        <div class="article-time"><i class="bi bi-clock"></i> 5 min</div>
+                        <span class="article-readmore">Read More <i class="bi bi-arrow-right"></i></span>
                     </div>
                 </div>
             </a>
@@ -2033,24 +1305,14 @@
                 <div class="article-thumb article-thumb-orange">
                     <div class="article-grid-overlay"></div>
                     <span class="article-tag article-tag-soft">EDUCATION</span>
-                    <div class="article-ghost-icon">
-                        <i class="bi bi-rulers"></i>
-                    </div>
+                    <div class="article-ghost-icon"><i class="bi bi-rulers"></i></div>
                 </div>
-
                 <div class="article-body">
                     <h3 class="article-title article-title-accent">Understanding Structural Drawings</h3>
-                    <p class="article-desc">
-                        How to read and interpret structural plans before construction begins.
-                    </p>
-
+                    <p class="article-desc">Learn how to read and interpret structural plans before your construction work begins.</p>
                     <div class="article-footer">
-                        <div class="article-time">
-                            <i class="bi bi-clock"></i> 7 min
-                        </div>
-                        <span class="article-readmore">
-                            Read More <i class="bi bi-arrow-right"></i>
-                        </span>
+                        <div class="article-time"><i class="bi bi-clock"></i> 7 min</div>
+                        <span class="article-readmore">Read More <i class="bi bi-arrow-right"></i></span>
                     </div>
                 </div>
             </a>
@@ -2059,24 +1321,14 @@
                 <div class="article-thumb article-thumb-blue">
                     <div class="article-grid-overlay"></div>
                     <span class="article-tag article-tag-blue">TIPS</span>
-                    <div class="article-ghost-icon">
-                        <i class="bi bi-droplet"></i>
-                    </div>
+                    <div class="article-ghost-icon"><i class="bi bi-droplet"></i></div>
                 </div>
-
                 <div class="article-body">
                     <h3 class="article-title">Waterproofing Dos and Don'ts</h3>
-                    <p class="article-desc">
-                        Protect your building from leaks with the right waterproofing approach.
-                    </p>
-
+                    <p class="article-desc">Protect your home from leakage and dampness with the right waterproofing approach.</p>
                     <div class="article-footer">
-                        <div class="article-time">
-                            <i class="bi bi-clock"></i> 4 min
-                        </div>
-                        <span class="article-readmore">
-                            Read More <i class="bi bi-arrow-right"></i>
-                        </span>
+                        <div class="article-time"><i class="bi bi-clock"></i> 4 min</div>
+                        <span class="article-readmore">Read More <i class="bi bi-arrow-right"></i></span>
                     </div>
                 </div>
             </a>
@@ -2085,24 +1337,14 @@
                 <div class="article-thumb article-thumb-green">
                     <div class="article-grid-overlay"></div>
                     <span class="article-tag article-tag-green">GUIDE</span>
-                    <div class="article-ghost-icon">
-                        <i class="bi bi-person-check"></i>
-                    </div>
+                    <div class="article-ghost-icon"><i class="bi bi-person-check"></i></div>
                 </div>
-
                 <div class="article-body">
                     <h3 class="article-title">How to Choose the Right Contractor</h3>
-                    <p class="article-desc">
-                        Key questions to ask and red flags to watch before hiring a builder.
-                    </p>
-
+                    <p class="article-desc">Important questions to ask and red flags to notice before hiring a contractor.</p>
                     <div class="article-footer">
-                        <div class="article-time">
-                            <i class="bi bi-clock"></i> 6 min
-                        </div>
-                        <span class="article-readmore">
-                            Read More <i class="bi bi-arrow-right"></i>
-                        </span>
+                        <div class="article-time"><i class="bi bi-clock"></i> 6 min</div>
+                        <span class="article-readmore">Read More <i class="bi bi-arrow-right"></i></span>
                     </div>
                 </div>
             </a>
@@ -2111,24 +1353,14 @@
                 <div class="article-thumb article-thumb-purple">
                     <div class="article-grid-overlay"></div>
                     <span class="article-tag article-tag-purple">MATERIALS</span>
-                    <div class="article-ghost-icon">
-                        <i class="bi bi-brush"></i>
-                    </div>
+                    <div class="article-ghost-icon"><i class="bi bi-brush"></i></div>
                 </div>
-
                 <div class="article-body">
                     <h3 class="article-title">Interior vs Exterior Paint Guide</h3>
-                    <p class="article-desc">
-                        Different paint types, finishes and when to use each for lasting results.
-                    </p>
-
+                    <p class="article-desc">Compare paint types, finishes, and use cases for long-lasting home results.</p>
                     <div class="article-footer">
-                        <div class="article-time">
-                            <i class="bi bi-clock"></i> 5 min
-                        </div>
-                        <span class="article-readmore">
-                            Read More <i class="bi bi-arrow-right"></i>
-                        </span>
+                        <div class="article-time"><i class="bi bi-clock"></i> 5 min</div>
+                        <span class="article-readmore">Read More <i class="bi bi-arrow-right"></i></span>
                     </div>
                 </div>
             </a>
@@ -2137,35 +1369,24 @@
                 <div class="article-thumb article-thumb-red">
                     <div class="article-grid-overlay"></div>
                     <span class="article-tag article-tag-red">LEGAL</span>
-                    <div class="article-ghost-icon">
-                        <i class="bi bi-file-earmark-check"></i>
-                    </div>
+                    <div class="article-ghost-icon"><i class="bi bi-file-earmark-check"></i></div>
                 </div>
-
                 <div class="article-body">
                     <h3 class="article-title">Building Permits in India Explained</h3>
-                    <p class="article-desc">
-                        Everything you need to know about approvals, NOCs and municipal processes.
-                    </p>
-
+                    <p class="article-desc">Everything you should know about approvals, NOCs, permissions, and municipal procedures.</p>
                     <div class="article-footer">
-                        <div class="article-time">
-                            <i class="bi bi-clock"></i> 9 min
-                        </div>
-                        <span class="article-readmore">
-                            Read More <i class="bi bi-arrow-right"></i>
-                        </span>
+                        <div class="article-time"><i class="bi bi-clock"></i> 9 min</div>
+                        <span class="article-readmore">Read More <i class="bi bi-arrow-right"></i></span>
                     </div>
                 </div>
             </a>
-
         </div>
     </div>
 </section>
+
 <section class="from-field-section">
     <div class="container-custom">
         <div class="from-field-wrap">
-
             <div class="from-field-header">
                 <div class="from-field-title-group">
                     <span class="from-field-line"></span>
@@ -2180,7 +1401,6 @@
             </div>
 
             <div class="from-field-cards">
-
                 <a href="#" class="field-card field-card-yellow">
                     <span class="field-card-badge"><i class="bi bi-play"></i> REEL</span>
                     <div class="field-card-icon">🏗️</div>
@@ -2216,22 +1436,20 @@
                     <div class="field-card-icon">✨</div>
                     <h3 class="field-card-title">Finishing Touches</h3>
                 </a>
-
             </div>
 
             <div class="from-field-bottom-strip"></div>
         </div>
     </div>
 </section>
+
 <section class="construction-cta-section">
     <div class="container-custom">
         <div class="construction-cta-wrap">
-
             <div class="cta-corner cta-corner-top-left"></div>
             <div class="cta-corner cta-corner-top-right"></div>
             <div class="cta-corner cta-corner-bottom-left"></div>
             <div class="cta-corner cta-corner-bottom-right"></div>
-
             <div class="cta-dot-shape"></div>
 
             <div class="construction-cta-content">
@@ -2245,8 +1463,8 @@
                 </h2>
 
                 <p class="construction-cta-desc">
-                    Join thousands of homeowners and builders who trust ConstructKaro for
-                    smarter construction.
+                    Join thousands of homeowners and builders who trust ConstructKaro for smarter,
+                    simpler, and more confident construction planning.
                 </p>
 
                 <a href="{{ route('post') }}" class="construction-cta-btn">

@@ -1470,9 +1470,13 @@ class HomeController extends Controller
     }
 
 
-     public function knowledgehub(){
+    public function knowledgehub(){
         return view('web.knowledgehub');
 
+    }
+
+    public function findpros(){
+        return view('web.findpros');
     }
 
 

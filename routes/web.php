@@ -67,6 +67,8 @@ Route::get('/search-customer', [HomeController::class, 'search_customer'])->name
 
 Route::get('/cutomer-profile', [HomeController::class, 'cutomerprofile'])->name('cutomerprofile');
 
+Route::get('/findpros', [HomeController::class, 'findpros'])->name('findpros');
+
 Route::get('/knowledge-hub', [HomeController::class, 'knowledgehub'])->name('knowledgehub');
 
 Route::post('/profile/cutomerupdate', [HomeController::class, 'cutomerupdate'])->name('profile.cutomerupdate');

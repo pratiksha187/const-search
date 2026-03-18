@@ -152,7 +152,7 @@ img{
 
 .stats-row{
     display:grid;
-    grid-template-columns:repeat(2, max-content);
+    grid-template-columns:repeat(3, max-content);
     justify-content:center;
     gap:70px;
 }
@@ -1062,9 +1062,16 @@ img{
                 <div class="stats-wrap">
                     <div class="stats-row">
                         <div class="stat-item">
+                            <img src="{{ asset('images/icons/v.png') }}" alt="Vendor" class="stat-img">
+                            <div class="stat-text">
+                                <span class="stat-number">5985+</span>
+                                <span class="stat-label">Vendor</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
                             <img src="{{ asset('images/icons/p.png') }}" alt="Projects" class="stat-img">
                             <div class="stat-text">
-                                <span class="stat-number">52+</span>
+                                <span class="stat-number">{{$posts}}+</span>
                                 <span class="stat-label">Projects</span>
                             </div>
                         </div>
