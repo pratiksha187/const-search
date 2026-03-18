@@ -14,7 +14,7 @@ class RazorpayController extends Controller
 {
     public function createOrder(Request $request)
     {
-        dd($request);
+       
         $request->validate([
             'cust_id' => 'required',
             'plan'    => 'required',
@@ -32,7 +32,7 @@ class RazorpayController extends Controller
         $gstAmount   = round(($baseAmount * $gstRate) / 100, 2);
         $totalAmount = round($baseAmount + $gstAmount, 2);
         $razorAmount = (int) round($totalAmount * 100);
-
+ dd($razorAmount);
         $order = $api->order->create([
             'amount'   => $razorAmount,
             'currency' => 'INR',
