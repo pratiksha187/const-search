@@ -26,12 +26,13 @@ class RazorpayController extends Controller
         );
 
         $baseAmount  = (float) $request->amount;
-        
         $gstRate     = 18;
         $gstAmount   = round(($baseAmount * $gstRate) / 100, 2);
         $totalAmount = round($baseAmount + $gstAmount, 2);
-        $razorAmount = (int) round($totalAmount * 100);
-$razorAmount = 100;
+
+        // Testing only: charge ₹1
+        $razorAmount = 100;
+
         $order = $api->order->create([
             'amount'   => $razorAmount,
             'currency' => 'INR',
@@ -84,15 +85,14 @@ $razorAmount = 100;
             config('services.razorpay.secret')
         );
 
-        // Razorpay signature verify
         $api->utility->verifyPaymentSignature([
             'razorpay_order_id'   => $request->razorpay_order_id,
             'razorpay_payment_id' => $request->razorpay_payment_id,
             'razorpay_signature'  => $request->razorpay_signature,
         ]);
 
-        // already paid check
         $existingPayment = Payment::where('payment_id', $request->razorpay_payment_id)->first();
+
         if ($existingPayment) {
             return response()->json([
                 'success'     => true,
