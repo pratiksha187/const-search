@@ -251,7 +251,7 @@ class VenderController extends Controller
         }
 
         $custId = $request->customer_id;
-//  dd($custId );
+        //  dd($custId );
         /* ===============================
         1️⃣ CHECK ALREADY ENQUIRED
         ================================ */
@@ -260,12 +260,12 @@ class VenderController extends Controller
             ->where('vendor_id', $vendorId)
             ->where('customer_id', $custId)
             ->exists();
-// dd($already );
+        // dd($already );
         if ($already) {
 
             $customer = DB::table('posts')->where('id', $custId)->first();
 
-// dd($customer );
+        // dd($customer );
             return response()->json([
                 'profile_incomplete' => false,
                 'already_exists'     => true,
@@ -358,11 +358,8 @@ class VenderController extends Controller
                 'vi.action_status',
                 'vi.is_read',
                 'vi.created_at',
-
                 // Post fields
                 'p.title as post_title',
-               
-
                 // Customer fields
                 'u.name as customer_name',
                 'u.email as customer_email',
