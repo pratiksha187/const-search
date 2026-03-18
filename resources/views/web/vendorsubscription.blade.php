@@ -287,18 +287,16 @@ body{ background:var(--bg); }
 
 <div class="lead-page">
 
-    @if(!empty($latestInvoiceUrl))
-        <div class="invoice-box">
-            <div>
-                <h6 class="mb-1">Latest Invoice</h6>
-                <p class="mb-0 text-muted">Download your most recent payment invoice.</p>
-            </div>
+  <div class="invoice-box">
+    <div>
+        <h6 class="mb-1">Invoice History</h6>
+        <p class="mb-0 text-muted">View and download all your invoices.</p>
+    </div>
 
-            <a href="{{ $latestInvoiceUrl }}" target="_blank" class="invoice-btn">
-                <i class="bi bi-download"></i> Download Invoice
-            </a>
-        </div>
-    @endif
+    <a href="{{ route('vendor.invoices') }}" class="invoice-btn">
+        <i class="bi bi-receipt"></i> View All Invoices
+    </a>
+</div>
 
     {{-- ================= FREE LEADS ================= --}}
     <div class="free-leads-box">

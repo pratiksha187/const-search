@@ -663,6 +663,9 @@ Route::get('/employer/rfq/latest/{projectId}', [RfqController::class,'latest'])
 });
 
 
+Route::get('/vendor/invoices', [RazorpayController::class, 'invoiceHistory'])
+    ->name('vendor.invoices');
+
 Route::get('erp', [ERPController::class, 'erp'])->name('erp');
 
 // Route::get('/vendor/pqc/check', [PqcSubmissionController::class, 'check'])->name('vendor.pqc.check');

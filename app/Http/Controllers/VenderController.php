@@ -400,18 +400,11 @@ class VenderController extends Controller
         //    dd( $notifications );     
         $notificationCount = $notifications->count(); 
 
-        $latestPayment = \App\Models\Payment::where('login_id', $vendor_id)
-            ->where('flag', 'v')
-            ->whereNotNull('invoice_path')
-            ->latest('id')
-            ->first();
-
-        $latestInvoiceUrl = $latestPayment
-            ? route('invoice.download', $latestPayment->payment_id)
-            : null;
-         return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount','freeLeadPlatforms', 'latestInvoiceUrl'));
+        
+         return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount','freeLeadPlatforms'));
     }
 
+  
     public function storerate(Request $request)
     {
         $request->validate([

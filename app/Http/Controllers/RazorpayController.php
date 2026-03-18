@@ -223,4 +223,21 @@ class RazorpayController extends Controller
             'invoice-' . $payment->payment_id . '.pdf'
         );
     }
+
+      public function invoiceHistory()
+    {
+        $vendorId = Session::get('vendor_id');
+
+        if (!$vendorId) {
+            return redirect()->back()->with('error', 'Vendor session not found.');
+        }
+
+        $invoices = Payment::where('login_id', $vendorId)
+            ->where('flag', 'v')
+            ->whereNotNull('invoice_no')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('web.invoice_history', compact('invoices'));
+    }
 }
