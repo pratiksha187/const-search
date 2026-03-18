@@ -1296,7 +1296,7 @@ class HomeController extends Controller
                 'br.budget_range as budget_range_name'
             )
             ->first();
-//  dd( $customer_data);
+        //  dd( $customer_data);
         if (!$customer_data) {
             return redirect()->back()->with('error', 'Project not found');
         }

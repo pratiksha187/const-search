@@ -525,7 +525,7 @@ function toggleUpload(platform){
 </script>
 
 {{-- PAYMENT SCRIPT (CREDITS) --}}
-<script>
+<!-- <script>
 $(document).on('click','.buy-credit-btn',function(){
 
     const amount  = $(this).data('amount');
@@ -587,6 +587,83 @@ $(document).on('click','.buy-credit-btn',function(){
         }).open();
     });
 });
-</script>
+</script> -->
+<script>
+$(document).on('click', '.buy-credit-btn', function () {
 
+    const amount  = $(this).data('amount');
+    const plan    = $(this).data('plan');
+    const credits = $(this).data('credits');
+    const custId  = $(this).data('cust');
+
+    $.post("{{ route('razorpay.createOrder') }}", {
+        _token: "{{ csrf_token() }}",
+        amount: amount,
+        plan: plan,
+        cust_id: custId,
+        credits: credits
+    }, function (res) {
+
+        if (!res.success) {
+            Swal.fire('Error', 'Order failed', 'error');
+            return;
+        }
+
+        const options = {
+            key: res.key,
+            amount: res.razor_amount, // ✅ FIXED
+            currency: "INR",
+            name: "ConstructKaro",
+            description: plan + " credits pack",
+            order_id: res.order_id,
+            handler: function (response) {
+
+                $.post("{{ route('razorpay.verify') }}", {
+                    _token: "{{ csrf_token() }}",
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    plan: plan,
+                    amount: amount,
+                    credits: credits
+                }, function (v) {
+
+                    if (v.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Payment Successful',
+                            text: 'Credits added successfully. Invoice downloading...'
+                        });
+
+                        if (v.invoice_url) {
+                            window.open(v.invoice_url, '_blank');
+                        }
+
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+
+                    } else {
+                        Swal.fire('Error', v.message || 'Verification failed', 'error');
+                    }
+
+                }).fail(function (xhr) {
+                    console.log(xhr.responseText);
+                    Swal.fire('Error', 'Verification request failed', 'error');
+                });
+            },
+            theme: {
+                color: "#f25c05"
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+
+    }).fail(function (xhr) {
+        console.log(xhr.responseText);
+        Swal.fire('Error', 'Create order failed', 'error');
+    });
+});
+</script>
 @endsection
