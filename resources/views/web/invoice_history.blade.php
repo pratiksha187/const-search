@@ -1,6 +1,6 @@
 @extends('layouts.vendorapp')
 
-@section('title', 'Invoice History | ConstructKaro')
+@section('title','Credits Packages | ConstructKaro')
 
 @section('content')
 <style>

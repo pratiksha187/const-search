@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use App\Models\VendorTalkRequest;
+use App\Models\Payment;
 use App\Helpers\ProfileCompletionHelper;
 class VenderController extends Controller
 {
@@ -537,60 +538,7 @@ class VenderController extends Controller
         'selectedProjects'
     ));
 }
-    // public function erpNotifications()
-    // {
-    //     $vendor_id = Session::get('vendor_id');
-
-    //     $vendor = DB::table('vendor_reg')
-    //         ->where('id', $vendor_id)
-    //         ->first();
-
-    //     $notifications = DB::table('project_vendor_emails')
-    //         ->where('vendor_id', $vendor_id)
-    //         ->orderBy('created_at', 'desc')
-    //         ->get();
-
-    //     // dd($notifications);
-        
-    //     $employer = DB::table('employers')->get();
-    
-    //     $rfqInviteNotifications = collect();
-
-    //     $dbName = $employer[0]->db_name;
-    
-    //     if ($employer && !empty($employer[0]->db_name)) {
-    
-    //         $dbName = $employer[0]->db_name;
-            
-    //         config(['database.connections.tenant.database' => $dbName]);
-    //         DB::purge('tenant');
-    //         DB::reconnect('tenant');
-
-    //         $rfqInviteNotifications = DB::connection('tenant')
-    //             ->table('rfq_vendor_invites as rvi')
-    //             ->leftJoin('rfqs as r', 'r.id', '=', 'rvi.rfq_id')
-    //             ->leftJoin('boqs as b', 'b.project_id', '=', 'r.project_id')
-    //             ->where('rvi.vendor_id', $vendor_id)
-    //             ->orderBy('rvi.created_at', 'desc')
-    //             ->select(
-    //                 'rvi.id',
-    //                 'rvi.rfq_id',
-    //                 'rvi.vendor_id',
-    //                 'rvi.status',
-    //                 'rvi.created_at',
-    //                 'r.project_id',
-    //                 'b.file_path as boq_file'
-    //             )
-    //             ->get();
-    //     }
-
-    //     return view('web.erp_notifications', compact(
-    //         'notifications',
-    //         'rfqInviteNotifications',
-    //         'vendor_id',
-    //         'vendor'
-    //     ));
-    // }
+   
     public function uploadErpDocs(Request $request)
     {
         // dd($request );
@@ -628,6 +576,30 @@ class VenderController extends Controller
         return back()->with('success', 'Files uploaded successfully!');
     }
 
+    public function invoiceHistory()
+    {
+        $vendorId = Session::get('vendor_id');
+        $vendor = DB::table('vendor_reg')
+        ->where('id', $vendorId)
+        ->first();
+
+        $notifications = DB::table('project_vendor_emails')
+        ->where('vendor_id', $vendorId)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        if (!$vendorId) {
+            return redirect()->back()->with('error', 'Vendor session not found.');
+        }
+
+        $invoices = Payment::where('login_id', $vendorId)
+            ->where('flag', 'v')
+            ->whereNotNull('invoice_no')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('web.invoice_history', compact('invoices','vendorId','vendor','notifications'));
+    }
 
     public function uploadBoqReply(Request $request)
     {

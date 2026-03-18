@@ -132,6 +132,11 @@ Route::post('/razorpay/verify', [RazorpayController::class, 'verifyPayment'])
 Route::get('/invoice/{paymentId}',[RazorpayController::class,'downloadInvoice'])
 ->name('invoice.download');
 
+Route::post('/razorpay/payment', [RazorpayController::class, 'handlePayment'])->name('razorpay.payment');
+
+
+Route::get('/vendor/invoices', [VenderController::class, 'invoiceHistory'])
+    ->name('vendor.invoices');
 
 Route::get('/vendor_reg_form', [HomeController::class, 'vendor_reg_form'])->name('vendor_reg_form');
 
@@ -147,7 +152,6 @@ Route::post('/customer/quotation/action',
 )->name('customer.quotation.action');
 
 
-Route::post('/razorpay/payment', [RazorpayController::class, 'handlePayment'])->name('razorpay.payment');
 
 Route::get('/vendor/profile', [VenderController::class, 'venderprofile'])
     ->name('vendor.profile');
@@ -663,8 +667,6 @@ Route::get('/employer/rfq/latest/{projectId}', [RfqController::class,'latest'])
 });
 
 
-Route::get('/vendor/invoices', [RazorpayController::class, 'invoiceHistory'])
-    ->name('vendor.invoices');
 
 Route::get('erp', [ERPController::class, 'erp'])->name('erp');
 
