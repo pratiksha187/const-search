@@ -399,7 +399,17 @@ class VenderController extends Controller
                             ->toArray();
         //    dd( $notifications );     
         $notificationCount = $notifications->count(); 
-         return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount','freeLeadPlatforms'));
+
+        $latestPayment = \App\Models\Payment::where('login_id', $vendor_id)
+            ->where('flag', 'v')
+            ->whereNotNull('invoice_path')
+            ->latest('id')
+            ->first();
+
+        $latestInvoiceUrl = $latestPayment
+            ? route('invoice.download', $latestPayment->payment_id)
+            : null;
+         return view('web.vendorsubscription',compact('vendor_id','vendor','notifications','notificationCount','freeLeadPlatforms', 'latestInvoiceUrl'));
     }
 
     public function storerate(Request $request)

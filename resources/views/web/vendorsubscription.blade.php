@@ -4,7 +4,6 @@
 
 @section('content')
 
-{{-- REQUIRED LIBS --}}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -26,6 +25,41 @@ body{ background:var(--bg); }
     max-width:1100px;
     margin:40px auto 80px;
     padding:0 14px;
+}
+
+/* ================= INVOICE BOX ================= */
+.invoice-box{
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+    border-radius:18px;
+    padding:18px 20px;
+    margin-bottom:24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    box-shadow:0 8px 22px rgba(15,23,42,.05);
+}
+.invoice-box h6{
+    font-weight:800;
+    color:#0f172a;
+    margin:0;
+}
+.invoice-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#0f172a;
+    color:#fff;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:12px;
+    font-weight:800;
+    white-space:nowrap;
+}
+.invoice-btn:hover{
+    background:#f25c05;
+    color:#fff;
 }
 
 /* ================= FREE LEADS ================= */
@@ -159,6 +193,14 @@ body{ background:var(--bg); }
     margin-top:4px;
 }
 
+.gst-box{
+    margin-top:10px;
+    min-width:180px;
+}
+.gst-box small{
+    display:block;
+}
+
 .pack-btn{
     margin-top:16px;
     width:100%;
@@ -212,7 +254,30 @@ body{ background:var(--bg); }
     font-size:14px;
 }
 
+.swal-download-btn{
+    display:inline-block;
+    margin-top:12px;
+    padding:10px 18px;
+    border-radius:12px;
+    background:#0f172a;
+    color:#fff !important;
+    font-weight:800;
+    text-decoration:none;
+}
+.swal-download-btn:hover{
+    background:#f25c05;
+    color:#fff !important;
+}
+
 @media(max-width:768px){
+    .invoice-box{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    .invoice-btn{
+        width:100%;
+        justify-content:center;
+    }
     .pack-top{ flex-direction:column; }
     .pack-right{ text-align:left; }
     .pack-price{ font-size:30px; }
@@ -222,301 +287,298 @@ body{ background:var(--bg); }
 
 <div class="lead-page">
 
-{{-- ================= FREE LEADS ================= --}}
-<div class="free-leads-box">
-    <h5>🎁 Earn Free Leads!</h5>
-    <p class="text-muted mb-3">Share on social media & upload screenshot to get 1 free verified lead.</p>
-
-    <div class="row g-3">
-
-        {{-- INSTAGRAM --}}
-        <div class="col-md-6">
-            <div class="free-card">
-                <h6>📸 Instagram</h6>
-                <p>Add a story & tag us</p>
-
-                @if(in_array('instagram', $freeLeadPlatforms))
-                    <button class="free-btn disabled" disabled>Already Applied</button>
-                    <div class="text-success small fw-semibold mt-2">✔ Screenshot already submitted</div>
-                @else
-                    <button class="free-btn" onclick="toggleUpload('instagram')">Claim Free Lead</button>
-
-                    <form class="upload-box d-none"
-                          id="upload-instagram"
-                          method="POST"
-                          enctype="multipart/form-data"
-                          action="{{ route('vendor.freelead.upload') }}">
-                        @csrf
-                        <input type="hidden" name="platform" value="instagram">
-
-                        <label class="form-label small fw-semibold mt-2">Upload Screenshot</label>
-                        <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
-
-                        <button class="btn btn-success btn-sm w-100">Submit Screenshot</button>
-                    </form>
-                @endif
-            </div>
-        </div>
-
-        {{-- FACEBOOK --}}
-        <div class="col-md-6">
-            <div class="free-card">
-                <h6>👍 Facebook</h6>
-                <p>Share on Facebook</p>
-
-                @if(in_array('facebook', $freeLeadPlatforms))
-                    <button class="free-btn disabled" disabled>Already Applied</button>
-                    <div class="text-success small fw-semibold mt-2">✔ Screenshot already submitted</div>
-                @else
-                    <button class="free-btn" onclick="toggleUpload('facebook')">Claim Free Lead</button>
-
-                    <form class="upload-box d-none"
-                          id="upload-facebook"
-                          method="POST"
-                          enctype="multipart/form-data"
-                          action="{{ route('vendor.freelead.upload') }}">
-                        @csrf
-                        <input type="hidden" name="platform" value="facebook">
-
-                        <label class="form-label small fw-semibold mt-2">Upload Screenshot</label>
-                        <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
-
-                        <button class="btn btn-success btn-sm w-100">Submit Screenshot</button>
-                    </form>
-                @endif
-            </div>
-        </div>
-
-    </div>
-</div>
-
-{{-- ================= CREDIT PACKS ================= --}}
-{{-- ================= CREDIT PACKS (HTML ONLY with GST UI) ================= --}}
-<div class="page-head">
-    <h3>Choose a pack based on the size of projects you want to access.</h3>
-    <p>Credits do not expire. Credits are non-refundable.</p>
-</div>
-
-{{-- Trial Access --}}
-<div class="credit-pack pack-green">
-    <div class="pack-top">
-        <div class="pack-left">
-            <div class="pack-badge">
-                <span class="dot"></span> Trial Access
+    @if(!empty($latestInvoiceUrl))
+        <div class="invoice-box">
+            <div>
+                <h6 class="mb-1">Latest Invoice</h6>
+                <p class="mb-0 text-muted">Download your most recent payment invoice.</p>
             </div>
 
-            <ul class="pack-points">
-                <li><i class="bi bi-check2"></i> Unlock 1 small project</li>
-                <li><i class="bi bi-check2"></i> Ideal for first-time users</li>
-            </ul>
+            <a href="{{ $latestInvoiceUrl }}" target="_blank" class="invoice-btn">
+                <i class="bi bi-download"></i> Download Invoice
+            </a>
         </div>
+    @endif
 
-        <div class="pack-right">
-            <div class="pack-price">₹199</div>
-            <div class="pack-credits">30 credits</div>
+    {{-- ================= FREE LEADS ================= --}}
+    <div class="free-leads-box">
+        <h5>🎁 Earn Free Leads!</h5>
+        <p class="text-muted mb-3">Share on social media & upload screenshot to get 1 free verified lead.</p>
 
-            {{-- ✅ GST UI (18%) --}}
-            <div class="gst-box mt-2">
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">GST (18%)</small>
-                    <small class="fw-semibold gst-amount">₹35.82</small>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="free-card">
+                    <h6>📸 Instagram</h6>
+                    <p>Add a story & tag us</p>
+
+                    @if(in_array('instagram', $freeLeadPlatforms))
+                        <button class="free-btn disabled" disabled>Already Applied</button>
+                        <div class="text-success small fw-semibold mt-2">✔ Screenshot already submitted</div>
+                    @else
+                        <button class="free-btn" onclick="toggleUpload('instagram')">Claim Free Lead</button>
+
+                        <form class="upload-box d-none"
+                              id="upload-instagram"
+                              method="POST"
+                              enctype="multipart/form-data"
+                              action="{{ route('vendor.freelead.upload') }}">
+                            @csrf
+                            <input type="hidden" name="platform" value="instagram">
+
+                            <label class="form-label small fw-semibold mt-2">Upload Screenshot</label>
+                            <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
+
+                            <button class="btn btn-success btn-sm w-100">Submit Screenshot</button>
+                        </form>
+                    @endif
                 </div>
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">Total</small>
-                    <small class="fw-bold total-amount">₹234.82</small>
+            </div>
+
+            <div class="col-md-6">
+                <div class="free-card">
+                    <h6>👍 Facebook</h6>
+                    <p>Share on Facebook</p>
+
+                    @if(in_array('facebook', $freeLeadPlatforms))
+                        <button class="free-btn disabled" disabled>Already Applied</button>
+                        <div class="text-success small fw-semibold mt-2">✔ Screenshot already submitted</div>
+                    @else
+                        <button class="free-btn" onclick="toggleUpload('facebook')">Claim Free Lead</button>
+
+                        <form class="upload-box d-none"
+                              id="upload-facebook"
+                              method="POST"
+                              enctype="multipart/form-data"
+                              action="{{ route('vendor.freelead.upload') }}">
+                            @csrf
+                            <input type="hidden" name="platform" value="facebook">
+
+                            <label class="form-label small fw-semibold mt-2">Upload Screenshot</label>
+                            <input type="file" name="screenshot" class="form-control mb-2" required accept="image/*">
+
+                            <button class="btn btn-success btn-sm w-100">Submit Screenshot</button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 
-    <button class="pack-btn buy-credit-btn"
-            data-plan="trial"
-            data-amount="199"
-            data-credits="30"
-            data-gst="18"
-            data-cust="{{ $vendor_id }}">
-        Get Trial Access
-    </button>
-</div>
-
-{{-- Starter Access --}}
-<div class="credit-pack pack-blue">
-    <div class="pack-top">
-        <div class="pack-left">
-            <div class="pack-badge">
-                <span class="dot"></span> Starter Access
-            </div>
-
-            <ul class="pack-points">
-                <li><i class="bi bi-check2"></i> Unlock 2 small projects</li>
-                <li><i class="bi bi-check2"></i> OR save for a mid-size project</li>
-            </ul>
-        </div>
-
-        <div class="pack-right">
-            <div class="pack-price">₹399</div>
-            <div class="pack-credits">70 credits</div>
-
-            {{-- ✅ GST UI (18%) --}}
-            <div class="gst-box mt-2">
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">GST (18%)</small>
-                    <small class="fw-semibold gst-amount">₹71.82</small>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">Total</small>
-                    <small class="fw-bold total-amount">₹470.82</small>
-                </div>
-            </div>
-        </div>
+    {{-- ================= CREDIT PACKS ================= --}}
+    <div class="page-head">
+        <h3>Choose a pack based on the size of projects you want to access.</h3>
+        <p>Credits do not expire. Credits are non-refundable.</p>
     </div>
 
-    <button class="pack-btn buy-credit-btn"
-            data-plan="starter"
-            data-amount="399"
-            data-credits="70"
-            data-gst="18"
-            data-cust="{{ $vendor_id }}">
-        Get Starter Access
-    </button>
-</div>
+    <div class="credit-pack pack-green">
+        <div class="pack-top">
+            <div class="pack-left">
+                <div class="pack-badge">
+                    <span class="dot"></span> Trial Access
+                </div>
 
-{{-- Builder Access (Most Popular) --}}
-<div class="credit-pack pack-purple">
-    <div class="most-popular"><span>⭐</span> Most Popular</div>
-
-    <div class="pack-top">
-        <div class="pack-left">
-            <div class="pack-badge">
-                <span class="dot"></span> Builder Access
+                <ul class="pack-points">
+                    <li><i class="bi bi-check2"></i> Unlock 1 small project</li>
+                    <li><i class="bi bi-check2"></i> Ideal for first-time users</li>
+                </ul>
             </div>
 
-            <ul class="pack-points">
-                <li><i class="bi bi-check2"></i> Unlock 5 small projects</li>
-                <li><i class="bi bi-check2"></i> OR 1 mid-size project (₹5–25L)</li>
-                <li><i class="bi bi-check2"></i> Credits can be used flexibly</li>
-            </ul>
-        </div>
+            <div class="pack-right">
+                <div class="pack-price">₹199</div>
+                <div class="pack-credits">30 credits</div>
 
-        <div class="pack-right">
-            <div class="pack-price">₹799</div>
-            <div class="pack-credits">160 credits</div>
-
-            {{-- ✅ GST UI (18%) --}}
-            <div class="gst-box mt-2">
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">GST (18%)</small>
-                    <small class="fw-semibold gst-amount">₹143.82</small>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">Total</small>
-                    <small class="fw-bold total-amount">₹942.82</small>
+                <div class="gst-box">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">GST (18%)</small>
+                        <small class="fw-semibold gst-amount">₹35.82</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">Total</small>
+                        <small class="fw-bold total-amount">₹234.82</small>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <button class="pack-btn buy-credit-btn"
+                data-plan="trial"
+                data-amount="199"
+                data-credits="30"
+                data-gst="18"
+                data-cust="{{ $vendor_id }}">
+            Get Trial Access
+        </button>
     </div>
 
-    <button class="pack-btn buy-credit-btn"
-            data-plan="builder"
-            data-amount="799"
-            data-credits="160"
-            data-gst="18"
-            data-cust="{{ $vendor_id }}">
-        Get Builder Access
-    </button>
-</div>
+    <div class="credit-pack pack-blue">
+        <div class="pack-top">
+            <div class="pack-left">
+                <div class="pack-badge">
+                    <span class="dot"></span> Starter Access
+                </div>
 
-{{-- Pro Access --}}
-<div class="credit-pack pack-red">
-    <div class="pack-top">
-        <div class="pack-left">
-            <div class="pack-badge">
-                <span class="dot"></span> Pro Access
+                <ul class="pack-points">
+                    <li><i class="bi bi-check2"></i> Unlock 2 small projects</li>
+                    <li><i class="bi bi-check2"></i> OR save for a mid-size project</li>
+                </ul>
             </div>
 
-            <ul class="pack-points">
-                <li><i class="bi bi-check2"></i> Unlock 2 mid-size projects</li>
-                <li><i class="bi bi-check2"></i> OR 1 large project (₹25L–₹1Cr)</li>
-            </ul>
-        </div>
+            <div class="pack-right">
+                <div class="pack-price">₹399</div>
+                <div class="pack-credits">70 credits</div>
 
-        <div class="pack-right">
-            <div class="pack-price">₹1,499</div>
-            <div class="pack-credits">320 credits</div>
-
-            {{-- ✅ GST UI (18%) --}}
-            <div class="gst-box mt-2">
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">GST (18%)</small>
-                    <small class="fw-semibold gst-amount">₹269.82</small>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">Total</small>
-                    <small class="fw-bold total-amount">₹1,768.82</small>
+                <div class="gst-box">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">GST (18%)</small>
+                        <small class="fw-semibold gst-amount">₹71.82</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">Total</small>
+                        <small class="fw-bold total-amount">₹470.82</small>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <button class="pack-btn buy-credit-btn"
+                data-plan="starter"
+                data-amount="399"
+                data-credits="70"
+                data-gst="18"
+                data-cust="{{ $vendor_id }}">
+            Get Starter Access
+        </button>
     </div>
 
-    <button class="pack-btn buy-credit-btn"
-            data-plan="pro"
-            data-amount="1499"
-            data-credits="320"
-            data-gst="18"
-            data-cust="{{ $vendor_id }}">
-        Get Pro Access
-    </button>
-</div>
+    <div class="credit-pack pack-purple">
+        <div class="most-popular"><span>⭐</span> Most Popular</div>
 
-{{-- Power Access --}}
-<div class="credit-pack pack-dark">
-    <div class="pack-top">
-        <div class="pack-left">
-            <div class="pack-badge">
-                <span class="dot"></span> Power Access
+        <div class="pack-top">
+            <div class="pack-left">
+                <div class="pack-badge">
+                    <span class="dot"></span> Builder Access
+                </div>
+
+                <ul class="pack-points">
+                    <li><i class="bi bi-check2"></i> Unlock 5 small projects</li>
+                    <li><i class="bi bi-check2"></i> OR 1 mid-size project (₹5–25L)</li>
+                    <li><i class="bi bi-check2"></i> Credits can be used flexibly</li>
+                </ul>
             </div>
 
-            <ul class="pack-points">
-                <li><i class="bi bi-check2"></i> Unlock multiple large projects</li>
-                <li><i class="bi bi-check2"></i> Best for active contractors & MSMEs</li>
-            </ul>
-        </div>
+            <div class="pack-right">
+                <div class="pack-price">₹799</div>
+                <div class="pack-credits">160 credits</div>
 
-        <div class="pack-right">
-            <div class="pack-price">₹2,999</div>
-            <div class="pack-credits">700 credits</div>
-
-            {{-- ✅ GST UI (18%) --}}
-            <div class="gst-box mt-2">
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">GST (18%)</small>
-                    <small class="fw-semibold gst-amount">₹539.82</small>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <small class="text-muted">Total</small>
-                    <small class="fw-bold total-amount">₹3,538.82</small>
+                <div class="gst-box">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">GST (18%)</small>
+                        <small class="fw-semibold gst-amount">₹143.82</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">Total</small>
+                        <small class="fw-bold total-amount">₹942.82</small>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <button class="pack-btn buy-credit-btn"
+                data-plan="builder"
+                data-amount="799"
+                data-credits="160"
+                data-gst="18"
+                data-cust="{{ $vendor_id }}">
+            Get Builder Access
+        </button>
     </div>
 
-    <button class="pack-btn buy-credit-btn"
-            data-plan="power"
-            data-amount="2999"
-            data-credits="700"
-            data-gst="18"
-            data-cust="{{ $vendor_id }}">
-        Get Power Access
-    </button>
+    <div class="credit-pack pack-red">
+        <div class="pack-top">
+            <div class="pack-left">
+                <div class="pack-badge">
+                    <span class="dot"></span> Pro Access
+                </div>
+
+                <ul class="pack-points">
+                    <li><i class="bi bi-check2"></i> Unlock 2 mid-size projects</li>
+                    <li><i class="bi bi-check2"></i> OR 1 large project (₹25L–₹1Cr)</li>
+                </ul>
+            </div>
+
+            <div class="pack-right">
+                <div class="pack-price">₹1,499</div>
+                <div class="pack-credits">320 credits</div>
+
+                <div class="gst-box">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">GST (18%)</small>
+                        <small class="fw-semibold gst-amount">₹269.82</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">Total</small>
+                        <small class="fw-bold total-amount">₹1,768.82</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="pack-btn buy-credit-btn"
+                data-plan="pro"
+                data-amount="1499"
+                data-credits="320"
+                data-gst="18"
+                data-cust="{{ $vendor_id }}">
+            Get Pro Access
+        </button>
+    </div>
+
+    <div class="credit-pack pack-dark">
+        <div class="pack-top">
+            <div class="pack-left">
+                <div class="pack-badge">
+                    <span class="dot"></span> Power Access
+                </div>
+
+                <ul class="pack-points">
+                    <li><i class="bi bi-check2"></i> Unlock multiple large projects</li>
+                    <li><i class="bi bi-check2"></i> Best for active contractors & MSMEs</li>
+                </ul>
+            </div>
+
+            <div class="pack-right">
+                <div class="pack-price">₹2,999</div>
+                <div class="pack-credits">700 credits</div>
+
+                <div class="gst-box">
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">GST (18%)</small>
+                        <small class="fw-semibold gst-amount">₹539.82</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">Total</small>
+                        <small class="fw-bold total-amount">₹3,538.82</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="pack-btn buy-credit-btn"
+                data-plan="power"
+                data-amount="2999"
+                data-credits="700"
+                data-gst="18"
+                data-cust="{{ $vendor_id }}">
+            Get Power Access
+        </button>
+    </div>
+
+    <div class="small-note">
+        Credits do not expire. <br>
+        Credits are non-refundable.
+    </div>
 </div>
 
-<div class="small-note">
-    Credits do not expire. <br>
-    Credits are non-refundable.
-</div>
-
-
-{{-- ================= JS ================= --}}
 <script>
 function toggleUpload(platform){
     document.querySelectorAll('.upload-box').forEach(el => el.classList.add('d-none'));
@@ -524,70 +586,6 @@ function toggleUpload(platform){
 }
 </script>
 
-{{-- PAYMENT SCRIPT (CREDITS) --}}
-<!-- <script>
-$(document).on('click','.buy-credit-btn',function(){
-
-    const amount  = $(this).data('amount');
-    const plan    = $(this).data('plan');
-    const credits = $(this).data('credits');
-    const custId  = $(this).data('cust');
-
-    $.post("{{ route('razorpay.createOrder') }}",{
-        _token:"{{ csrf_token() }}",
-        amount:amount,
-        plan:plan,
-        cust_id:custId,
-        credits:credits
-    },function(res){
-
-        if(!res.success){
-            Swal.fire('Error','Order failed','error');
-            return;
-        }
-
-        new Razorpay({
-            key: res.key,
-            amount: res.amount,
-            currency: "INR",
-            name: "ConstructKaro",
-            description: plan + " credits pack",
-            order_id: res.order_id,
-            handler: function (response) {
-
-                $.post("{{ route('razorpay.verify') }}",{
-                    _token:"{{ csrf_token() }}",
-                    ...response,
-                    plan:plan,
-                    amount:amount,
-                    credits:credits
-                },function(v){
-                    if(v.success){
-                        // Swal.fire('Success','Payment completed & credits added!','success')
-                        // .then(()=>location.reload());
-                        Swal.fire({
-                            icon:'success',
-                            title:'Payment Successful',
-                            text:'Credits added. Invoice downloading...'
-                        });
-
-                        if(v.invoice_url){
-                            window.open(v.invoice_url,'_blank');
-                        }
-
-                        setTimeout(()=>{
-                            location.reload();
-                        },2000);
-                    }else{
-                        Swal.fire('Error','Verification failed','error');
-                    }
-                });
-
-            }
-        }).open();
-    });
-});
-</script> -->
 <script>
 $(document).on('click', '.buy-credit-btn', function () {
 
@@ -611,7 +609,7 @@ $(document).on('click', '.buy-credit-btn', function () {
 
         const options = {
             key: res.key,
-            amount: res.razor_amount, // ✅ FIXED
+            amount: res.razor_amount,
             currency: "INR",
             name: "ConstructKaro",
             description: plan + " credits pack",
@@ -632,16 +630,16 @@ $(document).on('click', '.buy-credit-btn', function () {
                         Swal.fire({
                             icon: 'success',
                             title: 'Payment Successful',
-                            text: 'Credits added successfully. Invoice downloading...'
+                            html: `
+                                <p>Credits added successfully.</p>
+                                ${v.invoice_url ? `<a href="${v.invoice_url}" target="_blank" class="swal-download-btn">Download Invoice</a>` : ''}
+                            `,
+                            confirmButtonText: 'OK'
                         });
-
-                        if (v.invoice_url) {
-                            window.open(v.invoice_url, '_blank');
-                        }
 
                         setTimeout(() => {
                             location.reload();
-                        }, 2000);
+                        }, 2500);
 
                     } else {
                         Swal.fire('Error', v.message || 'Verification failed', 'error');
@@ -666,4 +664,5 @@ $(document).on('click', '.buy-credit-btn', function () {
     });
 });
 </script>
+
 @endsection
