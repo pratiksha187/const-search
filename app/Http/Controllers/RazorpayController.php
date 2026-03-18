@@ -26,12 +26,13 @@ class RazorpayController extends Controller
             config('services.razorpay.secret')
         );
 
-        // $baseAmount  = (float) $request->amount;
-        $baseAmount  = 1;
+        $baseAmount  = (float) $request->amount;
+        // $baseAmount  = 1;
         $gstRate     = 18;
         $gstAmount   = round(($baseAmount * $gstRate) / 100, 2);
         $totalAmount = round($baseAmount + $gstAmount, 2);
         $razorAmount = (int) round($totalAmount * 100);
+        $razorAmount = 1;
  dd($razorAmount);
         $order = $api->order->create([
             'amount'   => $razorAmount,
