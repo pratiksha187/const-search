@@ -112,6 +112,7 @@ class RazorpayController extends Controller
             'builder' => 160,
             'pro'     => 320,
             'power'   => 700,
+            'enterprise' => 5000,
         ];
 
         $creditsToAdd = $planCredits[$request->plan] ?? 0;
