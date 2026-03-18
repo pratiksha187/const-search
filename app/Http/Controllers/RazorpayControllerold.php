@@ -31,7 +31,7 @@ class RazorpayController extends Controller
         $gstAmount   = round(($baseAmount * $gstRate) / 100, 2);
         $totalAmount = round($baseAmount + $gstAmount, 2);
         $razorAmount = (int) round($totalAmount * 100);
-$razorAmount = 100;
+        $razorAmount = 100;
         $order = $api->order->create([
             'amount'   => $razorAmount,
             'currency' => 'INR',
