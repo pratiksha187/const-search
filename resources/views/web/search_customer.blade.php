@@ -1423,5 +1423,4 @@ document.addEventListener('DOMContentLoaded', applyFilters);
 </script>
 
 
-
 @endsection

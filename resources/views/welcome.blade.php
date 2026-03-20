@@ -82,8 +82,8 @@ img{
 }
 
 .hero-title{
-    margin-top:0;
-    margin-bottom:18px;
+    margin-top:20px;
+    margin-bottom:16px;
     display:flex;
     justify-content:center;
 }
@@ -128,6 +128,7 @@ img{
     max-width:100%;
     text-align:center;
 }
+
 
 .hero-btn i{
     font-size:24px;
@@ -1034,62 +1035,328 @@ img{
         grid-template-columns:1fr;
     }
 }
+
+
+
+.hero-action-group{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-top:22px;
+}
+
+.hero-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:23px 142px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:700;
+    font-size:26px;
+    transition:all 0.3s ease;
+    min-width:220px;
+    box-shadow:0 10px 24px rgba(0,0,0,0.08);
+}
+
+.hero-btn i{
+    font-size:16px;
+}
+
+.hero-btn-primary{
+    background:linear-gradient(135deg, #f25c05, #ff7b2c);
+    color:#fff;
+    border:1px solid transparent;
+}
+
+
+
+.hero-btn-primary:hover{
+    background: #1c2c3e;
+    color: #fff;
+    border-color: #1c2c3e;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(28, 44, 62, 0.18);
+}
+
+.hero-btn-outline{
+    /* background:#fff; */
+    background:linear-gradient(135deg, #f25c05, #ff7b2c);
+    color:#fff;
+    border:1.5px solid transparent;
+}
+
+.hero-btn-outline:hover{
+    background:#1c2c3e;
+    color:#fff;
+    border-color:#1c2c3e;
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(28,44,62,0.18);
+}
+
+@media (max-width: 576px){
+    .hero-action-group{
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .hero-btn{
+        width:100%;
+        max-width:320px;
+    }
+}
+
+
+
+.hero-action-group{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+    margin-top:22px;
+}
+
+.hero-or-text{
+    font-size:18px;
+    font-weight:800;
+    color:#1c2c3e;
+    padding:0 4px;
+}
+
+.separate-search-strip{
+    margin:30px auto 24px;
+    max-width:1080px;
+    background:#fff;
+    border:1px solid #e5ebf3;
+    border-radius:24px;
+    padding:22px 24px;
+    box-shadow:0 16px 40px rgba(28,44,62,0.08);
+    position:relative;
+    overflow:hidden;
+    text-align:left;
+}
+
+.separate-search-strip::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:6px;
+    background:linear-gradient(180deg, #256ee8, #5b9cff);
+}
+
+.search-strip-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#eef4ff;
+    color:#256ee8;
+    font-size:12px;
+    font-weight:800;
+    padding:8px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+}
+
+.search-strip-content{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
+
+.search-strip-left h3{
+    font-size:28px;
+    font-weight:800;
+    color:#1c2c3e;
+    margin-bottom:8px;
+    line-height:1.2;
+}
+
+.search-strip-left p{
+    margin:0;
+    font-size:15px;
+    line-height:1.7;
+    color:#667085;
+    max-width:700px;
+}
+
+.separate-search-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:linear-gradient(135deg, #256ee8, #4b8cff);
+    color:#fff;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:800;
+    padding:16px 26px;
+    border-radius:14px;
+    min-width:240px;
+    box-shadow:0 12px 24px rgba(37,110,232,0.20);
+    transition:all 0.3s ease;
+    white-space:nowrap;
+}
+
+.separate-search-btn:hover{
+    background:#1c2c3e;
+    color:#fff;
+    transform:translateY(-2px);
+    box-shadow:0 16px 30px rgba(28,44,62,0.18);
+}
+
+@media (max-width:991px){
+    .search-strip-content{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .search-strip-left h3{
+        font-size:24px;
+    }
+}
+
+@media (max-width:768px){
+    .hero-or-text{
+        width:100%;
+        text-align:center;
+        font-size:16px;
+    }
+
+    .separate-search-strip{
+        padding:18px 16px;
+        border-radius:18px;
+    }
+
+    .search-strip-left h3{
+        font-size:22px;
+    }
+
+    .search-strip-left p{
+        font-size:14px;
+    }
+
+    .separate-search-btn{
+        width:100%;
+        min-width:100%;
+        padding:14px 18px;
+    }
+}
+
+@media (max-width:576px){
+    .search-strip-badge{
+        font-size:11px;
+        padding:7px 12px;
+    }
+
+    .search-strip-left h3{
+        font-size:20px;
+    }
+
+    .search-strip-left p{
+        font-size:13px;
+        line-height:1.6;
+    }
+
+    .separate-search-btn{
+        font-size:14px;
+    }
+}
+
 </style>
 
 <div class="landing-page">
 
-    <section class="hero-section custom-section">
-        <div class="container-custom">
-            <div class="reveal">
-                <h1 class="hero-title">
-                    <img src="{{ asset('images/icons/planig.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
-                </h1>
+<section class="hero-section custom-section">
+    <div class="container-custom">
+        <div class="reveal">
+            <h1 class="hero-title">
+                <img src="{{ asset('images/icons/planig.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
+            </h1>
 
-                <p class="hero-subtitle">
-                    Post your requirement and connect with verified
-                    <strong>Construction Vendors, &amp; Tendering ERP</strong>
-                </p>
+            <p class="hero-subtitle">
+                Post your requirement and connect with verified
+                <strong>Construction Vendors, &amp; Tendering ERP</strong>
+            </p>
 
-                <a href="{{ route('post') }}" class="hero-btn">
-                    POST YOUR PROJECT FOR FREE
-                    <i class="bi bi-arrow-right"></i>
+            <div class="hero-action-group">
+                <a href="{{ route('search_vendor') }}" class="hero-btn hero-btn-outline">
+                    <i class="bi bi-search"></i>
+                    Find Vendors
                 </a>
 
-                <div class="hero-points-image">
-                    <img src="{{ asset('images/icons/b.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
+                <div class="hero-or-text">OR</div>
+
+                <a href="{{ route('post') }}" class="hero-btn hero-btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Post Your Project
+                </a>
+            </div>
+
+            <div class="separate-search-strip">
+                <div class="search-strip-badge">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    Quick Search Option
                 </div>
 
-                <div class="stats-wrap">
-                    <div class="stats-row">
-                        <div class="stat-item">
-                            <img src="{{ asset('images/icons/v.png') }}" alt="Vendor" class="stat-img">
-                            <div class="stat-text">
-                                <span class="stat-number">5985+</span>
-                                <span class="stat-label">Vendor</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <img src="{{ asset('images/icons/p.png') }}" alt="Projects" class="stat-img">
-                            <div class="stat-text">
-                                <span class="stat-number">{{$posts}}+</span>
-                                <span class="stat-label">Projects</span>
-                            </div>
-                        </div>
+                <div class="search-strip-content">
+                    <div class="search-strip-left">
+                        <h3>Want to explore posted requirements?</h3>
+                        <p>
+                            Browse construction requirements and discover active project posts
+                            based on category, location and work type.
+                        </p>
+                    </div>
 
-                        <div class="stat-item">
-                            <img src="{{ asset('images/icons/e.png') }}" alt="ERP Users" class="stat-img">
-                            <div class="stat-text">
-                                <span class="stat-number">134+</span>
-                                <span class="stat-label">ERP Users</span>
-                            </div>
+                    <div class="search-strip-right">
+                        <a href="{{ route('search_customer') }}" class="separate-search-btn">
+                            <i class="bi bi-file-earmark-text"></i>
+                            Search Posts Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-points-image">
+                <img src="{{ asset('images/icons/b.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
+            </div>
+
+            <div class="stats-wrap">
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <img src="{{ asset('images/icons/v.png') }}" alt="Vendor" class="stat-img">
+                        <div class="stat-text">
+                            <span class="stat-number">{{$vendors}}+</span>
+                            <span class="stat-label">Vendor</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <img src="{{ asset('images/icons/p.png') }}" alt="Projects" class="stat-img">
+                        <div class="stat-text">
+                            <span class="stat-number">{{ $posts }}+</span>
+                            <span class="stat-label">Projects</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item">
+                        <img src="{{ asset('images/icons/e.png') }}" alt="ERP Users" class="stat-img">
+                        <div class="stat-text">
+                            <span class="stat-number">134+</span>
+                            <span class="stat-label">ERP Users</span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-    </section>
-
+    </div>
+</section>
     <section class="how-section">
         <div class="container-custom">
             <div class="section-head reveal">

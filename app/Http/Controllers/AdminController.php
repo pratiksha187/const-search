@@ -37,20 +37,60 @@ class AdminController extends Controller
         return view('web.vendor_verification', compact('vendors'));
     }
 
-    public function supplier_verification(){
-        // dd('test');
-        $supplier = DB::table('supplier_reg as s')
+    // public function supplier_verification(){
+    //     // dd('test');
+    //     $supplier = DB::table('supplier_reg as s')
             
-            ->select(
-                's.*'
+    //         ->select(
+    //             's.*'
                
-            )
-            ->orderBy('s.created_at', 'desc')
-            ->get();
-            // dd($vendors);
-        return view('web.supplier_verification', compact('supplier'));
+    //         )
+    //         ->orderBy('s.created_at', 'desc')
+    //         ->get();
+    //         // dd($vendors);
+    //     return view('web.supplier_verification', compact('supplier'));
+    // }
+ public function supplier_verification()
+{
+    $supplier = DB::table('supplier_reg as s')
+        ->select('s.*')
+        ->orderBy('s.created_at', 'desc')
+        ->get();
+
+    $materialCategories = DB::table('material_categories')
+        ->where('status', 1)
+        ->orderBy('name', 'asc')
+        ->get(['id', 'name']);
+
+    $categoryMap = $materialCategories->pluck('name', 'id')->toArray();
+
+    foreach ($supplier as $sup) {
+        $decodedCategories = [];
+
+        if (!empty($sup->material_category)) {
+            $raw = $sup->material_category;
+            $json = json_decode($raw, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && is_array($json)) {
+                foreach ($json as $catId) {
+                    if (isset($categoryMap[$catId])) {
+                        $decodedCategories[] = $categoryMap[$catId];
+                    }
+                }
+            } else {
+                if (isset($categoryMap[$raw])) {
+                    $decodedCategories[] = $categoryMap[$raw];
+                }
+            }
+        }
+
+        $sup->material_category_names = !empty($decodedCategories)
+            ? implode(', ', $decodedCategories)
+            : '—';
     }
 
+    return view('web.supplier_verification', compact('supplier', 'materialCategories'));
+}
     public function vendorsapproved($id){
         $vendor = DB::table('vendor_reg as v')
             ->leftJoin('work_types as wt', 'wt.id', '=', 'v.work_type_id')
