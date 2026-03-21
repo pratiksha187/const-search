@@ -5,6 +5,7 @@
 @section('content')
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <style>
 :root{
     --ck-primary:#1c2c3e;
@@ -70,15 +71,13 @@ img{
     display:flex;
     align-items:center;
     justify-content:center;
-    background:radial-gradient(78.42% 19.37% at 50.03% 96.63%, rgba(205,216,237,0.86) 23.88%, rgba(255,255,255,0.86) 100%);
-    box-shadow:0 4px 4px 0 rgba(0,0,0,0.25);
-    border-radius:0;
+    background:radial-gradient(
+        78.42% 19.37% at 50.03% 96.63%,
+        rgba(205,216,237,0.86) 23.88%,
+        rgba(255,255,255,0.86) 100%
+    );
+    box-shadow:0 4px 4px rgba(0,0,0,0.25);
     padding:40px 24px;
-}
-
-.hero-section .container-custom{
-    width:min(1220px, 92%);
-    margin:0 auto;
 }
 
 .hero-title{
@@ -89,14 +88,13 @@ img{
 }
 
 .hero-title img{
-    width:min(1186px, 100%)
-    
+    width:min(1186px, 100%);
 }
 
 .hero-subtitle{
     max-width:920px;
     margin:0 auto 22px;
-    font-size:26px;
+    font-size:clamp(16px, 2vw, 26px);
     line-height:1.55;
     color:#505050;
     font-weight:500;
@@ -109,30 +107,165 @@ img{
     color:var(--ck-primary);
 }
 
+.hero-action-group{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+    flex-wrap:wrap;
+    margin-top:22px;
+}
+
+.hero-or-text{
+    font-size:clamp(14px, 1.2vw, 18px);
+    font-weight:800;
+    color:#1c2c3e;
+    padding:0 4px;
+}
+
 .hero-btn{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:12px;
+    gap:10px;
+    padding:clamp(14px, 1.6vw, 23px) clamp(24px, 7vw, 142px);
+    border-radius:14px;
     text-decoration:none;
-    background:linear-gradient(90deg,#f25c05,#ff944d);
-    color:#fff;
-    font-weight:800;
-    font-size:16px;
-    padding:18px 34px;
-    border-radius:16px;
-    box-shadow:0 10px 22px rgba(0,0,0,0.18);
-    transition:all 0.35s ease;
-    text-shadow:0 3px 6px rgba(0,0,0,0.25);
-    min-width:320px;
-    max-width:100%;
-    text-align:center;
+    font-weight:700;
+    font-size:clamp(14px, 2vw, 26px);
+    transition:all 0.3s ease;
+    min-width:220px;
+    box-shadow:0 10px 24px rgba(0,0,0,0.08);
+    white-space:nowrap;
 }
 
-
 .hero-btn i{
-    font-size:24px;
+    font-size:clamp(14px, 1.2vw, 16px);
     line-height:1;
+}
+
+.hero-btn-primary{
+    background:linear-gradient(135deg, #f25c05, #ff7b2c);
+    color:#fff;
+    border:1px solid transparent;
+}
+
+.hero-btn-primary:hover{
+    background:#1c2c3e;
+    color:#fff;
+    border-color:#1c2c3e;
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(28,44,62,0.18);
+}
+
+.hero-btn-outline{
+    background:linear-gradient(135deg, #f25c05, #ff7b2c);
+    color:#fff;
+    border:1.5px solid transparent;
+}
+
+.hero-btn-outline:hover{
+    background:#1c2c3e;
+    color:#fff;
+    border-color:#1c2c3e;
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(28,44,62,0.18);
+}
+
+/* COMPACT SEARCH STRIP */
+.separate-search-strip{
+    margin:30px auto 24px;
+    width:100%;
+    max-width:880px;
+    background:#fff;
+    border:1px solid #e5ebf3;
+    border-radius:20px;
+    padding:18px 20px;
+    box-shadow:0 12px 30px rgba(28,44,62,0.08);
+    position:relative;
+    overflow:hidden;
+    text-align:left;
+}
+
+.separate-search-strip::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:5px;
+    background:linear-gradient(180deg, #256ee8, #5b9cff);
+}
+
+.search-strip-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#eef4ff;
+    color:#256ee8;
+    font-size:11px;
+    font-weight:800;
+    padding:7px 12px;
+    border-radius:999px;
+    margin-bottom:12px;
+}
+
+.search-strip-content{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:nowrap;
+}
+
+.search-strip-left{
+    flex:1 1 auto;
+    max-width:560px;
+}
+
+.search-strip-left h3{
+    font-size:22px;
+    font-weight:800;
+    color:#1c2c3e;
+    margin-bottom:6px;
+    line-height:1.2;
+}
+
+.search-strip-left p{
+    margin:0;
+    font-size:14px;
+    line-height:1.6;
+    color:#667085;
+    max-width:520px;
+}
+
+.search-strip-right{
+    flex:0 0 auto;
+}
+
+.separate-search-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:linear-gradient(135deg, #256ee8, #4b8cff);
+    color:#fff;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:800;
+    padding:13px 20px;
+    border-radius:12px;
+    min-width:200px;
+    box-shadow:0 10px 22px rgba(37,110,232,0.18);
+    transition:all 0.3s ease;
+    white-space:nowrap;
+}
+
+.separate-search-btn:hover{
+    background:#1c2c3e;
+    color:#fff;
+    transform:translateY(-2px);
+    box-shadow:0 14px 28px rgba(28,44,62,0.18);
 }
 
 .hero-points-image{
@@ -142,8 +275,8 @@ img{
 }
 
 .hero-points-image img{
-    max-width:min(60%, 620px);
     width:100%;
+    max-width:min(60%, 620px);
 }
 
 .stats-wrap{
@@ -833,22 +966,31 @@ img{
 }
 
 @media (max-width:991px){
-    .hero-subtitle{
-        font-size:18px;
-        line-height:1.55;
-        max-width:760px;
-    }
-
-    .hero-btn{
-        min-width:auto;
-        width:auto;
-        padding:16px 24px;
-        font-size:15px;
-    }
-
     .stats-row{
-        grid-template-columns:repeat(2, max-content);
-        gap:26px 50px;
+        gap:30px;
+    }
+
+    .hero-points-image img{
+        max-width:min(80%, 620px);
+    }
+
+    .search-strip-content{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:14px;
+    }
+
+    .search-strip-left{
+        max-width:100%;
+    }
+
+    .search-strip-right{
+        width:100%;
+    }
+
+    .separate-search-btn{
+        width:100%;
+        min-width:100%;
     }
 
     .testimonial-section .section-title{
@@ -865,10 +1007,6 @@ img{
 }
 
 @media (max-width:900px){
-    .stats-row{
-        grid-template-columns:repeat(2,1fr);
-    }
-
     .steps-image-grid{
         grid-template-columns:1fr;
     }
@@ -889,16 +1027,6 @@ img{
 }
 
 @media (max-width:768px){
-    .hero-subtitle{
-        font-size:14px;
-    }
-
-    .hero-btn{
-        background:linear-gradient(90deg,#f97316,#fb923c);
-        color:#fff;
-        text-shadow:0 3px 6px rgba(0,0,0,0.28);
-    }
-
     .categories-grid,
     .mini-features{
         grid-template-columns:repeat(2,1fr);
@@ -913,9 +1041,62 @@ img{
     .section-head h2{
         font-size:24px;
     }
+
+    .hero-or-text{
+        width:100%;
+        text-align:center;
+        font-size:16px;
+    }
+
+    .separate-search-strip{
+        max-width:100%;
+        padding:16px;
+        border-radius:16px;
+    }
+
+    .search-strip-left h3{
+        font-size:18px;
+    }
+
+    .search-strip-left p{
+        font-size:13px;
+        max-width:100%;
+    }
 }
 
 @media (max-width:767px){
+    .hero-action-group{
+        flex-direction:column;
+        gap:14px;
+    }
+
+    .hero-or-text{
+        display:none;
+    }
+
+    .hero-btn{
+        width:100%;
+        max-width:420px;
+    }
+
+    .stats-row{
+        grid-template-columns:repeat(3, 1fr);
+        gap:16px;
+    }
+
+    .stat-item{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .stat-text{
+        text-align:center;
+    }
+
+    .hero-points-image img{
+        max-width:100%;
+    }
+
     .categories-title{
         font-size:24px;
     }
@@ -978,7 +1159,7 @@ img{
     }
 
     .custom-section{
-        padding:30px 16px;
+        padding:28px 14px;
     }
 
     .hero-subtitle{
@@ -988,33 +1169,45 @@ img{
     }
 
     .hero-btn{
-        width:100%;
-        max-width:360px;
-        min-width:auto;
+        max-width:320px;
         font-size:14px;
         padding:14px 18px;
     }
 
-    .hero-points-image img{
-        max-width:100%;
+    .search-strip-badge{
+        font-size:11px;
+        padding:7px 12px;
     }
 
-    .stats-wrap{
-        margin-top:34px;
+    .search-strip-left h3{
+        font-size:18px;
+    }
+
+    .search-strip-left p{
+        font-size:13px;
+        line-height:1.6;
+    }
+
+    .separate-search-btn{
+        font-size:14px;
     }
 
     .stats-row{
-        grid-template-columns:repeat(2,1fr);
-        gap:18px 18px;
+        grid-template-columns:1fr;
     }
 
     .stat-item{
-        justify-content:flex-start;
+        flex-direction:row;
+        justify-content:center;
+        text-align:left;
+    }
+
+    .stat-text{
+        text-align:left;
     }
 }
 
 @media (max-width:520px){
-    .stats-row,
     .categories-grid,
     .mini-features,
     .bottom-grid{
@@ -1035,328 +1228,94 @@ img{
         grid-template-columns:1fr;
     }
 }
-
-
-
-.hero-action-group{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:16px;
-    flex-wrap:wrap;
-    margin-top:22px;
-}
-
-.hero-btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    padding:23px 142px;
-    border-radius:14px;
-    text-decoration:none;
-    font-weight:700;
-    font-size:26px;
-    transition:all 0.3s ease;
-    min-width:220px;
-    box-shadow:0 10px 24px rgba(0,0,0,0.08);
-}
-
-.hero-btn i{
-    font-size:16px;
-}
-
-.hero-btn-primary{
-    background:linear-gradient(135deg, #f25c05, #ff7b2c);
-    color:#fff;
-    border:1px solid transparent;
-}
-
-
-
-.hero-btn-primary:hover{
-    background: #1c2c3e;
-    color: #fff;
-    border-color: #1c2c3e;
-    transform: translateY(-2px);
-    box-shadow: 0 14px 30px rgba(28, 44, 62, 0.18);
-}
-
-.hero-btn-outline{
-    /* background:#fff; */
-    background:linear-gradient(135deg, #f25c05, #ff7b2c);
-    color:#fff;
-    border:1.5px solid transparent;
-}
-
-.hero-btn-outline:hover{
-    background:#1c2c3e;
-    color:#fff;
-    border-color:#1c2c3e;
-    transform:translateY(-2px);
-    box-shadow:0 14px 30px rgba(28,44,62,0.18);
-}
-
-@media (max-width: 576px){
-    .hero-action-group{
-        flex-direction:column;
-        gap:12px;
-    }
-
-    .hero-btn{
-        width:100%;
-        max-width:320px;
-    }
-}
-
-
-
-.hero-action-group{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:18px;
-    flex-wrap:wrap;
-    margin-top:22px;
-}
-
-.hero-or-text{
-    font-size:18px;
-    font-weight:800;
-    color:#1c2c3e;
-    padding:0 4px;
-}
-
-.separate-search-strip{
-    margin:30px auto 24px;
-    max-width:1080px;
-    background:#fff;
-    border:1px solid #e5ebf3;
-    border-radius:24px;
-    padding:22px 24px;
-    box-shadow:0 16px 40px rgba(28,44,62,0.08);
-    position:relative;
-    overflow:hidden;
-    text-align:left;
-}
-
-.separate-search-strip::before{
-    content:"";
-    position:absolute;
-    left:0;
-    top:0;
-    bottom:0;
-    width:6px;
-    background:linear-gradient(180deg, #256ee8, #5b9cff);
-}
-
-.search-strip-badge{
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    background:#eef4ff;
-    color:#256ee8;
-    font-size:12px;
-    font-weight:800;
-    padding:8px 14px;
-    border-radius:999px;
-    margin-bottom:14px;
-}
-
-.search-strip-content{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
-}
-
-.search-strip-left h3{
-    font-size:28px;
-    font-weight:800;
-    color:#1c2c3e;
-    margin-bottom:8px;
-    line-height:1.2;
-}
-
-.search-strip-left p{
-    margin:0;
-    font-size:15px;
-    line-height:1.7;
-    color:#667085;
-    max-width:700px;
-}
-
-.separate-search-btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    background:linear-gradient(135deg, #256ee8, #4b8cff);
-    color:#fff;
-    text-decoration:none;
-    font-size:16px;
-    font-weight:800;
-    padding:16px 26px;
-    border-radius:14px;
-    min-width:240px;
-    box-shadow:0 12px 24px rgba(37,110,232,0.20);
-    transition:all 0.3s ease;
-    white-space:nowrap;
-}
-
-.separate-search-btn:hover{
-    background:#1c2c3e;
-    color:#fff;
-    transform:translateY(-2px);
-    box-shadow:0 16px 30px rgba(28,44,62,0.18);
-}
-
-@media (max-width:991px){
-    .search-strip-content{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .search-strip-left h3{
-        font-size:24px;
-    }
-}
-
-@media (max-width:768px){
-    .hero-or-text{
-        width:100%;
-        text-align:center;
-        font-size:16px;
-    }
-
-    .separate-search-strip{
-        padding:18px 16px;
-        border-radius:18px;
-    }
-
-    .search-strip-left h3{
-        font-size:22px;
-    }
-
-    .search-strip-left p{
-        font-size:14px;
-    }
-
-    .separate-search-btn{
-        width:100%;
-        min-width:100%;
-        padding:14px 18px;
-    }
-}
-
-@media (max-width:576px){
-    .search-strip-badge{
-        font-size:11px;
-        padding:7px 12px;
-    }
-
-    .search-strip-left h3{
-        font-size:20px;
-    }
-
-    .search-strip-left p{
-        font-size:13px;
-        line-height:1.6;
-    }
-
-    .separate-search-btn{
-        font-size:14px;
-    }
-}
-
 </style>
 
 <div class="landing-page">
+    <section class="hero-section custom-section">
+        <div class="container-custom">
+            <div class="reveal">
+                <h1 class="hero-title">
+                    <img src="{{ asset('images/icons/planig.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
+                </h1>
 
-<section class="hero-section custom-section">
-    <div class="container-custom">
-        <div class="reveal">
-            <h1 class="hero-title">
-                <img src="{{ asset('images/icons/planig.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
-            </h1>
+                <p class="hero-subtitle">
+                    Post your requirement and connect with verified
+                    <strong>Construction Vendors, &amp; Tendering ERP</strong>
+                </p>
 
-            <p class="hero-subtitle">
-                Post your requirement and connect with verified
-                <strong>Construction Vendors, &amp; Tendering ERP</strong>
-            </p>
+                <div class="hero-action-group">
+                    <a href="{{ route('search_vendor') }}" class="hero-btn hero-btn-outline">
+                        <i class="bi bi-search"></i>
+                        Find Vendors
+                    </a>
 
-            <div class="hero-action-group">
-                <a href="{{ route('search_vendor') }}" class="hero-btn hero-btn-outline">
-                    <i class="bi bi-search"></i>
-                    Find Vendors
-                </a>
+                    <div class="hero-or-text">OR</div>
 
-                <div class="hero-or-text">OR</div>
-
-                <a href="{{ route('post') }}" class="hero-btn hero-btn-primary">
-                    <i class="bi bi-plus-circle"></i>
-                    Post Your Project
-                </a>
-            </div>
-
-            <div class="separate-search-strip">
-                <div class="search-strip-badge">
-                    <i class="bi bi-lightning-charge-fill"></i>
-                    Quick Search Option
+                    <a href="{{ route('post') }}" class="hero-btn hero-btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        Post Your Project
+                    </a>
                 </div>
 
-                <div class="search-strip-content">
-                    <div class="search-strip-left">
-                        <h3>Want to explore posted requirements?</h3>
-                        <p>
-                            Browse construction requirements and discover active project posts
-                            based on category, location and work type.
-                        </p>
+                <div class="separate-search-strip">
+                    <div class="search-strip-badge">
+                        <i class="bi bi-lightning-charge-fill"></i>
+                        Quick Search Option
                     </div>
 
-                    <div class="search-strip-right">
-                        <a href="{{ route('search_customer') }}" class="separate-search-btn">
-                            <i class="bi bi-file-earmark-text"></i>
-                            Search Posts Now
-                        </a>
+                    <div class="search-strip-content">
+                        <div class="search-strip-left">
+                            <h3>Want to explore posted requirements?</h3>
+                            <p>
+                                Browse construction requirements and discover active project posts
+                                based on category, location and work type.
+                            </p>
+                        </div>
+
+                        <div class="search-strip-right">
+                            <a href="{{ route('search_customer') }}" class="separate-search-btn">
+                                <i class="bi bi-file-earmark-text"></i>
+                                Search Posts Now
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="hero-points-image">
-                <img src="{{ asset('images/icons/b.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
-            </div>
+                <div class="hero-points-image">
+                    <img src="{{ asset('images/icons/b.png') }}" alt="Verified Profiles, Real Experience, Faster Shortlisting">
+                </div>
 
-            <div class="stats-wrap">
-                <div class="stats-row">
-                    <div class="stat-item">
-                        <img src="{{ asset('images/icons/v.png') }}" alt="Vendor" class="stat-img">
-                        <div class="stat-text">
-                            <span class="stat-number">{{$vendors}}+</span>
-                            <span class="stat-label">Vendor</span>
+                <div class="stats-wrap">
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <img src="{{ asset('images/icons/v.png') }}" alt="Vendor" class="stat-img">
+                            <div class="stat-text">
+                                <span class="stat-number">{{ $vendors }}+</span>
+                                <span class="stat-label">Vendor</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="stat-item">
-                        <img src="{{ asset('images/icons/p.png') }}" alt="Projects" class="stat-img">
-                        <div class="stat-text">
-                            <span class="stat-number">{{ $posts }}+</span>
-                            <span class="stat-label">Projects</span>
+                        <div class="stat-item">
+                            <img src="{{ asset('images/icons/p.png') }}" alt="Projects" class="stat-img">
+                            <div class="stat-text">
+                                <span class="stat-number">{{ $posts }}+</span>
+                                <span class="stat-label">Projects</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="stat-item">
-                        <img src="{{ asset('images/icons/e.png') }}" alt="ERP Users" class="stat-img">
-                        <div class="stat-text">
-                            <span class="stat-number">134+</span>
-                            <span class="stat-label">ERP Users</span>
+                        <div class="stat-item">
+                            <img src="{{ asset('images/icons/e.png') }}" alt="ERP Users" class="stat-img">
+                            <div class="stat-text">
+                                <span class="stat-number">134+</span>
+                                <span class="stat-label">ERP Users</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+
     <section class="how-section">
         <div class="container-custom">
             <div class="section-head reveal">
@@ -1392,18 +1351,13 @@ img{
     <section class="services-section-full">
         <div class="services-shell">
             <div class="services-image-grid">
-
                 <a href="{{ route('search_customer') }}" class="service-image-card reveal service-link">
                     <img src="{{ asset('images/services/find-leads.png') }}" alt="Find Leads" class="service-full-img">
                 </a>
 
-                <a href="javascript:void(0);"
-                   class="service-image-card reveal service-link"
-                   data-bs-toggle="modal"
-                   data-bs-target="#comingSoonModal">
+                <a href="javascript:void(0);" class="service-image-card reveal service-link" data-bs-toggle="modal" data-bs-target="#comingSoonModal">
                     <img src="{{ asset('images/services/tendering-erp.png') }}" alt="Tendering ERP" class="service-full-img">
                 </a>
-
             </div>
         </div>
     </section>
@@ -1423,13 +1377,12 @@ img{
                 </p>
 
                 <div class="categories-grid">
-
                     <div class="category-card">
                         <div class="category-image-box">
                             <img src="{{ asset('images/categories/buildingcontractor.png') }}" alt="Building Contractor" class="category-image">
                         </div>
                         <h3 class="category-name">Building Contractor</h3>
-                        <p class="category-desc">RCC, bungalow & building construction execution</p>
+                        <p class="category-desc">RCC, bungalow &amp; building construction execution</p>
                     </div>
 
                     <div class="category-card">
@@ -1437,7 +1390,7 @@ img{
                             <img src="{{ asset('images/categories/residen.png') }}" alt="Residential Interiors" class="category-image">
                         </div>
                         <h3 class="category-name">Residential Interiors</h3>
-                        <p class="category-desc">Modular kitchens, wardrobes & turnkey interiors</p>
+                        <p class="category-desc">Modular kitchens, wardrobes &amp; turnkey interiors</p>
                     </div>
 
                     <div class="category-card">
@@ -1445,7 +1398,7 @@ img{
                             <img src="{{ asset('images/categories/architect.png') }}" alt="Residential Architect" class="category-image">
                         </div>
                         <h3 class="category-name">Residential Architect</h3>
-                        <p class="category-desc">Planning, approvals & bungalow designs</p>
+                        <p class="category-desc">Planning, approvals &amp; bungalow designs</p>
                     </div>
 
                     <div class="category-card">
@@ -1453,7 +1406,7 @@ img{
                             <img src="{{ asset('images/categories/industrial.png') }}" alt="Industrial Contractor" class="category-image">
                         </div>
                         <h3 class="category-name">Industrial Contractor</h3>
-                        <p class="category-desc">Factories, warehouses & PEB sheds</p>
+                        <p class="category-desc">Factories, warehouses &amp; PEB sheds</p>
                     </div>
 
                     <div class="category-card">
@@ -1461,7 +1414,7 @@ img{
                             <img src="{{ asset('images/categories/luxury.png') }}" alt="Luxury Interiors" class="category-image">
                         </div>
                         <h3 class="category-name">Luxury Interiors</h3>
-                        <p class="category-desc">Premium finishes & high-end interior execution</p>
+                        <p class="category-desc">Premium finishes &amp; high-end interior execution</p>
                     </div>
 
                     <div class="category-card">
@@ -1469,7 +1422,7 @@ img{
                             <img src="{{ asset('images/categories/labour.png') }}" alt="Labour Contractor" class="category-image">
                         </div>
                         <h3 class="category-name">Labour Contractor</h3>
-                        <p class="category-desc">Skilled & unskilled construction workforce</p>
+                        <p class="category-desc">Skilled &amp; unskilled construction workforce</p>
                     </div>
 
                     <div class="category-card">
@@ -1477,9 +1430,8 @@ img{
                             <img src="{{ asset('images/categories/commercial.png') }}" alt="Commercial Architect" class="category-image">
                         </div>
                         <h3 class="category-name">Commercial Architect</h3>
-                        <p class="category-desc">Offices, retail & commercial planning</p>
+                        <p class="category-desc">Offices, retail &amp; commercial planning</p>
                     </div>
-
                 </div>
 
                 <div class="category-note">
@@ -1584,7 +1536,7 @@ img{
                 <span class="testimonial-badge">⭐ Real Experiences</span>
                 <h2 class="section-title mt-3">What People Say About Us</h2>
                 <p class="testimonial-subtitle">
-                    Trusted by customers & contractors across Maharashtra.
+                    Trusted by customers &amp; contractors across Maharashtra.
                 </p>
             </div>
 
@@ -1690,13 +1642,11 @@ img{
             </div>
         </div>
     </section>
-
 </div>
 
 <div class="modal fade" id="comingSoonModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 rounded-4 shadow-lg">
-
             <div class="modal-header ck-modal-header px-4 py-3">
                 <div>
                     <div class="d-flex align-items-center gap-2 mb-1">
@@ -1718,12 +1668,14 @@ img{
                             <small class="text-muted">Tender • Execution • Billing</small>
                         </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="ck-option h-100">
                             <div class="fw-bold">Construction-Focused</div>
                             <small class="text-muted">Built for Indian projects</small>
                         </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="ck-option h-100">
                             <div class="fw-bold">Cost-Effective</div>
@@ -1735,19 +1687,18 @@ img{
 
             <div class="modal-body bg-light px-4 py-4">
                 <form id="erpInterestForm">
-
                     <div class="mb-3">
                         <label class="fw-semibold">
                             <span class="ck-step me-1">1</span> Full Name *
                         </label>
-                        <input class="form-control form-control-lg" name="full_name" required>
+                        <input type="text" class="form-control form-control-lg" name="full_name" required>
                     </div>
 
                     <div class="mb-3">
                         <label class="fw-semibold">
                             <span class="ck-step me-1">2</span> Company Name *
                         </label>
-                        <input class="form-control form-control-lg" name="company_name" required>
+                        <input type="text" class="form-control form-control-lg" name="company_name" required>
                     </div>
 
                     <div class="mb-4">
@@ -1767,11 +1718,7 @@ img{
                         </select>
 
                         <div id="roleOtherBox" class="mt-2 d-none">
-                            <input type="text"
-                                   class="form-control form-control-lg"
-                                   name="role_in_org_other"
-                                   id="roleOtherInput"
-                                   placeholder="Please specify your role">
+                            <input type="text" class="form-control form-control-lg" name="role_in_org_other" id="roleOtherInput" placeholder="Please specify your role">
                         </div>
                     </div>
 
@@ -1780,7 +1727,7 @@ img{
                             <span class="ck-step me-1">4</span> Organization Type *
                         </label>
 
-                        @foreach([
+                        @foreach ([
                             'Real Estate Builder / Developer',
                             'EPC / Infrastructure Contractor',
                             'Government Tender Contractor',
@@ -1789,21 +1736,13 @@ img{
                             'Other'
                         ] as $type)
                             <label class="ck-option d-flex align-items-center mb-2">
-                                <input type="radio"
-                                       name="organization_type"
-                                       class="me-3 org-type-radio"
-                                       value="{{ $type }}"
-                                       required>
+                                <input type="radio" name="organization_type" class="me-3 org-type-radio" value="{{ $type }}" required>
                                 {{ $type }}
                             </label>
                         @endforeach
 
                         <div id="orgTypeOtherBox" class="mt-2 d-none">
-                            <input type="text"
-                                   class="form-control form-control-lg"
-                                   name="organization_type_other"
-                                   id="orgTypeOtherInput"
-                                   placeholder="Please specify organization type">
+                            <input type="text" class="form-control form-control-lg" name="organization_type_other" id="orgTypeOtherInput" placeholder="Please specify organization type">
                         </div>
                     </div>
 
@@ -1825,7 +1764,7 @@ img{
                             <span class="ck-step me-1">6</span> Looking For *
                         </label>
 
-                        @foreach([
+                        @foreach ([
                             'Tender publishing & bid comparison',
                             'BOQ-based tendering',
                             'Subcontractor procurement',
@@ -1845,7 +1784,7 @@ img{
                             <span class="ck-step me-1">7</span> Current Challenge *
                         </label>
 
-                        @foreach([
+                        @foreach ([
                             'Managing tenders manually',
                             'No visibility after L1',
                             'Poor execution & billing',
@@ -1864,7 +1803,7 @@ img{
                             <span class="ck-step me-1">8</span> Interest Level *
                         </label>
 
-                        @foreach(['Urgent','Exploring','Maybe','No'] as $i)
+                        @foreach (['Urgent', 'Exploring', 'Maybe', 'No'] as $i)
                             <label class="ck-option d-flex align-items-center mb-2">
                                 <input type="radio" name="interest_level" class="me-3" value="{{ $i }}" required>
                                 {{ $i }}
@@ -1876,20 +1815,14 @@ img{
                         <label class="fw-semibold">
                             <span class="ck-step me-1">9</span> Contact Details *
                         </label>
-                        <textarea class="form-control form-control-lg"
-                                  rows="3"
-                                  name="contact_details"
-                                  placeholder="Mobile number & Email"
-                                  required></textarea>
+                        <textarea class="form-control form-control-lg" rows="3" name="contact_details" placeholder="Mobile number & Email" required></textarea>
                     </div>
 
                     <button type="submit" class="ck-submit">
                         Submit Registration
                     </button>
-
                 </form>
             </div>
-
         </div>
     </div>
 </div>
@@ -1929,8 +1862,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const orgTypeOtherBox = document.getElementById('orgTypeOtherBox');
     const orgTypeOtherInput = document.getElementById('orgTypeOtherInput');
 
-    orgRadios.forEach(function(radio) {
-        radio.addEventListener('change', function() {
+    orgRadios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
             if (this.value === 'Other') {
                 orgTypeOtherBox.classList.remove('d-none');
                 orgTypeOtherInput.setAttribute('required', 'required');
@@ -1943,8 +1876,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     const erpForm = document.getElementById('erpInterestForm');
+
     if (erpForm) {
-        erpForm.addEventListener('submit', function(e){
+        erpForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -1954,21 +1888,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(this);
 
             fetch("{{ route('erp.interest.save') }}", {
-                method: "POST",
+                method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json'
                 },
                 body: formData
             })
-            .then(async res => {
+            .then(async (res) => {
                 const data = await res.json();
                 if (!res.ok) {
                     throw data;
                 }
                 return data;
             })
-            .then(res => {
+            .then((res) => {
                 if (res.status) {
                     alert('✅ Registration submitted successfully');
                     erpForm.reset();
@@ -1980,6 +1914,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     const modalEl = document.getElementById('comingSoonModal');
                     const modalInstance = bootstrap.Modal.getInstance(modalEl);
+
                     if (modalInstance) {
                         modalInstance.hide();
                     }
@@ -1987,7 +1922,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert(res.message || 'Something went wrong');
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 alert(err.message || '❌ Server error');
             })
             .finally(() => {
